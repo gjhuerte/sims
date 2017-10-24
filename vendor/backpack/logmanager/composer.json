@@ -1,0 +1,53 @@
+{
+    "name": "backpack/logmanager",
+    "description": "An interface to preview, download and delete Laravel log files.",
+    "keywords": [
+        "backpack",
+        "log manager",
+        "logs",
+        "laravel",
+        "log interface"
+    ],
+    "homepage": "https://github.com/laravel-backpack/LogManager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cristian Tabacitu",
+            "email": "hello@tabacitu.ro",
+            "homepage": "http://tabacitu.ro",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "illuminate/support": "~5.1",
+        "php" : ">=5.4.0",
+        "backpack/base": "0.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Backpack\\LogManager\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Backpack\\LogManager\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Backpack\\LogManager\\LogManagerServiceProvider"
+            ]
+        }
+    }
+}
