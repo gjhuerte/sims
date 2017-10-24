@@ -149,7 +149,7 @@
 			],
 	    });
 
-	    
+
 	      // <button href="{{ url("inventory/supply/$supply->stocknumber/stockcard/print") }}" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 	      //    <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 	      //    <span id="nav-text"> Print</span>

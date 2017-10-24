@@ -58,7 +58,7 @@ class Supply extends Model{
 
 	public function supplytransaction()
 	{
-		return $this->hasMany('App\SupplyTransaction');
+		return $this->hasMany('App\SupplyTransaction','stocknumber','stocknumber');
 	}
 
 	public function getUnitPriceAttribute($value)

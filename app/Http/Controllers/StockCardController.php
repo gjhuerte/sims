@@ -355,7 +355,19 @@ class StockCardController extends Controller {
 		// 				->with('supplytransaction',$supplytransaction)
 		// 				->render();
 
-		// return PDF::load($html)->show();		
+		// return PDF::load($html)->show();
+	}
+
+	public function printAllStockCard()
+	{
+		$supplies = Supply::all();
+		// $supplies = Supply::take(3)->get();
+		$pdf = PDF::loadView('stockcard.print_all_index',['supplies' => $supplies]);
+		// return $pdf->download('stockcard.pdf');
+
+		// $pdf = App::make('dompdf.wrapper');
+		// $pdf->loadHTML('<h1>Test</h1>');
+		return $pdf->stream('Preview.pdf',array('Attachment'=>0));
 	}
 
 

@@ -121,8 +121,12 @@
 			],
 	    });
 
-	    @if(Auth::user()->accesslevel == 2)
+    @if(Auth::user()->accesslevel == 2)
 	 	$("div.toolbar").html(`
+        <a href="{{ url("inventory/supply/stockledger/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+	        <span id="nav-text"> Print</span>
+	      </a>
 				<button id="accept" class="btn btn-sm btn-success">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					<span id="nav-text"> Batch Accept</span>
@@ -136,6 +140,10 @@
 
 		@if(Auth::user()->accesslevel == 1)
 	 	$("div.toolbar").html(`
+      <a href="{{ url("inventory/supply/stockcard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+        <span id="nav-text"> Print</span>
+      </a>
 			<button id="accept" class="btn btn-sm btn-success">
 				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 				<span id="nav-text"> Batch Accept</span>

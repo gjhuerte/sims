@@ -99,6 +99,8 @@ Route::middleware(['auth','amo'])->group(function(){
 
 	Route::get('inventory/supply/{id}/stockcard/print','StockCardController@printStockCard');
 
+		Route::get('inventory/supply/stockcard/print','StockCardController@printAllStockCard');
+
 	Route::resource('inventory/supply.stockcard','StockCardController');
 
 	Route::get('request/{id}/release',[
@@ -133,6 +135,8 @@ Route::middleware(['auth','accounting'])->group(function(){
 	Route::get('inventory/supply/{id}/supplyledger/release','SupplyLedgerController@releaseForm');
 
 	Route::get('inventory/supply/{id}/supplyledger/print','SupplyLedgerController@printSupplyLedger');
+
+	Route::get('inventory/supply/supplyledger/print','SupplyLedgerController@printAllSupplyLedger');
 
 	Route::resource('inventory/supply.supplyledger','SupplyLedgerController');
 

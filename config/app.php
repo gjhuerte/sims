@@ -197,11 +197,11 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
         // ...
 
-        Vsmoraes\Pdf\PdfServiceProvider::class,
+        // Vsmoraes\Pdf\PdfServiceProvider::class,
 
         Barryvdh\DomPDF\ServiceProvider::class,
 
-        Barryvdh\Snappy\ServiceProvider::class,
+        // Barryvdh\Snappy\ServiceProvider::class,
     ],
 
     /*

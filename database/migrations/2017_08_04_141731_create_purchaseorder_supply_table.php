@@ -19,8 +19,8 @@ class CreatePurchaseorderSupplyTable extends Migration
             $table->string('purchaseorderno',100);
             $table->foreign('purchaseorderno')->references('purchaseorderno')->on('purchaseorder')
                                                   ->onDelete('cascade');
-            $table->string('reference',100)->nullable();                                      
-            $table->string('date',100)->nullable();                                      
+            $table->string('reference',100)->nullable();
+            $table->string('date',100)->nullable();
             $table->string('supplyitem',100);
             $table->integer('orderedquantity');
             $table->integer('receivedquantity')->default('0');
