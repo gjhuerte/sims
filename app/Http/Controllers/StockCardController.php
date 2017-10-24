@@ -313,61 +313,28 @@ class StockCardController extends Controller {
 
 	public function printStockCard($stocknumber)
 	{
-		// if(Request::ajax())
-		// {
-		// 		return json_encode([
-		// 			'data' => SupplyTransaction::where('stocknumber','=',$stocknumber)
-		// 										->orderBy('date','asc')
-		// 										->get()
-		// 		]);
-		// }
-
 		$supply = Supply::find($stocknumber);
-		$supplytransaction = SupplyTransaction::where('stocknumber','=',$stocknumber)
-									->orderBy('date','asc')
-									->get();
 
-		// if(Request::ajax())
-		// {
-		// 		return view('stockcard.print_index')
-		// 						->with('supply',$supply)
-		// 						->with('supplytransaction',$supplytransaction);
-		// }
-		$pdf = PDF::loadView('stockcard.print_index',['supply' => $supply, 'supplytransaction' => $supplytransaction ]);
-		return $pdf->download('stockcard.pdf');
+		$data = [
+			'supply' => $supply
+		];
+		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber".".pdf";
+		$view = "stockcard.print_index";
 
-
-		// ob_start();
-
-		// $html = ob_get_clean();
-		// // $dompdf = new PDF();
-
-		// PDF::load_html('stockcard.print_index',['supply' => $supply, 'supplytransaction' => $supplytransaction ]);
-		// PDF::render();
-		// PDF::stream('Preview.pdf',array('Attachment'=>0));
-
-		// return view('stockcard.print_index')
-		// 				->with('supply',$supply)
-		// 				->with('supplytransaction',$supplytransaction);
-
-		// $html =  view('stockcard.print_index')
-		// 				->with('supply',$supply)
-		// 				->with('supplytransaction',$supplytransaction)
-		// 				->render();
-
-		// return PDF::load($html)->show();
+		return $this->printPreview($view,$data,$filename);
 	}
 
 	public function printAllStockCard()
 	{
 		$supplies = Supply::all();
-		// $supplies = Supply::take(3)->get();
-		$pdf = PDF::loadView('stockcard.print_all_index',['supplies' => $supplies]);
-		// return $pdf->download('stockcard.pdf');
+		// $supplies = Supply::take(1)->get();
+		$data = [
+			'supplies' => $supplies
+		];
+		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+		$view = "stockcard.print_all_index";
 
-		// $pdf = App::make('dompdf.wrapper');
-		// $pdf->loadHTML('<h1>Test</h1>');
-		return $pdf->stream('Preview.pdf',array('Attachment'=>0));
+		return $this->printPreview($view,$data,$filename);
 	}
 
 

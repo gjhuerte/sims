@@ -83,6 +83,8 @@
           <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Requests</span></a></li>
           @endif
 
+          <li><a href="{{ url('settings') }}"><i class="fa fa-user-o" aria-hidden="true"></i> <span> Settings</span></a></li>
+
           @if(Auth::user()->accesslevel == 1 || Auth::user()->accesslevel == 2)
           <li class="header">Reports</li>
 

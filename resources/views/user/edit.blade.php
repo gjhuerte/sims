@@ -1,33 +1,54 @@
-@extends('layouts.master')
-@section('title')
-Settings
-@stop
-@section('navbar')
-@include('layouts.navbar')
-@stop
-@section('script-include')
-<script type="text/javascript" src="{{ asset('js/jquery.validate.min.js') }}"></script>
-@stop
-@section('style')
-<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-@stop
+@extends('backpack::layout')
+
+@section('after_styles')
+    <!-- Ladda Buttons (loading buttons) -->
+    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+		<style>
+
+			a > hover{
+				text-decoration: none;
+			}
+
+			th , tbody{
+				text-align: center;
+			}
+
+			td{
+				font-size: 12px;
+			}
+		</style>
+
+    <!-- Bootstrap -->
+    {{ HTML::style(asset('css/jquery-ui.css')) }}
+    {{ HTML::style(asset('css/sweetalert.css')) }}
+    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
+@endsection
+
+@section('header')
+	<section class="content-header">
+		<legend><h3 class="text-muted">Edit Account Information</h3></legend>
+	  {{-- <ol class="breadcrumb">
+	    <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}">Das</a></li>
+	    <li class="active">{{ trans('backpack::backup.backup') }}</li>
+	  </ol> --}}
+	</section>
+@endsection
+
 @section('content')
-<div class="container-fluid" id='page-body' hidden>
-  <div class="col-md-offset-3 col-md-6">
-    <div class="panel panel-body panel-shadow" style="margin-top: 70px;margin-bottom: 50px;padding: 20px;">
-        @if (count($errors) > 0)
-           <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <ul class="list-unstyled" style='margin-left: 10px;'>
-                    @foreach ($errors->all() as $error)
-                        <li class="text-capitalize">{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-      <div class='col-sm-12'>
-        <legend><h3 style="color:#337ab7;"> User Information </h3></legend>
-      </div>
+<!-- Default box -->
+<div class="container-fluid" id='page-body' style="background-color:white;padding:20px;">
+    @if (count($errors) > 0)
+       <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <ul class="list-unstyled" style='margin-left: 10px;'>
+                @foreach ($errors->all() as $error)
+                    <li class="text-capitalize">{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+  <div class="col-md-6">
       {{ Form::open(['method'=>'POST','route'=>'settings.update','id'=>'registrationForm']) }}
       <div class="col-sm-12">
        <div class="form-group">
@@ -69,6 +90,8 @@ Settings
           ]) }}
         </div>
       </div>
+    </div>
+  <div class="col-md-6">
       <div class='col-sm-12'>
         <legend><h3 style="color:#337ab7;"> Change Password </h3></legend>
       </div>
@@ -113,23 +136,30 @@ Settings
     {{ Form::close() }}
   </div><!-- Row -->
 </div><!-- Container -->
-@stop
-@section('script')
-<script type="text/javascript">
-  $(document).ready(function(){
-    @if( Session::has("success-message") )
-      swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-    @if( Session::has("error-message") )
-      swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
+@endsection
+
+@section('after_scripts')
+    <!-- Ladda Buttons (loading buttons) -->
+    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
+    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
+
+    {{ HTML::script(asset('js/jquery-ui.js')) }}
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    {{ HTML::script(asset('js/sweetalert.min.js')) }}
+
+<script>
+	$(document).ready(function() {
+
+		@if( Session::has("success-message") )
+			swal("Success!","{{ Session::pull('success-message') }}","success");
+		@endif
+		@if( Session::has("error-message") )
+			swal("Oops...","{{ Session::pull('error-message') }}","error");
+		@endif
 
     $('#update').on('click',function(){
-
       $("#registrationForm").submit();
     })
-
-    $('#page-body').show();
-  });
+	} );
 </script>
-@stop
+@endsection
