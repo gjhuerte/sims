@@ -26,7 +26,7 @@ return [
     'add_a_new'           => 'Jauns ',
 
     // Edit form
-    'edit'                 => 'Redigēt',
+    'edit'                 => 'Rediģēt',
     'save'                 => 'Saglabāt',
 
     // Revisions

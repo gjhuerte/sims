@@ -16,8 +16,11 @@ trait CrudTrait
 
     public static function getPossibleEnumValues($field_name)
     {
+        $default_connection = Config::get('database.default');
+        $table_prefix = Config::get('database.connections.'.$default_connection.'.prefix');
+
         $instance = new static(); // create an instance of the model to be able to get the table name
-        $type = DB::select(DB::raw('SHOW COLUMNS FROM `'.Config::get('database.connections.'.env('DB_CONNECTION').'.prefix').$instance->getTable().'` WHERE Field = "'.$field_name.'"'))[0]->Type;
+        $type = DB::select(DB::raw('SHOW COLUMNS FROM `'.$table_prefix.$instance->getTable().'` WHERE Field = "'.$field_name.'"'))[0]->Type;
         preg_match('/^enum\((.*)\)$/', $type, $matches);
         $enum = [];
         foreach (explode(',', $matches[1]) as $value) {
@@ -49,8 +52,10 @@ trait CrudTrait
         $conn = DB::connection($instance->getConnectionName());
         $table = Config::get('database.connections.'.env('DB_CONNECTION').'.prefix').$instance->getTable();
 
-        // register the enum column type, because Doctrine doesn't support it
+        // register the enum, json and jsonb column type, because Doctrine doesn't support it
         $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('json', 'json_array');
+        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('jsonb', 'json_array');
 
         return ! $conn->getDoctrineColumn($table, $column_name)->getNotnull();
     }

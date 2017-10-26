@@ -21,7 +21,6 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
-        "owen-it/laravel-auditing": "^4.1",
         "vsmoraes/laravel-pdf": "^2.0"
     },
     "require-dev": {

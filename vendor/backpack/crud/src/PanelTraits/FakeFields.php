@@ -5,65 +5,59 @@ namespace Backpack\CRUD\PanelTraits;
 trait FakeFields
 {
     /**
-     * Refactor the request array to something that can be passed to the model's create or update function.
+     * Update the request input array to something that can be passed to the model's create or update function.
      * The resulting array will only include the fields that are stored in the database and their values,
      * plus the '_token' and 'redirect_after_save' variables.
      *
-     * @param Request $request - everything that was sent from the form, usually \Request::all()
-     * @param string  $form    - create/update - to determine what fields should be compacted
+     * @param array $requestInput The request input.
+     * @param string $form The CRUD form. Can be 'create' or 'update' . Default is 'create'.
+     * @param int|bool $id The CRUD entry id in the case of the 'update' form.
      *
-     * @return array
+     * @see \Illuminate\Http\Request::all() For an example on how to get the request input.
+     *
+     * @return array The updated request input.
      */
-    public function compactFakeFields($request, $form = 'create', $id = false)
+    public function compactFakeFields($requestInput, $form = 'create', $id = false)
     {
-        $fake_field_columns_to_encode = [];
-
         // get the right fields according to the form type (create/update)
         $fields = $this->getFields($form, $id);
 
-        // go through each defined field
-        foreach ($fields as $k => $field) {
-            // if it's a fake field and the field is included in the request
-            if (isset($fields[$k]['fake']) && $fields[$k]['fake'] == true && array_key_exists($fields[$k]['name'], $request)) {
-                // add it to the request in its appropriate variable - the one defined, if defined
-                if (isset($fields[$k]['store_in'])) {
-                    $request[$fields[$k]['store_in']][$fields[$k]['name']] = $request[$fields[$k]['name']];
+        $compactedFakeFields = [];
+        foreach ($fields as $field) {
+            // compact fake fields
+            if (isset($field['fake']) && $field['fake'] == true && array_key_exists($field['name'], $requestInput)) {
+                $fakeFieldKey = isset($field['store_in']) ? $field['store_in'] : 'extras';
+                $this->addCompactedField($requestInput, $field['name'], $fakeFieldKey);
 
-                    // remove the fake field
-                    array_pull($request, $fields[$k]['name']);
-
-                    if (! in_array($fields[$k]['store_in'], $fake_field_columns_to_encode, true)) {
-                        array_push($fake_field_columns_to_encode, $fields[$k]['store_in']);
-                    }
-                } else {
-                    //otherwise in the one defined in the $crud variable
-
-                    $request['extras'][$fields[$k]['name']] = $request[$fields[$k]['name']];
-
-                    // remove the fake field
-                    array_pull($request, $fields[$k]['name']);
-
-                    if (! in_array('extras', $fake_field_columns_to_encode, true)) {
-                        array_push($fake_field_columns_to_encode, 'extras');
-                    }
+                if (! in_array($fakeFieldKey, $compactedFakeFields)) {
+                    $compactedFakeFields[] = $fakeFieldKey;
                 }
             }
         }
 
         // json_encode all fake_value columns in the database, so they can be properly stored and interpreted
-        if (count($fake_field_columns_to_encode)) {
-            foreach ($fake_field_columns_to_encode as $key => $value) {
-                if (property_exists($this->model, 'translatable') && in_array($value, $this->model->getTranslatableAttributes(), true)) {
-                    // don't json_encode spatie/translatable fake columns
-                    $request[$value] = $request[$value];
-                } else {
-                    $request[$value] = json_encode($request[$value]);
-                }
+        foreach ($compactedFakeFields as $value) {
+            if (! (property_exists($this->model, 'translatable') && in_array($value, $this->model->getTranslatableAttributes(), true))) {
+                $requestInput[$value] = json_encode($requestInput[$value]);
             }
         }
 
-        // if there are no fake fields defined, this will just return the original Request in full
-        // since no modifications or additions have been made to $request
-        return $request;
+        // if there are no fake fields defined, return the original request input
+        return $requestInput;
+    }
+
+    /**
+     * Compact a fake field in the request input array.
+     *
+     * @param array $requestInput The request input.
+     * @param string $fakeFieldName The fake field name.
+     * @param string $fakeFieldKey The fake field key.
+     */
+    private function addCompactedField(&$requestInput, $fakeFieldName, $fakeFieldKey)
+    {
+        $fakeField = $requestInput[$fakeFieldName];
+        array_pull($requestInput, $fakeFieldName); // remove the fake field from the request
+
+        $requestInput[$fakeFieldKey][$fakeFieldName] = $fakeField;
     }
 }

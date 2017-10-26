@@ -20,6 +20,90 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 
 
+
+## [3.2.26] - 2017-10-25
+
+## Added
+- prefix option to upload field type;
+
+## Fixed
+- when creating an entry, pivot fields were overwriting the $field variable - merged #1046;
+- Italian translation file;
+- select fields old data values;
+- date_range field triggered error on Create;
+- bug where non-translatable columns in translatable models got their $guarded updated - merged #754;
+
+
+## [3.2.25] - 2017-10-24
+
+## Added
+- number of records per page menu now features "All", so people can use it before exporting results when using AjaxDataTables;
+- prefix option for the image column (merged #1056; fixes #1054);
+
+
+## [3.2.24] - 2017-10-23
+
+## Fixed
+- daterange field did not use the correct value if the start_date and end_date were not casted in the model - merged #1036;
+- PR #1015 - fixes #798 - fixed field order methods;
+- PR #1011 - fixes #982 and #971 - fixed column order methods;
+- radio column not showing value - PR #1023;
+
+## [3.2.23] - 2017-10-16
+
+## Added
+- Added config option to choose if the save actions changed bubble will be shown;
+
+## Fixed
+- lv language file spelling error;
+
+
+## [3.2.22] - 2017-09-30
+
+## Fixed
+- date_picker initial display value offset - PR #767, fixes #768;
+- unit test badge from Scrutinizer reported a wrong coverage %;
+
+
+## [3.2.21] - 2017-09-28
+
+## Added
+- clear button to select2_from_ajax field type;
+- autoSet is now using the database defaults, if they exist;
+- cleaner preview page, which shows the db columns using the list columns (big thanks to [AbbyJanke](https://github.com/AbbyJanke));
+- if a field has the required attribute, a red start will show up next to its label;
+- shorthand method for updating field and column labels - setColumnLabel() and setFieldLabel();
+- select_from_array column type;
+- image column type;
+
+## Fixed
+- bug where you couldn't remove the last row of a table field;
+- Switching from using env() call to config() call to avoid issues with cache:config as mentioned in issue #753;
+
+
+## [3.2.20] - 2017-09-27
+
+## Added
+- UNIT TESTS!!! I KNOW, RIGHT?!
+- fourth parameter to addFilter method, that accepts a fallback logic closure;
+- ability to make columns non-orderable using the DataTables "orderable" parameter;
+
+## Fixed
+- zh-cn instead of zh-CN language folder - fixes #849;
+- can't move a column before/after an inexisting column;
+- can't move a field before/after an inexisting field;
+- fixed beforeField() and afterField() methods;
+- fixed beforeColumn() and afterColumn() methods;
+- calling setModel() more than once now resets the entry;
+- you can now store a fake field inside a column with the same name (ex: extras.extras);
+- boolean column values can now be HTML;
+- select2 filter clear button now works with ajax datatables;
+- select2_from_ajax_multiple field old values fix;
+- CrudTrait::isColumnNullabel support for json and jsonb columns in postgres;
+- form_save_buttons had an untranslated string;
+- deprecated unused methods in CrudPanel;
+
+
 ## [3.2.19] - 2017-09-05
 
 ## Added

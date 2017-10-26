@@ -194,7 +194,7 @@ return [
         Backpack\PageManager\PageManagerServiceProvider::class,
 
         // ...
-        OwenIt\Auditing\AuditingServiceProvider::class,
+        // OwenIt\Auditing\AuditingServiceProvider::class,
         // ...
 
         // Vsmoraes\Pdf\PdfServiceProvider::class,

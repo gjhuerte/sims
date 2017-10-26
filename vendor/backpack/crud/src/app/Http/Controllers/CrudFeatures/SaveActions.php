@@ -52,7 +52,7 @@ trait SaveActions
             $saveAction = \Request::input('save_action', config('backpack.crud.default_save_action', 'save_and_back'));
         }
 
-        if (session('save_action', 'save_and_back') !== $saveAction) {
+        if (session('save_action', 'save_and_back') !== $saveAction && config('backpack.crud.show_save_action_change', true)) {
             \Alert::info(trans('backpack::crud.save_action_changed_notification'))->flash();
         }
 

@@ -80,7 +80,9 @@ class CrudPanel
      * This function binds the CRUD to its corresponding Model (which extends Eloquent).
      * All Create-Read-Update-Delete operations are done using that Eloquent Collection.
      *
-     * @param [string] Full model namespace. Ex: App\Models\Article
+     * @param string $model_namespace Full model namespace. Ex: App\Models\Article]
+     *
+     * @throws \Exception in case the model does not exist
      */
     public function setModel($model_namespace)
     {
@@ -90,6 +92,7 @@ class CrudPanel
 
         $this->model = new $model_namespace();
         $this->query = $this->model->select('*');
+        $this->entry = null;
     }
 
     /**
@@ -203,11 +206,17 @@ class CrudPanel
         }
     }
 
+    /**
+     * @deprecated No longer used by internal code and not recommended.
+     */
     public function setSort($items, $order)
     {
         $this->sort[$items] = $order;
     }
 
+    /**
+     * @deprecated No longer used by internal code and not recommended.
+     */
     public function sort($items)
     {
         if (array_key_exists($items, $this->sort)) {
