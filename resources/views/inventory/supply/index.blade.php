@@ -111,9 +111,17 @@
 		            	return `
 		            			@if(Auth::user()->accesslevel == 1)
 		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/stockcard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Stockcard</a>
+                      <a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+              	        <span id="nav-text"> Print</span>
+              	      </a>
 		            			@endif
 		            			@if(Auth::user()->accesslevel == 2)
 		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/supplyledger' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Supply Ledger</a>
+                      <a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/supplyledger/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+              	        <span id="nav-text"> Print</span>
+              	      </a>
 		            			@endif
 		            	`;
 		            } }
