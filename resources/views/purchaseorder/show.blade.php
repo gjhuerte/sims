@@ -5,9 +5,6 @@
     <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 	<style>
-		#page-body{
-			display: none;
-		}
 
 		a > hover{
 			text-decoration: none;
@@ -58,7 +55,7 @@
 						<th>Received Quantity</th>
 						<th>Unit Price</th>
 						@if(Auth::user()->accesslevel == 2)
-						<th class="col-md-1"></th>
+						<th class="col-md-1 no-sort"></th>
 						@endif
 					</tr>
 				</thead>
@@ -91,35 +88,108 @@
 			swal("Oops...","{{ Session::pull('error-message') }}","error");
 		@endif
 
-	    var table = $('#purchaseOrderTable').DataTable({
+    var table = $('#purchaseOrderTable').DataTable({
 			select: {
 				style: 'single'
 			},
 			language: {
 					searchPlaceholder: "Search..."
 			},
+    	columnDefs:[
+       	 { targets: 'no-sort', orderable: false },
+      ],
 			"processing": true,
 			ajax: "{{ url("purchaseorder/$purchaseorder->purchaseorderno") }}",
 			columns: [
-					{ data: "id" },
-					{ data: "supplyitem" },
-					{ data: "supply.supplytype" },
-					{ data: "orderedquantity" },
-					{ data: "receivedquantity" },
-					{ data: "unitprice" },
-					@if(Auth::user()->accesslevel == 2)
-		            { data: function(callback){
-		            	return `
-		            			<button class="setprice btn btn-sm btn-default" data-id="`+callback.id+`"><span class="glyphicon glyphicon-list"></span> Set Price</button>
-		            	`;
-		            } }
-		            @endif
-			],
-	    });
+				{ data: "id" },
+				{ data: "supplyitem" },
+				{ data: function(callback){
+          html = `<p style="font-size:`;
+          if(callback.supply.supplytype.length > 60)
+          html += "11"
+          else if(callback.supply.supplytype.length > 40)
+          html += "12"
+          else if(callback.supply.supplytype.length > 20)
+          html += "13"
+          html += `px;">`+callback.supply.supplytype+"</p>"
+          return html;
 
-	    $('#purchaseOrderTable').on('click','.setprice',function(){
-	    	id = $(this).data('id')
-	    	swal({
+        } },
+				{ data: "orderedquantity" },
+        { data: function(callback){
+          if(callback.receivedquantity != 0 && callback.receivedquantity != null)
+          {
+            return callback.receivedquantity
+          }
+
+          @if(Auth::user()->accesslevel == 2)
+        	return `
+        			<button class="receivedquantity btn btn-sm btn-primary" data-id="`+callback.id+`">
+                <span class="glyphicon glyphicon-list"></span> Set Quantity
+              </button>
+        	`;
+          @else
+          return `0`;
+          @endif
+        } },
+				{ data: "unitprice" },
+				@if(Auth::user()->accesslevel == 2)
+        { data: function(callback){
+        	return `
+        			<button class="setprice btn btn-sm btn-success" data-id="`+callback.id+`"><span class="glyphicon glyphicon-usd"></span> Set Price
+              </button>
+        	`;
+        } }
+        @endif
+		],
+    });
+
+    $('#purchaseOrderTable').on('click','.receivedquantity',function(){
+    	id = $(this).data('id')
+    	swal({
+			  title: "Purchase Order",
+			  text: "Input Received Quantity (Php):",
+			  type: "input",
+			  showCancelButton: true,
+			  closeOnConfirm: false,
+			  animation: "slide-from-top",
+			  inputPlaceholder: "Quantity"
+			},
+			function(inputValue){
+			  if (inputValue === false) return false;
+
+			  if (inputValue === "") {
+			    swal.showInputError("You need to write something!");
+			    return false
+			  }
+
+			  $.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
+			  	type: 'put',
+			  	url: '{{ url("purchaseorder/supply") }}' + '/' + id,
+			  	dataType: 'json',
+			  	data: {
+			  		'receivedquantity': inputValue
+			  	},
+			  	success: function(response){
+			  		if(response == 'success')
+			  		swal('Success','Operation Successful','success')
+			  		else
+			  		swal('Error','Problem Occurred while processing your data','error')
+			  		table.ajax.reload();
+			  	},
+			  	error: function(){
+			  		swal('Error','Problem Occurred while processing your data','error')
+			  	}
+			  })
+			});
+    })
+
+    $('#purchaseOrderTable').on('click','.setprice',function(){
+    	id = $(this).data('id')
+    	swal({
 			  title: "Purchase Order",
 			  text: "Input Purchase Order Price (Php):",
 			  type: "input",
@@ -158,9 +228,7 @@
 			  	}
 			  })
 			});
-	    })
-
-		$('#page-body').show();
+    })
 	} );
 </script>
 @endsection

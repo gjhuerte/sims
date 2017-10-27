@@ -90,9 +90,9 @@
 			language: {
 					searchPlaceholder: "Search..."
 			},
-        	columnDefs:[
-           	 { targets: 'no-sort', orderable: false },
-            ],
+    	columnDefs:[
+       	 { targets: 'no-sort', orderable: false },
+      ],
 			@if(Auth::user()->accesslevel == 1 || Auth::user()->accesslevel == 2)
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 							"<'row'<'col-sm-12'tr>>" +

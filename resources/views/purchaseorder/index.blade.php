@@ -49,9 +49,8 @@
 					<th>Date</th>
 					<th>Fund Cluster</th>
 					<th>Details</th>
-					@if(Auth::user()->accesslevel == 2)
-					<th class="col-md-2"></th>
-					@endif
+          <th>Status</th>
+					<th class="no-sort"></th>
 				</thead>
 			</table>
 		</div>
@@ -83,17 +82,16 @@
 			swal("Oops...","{{ Session::pull('error-message') }}","error");
 		@endif
 
-	    var table = $('#purchaseOrderTable').DataTable({
+    var table = $('#purchaseOrderTable').DataTable({
 			select: {
 				style: 'single'
 			},
 			language: {
 					searchPlaceholder: "Search..."
 			},
-	    	columnDefs:[
-				{ targets: 'no-sort', orderable: false },
-	    	],
-
+    	columnDefs:[
+			     { targets: 'no-sort', orderable: false },
+    	],
 			@if(Auth::user()->accesslevel == 2)
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 							"<'row'<'col-sm-12'tr>>" +
@@ -107,18 +105,38 @@
 						return moment(callback.date).format("MMMM d, YYYY")
 					} },
 					{ data: "fundcluster" },
-					{ data: "details" }
-					@if(Auth::user()->accesslevel == 2)
+					{ data: "details" },
+					{ data: function(callback){
+            if(callback.status == null || callback.status == 'unpaid')
+            {
+              @if(Auth::user()->accesslevel == 2)
+              return `<button type="button" class="btn btn-sm btn-success pay" data-no="`+callback.purchaseorderno+`">Pay</button>`
+              @else
+              return `Unpaid`;
+              @endif
+            }
+
+            return 'Paid'
+          } }
 					,{ data: function(callback){
 						url = '{{ url("purchaseorder") }}' + '/' + callback.purchaseorderno
-						return `
-							<a type='button' href='` + url + `' class='btn btn-default btn-sm'>View</a>
-							<button type='button' data-id='` + url + `' data-fundcluster='` + callback.fundcluster + `' class='fundcluster btn btn-info btn-sm'>Fund Cluster</button>
-							`
+            html = `
+							<a type='button' href='` + url + `' class='btn btn-default btn-sm'>
+                <span class="glyphicon glyphicon-list"></span> View
+              </a>
+            `
+            @if(Auth::user()->accesslevel == 2)
+            html += `
+							<button type='button' data-id='` + url + `' data-fundcluster='` + callback.fundcluster + `' class='fundcluster btn btn-info btn-sm'>
+                <span class="glyphicon glyphicon-piggy-bank"></span> Fund Cluster
+              </button>
+            `
+            @endif
+
+						return html
 					} }
-					@endif
 			],
-	    });
+    });
 
 	 	$("div.toolbar").html(`
 			<button id="create" class="btn btn-md btn-primary">
@@ -131,50 +149,95 @@
 			window.location.href = "{{ url('purchaseorder/create') }}"
 		})
 
-	    $('#purchaseOrderTable').on('click','.fundcluster',function(){
+    $('#purchaseOrderTable').on('click','.pay',function(){
+      id = $(this).data('no')
+    	url = "{{ url('purchaseorder') }}" + "/" + id;
+    	// swal({
+  		//   title: "Input Fund Cluster!",
+  		//   text: "If multiple, comma separate each fund cluster:",
+  		//   type: "input",
+  		//   showCancelButton: true,
+  		//   closeOnConfirm: false,
+  		//   animation: "slide-from-top",
+  		//   inputValue: fundcluster
+  		// },
+  		// function(inputValue){
+  		//   if (inputValue === false) return false;
+      //
+  		//   if (inputValue === "") {
+  		//     swal.showInputError("You need to write something!");
+  		//     return false
+  		//   }
+  		// });
+
+
+		  $.ajax({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+		  	type: 'put',
+		  	url: url,
+		  	dataType: 'json',
+		  	data: {
+		  		'status':'paid'
+		  	},
+		  	success: function(response){
+		  		if(response == 'success')
+		  		swal('Success','Operation Successful','success')
+		  		else
+		  		swal('Error','Problem Occurred while processing your data','error')
+		  		table.ajax.reload();
+		  	},
+		  	error: function(){
+		  		swal('Error','Problem Occurred while processing your data','error')
+		  	}
+		  })
+    })
+
+    $('#purchaseOrderTable').on('click','.fundcluster',function(){
 	    	url = "";
 	    	id = $(this).data('id')
 	    	fundcluster = $(this).data('fundcluster')
 	    	swal({
-			  title: "Input Fund Cluster!",
-			  text: "If multiple, comma separate each fund cluster:",
-			  type: "input",
-			  showCancelButton: true,
-			  closeOnConfirm: false,
-			  animation: "slide-from-top",
-			  inputValue: fundcluster
-			},
-			function(inputValue){
-			  if (inputValue === false) return false;
+  			  title: "Input Fund Cluster!",
+  			  text: "If multiple, comma separate each fund cluster:",
+  			  type: "input",
+  			  showCancelButton: true,
+  			  closeOnConfirm: false,
+  			  animation: "slide-from-top",
+  			  inputValue: fundcluster
+  			},
+  			function(inputValue){
+  			  if (inputValue === false) return false;
 
-			  if (inputValue === "") {
-			    swal.showInputError("You need to write something!");
-			    return false
-			  }
+  			  if (inputValue === "") {
+  			    swal.showInputError("You need to write something!");
+  			    return false
+  			  }
 
-			  $.ajax({
-			    headers: {
-			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			    },
-			  	type: 'put',
-			  	url: id,
-			  	dataType: 'json',
-			  	data: {
-			  		'fundcluster': inputValue
-			  	},
-			  	success: function(response){
-			  		if(response == 'success')
-			  		swal('Success','Operation Successful','success')
-			  		else
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  		table.ajax.reload();
-			  	},
-			  	error: function(){
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  	}
-			  })
-			});
-	    })
+  			  $.ajax({
+  			    headers: {
+  			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  			    },
+  			  	type: 'put',
+  			  	url: id,
+  			  	dataType: 'json',
+  			  	data: {
+  			  		'fundcluster': inputValue
+  			  	},
+  			  	success: function(response){
+  			  		if(response == 'success')
+  			  		swal('Success','Operation Successful','success')
+  			  		else
+  			  		swal('Error','Problem Occurred while processing your data','error')
+  			  		table.ajax.reload();
+  			  	},
+  			  	error: function(){
+  			  		swal('Error','Problem Occurred while processing your data','error')
+  			  	}
+  			  })
+  			});
+    })
 
 		$('#page-body').show();
 	} );

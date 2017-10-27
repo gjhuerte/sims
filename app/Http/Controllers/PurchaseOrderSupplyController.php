@@ -79,17 +79,28 @@ class PurchaseOrderSupplyController extends Controller
     {
         if(Request::ajax())
         {
-            if(Auth::user()->accesslevel == 1)
-            {
-                try{
-                    $purchaseordersupply = PurchaseOrderSupply::find($id);
-                    $purchaseordersupply->unitprice = $this->sanitizeString(Input::get('unitprice'));
-                    $purchaseordersupply->save();
-                    return json_encode('success');
-                } catch (Exception $e) {
-                    return json_encode('error');
+              $purchaseordersupply = PurchaseOrderSupply::find($id);
+
+              if(count($purchaseordersupply) > 0)
+              {
+
+                if(Input::has('unitprice'))
+                {
+                  $price = $this->sanitizeString(Input::get('unitprice'));
+                  $purchaseordersupply->unitprice = $price;
                 }
-            }
+
+                if(Input::has('receivedquantity'))
+                {
+                  $quantity = $this->sanitizeString(Input::get('receivedquantity'));
+                  $purchaseordersupply->receivedquantity = $quantity;
+                }
+
+                $purchaseordersupply->save();
+                return json_encode('success');
+              }
+
+              return json_encode('error');
         }
     }
 

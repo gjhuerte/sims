@@ -9,6 +9,7 @@ return array(
     'AddApprovedAtRequests' => $baseDir . '/database/migrations/2017_10_24_091213_add_approved_at_requests.php',
     'AddOfficeinaccountsTable' => $baseDir . '/database/migrations/2017_10_22_070207_add_officeinaccounts_table.php',
     'AddReleaseatSupplyrequests' => $baseDir . '/database/migrations/2017_10_22_070343_add_releaseat_supplyrequests.php',
+    'AddStatusColumn' => $baseDir . '/database/migrations/2017_10_27_052433_add_status_column.php',
     'AlterLanguagesTable' => $baseDir . '/database/migrations/2015_09_10_124414_alter_languages_table.php',
     'ChangeExtrasToLongtext' => $baseDir . '/database/migrations/2017_04_10_195926_change_extras_to_longtext.php',
     'Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',

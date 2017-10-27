@@ -143,12 +143,25 @@ class PurchaseOrderController extends Controller
     {
         if(Request::ajax())
         {
-            try{
-                $purchaseorder = PurchaseOrder::find($id);
-                $purchaseorder->fundcluster = $this->sanitizeString(Input::get('fundcluster'));
-                $purchaseorder->save();
-                return json_encode('success');
-            } catch ( Exception $e ) { return json_encode('error'); }
+          $purchaseorder = PurchaseOrder::find($id);
+
+          if(count($purchaseorder) > 0)
+          {
+            if(Input::has('fundcluster'))
+            {
+              $purchaseorder->fundcluster = $this->sanitizeString(Input::get('fundcluster'));
+            }
+
+            if(Input::has('status'))
+            {
+              $purchaseorder->status = 'paid';
+            }
+
+            $purchaseorder->save();
+            return json_encode('success');
+          }
+
+          return json_encode('error');
         }
     }
 
