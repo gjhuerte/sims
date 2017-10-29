@@ -318,23 +318,30 @@ class StockCardController extends Controller {
 		$data = [
 			'supply' => $supply
 		];
+
 		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber".".pdf";
 		$view = "stockcard.print_index";
 
 		return $this->printPreview($view,$data,$filename);
+
+		// return view($view);
 	}
 
 	public function printAllStockCard()
 	{
 		$supplies = Supply::all();
-		// $supplies = Supply::take(1)->get();
+		// $supplies = Supply::take(2)->get();
 		$data = [
 			'supplies' => $supplies
 		];
+
 		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "stockcard.print_all_index";
 
 		return $this->printPreview($view,$data,$filename);
+
+		// return view($view)
+		// 				->with('supplies',$supplies);
 	}
 
 

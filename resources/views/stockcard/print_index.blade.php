@@ -1,8 +1,10 @@
 @extends('layouts.report')
 @section('title',"Stock Card $supply->stocknumber")
 @section('content')
+  <br />
+  <br />
   <div id="content" class="col-sm-12">
-  	<table class="table table-striped table-bordered" id="inventoryTable" style="margin-top: 90px;" width="100%" cellspacing="0">
+  	<table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
   		<thead>
         <tr>
             <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>

@@ -51,7 +51,7 @@
       34 => 'Backpack\\Settings\\SettingsServiceProvider',
       35 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
       36 => 'Backpack\\PageManager\\PageManagerServiceProvider',
-      37 => 'Barryvdh\\DomPDF\\ServiceProvider',
+      37 => 'Barryvdh\\Snappy\\ServiceProvider',
     ),
     'aliases' => 
     array (
@@ -91,7 +91,8 @@
       'Form' => 'Collective\\Html\\FormFacade',
       'HTML' => 'Collective\\Html\\HtmlFacade',
       'Input' => 'Illuminate\\Support\\Facades\\Input',
-      'PDF' => 'Barryvdh\\DomPDF\\Facade',
+      'PDF' => 'Barryvdh\\Snappy\\Facades\\SnappyPdf',
+      'SnappyImage' => 'Barryvdh\\Snappy\\Facades\\SnappyImage',
     ),
   ),
   'auth' => 
@@ -730,7 +731,7 @@
     'pdf' => 
     array (
       'enabled' => true,
-      'binary' => 'C:\\xampp\\htdocs\\sims\\vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64',
+      'binary' => 'C:\\xampp\\htdocs\\sims\\public/rendering-engine/wkhtmltopdf/bin/wkhtmltopdf.exe',
       'timeout' => false,
       'options' => 
       array (
@@ -742,7 +743,7 @@
     'image' => 
     array (
       'enabled' => true,
-      'binary' => 'C:\\xampp\\htdocs\\sims\\vendor/h4cc/wkhtmltoimage-amd64/bin/wkhtmltoimage-amd64',
+      'binary' => 'C:\\xampp\\htdocs\\sims\\public/rendering-engine/wkhtmltopdf/bin/wkhtmltoimage.exe',
       'timeout' => false,
       'options' => 
       array (
@@ -776,31 +777,6 @@
     'includeTrashed' => false,
     'reserved' => NULL,
     'onUpdate' => false,
-  ),
-  'dompdf' => 
-  array (
-    'show_warnings' => false,
-    'orientation' => 'portrait',
-    'defines' => 
-    array (
-      'DOMPDF_FONT_DIR' => 'C:\\xampp\\htdocs\\sims\\storage\\fonts/',
-      'DOMPDF_FONT_CACHE' => 'C:\\xampp\\htdocs\\sims\\storage\\fonts/',
-      'DOMPDF_TEMP_DIR' => 'C:\\Users\\Zero\\AppData\\Local\\Temp',
-      'DOMPDF_CHROOT' => 'C:\\xampp\\htdocs\\sims',
-      'DOMPDF_UNICODE_ENABLED' => true,
-      'DOMPDF_ENABLE_FONT_SUBSETTING' => false,
-      'DOMPDF_PDF_BACKEND' => 'CPDF',
-      'DOMPDF_DEFAULT_MEDIA_TYPE' => 'screen',
-      'DOMPDF_DEFAULT_PAPER_SIZE' => 'a4',
-      'DOMPDF_DEFAULT_FONT' => 'serif',
-      'DOMPDF_DPI' => 96,
-      'DOMPDF_ENABLE_PHP' => false,
-      'DOMPDF_ENABLE_JAVASCRIPT' => true,
-      'DOMPDF_ENABLE_REMOTE' => true,
-      'DOMPDF_FONT_HEIGHT_RATIO' => 1.1000000000000001,
-      'DOMPDF_ENABLE_CSS_FLOAT' => false,
-      'DOMPDF_ENABLE_HTML5PARSER' => false,
-    ),
   ),
   'langfilemanager' => 
   array (

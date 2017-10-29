@@ -16,10 +16,6 @@
 			th , tbody{
 				text-align: center;
 			}
-
-			td{
-				font-size: 12px;
-			}
 		</style>
 
     <!-- Bootstrap -->

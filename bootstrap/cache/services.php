@@ -38,7 +38,7 @@
     34 => 'Backpack\\Settings\\SettingsServiceProvider',
     35 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
     36 => 'Backpack\\PageManager\\PageManagerServiceProvider',
-    37 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    37 => 'Barryvdh\\Snappy\\ServiceProvider',
   ),
   'eager' => 
   array (
@@ -65,7 +65,7 @@
     20 => 'Backpack\\Settings\\SettingsServiceProvider',
     21 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
     22 => 'Backpack\\PageManager\\PageManagerServiceProvider',
-    23 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    23 => 'Barryvdh\\Snappy\\ServiceProvider',
   ),
   'deferred' => 
   array (

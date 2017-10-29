@@ -199,9 +199,9 @@ return [
 
         // Vsmoraes\Pdf\PdfServiceProvider::class,
 
-        Barryvdh\DomPDF\ServiceProvider::class,
+        // Barryvdh\DomPDF\ServiceProvider::class,
 
-        // Barryvdh\Snappy\ServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
     ],
 
     /*
@@ -254,9 +254,9 @@ return [
         'HTML' => Collective\Html\HtmlFacade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
         // 'PDF' => 'Vsmoraes\Pdf\PdfFacade',
-        'PDF' => Barryvdh\DomPDF\Facade::class,
-        // 'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
-        // 'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+        // 'PDF' => Barryvdh\DomPDF\Facade::class,
+        'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
 
     ],
 
