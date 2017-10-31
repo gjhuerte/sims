@@ -50,16 +50,16 @@
 		                </ul>
 		            </div>
 		        @endif
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Item Information') }}
-						<div class="alert alert-default">
-							<ul class="list-unstyled">
-								<li><strong>Entity Name:</strong> {{ $supply->entityname }}</li>
-								<li><strong>Item:</strong> {{ $supply->supplytype }}</li>
-								<li><strong>Fund Cluster:</strong> {{ $supply->fundcluster }}</li>
-							</ul>
-						</div>
+				<div class="panel panel-info" style="border:none;border-radius: 0px;;">
+          <div class="panel-heading" style="padding:10px;">
+            Item Information
+          </div>
+					<div class="panel-body">
+						<ul class="list-unstyled text-muted">
+							<li><strong>Entity Name:</strong> {{ $supply->entityname }}</li>
+							<li><strong>Item:</strong> {{ $supply->supplytype }}</li>
+							<li><strong>Fund Cluster:</strong> {{ $supply->fundcluster }}</li>
+						</ul>
 					</div>
 				</div>
 				<input type="hidden" value="{{ $supply->stocknumber }}" name="stocknumber" />

@@ -1,9 +1,10 @@
 @extends('layouts.report')
-@section('title',"Stock Card $supply->stocknumber")
+@section('title',"Stock Card Preview")
 @section('content')
+  @foreach($supplies as $supply)
   <br />
   <br />
-  <div id="content" class="col-sm-12">
+  <div id="content" class="col-sm-12" style="{{ ($supplies->last() !== $supply) ? "page-break-after:always;" : "" }}">
     <table class="table table-hover table-striped table-bordered table-condensed" id="inventoryTable" cellspacing="0" width="100%">
       <thead>
         <tr>
@@ -46,8 +47,8 @@
         </tr>
       </thead>
       <tbody>
-      @if(count($supply->supplyledger) > 0)
-        @foreach($supplyledger as $supplyledger)
+      @if(count($supply->ledgerview) > 0)
+        @foreach($supply->ledgerview as $supplyledger)
         <tr>
           <td>{{ Carbon\Carbon::parse($supplyledger->date)->toFormattedDateString() }}</td>
           <td></td>
@@ -70,6 +71,7 @@
       </tbody>
     </table>
   </div>
+  @endforeach
   <div id="footer" class="col-sm-12">
     <table class="table table-bordered">
       <thead>

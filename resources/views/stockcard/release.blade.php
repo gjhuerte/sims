@@ -38,7 +38,7 @@
 
 @section('content')
 <!-- Default box -->
-  <div class="box">
+  <div class="box" style="padding:10px;">
     <div class="box-body">
        {{ Form::open(['method'=>'delete','route'=>array('supply.stockcard.destroy',$supply->stocknumber,$supply->stocknumber),'class'=>'form-horizontal','id'=>'releaseForm']) }}
 		        @if (count($errors) > 0)
@@ -51,16 +51,16 @@
 		                </ul>
 		            </div>
 		        @endif
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Item Information') }}
-						<div class="alert alert-default">
-							<ul class="list-unstyled">
-								<li><strong>Entity Name:</strong> {{ $supply->entityname }}</li>
-								<li><strong>Item:</strong> {{ $supply->supplytype }}</li>
-								<li><strong>Fund Cluster:</strong> {{ $supply->fundcluster }}</li>
-							</ul>
-						</div>
+				<div class="panel panel-info" style="border:none;border-radius: 0px;;">
+          <div class="panel-heading" style="padding:10px;">
+            Item Information
+          </div>
+					<div class="panel-body">
+						<ul class="list-unstyled text-muted">
+							<li><strong>Entity Name:</strong> {{ $supply->entityname }}</li>
+							<li><strong>Item:</strong> {{ $supply->supplytype }}</li>
+							<li><strong>Fund Cluster:</strong> {{ $supply->fundcluster }}</li>
+						</ul>
 					</div>
 				</div>
 				<input type="hidden" value="{{ $supply->stocknumber }}" name="stocknumber" />

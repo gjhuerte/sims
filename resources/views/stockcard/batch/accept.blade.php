@@ -88,7 +88,6 @@
   							]) }}
   						</div>
   					</div>
-  					<legend></legend>
   					<div class="form-group">
   						<div class="col-md-12">
   						{{ Form::label('stocknumber','Stock Number') }}
@@ -204,18 +203,18 @@ $('document').ready(function(){
 	$('#stocknumber').on('change',function(){
 			$.ajax({
 				type: 'get',
-				url: '{{ url('get/supply') }}' +  '/' + $('#stocknumber').val() + '/balance',
+				url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
 				dataType: 'json',
 				success: function(response){
 					try{
-						details = response.data[0].supplytype
+						details = response.data.supplytype
 						$('#supply-item').val(details.toString())
 						$('#stocknumber-details').html(`
 							<div class="alert alert-warning">
 								<ul class="list-unstyled">
-									<li><strong>Item:</strong> ` + response.data[0].supplytype + ` </li>
+									<li><strong>Item:</strong> ` + response.data.supplytype + ` </li>
 									<li><strong>Remaining Balance:</strong> `
-									+ (response.data[0].totalreceiptquantity-response.data[0].totalissuequantity) +
+									+ response.data.balance +
 									`</li>
 								</ul>
 							</div>

@@ -14,4 +14,10 @@ class LedgerView extends Model
 	{
 		return $query->where('stocknumber','=',$value);
 	}
+
+	public function supply()
+	{
+		return $this->belongsTo('App\Supply','stocknumber','stocknumber');
+	}
+
 }

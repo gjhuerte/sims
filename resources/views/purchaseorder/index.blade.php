@@ -150,26 +150,7 @@
 		})
 
     $('#purchaseOrderTable').on('click','.pay',function(){
-      id = $(this).data('no')
-    	url = "{{ url('purchaseorder') }}" + "/" + id;
-    	// swal({
-  		//   title: "Input Fund Cluster!",
-  		//   text: "If multiple, comma separate each fund cluster:",
-  		//   type: "input",
-  		//   showCancelButton: true,
-  		//   closeOnConfirm: false,
-  		//   animation: "slide-from-top",
-  		//   inputValue: fundcluster
-  		// },
-  		// function(inputValue){
-  		//   if (inputValue === false) return false;
-      //
-  		//   if (inputValue === "") {
-  		//     swal.showInputError("You need to write something!");
-  		//     return false
-  		//   }
-  		// });
-
+    	url = "{{ url('purchaseorder') }}" + "/" + $('meta[name="csrf-token"]').attr('content');
 
 		  $.ajax({
 		    headers: {
@@ -179,7 +160,8 @@
 		  	url: url,
 		  	dataType: 'json',
 		  	data: {
-		  		'status':'paid'
+		  		'status':'paid',
+          'no' : $(this).data('no')
 		  	},
 		  	success: function(response){
 		  		if(response == 'success')

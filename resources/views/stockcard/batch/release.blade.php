@@ -39,101 +39,103 @@
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-				{{ Form::open(['method'=>'post','route'=>array('supply.stockcard.batch.release'),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal','id'=>'releaseForm']) }}
-		        @if (count($errors) > 0)
-		            <div class="alert alert-danger alert-dismissible" role="alert">
-		            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		                <ul style='margin-left: 10px;'>
-		                    @foreach ($errors->all() as $error)
-		                        <li>{{ $error }}</li>
-		                    @endforeach
-		                </ul>
-		            </div>
-		        @endif
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Office') }}
-						{{ Form::text('office',Input::old('office'),[
-							'id' => 'office',
-							'class' => 'form-control'
-						]) }}
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Requisition Issuance Slip') }}
-						{{ Form::text('reference',Input::old('reference'),[
-							'class' => 'form-control'
-						]) }}
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Date') }}
-						{{ Form::text('date',Input::old('date'),[
-							'id' => 'date',
-							'class' => 'form-control',
-							'readonly',
-							'style' => 'background-color: white;'
-						]) }}
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Days to Consume') }}
-						{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
-							'id' => 'daystoconsume',
-							'class' => 'form-control',
-						]) }}
-					</div>
-				</div>
-				<legend></legend>
-				<div class="form-group">
-					<div class="col-md-12">
-					{{ Form::label('stocknumber','Stock Number') }}
-					{{ Form::text('stocknumber',null,[
-						'id' => 'stocknumber',
-						'class' => 'form-control'
-					]) }}
-					</div>
-				</div>
-				<input type="hidden" id="supply-item" />
-				<div id="stocknumber-details">
-				</div>
-				<div class="col-md-12">
-					<div class="form-group">
-					{{ Form::label('Quantity') }}
-					{{ Form::text('quantity','',[
-						'id' => 'quantity',
-						'class' => 'form-control'
-					]) }}
-					</div>
-				</div>
-				<div class="btn-group" style="margin-bottom: 20px">
-					<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
-				</div>
-				<legend></legend>
-				<table class="table table-hover table-condensed table-bordered" id="supplyTable">
-					<thead>
-						<tr>
-							<th>Stock Number</th>
-							<th>Information</th>
-							<th>Quantity</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-				<div class="pull-right">
-					<div class="btn-group">
-						<button type="button" id="release" class="btn btn-md btn-primary btn-block">Release</button>
-					</div>
-					<div class="btn-group">
-						<button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
-					</div>
-				</div>
-				{{ Form::close() }}
-
+				{{ Form::open(['method'=>'post','route'=>array('supply.stockcard.batch.release'),'class'=>'form-horizontal','id'=>'releaseForm']) }}
+        @if (count($errors) > 0)
+            <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <ul style='margin-left: 10px;'>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div class="col-sm-4">
+  				<div class="col-md-12">
+  					<div class="form-group">
+  						{{ Form::label('Office') }}
+  						{{ Form::text('office',Input::old('office'),[
+  							'id' => 'office',
+  							'class' => 'form-control'
+  						]) }}
+  					</div>
+  				</div>
+  				<div class="col-md-12">
+  					<div class="form-group">
+  						{{ Form::label('Requisition Issuance Slip') }}
+  						{{ Form::text('reference',Input::old('reference'),[
+  							'class' => 'form-control'
+  						]) }}
+  					</div>
+  				</div>
+  				<div class="col-md-12">
+  					<div class="form-group">
+  						{{ Form::label('Date') }}
+  						{{ Form::text('date',Input::old('date'),[
+  							'id' => 'date',
+  							'class' => 'form-control',
+  							'readonly',
+  							'style' => 'background-color: white;'
+  						]) }}
+  					</div>
+  				</div>
+  				<div class="col-md-12">
+  					<div class="form-group">
+  						{{ Form::label('Days to Consume') }}
+  						{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
+  							'id' => 'daystoconsume',
+  							'class' => 'form-control',
+  						]) }}
+  					</div>
+  				</div>
+  				<div class="form-group">
+  					<div class="col-md-12">
+  					{{ Form::label('stocknumber','Stock Number') }}
+  					{{ Form::text('stocknumber',null,[
+  						'id' => 'stocknumber',
+  						'class' => 'form-control'
+  					]) }}
+  					</div>
+  				</div>
+  				<input type="hidden" id="supply-item" />
+  				<div id="stocknumber-details">
+  				</div>
+  				<div class="col-md-12">
+  					<div class="form-group">
+  					{{ Form::label('Quantity') }}
+  					{{ Form::text('quantity','',[
+  						'id' => 'quantity',
+  						'class' => 'form-control'
+  					]) }}
+  					</div>
+  				</div>
+  				<div class="btn-group" style="margin-bottom: 20px">
+  					<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
+  				</div>
+        </div>
+        <div class="col-sm-8">
+  				<legend><h3>Supplies List</h3></legend>
+  				<table class="table table-hover table-condensed table-bordered" id="supplyTable">
+  					<thead>
+  						<tr>
+  							<th>Stock Number</th>
+  							<th>Information</th>
+  							<th>Quantity</th>
+  							<th></th>
+  						</tr>
+  					</thead>
+  					<tbody></tbody>
+  				</table>
+  				<div class="pull-right">
+  					<div class="btn-group">
+  						<button type="button" id="release" class="btn btn-md btn-primary btn-block">Release</button>
+  					</div>
+  					<div class="btn-group">
+  						<button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
+  					</div>
+  				</div>
+        </div>
+			{{ Form::close() }}
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
@@ -194,18 +196,18 @@ $('document').ready(function(){
 	$('#stocknumber').on('change',function(){
 			$.ajax({
 				type: 'get',
-				url: '{{ url('get/supply') }}' +  '/' + $('#stocknumber').val() + '/balance',
+				url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val() ,
 				dataType: 'json',
 				success: function(response){
 					try{
-						details = response.data[0].supplytype
+						details = response.data.supplytype
 						$('#supply-item').val(details.toString())
 						$('#stocknumber-details').html(`
 							<div class="alert alert-warning">
 								<ul class="list-unstyled">
-									<li><strong>Item:</strong> ` + response.data[0].supplytype + ` </li>
+									<li><strong>Item:</strong> ` + response.data.supplytype + ` </li>
 									<li><strong>Remaining Balance:</strong> `
-									+ (response.data[0].totalreceiptquantity-response.data[0].totalissuequantity) +
+									+ response.data.balance +
 									`</li>
 								</ul>
 							</div>

@@ -487,6 +487,7 @@ class ComposerStaticInit4016c2a7c8b4ab300d66f97697ef5e1f
         'AddApprovedAtRequests' => __DIR__ . '/../..' . '/database/migrations/2017_10_24_091213_add_approved_at_requests.php',
         'AddOfficeinaccountsTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_22_070207_add_officeinaccounts_table.php',
         'AddReleaseatSupplyrequests' => __DIR__ . '/../..' . '/database/migrations/2017_10_22_070343_add_releaseat_supplyrequests.php',
+        'AddRemainingquantityinpurchaseorderTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_31_100946_add_remainingquantityinpurchaseorder_table.php',
         'AddStatusColumn' => __DIR__ . '/../..' . '/database/migrations/2017_10_27_052433_add_status_column.php',
         'AlterLanguagesTable' => __DIR__ . '/../..' . '/database/migrations/2015_09_10_124414_alter_languages_table.php',
         'ChangeExtrasToLongtext' => __DIR__ . '/../..' . '/database/migrations/2017_04_10_195926_change_extras_to_longtext.php',

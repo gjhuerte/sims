@@ -312,33 +312,35 @@ class SupplyLedgerController extends Controller {
 		}
 	}
 
+	public function printAllSupplyLedger()
+	{
+		$supplies = Supply::all();
+		$supplies = Supply::take(2)->get();
+		$data = [
+			'supplies' => $supplies
+		];
+
+		$filename = "SupplyLedger-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+		$view = "supplyledger.print_all_index";
+
+		return $this->printPreview($view,$data,$filename);
+
+		// return view($view)
+		// 				->with('supplies',$supplies);
+	}
+
 	public function printSupplyLedger($stocknumber)
 	{
 
-		$supplyledger = LedgerView::stockNumber($stocknumber)
-										->get();
+		$supplyledger = LedgerView::stockNumber($stocknumber)->get();
 		$supply = Supply::find($stocknumber);
+		$data = ['supply' => $supply, 'supplyledger' => $supplyledger ];
 
-		if(Request::ajax())
-		{
-				return view('supplyledger.print_index')
-								->with('supply',$supply)
-								->with('supplyledger',$supplyledger);
-		}
+		$filename = "SupplyLedger-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
+		$view = "supplyledger.print_index";
 
-		$pdf = PDF::loadView('supplyledger.print_index',['supply' => $supply, 'supplyledger' => $supplyledger ]);
-		return $pdf->download('supplyledger.pdf');
+		return $this->printPreview($view,$data,$filename);
 
-		// return view('stockcard.print_index')
-		// 				->with('supply',$supply)
-		// 				->with('supplytransaction',$supplytransaction);
-
-		// $html =  view('stockcard.print_index')
-		// 				->with('supply',$supply)
-		// 				->with('supplytransaction',$supplytransaction)
-		// 				->render();
-
-		// return PDF::load($html)->show();
 	}
 
 }

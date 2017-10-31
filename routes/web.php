@@ -33,8 +33,6 @@ Route::middleware(['auth'])->group(function(){
 	*/
 	// supply modules
 	Route::resource('inventory/supply','SupplyInventoryController');
-	// returns supply balance based on input supply
-	Route::get('get/supply/{supply}/balance','SupplyInventoryController@getSupplyWithRemainingBalance');
 	// return all supply stock number
 	Route::get('get/inventory/supply/stocknumber/all','StockCardController@getAllStockNumber');
 	// return stock number for autocomplete

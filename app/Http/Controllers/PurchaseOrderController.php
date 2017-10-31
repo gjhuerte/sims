@@ -116,6 +116,7 @@ class PurchaseOrderController extends Controller
         }
 
         $purchaseorder = PurchaseOrder::find($id);
+        return $id;
         return view('purchaseorder.show')
                 ->with('purchaseorder',$purchaseorder)
                 ->with('title',$purchaseorder->purchaseorderno);
@@ -143,6 +144,10 @@ class PurchaseOrderController extends Controller
     {
         if(Request::ajax())
         {
+          if(Input::has('no'))
+          {
+            $id = $this->sanitizeString(Input::get('no'));
+          }
           $purchaseorder = PurchaseOrder::find($id);
 
           if(count($purchaseorder) > 0)

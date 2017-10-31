@@ -127,7 +127,7 @@
 
     @if(Auth::user()->accesslevel == 2)
 	 	$("div.toolbar").html(`
-        <a href="{{ url("inventory/supply/stockledger/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+        <a href="{{ url("inventory/supply/supplyledger/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 	        <span id="nav-text"> Print</span>
 	      </a>

@@ -122,15 +122,15 @@
             return callback.receivedquantity
           }
 
-          @if(Auth::user()->accesslevel == 2)
+          {{-- @if(Auth::user()->accesslevel == 2)
         	return `
         			<button class="receivedquantity btn btn-sm btn-primary" data-id="`+callback.id+`">
                 <span class="glyphicon glyphicon-list"></span> Set Quantity
               </button>
         	`;
-          @else
+          @else --}}
           return `0`;
-          @endif
+          {{-- @endif --}}
         } },
 				{ data: "unitprice" },
 				@if(Auth::user()->accesslevel == 2)
@@ -144,7 +144,7 @@
 		],
     });
 
-    $('#purchaseOrderTable').on('click','.receivedquantity',function(){
+    {{-- $('#purchaseOrderTable').on('click','.receivedquantity',function(){
     	id = $(this).data('id')
     	swal({
 			  title: "Purchase Order",
@@ -185,7 +185,7 @@
 			  	}
 			  })
 			});
-    })
+    }) --}}
 
     $('#purchaseOrderTable').on('click','.setprice',function(){
     	id = $(this).data('id')

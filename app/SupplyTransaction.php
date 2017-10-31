@@ -56,29 +56,47 @@ class SupplyTransaction extends Model{
 		return $this->belongsTo('App\Supply','stocknumber','stocknumber');
 	}
 
+	var $date;
+	var $stocknumber = "";
+	var $purchaseorderno = null;
+	var $reference = null;
+	var $office = "N/A";
+	var $quantity = 0;
+	var $daystoconsume = "";
+
 	/*
 	*
 	*	Call this function when receiving an item
 	*
 	*/
-	public static function receipt($date,$stocknumber,$purchaseorderno,$reference,$office,$receiptquantity,$daystoconsume)
+	public function receipt()
 	{
 
-		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
-		$date = Carbon\Carbon::parse($date);
+		$firstname = Auth::user()->firstname;
+		$middlename =  Auth::user()->middlename;
+		$lastname = Auth::user()->lastname;
+		$username =  $firstname . " " . $middlename . " " . $lastname;
+		$date = Carbon\Carbon::parse($this->date);
+
 		DB::statement("
 			call bal_update(
 				'$username',
 				'$date',
-				'$stocknumber',
-				'$purchaseorderno',
-				'$reference',
-				'$office',
-				'$receiptquantity',
+				'$this->stocknumber',
+				'$this->purchaseorderno',
+				'$this->reference',
+				'$this->office',
+				'$this->quantity',
 				'0',
-				'$daystoconsume'
+				'$this->daystoconsume'
 			)
 		");
+
+		$purchaseorder = PurchaseOrderSupply::where('purchaseorderno','=',$this->purchaseorderno)
+													->where('supplyitem','=',$stocknumber)
+													->first();
+		$purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->quantity;
+		$purchaseorder->save();
 	}
 
 
@@ -87,27 +105,63 @@ class SupplyTransaction extends Model{
 	*	Call this function when releasing
 	*
 	*/
-	public static function issue($date,$stocknumber,$purchaseorderno,$reference,$office,$issuequantity,$daystoconsume)
+
+	/*
+	*
+	*	Call this function when receiving an item
+	*
+	*/
+	public function issue()
 	{
-		if($purchaseorderno == null || $purchaseorderno == '' || !isset($purchaseorderno))
-			$purchaseorderno = 'null';
-		else
-			$purchaseorderno = "'".$purchaseorderno."'";
-		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
-		$date = Carbon\Carbon::parse($date);
-		DB::statement("
-			call bal_update(
-				'$username',
-				'$date',
-				'$stocknumber',
-				$purchaseorderno,
-				'$reference',
-				'$office',
-				'0',
-				'$issuequantity',
-				'$daystoconsume'
-			)
-		");
+
+		$firstname = Auth::user()->firstname;
+		$middlename =  Auth::user()->middlename;
+		$lastname = Auth::user()->lastname;
+		$username =  $firstname . " " . $middlename . " " . $lastname;
+
+		$date = Carbon\Carbon::parse($this->date);
+
+		$purchaseordersupply = PurchaseOrderSupply::where('supplyitem','=',$this->stocknumber)
+										->orderBy('created_at','asc')
+										->where('remainingquantity','>','0')
+										->get();
+
+		foreach($purchaseordersupply as $po)
+		{
+			if($this->quantity > 0)
+			{
+				DB::statement("
+					call bal_update(
+						'$username',
+						'$date',
+						'$this->stocknumber',
+						'$po->purchaseorderno',
+						'$this->reference',
+						'$this->office',
+						'0',
+						'$this->quantity',
+						'$this->daystoconsume'
+					)
+				");
+
+				if($this->quantity >= $po->remainingquantity)
+				{
+					$remaining_quantity = $this->quantity - $po->remainingquantity;
+					$this->quantity = $remaining_quantity;
+					$po->issuedquantity = $remaining_quantity;
+					$po->remainingquantity = 0;
+					$po->save();
+				}
+				else
+				{
+					$remaining_quantity = $po->remainingquantity - $this->quantity;
+					$this->quantity = 0;
+					$po->remainingquantity = $remaining_quantity;
+					$po->issuedquantity = $po->issuedquantity + $remaining_quantity;
+					$po->save();
+				}
+			}
+		}
 	}
 
 }

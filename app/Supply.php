@@ -61,6 +61,11 @@ class Supply extends Model{
 		return $this->hasMany('App\SupplyTransaction','stocknumber','stocknumber');
 	}
 
+	public function ledgerview()
+	{
+		return $this->hasMany('App\LedgerView','stocknumber','stocknumber');
+	}
+
 	public function getUnitPriceAttribute($value)
 	{
 		return number_format($value,2,'.',',');

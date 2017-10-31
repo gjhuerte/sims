@@ -28,24 +28,6 @@ class SupplyInventoryController extends Controller {
                 ->with('title','Supply Inventory');
 	}
 
-	public function getSupplyWithRemainingBalance($stocknumber)
-	{
-		if(Request::ajax())
-		{
-			return json_encode([
-				'data' => Supply::groupBy('supplytype')
-								->leftJoin('supplytransaction','supply.stocknumber','=','supplytransaction.stocknumber')
-								->where('supply.stocknumber','=',$stocknumber)
-								->select(
-									'supply.supplytype',
-									DB::raw('sum(receiptquantity) as totalreceiptquantity'),
-									DB::raw('sum(issuequantity) as totalissuequantity')
-									)
-								->get()
-			]);
-		}
-	}
-
 
 	/**
 	 * Show the form for creating a new resource.
@@ -111,7 +93,10 @@ class SupplyInventoryController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		if(Request::ajax())
+		{
+			return json_encode([ 'data' => Supply::where('stocknumber','=',$id)->first() ]);
+		}
 	}
 
 

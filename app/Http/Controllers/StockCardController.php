@@ -83,7 +83,15 @@ class StockCardController extends Controller {
 					->withErrors($validator);
 		}
 
-		SupplyTransaction::receipt($date,$stocknumber,$purchaseorder,$deliveryreceipt,$office,$receiptquantity,$daystoconsume);
+		$transaction = new SupplyTransaction;
+		$transaction->date = $date;
+		$transaction->stocknumber = $stocknumber;
+		$transaction->purchaseorderno = $purchaseorder;
+		$transaction->reference = $purchaseorder . ", " . $deliveryreceipt;
+		$transaction->office = $office;
+		$transaction->quantity  = $receiptquantity;
+		$transaction->daystoconsume = $daystoconsume;
+		$transaction->receipt();
 
 		Session::flash('success-message','Operation Successful');
 		return redirect("inventory/supply/$stocknumber/stockcard");
@@ -140,8 +148,7 @@ class StockCardController extends Controller {
 	public function releaseForm($id)
 	{
 		$supply = Supply::find($id);
-		$balance = SupplyTransaction::where('stocknumber','=',$supply->stocknumber)->get();
-		$balance = $balance->sum('receiptquantity') - $balance->sum('issuequantity');
+		$balance = Supply::where('stocknumber','=',$supply->stocknumber)->first()->balance;
 		return View('stockcard.release')
 				->with('supply',$supply)
 				->with('balance',$balance)
@@ -180,7 +187,24 @@ class StockCardController extends Controller {
 					->withErrors($validator);
 		}
 
-		SupplyTransaction::issue($date,$stocknumber,null,$reference,$office,$issuequantity,$daystoconsume);
+		$balance = Supply::where('stocknumber','=',$stocknumber)->first()->balance;
+		if($issuequantity > $balance)
+		{
+			return redirect("inventory/supply/$stocknumber/stockcard/release")
+					->withInput()
+					->withErrors([ "You cannot release quantity of $stocknumber which is greater than the remaining balance ($balance)" ]);
+
+		}
+
+		$transaction = new SupplyTransaction;
+		$transaction->date = $date;
+		$transaction->stocknumber = $stocknumber;
+		$transaction->purchaseorderno = $purchaseorder;
+		$transaction->reference = $reference;
+		$transaction->office = $office;
+		$transaction->quantity  = $issuequantity;
+		$transaction->daystoconsume = $daystoconsume;
+		$transaction->issue();
 
 		Session::flash('success-message','Operation Successful');
 		return redirect("inventory/supply/$stocknumber/stockcard");
@@ -202,6 +226,11 @@ class StockCardController extends Controller {
 		$stocknumber = Input::get("stocknumber");
 		$receiptquantity = Input::get("quantity");
 
+		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
+		$date = Carbon\Carbon::parse($date);
+
+		DB::beginTransaction();
+
 		foreach($stocknumber as $_stocknumber)
 		{
 			$validator = Validator::make([
@@ -215,6 +244,7 @@ class StockCardController extends Controller {
 
 			if($validator->fails())
 			{
+				DB::rollback();
 				return redirect("inventory/supply/stockcard/batch/form/accept")
 						->with('total',count($stocknumber))
 						->with('stocknumber',$stocknumber)
@@ -223,15 +253,19 @@ class StockCardController extends Controller {
 						->withInput()
 						->withErrors($validator);
 			}
+
+			$transaction = new SupplyTransaction;
+			$transaction->date = $date;
+			$transaction->stocknumber = $_stocknumber;
+			$transaction->purchaseorderno = $purchaseorder;
+			$transaction->reference = $purchaseorder . ", " . $deliveryreceipt;
+			$transaction->office = 'N/A';
+			$transaction->quantity  = $receiptquantity["$_stocknumber"];
+			$transaction->daystoconsume = $daystoconsume;
+			$transaction->receipt();
 		}
 
-		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
-		$date = Carbon\Carbon::parse($date);
-
-		foreach($stocknumber as $_stocknumber)
-		{
-			SupplyTransaction::receipt($date,$_stocknumber,$purchaseorder,$deliveryreceipt,'N/A',$receiptquantity["$_stocknumber"],$daystoconsume);
-		}
+		DB::commit();
 
 		Session::flash('success-message','Supplies Accepted');
 		return redirect('inventory/supply');
@@ -253,6 +287,7 @@ class StockCardController extends Controller {
 		$stocknumber = Input::get("stocknumber");
 		$issuequantity = Input::get("quantity");
 
+		DB::beginTransaction();
 		foreach($stocknumber as $_stocknumber)
 		{
 			$validator = Validator::make([
@@ -264,22 +299,38 @@ class StockCardController extends Controller {
 				'Days To Consume' => $daystoconsume
 			],SupplyTransaction::$issueRules);
 
-			if($validator->fails())
+			$balance = Supply::where('stocknumber','=',$_stocknumber)->first()->balance;
+			if($validator->fails() || $issuequantity["$_stocknumber"] > $balance)
 			{
+
+				DB::rollback();
+
+				if($issuequantity["$_stocknumber"] > $balance)
+				{
+					$validator = [ "You cannot release quantity of $_stocknumber which is greater than the remaining balance ($balance)" ];
+				}
+
 				return redirect("inventory/supply/batch/form/release")
 						->with('total',count($stocknumber))
 						->with('stocknumber',$stocknumber)
-						->with('quantity',$receiptquantity)
+						->with('quantity',$issuequantity)
 						->with('daystoconsume',$daystoconsume)
 						->withInput()
 						->withErrors($validator);
 			}
+
+			$transaction = new SupplyTransaction;
+			$transaction->date = $date;
+			$transaction->stocknumber = $_stocknumber;
+			$transaction->purchaseorderno = $purchaseorder;
+			$transaction->reference = $reference;
+			$transaction->office = $office;
+			$transaction->quantity  = $issuequantity["$_stocknumber"];
+			$transaction->daystoconsume = $daystoconsume;
+			$transaction->issue();
 		}
 
-		foreach($stocknumber as $_stocknumber)
-		{
-			SupplyTransaction::issue($date,$_stocknumber,$purchaseorder,$reference,$office,$issuequantity["$_stocknumber"],$daystoconsume);
-		}
+		DB::commit();
 
 		Session::flash('success-message','Supplies Released');
 		return redirect('inventory/supply');
