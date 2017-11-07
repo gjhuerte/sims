@@ -13,7 +13,7 @@ class CreateSupplyRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('supply_requests', function (Blueprint $table) {
+        Schema::create('supplies_requests', function (Blueprint $table) {
             $table->increments('id');
             $table->string('stocknumber');
             $table->foreign('stocknumber')

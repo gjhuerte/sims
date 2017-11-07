@@ -29,6 +29,8 @@ class CreateRequestsTable extends Migration
                 ->onDelete('cascade');
             $table->string('remarks')->nullable();
             $table->string('status')->nullable();
+            $table->datetime('released_at')->nullable();
+            $table->datetime('approved_at')->nullable();
             $table->timestamps();
         });
     }

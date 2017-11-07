@@ -9,7 +9,7 @@
     {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
     <style>
 
-      #page-body,#add{
+      #page-body{
         display: none;
       }
 
@@ -207,18 +207,18 @@
     {
       $.ajax({
         type: 'get',
-        url: '{{ url('get/supply') }}' +  '/' + $('#stocknumber').val() + '/balance',
+        url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
         dataType: 'json',
         success: function(response){
           try{
-            details = response.data[0].supplytype
+            details = response.data.supplytype
             $('#supply-item').val(details.toString())
             $('#stocknumber-details').html(`
               <div class="alert alert-info">
                 <ul class="list-unstyled">
-                  <li><strong>Item:</strong> ` + response.data[0].supplytype + ` </li>
+                  <li><strong>Item:</strong> ` + response.data.supplytype + ` </li>
                   @if(Auth::user()->accesslevel == 1 )
-                  <li><strong>Remaining Balance:</strong> ` + response.data[0].balance + ` </li>
+                  <li><strong>Remaining Balance:</strong> ` + response.data.balance + ` </li>
                   @endif
                 </ul>
               </div>

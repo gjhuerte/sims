@@ -49,7 +49,6 @@
 					<th>Date</th>
 					<th>Fund Cluster</th>
 					<th>Details</th>
-          <th>Status</th>
 					<th class="no-sort"></th>
 				</thead>
 			</table>
@@ -74,13 +73,6 @@
 
 <script>
 	$(document).ready(function() {
-
-		@if( Session::has("success-message") )
-			swal("Success!","{{ Session::pull('success-message') }}","success");
-		@endif
-		@if( Session::has("error-message") )
-			swal("Oops...","{{ Session::pull('error-message') }}","error");
-		@endif
 
     var table = $('#purchaseOrderTable').DataTable({
 			select: {
@@ -107,18 +99,6 @@
 					{ data: "fundcluster" },
 					{ data: "details" },
 					{ data: function(callback){
-            if(callback.status == null || callback.status == 'unpaid')
-            {
-              @if(Auth::user()->accesslevel == 2)
-              return `<button type="button" class="btn btn-sm btn-success pay" data-no="`+callback.purchaseorderno+`">Pay</button>`
-              @else
-              return `Unpaid`;
-              @endif
-            }
-
-            return 'Paid'
-          } }
-					,{ data: function(callback){
 						url = '{{ url("purchaseorder") }}' + '/' + callback.purchaseorderno
             html = `
 							<a type='button' href='` + url + `' class='btn btn-default btn-sm'>
@@ -148,33 +128,6 @@
 		$('#create').on('click',function(){
 			window.location.href = "{{ url('purchaseorder/create') }}"
 		})
-
-    $('#purchaseOrderTable').on('click','.pay',function(){
-    	url = "{{ url('purchaseorder') }}" + "/" + $('meta[name="csrf-token"]').attr('content');
-
-		  $.ajax({
-		    headers: {
-		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		    },
-		  	type: 'put',
-		  	url: url,
-		  	dataType: 'json',
-		  	data: {
-		  		'status':'paid',
-          'no' : $(this).data('no')
-		  	},
-		  	success: function(response){
-		  		if(response == 'success')
-		  		swal('Success','Operation Successful','success')
-		  		else
-		  		swal('Error','Problem Occurred while processing your data','error')
-		  		table.ajax.reload();
-		  	},
-		  	error: function(){
-		  		swal('Error','Problem Occurred while processing your data','error')
-		  	}
-		  })
-    })
 
     $('#purchaseOrderTable').on('click','.fundcluster',function(){
 	    	url = "";

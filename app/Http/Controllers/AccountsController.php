@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App;
-use App\User;
 use Auth;
 use Hash;
 use Carbon;
 use Session;
 use Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
 class AccountsController extends Controller {
@@ -20,12 +19,12 @@ class AccountsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			return json_encode([
-				'data' => User::all()
+				'data' => App\User::all()
 			]);
 		}
 		return view('account.index')
@@ -51,7 +50,7 @@ class AccountsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 		$lastname = $this->sanitizeString(Input::get('lastname'));
 		$firstname = $this->sanitizeString(Input::get('firstname'));
@@ -71,7 +70,7 @@ class AccountsController extends Controller {
 			'Email' => $email,
 			'Password' => $password,
 			'Office' => $office
-		],User::$rules);
+		],App\User::$rules);
 
 		if($validator->fails())
 		{
@@ -80,7 +79,7 @@ class AccountsController extends Controller {
 				->withInput();
 		}
 
-		$user = new User;
+		$user = new App\User;
 		$user->lastname = $lastname;
 		$user->firstname = $firstname;
 		$user->middlename = $middlename;

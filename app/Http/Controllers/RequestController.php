@@ -267,11 +267,20 @@ class RequestController extends Controller
         $supplyrequest->released_at = $date;
         $supplyrequest->save();
 
-
-        App\SupplyTransaction::issue($date,$stocknumber,$purchaseorder,$reference,$office,$quantity,$daystoconsume);
+        $transaction = new App\SupplyTransaction;
+        $transaction->date = $date;
+        $transaction->stocknumber = $stocknumber;
+        $transaction->purchaseorderno = $purchaseorder;
+        $transaction->reference = $reference;
+        $transaction->office = $office;
+        $transaction->quantity  = $quantity;
+        $transaction->daystoconsume = $daystoconsume;
+        $transaction->issue();
       }
 
       DB::commit();
+
+
 
       Session::flash('success-message','Items Released');
       return redirect('request');

@@ -116,7 +116,7 @@ class PurchaseOrderController extends Controller
         }
 
         $purchaseorder = PurchaseOrder::find($id);
-        return $id;
+        // return $id;
         return view('purchaseorder.show')
                 ->with('purchaseorder',$purchaseorder)
                 ->with('title',$purchaseorder->purchaseorderno);

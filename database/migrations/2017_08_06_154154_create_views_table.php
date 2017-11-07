@@ -14,11 +14,11 @@ class CreateViewsTable extends Migration
     public function up()
     {
         DB::statement('
-        CREATE VIEW rsmi_view AS
-            SELECT st.date,st.reference ,st.office,st.stocknumber ,s.supplytype,s.unit ,st.issuequantity,NULL AS "unitprice", NULL AS "amount"
-            FROM supplytransaction AS st 
-                RIGHT JOIN supply AS s ON st.stocknumber = s.stocknumber 
-                WHERE receiptquantity = 0 
+            CREATE VIEW rsmi_v AS
+                SELECT st.date,st.reference ,st.office,st.stocknumber ,s.supplytype,s.unit ,st.issuequantity,NULL AS "unitprice", NULL AS "amount"
+                FROM supplytransaction AS st 
+                    RIGHT JOIN supply AS s ON st.stocknumber = s.stocknumber 
+                    WHERE receiptquantity = 0 
             ');
         DB::statement('
         CREATE VIEW ledger_bal AS

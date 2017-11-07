@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddApprovedAtRequests extends Migration
+class CreateSuppliersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class AddApprovedAtRequests extends Migration
      */
     public function up()
     {
-        Schema::table('requests', function (Blueprint $table) {
-            $table->datetime('approved_at')->nullable();
-        });
+        Schema::create('suppliers',function(Blueprint $table){
+            $table->increments('id');
+            $table->string('name');
+            $table->string('details');
+            $table->timestamps();
+        })
     }
 
     /**
@@ -25,8 +28,6 @@ class AddApprovedAtRequests extends Migration
      */
     public function down()
     {
-        Schema::table('requests', function (Blueprint $table) {
-            // $table->dropColumnIfExists('approved_at');
-        });
+        Schema::dropIfExists('suppliers');
     }
 }

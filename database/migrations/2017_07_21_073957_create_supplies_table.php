@@ -12,15 +12,13 @@ class CreateSupplyTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('supply', function(Blueprint $table)
+		Schema::create('supplies', function(Blueprint $table)
 		{
 			$table->string('stocknumber',50);
 			$table->primary('stocknumber');
 			$table->string('entityname',200);
-			/*$table->string('fundcluster')->nullable();	*/
-            $table->string('supplytype');		
+            $table->string('details');		
             $table->string('unit',100)->nullable();
-            /*$table->decimal('unitprice')->nullable();*/
             $table->integer('reorderpoint')->nullable();
 			$table->timestamps();
 		});
@@ -33,7 +31,7 @@ class CreateSupplyTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('supply');
+		Schema::drop('supplies');
 	}
 
 }

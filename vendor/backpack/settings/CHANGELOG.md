@@ -20,6 +20,12 @@ All Notable changes to `Backpack Settings` will be documented in this file
 - Nothing
 
 
+## [2.0.23] - 2017-11-02
+
+## Fixed
+- route uses CRUD facade instead of route, for it to have the search route in CRUD 3.3;
+
+
 ## [2.0.22] - 2017-08-30
 
 ## Added

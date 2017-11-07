@@ -17,7 +17,7 @@ class SupplyTransaction extends Model{
 	public static $receiptRules = array(
 		'Date' => 'required',
 		'Stock Number' => 'required',
-		'Purchase Order' => 'required|exists:purchaseorder,purchaseorderno',
+		'Purchase Order' => 'exists:purchaseorder,purchaseorderno',
 		'Delivery Receipt' => '',
 		'Office' => '',
 		'Receipt Quantity' => 'required|integer',
@@ -92,11 +92,14 @@ class SupplyTransaction extends Model{
 			)
 		");
 
+
 		$purchaseorder = PurchaseOrderSupply::where('purchaseorderno','=',$this->purchaseorderno)
-													->where('supplyitem','=',$stocknumber)
+													->where('supplyitem','=',$this->stocknumber)
 													->first();
-		$purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->quantity;
-		$purchaseorder->save();
+
+
+		// $purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->quantity;
+		// $purchaseorder->save();
 	}
 
 

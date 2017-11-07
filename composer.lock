@@ -177,16 +177,16 @@
         },
         {
             "name": "backpack/crud",
-            "version": "3.2.26",
+            "version": "3.2.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/CRUD.git",
-                "reference": "3fc658d0a411465a6156cab5f59668077cd11446"
+                "reference": "54fb667a1cf64f4c53f8a90a3752d1f964fdec6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/3fc658d0a411465a6156cab5f59668077cd11446",
-                "reference": "3fc658d0a411465a6156cab5f59668077cd11446",
+                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/54fb667a1cf64f4c53f8a90a3752d1f964fdec6f",
+                "reference": "54fb667a1cf64f4c53f8a90a3752d1f964fdec6f",
                 "shasum": ""
             },
             "require": {
@@ -226,7 +226,7 @@
             ],
             "authors": [
                 {
-                    "name": "Cristian tabacitu",
+                    "name": "Cristian Tabacitu",
                     "email": "hello@tabacitu.ro",
                     "homepage": "http://www.tabacitu.ro",
                     "role": "Chief Architect & Lead Developer"
@@ -244,7 +244,7 @@
                 "read",
                 "update"
             ],
-            "time": "2017-10-25 08:25:11"
+            "time": "2017-11-06 11:41:53"
         },
         {
             "name": "backpack/langfilemanager",
@@ -386,16 +386,16 @@
         },
         {
             "name": "backpack/pagemanager",
-            "version": "1.1.21",
+            "version": "1.1.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/PageManager.git",
-                "reference": "7bf829fcda196327658bd3759a2b56131b604dda"
+                "reference": "0d94d2c02b0b8da4d917ce99344c7361a369f89a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/PageManager/zipball/7bf829fcda196327658bd3759a2b56131b604dda",
-                "reference": "7bf829fcda196327658bd3759a2b56131b604dda",
+                "url": "https://api.github.com/repos/Laravel-Backpack/PageManager/zipball/0d94d2c02b0b8da4d917ce99344c7361a369f89a",
+                "reference": "0d94d2c02b0b8da4d917ce99344c7361a369f89a",
                 "shasum": ""
             },
             "require": {
@@ -453,20 +453,20 @@
                 "presentation website",
                 "wordpress"
             ],
-            "time": "2017-08-30 20:21:52"
+            "time": "2017-11-02 08:20:13"
         },
         {
             "name": "backpack/settings",
-            "version": "2.0.22",
+            "version": "2.0.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/Settings.git",
-                "reference": "0dc44adc03c9f0de66cfa8d4bba9c77765e32696"
+                "reference": "831a7bd15d5f8553d9c61edd8cbd204565c3485f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/Settings/zipball/0dc44adc03c9f0de66cfa8d4bba9c77765e32696",
-                "reference": "0dc44adc03c9f0de66cfa8d4bba9c77765e32696",
+                "url": "https://api.github.com/repos/Laravel-Backpack/Settings/zipball/831a7bd15d5f8553d9c61edd8cbd204565c3485f",
+                "reference": "831a7bd15d5f8553d9c61edd8cbd204565c3485f",
                 "shasum": ""
             },
             "require": {
@@ -517,7 +517,7 @@
                 "tabacitu",
                 "updivision"
             ],
-            "time": "2017-08-30 20:14:49"
+            "time": "2017-11-02 09:46:10"
         },
         {
             "name": "barryvdh/elfinder-flysystem-driver",
@@ -2402,7 +2402,7 @@
         },
         {
             "name": "mtdowling/cron-expression",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mtdowling/cron-expression.git",
@@ -2499,16 +2499,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v3.1.1",
+            "version": "v3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "a1e8e1a30e1352f118feff1a8481066ddc2f234a"
+                "reference": "08131e7ff29de6bb9f12275c7d35df71f25f4d89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/a1e8e1a30e1352f118feff1a8481066ddc2f234a",
-                "reference": "a1e8e1a30e1352f118feff1a8481066ddc2f234a",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/08131e7ff29de6bb9f12275c7d35df71f25f4d89",
+                "reference": "08131e7ff29de6bb9f12275c7d35df71f25f4d89",
                 "shasum": ""
             },
             "require": {
@@ -2546,7 +2546,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2017-09-02 17:10:46"
+            "time": "2017-11-04 11:48:34"
         },
         {
             "name": "paragonie/random_compat",
@@ -2868,16 +2868,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.8.13",
+            "version": "v0.8.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "cdb5593c3684bab74e10fcfffe4a0c8d1c39695d"
+                "reference": "91e53c16560bdb8b9592544bb38429ae00d6baee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/cdb5593c3684bab74e10fcfffe4a0c8d1c39695d",
-                "reference": "cdb5593c3684bab74e10fcfffe4a0c8d1c39695d",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/91e53c16560bdb8b9592544bb38429ae00d6baee",
+                "reference": "91e53c16560bdb8b9592544bb38429ae00d6baee",
                 "shasum": ""
             },
             "require": {
@@ -2937,7 +2937,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2017-10-19 06:13:20"
+            "time": "2017-11-04 16:06:49"
         },
         {
             "name": "ramsey/uuid",

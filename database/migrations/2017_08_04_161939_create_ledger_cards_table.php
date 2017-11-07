@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSupplyledgerTable extends Migration
+class CreateLedgerCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSupplyledgerTable extends Migration
      */
     public function up()
     {
-        Schema::create('supplyledger', function (Blueprint $table) {
+        Schema::create('ledgercards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('user_id');//before insert trigger
             $table->date('date');                           
@@ -38,6 +38,6 @@ class CreateSupplyledgerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supplyledger');
+        Schema::dropIfExists('ledgercards');
     }
 }

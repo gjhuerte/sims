@@ -12,10 +12,12 @@ class CreateOfficeTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('office', function(Blueprint $table)
+		Schema::create('offices', function(Blueprint $table)
 		{
-			$table->string('deptcode',20)->primary();
-			$table->string('deptname',100)->unique();
+			$table->string('code',20)->primary();
+			$table->string('name',100)->unique();	
+			$table->string('description')->nullable();
+			$table->timestamps();
 		});
 	}
 
@@ -26,7 +28,7 @@ class CreateOfficeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('office');
+		Schema::drop('offices');
 	}
 
 }
