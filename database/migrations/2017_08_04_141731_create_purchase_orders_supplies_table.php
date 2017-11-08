@@ -28,7 +28,6 @@ class CreatePurchaseOrdersSuppliesTable extends Migration
             $table->integer('receivedquantity')->default('0');
             $table->integer('issuedquantity')->default('0');
             $table->integer('remainingquantity')->setDefault(0);
-            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

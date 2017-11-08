@@ -20,6 +20,7 @@ class CreatePurchaseorderTable extends Migration
             $table->date('date_received');
             $table->string('fundcluster')->nullable();
             $table->string('details')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

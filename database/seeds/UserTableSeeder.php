@@ -12,11 +12,8 @@ class UserTableSeeder extends Seeder {
 	 */
 	public function run()
 	{
-		//delete users table records
-		DB::table('user')->delete();
-		//insert some dummy records
-
-		DB::table('user')->insert([
+		User::delete();
+		User::insert([
 			array(
 				'username' => 'admin',
 				'password' => Hash::make('12345678'),

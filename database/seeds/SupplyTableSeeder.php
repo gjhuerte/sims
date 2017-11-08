@@ -11,10 +11,8 @@ class SupplyTableSeeder extends Seeder {
 	 */
 	public function run()
 	{
-		//delete users table records
-		DB::table('supply')->delete();
-		//insert some dummy records
-		DB::table('supply')->insert([
+		Supply::delete();
+		Supply::insert([
 			array( 'stocknumber' => '01-001','entityname' => 'Polytechnic University of the Philippines','unit' => 'MTRS.','reorderpoint'=> '0','supplytype' => 'ACETATE, TRANSPARENT. 1.20 MTRS. MIN. WIDTH, 50/MTRS'),
 			array( 'stocknumber' => '01-002','entityname' => 'Polytechnic University of the Philippines','unit' => 'CANS','reorderpoint'=> '0','supplytype' => 'AIR FRESHNER '),
 			array( 'stocknumber' => '01-003','entityname' => 'Polytechnic University of the Philippines','unit' => 'BTL','reorderpoint'=> '0','supplytype' => 'ALCOHOL, RUBBING, 70%'),
