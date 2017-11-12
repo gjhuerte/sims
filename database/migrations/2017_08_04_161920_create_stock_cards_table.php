@@ -18,14 +18,16 @@ class CreateStockCardsTable extends Migration
             $table->string('user_id');
             $table->date('date');                   
             $table->string('stocknumber');
-            $table->foreign('stocknumber')->references('stocknumber')->on('supply')
-                                        ->onDelete('cascade');
-            $table->string('purchaseorder_id',100)->nullable();
+            $table->foreign('stocknumber')
+                    ->references('stocknumber')
+                    ->on('supplies')
+                    ->onDelete('cascade');
             $table->string('reference',100);
-            $table->string('office',100)->default('N/A');
-            $table->integer('receipt')->default('0');
-            $table->integer('issued')->default('0');
-            $table->integer('balance')->default('0'); 
+            $table->string('receipt',100)->nullable();
+            $table->string('organization',100);
+            $table->integer('received')->default(0);
+            $table->integer('issued')->default(0);
+            $table->integer('balance')->default(0); 
             $table->string('daystoconsume',100)->default('N/A');
             $table->timestamps();
         });

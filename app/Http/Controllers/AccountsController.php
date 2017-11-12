@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App;
+use DB;
 use Auth;
 use Hash;
 use Carbon;
@@ -41,7 +42,7 @@ class AccountsController extends Controller {
 	{
 		return view('account.create')
 				->with('title','Accounts')
-				->with('office',App\Office::pluck('deptname','deptcode'));
+				->with('office',App\Office::pluck('name','code'));
 	}
 
 
@@ -59,8 +60,9 @@ class AccountsController extends Controller {
 		$contactnumber = $this->sanitizeString(Input::get('contactnumber'));
 		$email = $this->sanitizeString(Input::get('email'));
 		$password = $this->sanitizeString(Input::get('password'));
-		$type = $this->sanitizeString(Input::get('type'));
+		$access = $this->sanitizeString(Input::get('access'));
 		$office = $this->sanitizeString(Input::get('office'));
+		$position = $this->sanitizeString(Input::get('position'));
 
 		$validator = Validator::make([
 			'Lastname' => $lastname,
@@ -79,6 +81,8 @@ class AccountsController extends Controller {
 				->withInput();
 		}
 
+		DB::beginTransaction();
+
 		$user = new App\User;
 		$user->lastname = $lastname;
 		$user->firstname = $firstname;
@@ -88,20 +92,15 @@ class AccountsController extends Controller {
 		$user->office = $office;
 		$user->password = Hash::make($password);
 		$user->status = '1';
-
-		if($type == 'admin')
-		$user->accesslevel = '0';
-		if($type == 'amo')
-		$user->accesslevel = '1';
-		if($type == 'accounting')
-		$user->accesslevel = '2';
-		if($type == 'colleges')
-		$user->accesslevel = '3';
-
+		$user->access = $access;
+		$user->position = $position;
 		$user->save();
+		$user->action = 'create';
+		$user->createAuditTrail();
 
-		Session::flash("success-message","Account successfully created!");
+		DB::commit();
 
+		\Alert::success("Account created!")->flash();
 		return redirect('account');
 	}
 
@@ -114,7 +113,7 @@ class AccountsController extends Controller {
 	 */
 	public function show($id)
 	{
-		$user = User::find($id);
+		$user = App\User::find($id);
 		return view('account.show')
 			->with('person',$user)
 			->with('title','Accounts');
@@ -130,11 +129,11 @@ class AccountsController extends Controller {
 	public function edit($id)
 	{
 		if(isset($id)){
-			$user = User::find($id);
+			$user = App\User::find($id);
 			return view('account.update')
 				->with('user',$user)
 				->with('title','Accounts')
-				->with('office',App\Office::pluck('deptname','deptcode'));
+				->with('office',App\Office::pluck('name','code'));
 		}
 	}
 
@@ -153,6 +152,7 @@ class AccountsController extends Controller {
 		$email = $this->sanitizeString(Input::get('email'));
 		$username = $this->sanitizeString(Input::get('username'));
 		$office = $this->sanitizeString(Input::get('office'));
+		$position = $this->sanitizeString(Input::get('position'));
 
 		$validator = Validator::make([
 			'Lastname' => $lastname,
@@ -161,7 +161,7 @@ class AccountsController extends Controller {
 			'Email' => $email,
 			'Office' => $office,
 			'Username' => 'sampleusernameonly',
-		],User::$informationRules);
+		],App\User::$informationRules);
 
 		if($validator->fails())
 		{
@@ -170,17 +170,19 @@ class AccountsController extends Controller {
 				->withErrors($validator);
 		}
 
-		$user = User::find($id);
+		$user = App\User::find($id);
 		$user->username = $username;
 		$user->lastname = $lastname;
 		$user->firstname = $firstname;
 		$user->middlename = $middlename;
 		$user->office = $office;
 		$user->email = $email;
-
+		$user->position = $position;
+		$user->action = 'update';
+		$user->createAuditTrail();
 		$user->save();
 
-		Session::flash('success-message','Account information updated');
+		\Alert::success('Account information updated')->flash();
 		return redirect('account');
 	}
 
@@ -191,39 +193,42 @@ class AccountsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request,$id)
 	{
-		if(Request::ajax()){
-			try{
+		if($request->ajax())
+		{
+			if($id == Auth::user()->id)
+			{
+				return json_encode('self');
+			}
+			else if(App\User::count() <= 1)
+			{
+				return json_encode('invalid');
+			}
+			else
+			{
+				$user = App\User::find($id);
+				$user->action = 'delete';
+				$user->createAuditTrail();
+				$user->delete();
 
-				$user = User::select('id')->get();
-				if($id == Auth::user()->id)
-				{
-					return json_encode('self');
-				}
-				else if(count($user) <= 1)
-				{
-					return json_encode('invalid');
-				}
-				else
-				{
-					$user = User::find($id);
-					if($user->accesslevel == 2)
-						return json_encode('invalid');
-					$user->delete();
-					return json_encode('success');
-				}
-			} catch (Exception $e) {}
+				return json_encode('success');
+			}
 		}
 
-		try{
-			$user = User::find($id);
-			$user->delete();
-		} catch (Exception $e) {
-			Session::flash('error_message','Error Ocurred while processing your data');
+		$user = App\User::find($id);
+
+		if( count($user) <= 0 )
+		{
+			\Alert::error('Error Ocurred while processing your data')->flash();
 			return Redirect::back();
 		}
-		Session::flash('success-message','Account deleted!');
+
+		$user->action = 'delete';
+		$user->createAuditTrail();
+		$user->delete();
+
+		\Alert::success('Account removed!')->flash();
 		return redirect('account/view/delete');
 	}
 
@@ -233,13 +238,15 @@ class AccountsController extends Controller {
 	 * user id
 	 *@param  int  $id
 	 */
-	public function resetPassword()
+	public function resetPassword(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			$id = $this->sanitizeString(Input::get('id'));
-		 	$user = User::find($id);
+		 	$user = App\User::find($id);
 		 	$user->password = Hash::make('12345678');
+			$user->action = 'update';
+			$user->createAuditTrail();
 		 	$user->save();
 
 		 	return json_encode('success');
@@ -251,26 +258,20 @@ class AccountsController extends Controller {
 		$id = $this->sanitizeString(Input::get("id"));
 		$access = $this->sanitizeString(Input::get('newaccesslevel'));
 
-		try
+		if(Auth::user()->access != 0)
 		{
 
-			if(Auth::user()->accesslevel != 0)
-			{
-
-				Session::flash('error-message','You do not have enough priviledge to change the users access level');
-				return redirect('account');
-			}
-
-			$user = User::find($id);
-			$user->accesslevel = $access;
-			$user->save();
-
-			Session::flash('success-message','Access Level Switched');
-			return redirect('account');
-		} catch (Exception $e){
-
-			Session::flash('error-message','Error occurred while switching access level');
+			\Alert::error('You do not have enough priviledge to change the users access level')->flash();
 			return redirect('account');
 		}
+
+		$user = App\User::find($id);
+		$user->access = $access;
+		$user->action = 'update';
+		$user->createAuditTrail();
+		$user->save();
+
+		\Alert::success('Access updated')->flash();
+		return redirect('account');
 	}
 }

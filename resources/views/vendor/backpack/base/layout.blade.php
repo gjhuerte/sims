@@ -31,7 +31,39 @@
     <!-- BackPack Base CSS -->
     <link rel="stylesheet" href="{{ asset('vendor/backpack/backpack.base.css') }}">
 
+    <!-- Ladda Buttons (loading buttons) -->
+    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
+    {{ HTML::style(asset('css/select.bootstrap.min.css')) }}
+    <link rel="stylesheet" href="{{ asset('css/style.min.css') }}" />
+
+    <!-- Bootstrap -->
+    {{ HTML::style(asset('css/jquery-ui.css')) }}
+    {{ HTML::style(asset('css/sweetalert.css')) }}
+    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
+
     @yield('after_styles')
+
+    <!-- jQuery 2.2.0 -->
+    {{-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> --}}
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    
+    <script src="{{ asset('js/jquery-ui.js') }}"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="{{ asset('vendor/adminlte') }}/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ asset('vendor/adminlte') }}/plugins/pace/pace.min.js"></script>
+    <script src="{{ asset('vendor/adminlte') }}/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="{{ asset('vendor/adminlte') }}/plugins/fastclick/fastclick.js"></script>
+    <script src="{{ asset('vendor/adminlte') }}/dist/js/app.min.js"></script>
+
+    <!-- Ladda Buttons (loading buttons) -->
+    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
+    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -107,19 +139,7 @@
     </div>
     <!-- ./wrapper -->
 
-
     @yield('before_scripts')
-
-    <!-- jQuery 2.2.0 -->
-    {{-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> --}}
-    {{ HTML::script(asset('js/jquery.min.js')) }}
-    <script>window.jQuery || document.write('<script src="{{ asset('vendor/adminlte') }}/plugins/jQuery/jQuery-2.2.0.min.js"><\/script>')</script>
-    <!-- Bootstrap 3.3.5 -->
-    <script src="{{ asset('vendor/adminlte') }}/bootstrap/js/bootstrap.min.js"></script>
-    <script src="{{ asset('vendor/adminlte') }}/plugins/pace/pace.min.js"></script>
-    <script src="{{ asset('vendor/adminlte') }}/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <script src="{{ asset('vendor/adminlte') }}/plugins/fastclick/fastclick.js"></script>
-    <script src="{{ asset('vendor/adminlte') }}/dist/js/app.min.js"></script>
 
     <!-- page script -->
     <script type="text/javascript">

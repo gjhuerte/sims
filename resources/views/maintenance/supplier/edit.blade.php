@@ -45,11 +45,11 @@
                 </ul>
               </div>
           @endif
-        <div class="" style="padding:10px;">
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('code','Department Code') }}
-              {{ Form::text('code',Input::old('code') ? Input::old('code') : $office->code,[
+              {{ Form::label('deptcode','Department Code') }}
+              {{ Form::text('deptcode',Input::old('deptcode'),[
+                'id' => 'deptcode',
                 'class'=>'form-control',
                 'placeholder'=>'Department Code'
               ]) }}
@@ -57,28 +57,11 @@
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('name','Organization Name') }}
-              {{ Form::text('name',Input::old('name') ? Input::old('name') : $office->name,[
+              {{ Form::label('deptname','Department Name') }}
+              {{ Form::text('deptname',Input::old('deptname'),[
+                'id' => 'deptname',
                 'class'=>'form-control',
                 'placeholder'=>'Department Name'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('description','Description') }}
-              {{ Form::text('description',Input::old('description') ? Input::old('description') : $office->description,[
-                'class'=>'form-control',
-                'placeholder'=>'Description'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('head','Organization Head') }}
-              {{ Form::text('head',Input::old('head') ? Input::old('head') : $office->head,[
-                'class'=>'form-control',
-                'placeholder'=>'Full Name'
               ]) }}
             </div>
           </div>
@@ -100,4 +83,34 @@
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
+@endsection
+
+@section('after_scripts')
+    <!-- Ladda Buttons (loading buttons) -->
+    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
+    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
+
+    {{ HTML::script(asset('js/jquery-ui.js')) }}
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    {{ HTML::script(asset('js/sweetalert.min.js')) }}
+    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
+    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
+
+<script>
+  $(document).ready(function(){
+
+    @if( Session::has("success-message") )
+        swal("Success!","{{ Session::pull('success-message') }}","success");
+    @endif
+
+    @if( Session::has("error-message") )
+        swal("Oops...","{{ Session::pull('error-message') }}","error");
+    @endif
+
+    $('#deptcode').val("{{ $office->deptcode }}")
+    $('#deptname').val("{{ $office->deptname }}")
+
+    $('#page-body').show();
+  });
+</script>
 @endsection

@@ -18,9 +18,9 @@ class CreateRequestsSuppliesTable extends Migration
             $table->string('stocknumber');
             $table->foreign('stocknumber')
                     ->references('stocknumber')
-                    ->on('supply')
+                    ->on('supplies')
                     ->onDelete('cascade');
-            $table->string('request_id');
+            $table->integer('request_id')->unsigned();
             $table->foreign('request_id')
                     ->references('id')
                     ->on('requests')

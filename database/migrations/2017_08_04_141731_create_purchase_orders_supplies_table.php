@@ -17,16 +17,15 @@ class CreatePurchaseOrdersSuppliesTable extends Migration
             $table->increments('id');
             $table->string('purchaseorder_id',100);
             $table->foreign('purchaseorder_id')
-                    ->references('purchaseorderno')
-                    ->on('purchaseorder')
+                    ->references('number')
+                    ->on('purchaseorders')
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('date',100)->nullable();
             $table->string('stocknumber',100);
-            $table->decimal('unitprice')->default('0');
+            $table->decimal('unitcost')->default(0);
             $table->integer('orderedquantity');
-            $table->integer('receivedquantity')->default('0');
-            $table->integer('issuedquantity')->default('0');
+            $table->integer('receivedquantity')->default(0);
             $table->integer('remainingquantity')->setDefault(0);
             $table->timestamps();
         });

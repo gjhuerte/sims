@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSupplyTable extends Migration {
+class CreateSuppliesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -14,11 +14,11 @@ class CreateSupplyTable extends Migration {
 	{
 		Schema::create('supplies', function(Blueprint $table)
 		{
-			$table->string('stocknumber',50);
-			$table->primary('stocknumber');
+			$table->increments('id');
+			$table->string('stocknumber')->unique();
 			$table->string('entityname',200);
             $table->string('details');		
-            $table->string('unit',100)->nullable();
+            $table->string('unit')->nullable();
             $table->integer('reorderpoint')->nullable();
 			$table->timestamps();
 		});

@@ -14,17 +14,17 @@ class CreateRequestsTable extends Migration
     public function up()
     {
         Schema::create('requests', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->increments('id');
             $table->string('requestor');
             $table->foreign('requestor')
                 ->references('username')
-                ->on('user')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('issued_by')->nullable();
             $table->foreign('issued_by')
                 ->references('username')
-                ->on('user')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('comments')->nullable();

@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseOrder extends Model
 {
   	protected $table = 'purchaseorder';
-	protected $fillable = ['purchaseorderno','date','fundcluster','details'];
-	protected $primaryKey = 'purchaseorderno';
-	public $incrementing = false;
+	protected $fillable = ['number','date','fundcluster','details'];
+	protected $primaryKey = 'id';
 	public $timestamps = true;
 
 	public static $rules = array(

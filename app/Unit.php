@@ -1,23 +1,22 @@
 <?php
 namespace App;
 
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
-class ItemType extends Model{
+class Unit extends Model{
 
-	protected $table = 'itemtype';
+	protected $table = 'units';
 
 	public $timestamps = false;
 
-	protected $fillable = ['itemtype','description'];
+	protected $fillable = ['name','description'];
 	protected $primaryKey = 'id';
 	public static $rules = array(
-		'Item Type' => 'required',
+		'Name' => 'required',
 		'Description' => ''
 	);
 
 	public static $updateRules = array(
-		'Item Type' => 'required',
+		'Name' => 'required',
 		'Description' => ''
 	);
 

@@ -37,9 +37,9 @@
 
           @endif
 
-          @if( Auth::user()->accesslevel == 0 || Auth::user()->accesslevel == 1 || Auth::user()->accesslevel == 2 )
+          @if( Auth::user()->access == 0 || Auth::user()->access == 1 || Auth::user()->access == 2 )
 
-          @if(Auth::user()->accesslevel == 0)
+          @if(Auth::user()->access == 0)
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/backup') }}"><i class="fa fa-hdd-o"></i> <span>Backups</span></a></li>
 
@@ -51,7 +51,7 @@
 
           @endif
 
-          @if(Auth::user()->accesslevel == 1)
+          @if(Auth::user()->access == 1)
 
           <li class="header">Information System</li>
 
@@ -59,15 +59,17 @@
 
           <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
 
-          @endif
-
-          @if(Auth::user()->accesslevel == 2)
+          <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
 
           @endif
 
+          @if(Auth::user()->access == 2)
+
           @endif
 
-          @if(Auth::user()->accesslevel == 0)
+          @endif
+
+          @if(Auth::user()->access == 0)
           <!-- ======================================= -->
           <li class="header">Utilities</li>
 
@@ -79,13 +81,13 @@
           <!-- ======================================= -->
           <li class="header">{{ trans('backpack::base.user') }}</li>
 
-          @if(Auth::user()->accesslevel != 0)
+          @if(Auth::user()->access != 0)
           <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Requests</span></a></li>
           @endif
 
           <li><a href="{{ url('settings') }}"><i class="fa fa-user-o" aria-hidden="true"></i> <span> Settings</span></a></li>
 
-          @if(Auth::user()->accesslevel == 1 || Auth::user()->accesslevel == 2)
+          @if(Auth::user()->access == 1 || Auth::user()->access == 2)
           <li class="header">Reports</li>
 
           <li><a href="{{ url('report/rsmi') }}"><i class="fa fa-ticket" aria-hidden="true"></i> <span> R. S. M. I. </span></a></li>

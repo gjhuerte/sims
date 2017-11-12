@@ -4,7 +4,8 @@
 	<section class="content-header">
 		<legend><h3 class="text-muted">Offices</h3></legend>
 		<ol class="breadcrumb">
-			<li>Office</li>
+			<li><a href="{{ url('maintenance/unit') }}">Unit</a></li>
+			<li class="active">Index</li>
 		</ol>
 	</section>
 @endsection
@@ -14,12 +15,11 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
-			<table class="table table-striped table-hover table-bordered" id='officeTable'>
+			<table class="table table-striped table-hover table-bordered" id='unitTable'>
 				<thead>
 					<th class="col-sm-1">ID</th>
-					<th class="col-sm-1">Department Code</th>
-					<th class="col-sm-1">Department Name</th>
-					<th class="col-sm-1">Head</th>
+					<th class="col-sm-1">Name</th>
+					<th class="col-sm-1">Description</th>
 					<th class="no-sort col-sm-1"></th>
 				</thead>
 			</table>
@@ -34,7 +34,8 @@
 
 <script>
 	$(document).ready(function(){
-	    var table = $('#officeTable').DataTable( {
+
+	    var table = $('#unitTable').DataTable( {
 	    	columnDefs:[
 				{ targets: 'no-sort', orderable: false },
 	    	],
@@ -45,36 +46,35 @@
 						    "<'row'<'col-sm-12'tr>>" +
 						    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
 			"processing": true,
-	        ajax: "{{ url('maintenance/office') }}",
+	        ajax: "{{ url('maintenance/unit') }}",
 	        columns: [
 	            { data: "id" },
-	            { data: "code" },
 	            { data: "name" },
-	            { data: "head" },
+	            { data: "description" },
 	            { data: function(callback){
 	            	return `
-	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.deptcode + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
-	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Office" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
+	            			<a href="{{ url("maintenance/unit") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
+	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Unit" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	        ],
 	    } );
 
 	 	$("div.toolbar").html(`
- 			<a href="{{ url('maintenance/office/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add
+ 			<a href="{{ url('maintenance/unit/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add
  			</a>
 		`);
 
-		$('#officeTable').on('click','button.remove',function(){
+		$('#unitTable').on('click','button.remove',function(){	
 		  	var removeButton = $(this);
 			removeButton.button('loading');
 			$.ajax({
 				type: 'delete',
-				url: '{{ url("maintenance/office") }}' + '/' + $(this).data('id'),
+				url: '{{ url("maintenance/unit") }}' + '/' + $(this).data('id'),
 				dataType: 'json',
 				success: function(response){
 					if(response == 'success')
-					swal("Operation Success",'An office has been removed.',"success")
+						swal("Operation Success",'Unit removed.',"success")
 					else
 						swal("Error Occurred",'An error has occurred while processing your data.',"error")
 					table.ajax.reload()
@@ -86,9 +86,6 @@
 
 			})
 		})
-
-		$('#page-body').show();
-
-	});
-</script>
+	})
+</script>	
 @endsection

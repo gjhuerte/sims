@@ -5,32 +5,32 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 class Supply extends Model{
 
-	protected $table = 'supply';
-	protected $fillable = ['stocknumber','entityname','supplytype','unit','reorderpoint'];
+	protected $table = 'supplies';
+	protected $fillable = ['stocknumber','entityname','details','unit','reorderpoint'];
 	protected $primaryKey = 'stocknumber';
 	public $incrementing = false;
 	public $timestamps = true;
 	public static $rules = array(
-	'Stock Number' => 'required|unique:supply,stocknumber',
-	'Entity Name' => 'required',
-	'Supply Type' => 'required|unique:supply,supplytype',
-	'Unit' => 'required',
-	'Reorder Point' => 'required|integer'
+		'Stock Number' => 'required|unique:supplies,stocknumber',
+		'Entity Name' => 'required',
+		'Details' => 'required|unique:supplies,supplytype',
+		'Unit' => 'required',
+		'Reorder Point' => 'required|integer'
 	);
 
 	public static $updateRules = array(
-	'Stock Number' => '',
-	'Entity Name' => '',
-	'Supply Type' => '',
-	'Unit' => '',
-	'Reorder Point' => 'integer'
+		'Stock Number' => 'required',
+		'Entity Name' => 'required',
+		'Details' => 'required',
+		'Unit' => 'required',
+		'Reorder Point' => 'integer'
 	);
 
 	protected $appends = [
 		'balance'
 	];
 
-	public function getBalanceAttribute()
+	public function getBalanceAttribute($value)
 	{
 		$stocknumber = '';
 		if(isset($this->stocknumber))
@@ -38,9 +38,9 @@ class Supply extends Model{
 			$stocknumber = $this->stocknumber;
 		}
 
-		$balance = SupplyTransaction::where('stocknumber','=',$stocknumber)
+		$balance = StockCard::where('stocknumber','=',$stocknumber)
 						->orderBy('created_at','desc')
-						->pluck('balancequantity')
+						->pluck('balance')
 						->first();
 
 		if(empty($balance) || $balance == null || $balance == '')
@@ -56,14 +56,14 @@ class Supply extends Model{
 		return $query->where('stocknumber','=',$value);
 	}
 
-	public function supplytransaction()
+	public function stockcards()
 	{
-		return $this->hasMany('App\SupplyTransaction','stocknumber','stocknumber');
+		return $this->hasMany('App\StockCards','stocknumber','stocknumber');
 	}
 
-	public function ledgerview()
+	public function ledgercards()
 	{
-		return $this->hasMany('App\LedgerView','stocknumber','stocknumber');
+		return $this->hasMany('App\LedgerCards','stocknumber','stocknumber');
 	}
 
 	public function getUnitPriceAttribute($value)
@@ -73,13 +73,7 @@ class Supply extends Model{
 
 	public function purchaseorder()
 	{
-		return $this->belongsToMany('App\PurchaseOrder','purchaseorder_supply','supplyitem','purchaseorderno');
-	}
-
-	public static function getSupplyStockNumber($id)
-	{
-		$supply = Supply::find($id);
-		return $supply->stocknumber;
+		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies','stocknumber','id');
 	}
 
 }

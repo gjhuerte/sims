@@ -5,27 +5,31 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 class Office extends Model{
 
-	protected $table = 'office';
-
-
-	protected $fillable = ['deptcode','deptname'];
-	protected $primaryKey = 'deptcode';
-	public $incrementing = false;
+	protected $table = 'offices';
+	protected $primaryKey = 'id';
+	protected $fillable = ['code','name','description'];
 	public $timestamps = false;
 
 	public static $rules = array(
-		'Department Code' => 'required|max:20',
-		'Department Name' => 'required|max:200'
+		'Code' => 'required|max:20',
+		'Name' => 'required|max:200',
+		'Description' => 'max:200'
 	);
 
 	public static $updateRules = array(
-		'Department Code' => 'required|max:20',
-		'Department Name' => 'required|max:200'
+		'Code' => 'required|max:20',
+		'Name' => 'required|max:200',
+		'Description' => 'max:200'
 	);
+
+	public function scopeFindByCode($query,$value)
+	{
+		return $query->where('code','=',$value)->first();
+	}
 
 	public function scopeCode($query,$value)
 	{
-		return $query->where('deptcode','=',$value);
+		return $query->where('code','=',$value);
 	}
 
 }

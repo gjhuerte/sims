@@ -11,14 +11,16 @@ class Audit extends Model
     protected $id = 'id';
     public $timestamps = true;
 
-    public $table_affected;
-    public $column = null;
-    public $action;
-    public $initial = null;
-    public $succeeding = null;
-    public $details;
+    protected $fillable = [
+        'table_affected',
+        'column',
+        'action',
+        'user',
+        'initial',
+        'details'
+    ];
 
-    function audit()
+    public function createRecord()
     {
 
     	//...

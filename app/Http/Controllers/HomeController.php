@@ -24,22 +24,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->accesslevel == 0)
+        if(Auth::user()->access == 0)
         {
             return redirect('backup');
         }
 
-        if(Auth::user()->accesslevel == 1)
+        if(Auth::user()->access == 1)
         {
             return redirect('inventory/supply');
         }
 
-        if(Auth::user()->accesslevel == 2)
+        if(Auth::user()->access == 2)
         {
             return redirect('purchaseorder');
         }
 
-        if(Auth::user()->accesslevel == 3)
+        if(Auth::user()->access == 3)
         {
 
             return redirect('request');

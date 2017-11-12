@@ -5,19 +5,18 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 use Auth;
 use DB;
-class SupplyTransaction extends Model{
+class StockCard extends Model{
 
-	protected $table = 'supplytransaction';
-
-	public $timestamps = true;
-	protected $fillable = ['user_id','date','stocknumber','purchaseorderno','reference','receiptquantity','issuequantity','office','daystoconsume'];
+	protected $table = 'stockcards';
 	protected $primaryKey = 'id';
+	public $timestamps = true;
+	protected $fillable = [ 'date','stocknumber','reference','receipt', 'received','issued','organization','daystoconsume'];
 
 	// set of rules when receiving an item
 	public static $receiptRules = array(
 		'Date' => 'required',
 		'Stock Number' => 'required',
-		'Purchase Order' => 'exists:purchaseorder,purchaseorderno',
+		'Purchase Order' => 'exists:purchaseorders,number',
 		'Delivery Receipt' => '',
 		'Office' => '',
 		'Receipt Quantity' => 'required|integer',
@@ -30,7 +29,7 @@ class SupplyTransaction extends Model{
 		'Stock Number' => 'required',
 		'Requisition and Issue Slip' => 'required',
 		'Office' => '',
-		'Issue Quantity' => 'required|integer',
+		'Issued Quantity' => 'required|integer',
 		'Days To Consume' => 'max:100'
 	);
 

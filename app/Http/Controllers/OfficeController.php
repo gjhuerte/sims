@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Office;
+use App;
 use Carbon;
 use Session;
 use Validator;
@@ -20,7 +20,7 @@ class OfficeController extends Controller {
 		if(Request::ajax())
 		{
 			return json_encode([
-				'data' => Office::all()
+				'data' => App\Office::all()
 			]);
 		}
 		return view('maintenance.office.index')
@@ -48,27 +48,31 @@ class OfficeController extends Controller {
 	public function store()
 	{
 
-		$deptname = $this->sanitizeString(Input::get('deptname'));
-		$deptcode = $this->sanitizeString(Input::get('deptcode'));
+		$name = $this->sanitizeString(Input::get('name'));
+		$code = $this->sanitizeString(Input::get('code'));
+		$head = $this->sanitizeString(Input::get('head'));
+		$description = $this->sanitizeString(Input::get('description'));
 
 		$validator = Validator::make([
-			'Department Name' => $deptname,
-			'Department Code' => $deptcode
-		],Office::$rules);
+			'Name' => $name,
+			'Code' => $code
+		],App\Office::$rules);
 
 		if($validator->fails())
 		{
 			return redirect('maintenance/office/create')
 				->withInput()
-				->withError($validator);
+				->withErrors($validator);
 		}
 
-		$office = new Office;
-		$office->deptcode = $deptcode;
-		$office->deptname = $deptname;
+		$office = new App\Office;
+		$office->code = $code;
+		$office->name = $name;
+		$office->description = $description;
+		$office->head = $head;
 		$office->save();
 
-		Session::flash("success-message",'Office added');
+		\Alert::success('Office added')->flash();
 		return redirect('maintenance/office');
 	}
 
@@ -93,7 +97,7 @@ class OfficeController extends Controller {
 	 */
 	public function edit($id)
 	{
-		$office = Office::find($id);
+		$office = App\Office::find($id);
 		return view("maintenance.office.edit")
 				->with('office',$office)
 				->with('title','Office');
@@ -108,27 +112,31 @@ class OfficeController extends Controller {
 	 */
 	public function update($id)
 	{
-		$deptname = $this->sanitizeString(Input::get('deptname'));
-		$deptcode = $this->sanitizeString(Input::get('deptcode'));
+		$name = $this->sanitizeString(Input::get('name'));
+		$code = $this->sanitizeString(Input::get('code'));
+		$head = $this->sanitizeString(Input::get('head'));
+		$description = $this->sanitizeString(Input::get('description'));
 
 		$validator = Validator::make([
-			'Department Name' => $deptname,
-			'Department Code' => $deptcode
-		],Office::$rules);
+			'Name' => $name,
+			'Code' => $code
+		],App\Office::$rules);
 
 		if($validator->fails())
 		{
 			return redirect("maintenance/office/$id/edit")
 				->withInput()
-				->withError($validator);
+				->withErrors($validator);
 		}
 
-		$office = Office::find($id);
-		$office->deptcode = $deptcode;
-		$office->deptname = $deptname;
+		$office = App\Office::find($id);
+		$office->code = $code;
+		$office->name = $name;
+		$office->description = $description;
+		$office->head = $head;
 		$office->save();
 
-		Session::flash('success-message','Office Information Updated');
+		\Alert::success('Office Information Updated')->flash();
 		return redirect('maintenance/office');
 	}
 
@@ -143,18 +151,18 @@ class OfficeController extends Controller {
 	{
 		if(Request::ajax())
 		{
-			$office = Office::find($id);
+			$office = App\Office::find($id);
 			$office->delete();
 			return json_encode('success');
 		}
 
 		try
 		{
-			$office = Office::find($id);
+			$office = App\Office::find($id);
 			$office->delete();
-			Session::flash('success-message','Office Removed');
+			\Alert::success('Office Removed')->flash();
 		} catch (Exception $e) {
-			Session::flash('error-message','Problem Encountered While Processing Your Data');
+			\Alert::error('Problem Encountered While Processing Your Data')->flash();
 		}
 		return redirect('maintenance/office');
 	}

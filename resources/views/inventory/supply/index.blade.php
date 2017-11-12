@@ -98,7 +98,7 @@
 			ajax: "{{ url('maintenance/supply') }}",
 			columns: [
 					{ data: "stocknumber" },
-					{ data: "supplytype" },
+					{ data: "details" },
 					{ data: "unit" },
 					{ data: "reorderpoint" },
 					{ data: "balance" },

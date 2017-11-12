@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAuditTable extends Migration
+class CreateAuditsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,9 +19,9 @@ class CreateAuditTable extends Migration
             $table->string('column')->nullable();
             $table->string('action')->nullable();  
             $table->string('user')->nullable();
-            $table->string('initial')->nullable();
-            $table->string('succeeding')->nullable();
-            $table->string('details');
+            $table->longtext('initial')->nullable();
+            $table->longtext('succeeding')->nullable();
+            $table->longtext('details');
             $table->timestamps();
         });
         

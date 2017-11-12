@@ -14,8 +14,8 @@ class CreateRequestsCommentsTable extends Migration
     public function up()
     {
         Schema::create('requests_comments', function (Blueprint $table) {
-            $table->increments();
-            $table->string('requests_id');
+            $table->increments('id');
+            $table->integer('requests_id')->unsigned();
             $table->foreign('requests_id')
                     ->references('id')
                     ->on('requests');
@@ -25,6 +25,7 @@ class CreateRequestsCommentsTable extends Migration
                     ->references('id')
                     ->on('users');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

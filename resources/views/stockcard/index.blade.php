@@ -139,7 +139,7 @@
 						else
 							return callback.office
 					}},
-					{ data: "balancequantity" },
+					{ data: "balance" },
 					{ data: function(callback){
 						if(callback.daystoconsume == null || callback.daystoconsume == "")
 							return "N/A"

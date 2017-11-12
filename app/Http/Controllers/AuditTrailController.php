@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\AuditTable;
+use App;
 use Carbon;
 use Session;
 use Validator;
@@ -22,7 +22,7 @@ class AuditTrailController extends Controller
         if(Request::ajax())
         {
             return json_encode([
-                'data' => AuditTable::all()
+                'data' => App\Audit::all()
             ]);
         }
 
