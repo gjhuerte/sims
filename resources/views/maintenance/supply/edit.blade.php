@@ -80,7 +80,7 @@
 			<div class="col-md-12">
 				<div class="form-group">
 					{{ Form::label('Unit Of Measurement') }}
-					{{ Form::text('unit',Input::old('unit'),[
+					{{ Form::select('unit',$unit,Input::old('unit'),[
 						'id' => 'unit',
 						'class' => 'form-control'
 					]) }}

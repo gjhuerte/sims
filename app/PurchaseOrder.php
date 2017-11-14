@@ -2,32 +2,41 @@
 
 namespace App;
 
-use App\Supply;
 use Illuminate\Database\Eloquent\Model;
 
 class PurchaseOrder extends Model
 {
-  	protected $table = 'purchaseorder';
-	protected $fillable = ['number','date','fundcluster','details'];
+  	protected $table = 'purchaseorders';
+	protected $fillable = ['number','date_received','details'];
 	protected $primaryKey = 'id';
 	public $timestamps = true;
 
 	public static $rules = array(
-	'Purchase Order' => 'required|unique:purchaseorder,purchaseorderno',
-	'Date' => 'required',
-	'Fund Cluster' => '',
-	'Details' => ''
+		'Number' => 'required|unique:purchaseorders,number',
+		'Date' => 'required',
+		'Fund Cluster' => '',
+		'Details' => ''
 	);
 
 	public static $updateRules = array(
-	'Purchase Order No' => '',
-	'Date' => '',
-	'Fund Cluster' => '',
-	'Details' => ''
+		'Number' => '',
+		'Date' => '',
+		'Fund Cluster' => '',
+		'Details' => ''
 	);
 
 	public function supply()
 	{
-		return $this->belongsToMany('App\Supply','purchaseorder_supply','supplyitem','purchaseorderno');
+		return $this->belongsToMany('App\Supply','purchaseorders_supplies','stocknumber','purchaseorder_number');
+	}
+
+	public function supplier()
+	{
+		return $this->belongsTo('App\Supplier','supplier_id','id');
+	}
+
+	public function fundcluster()
+	{
+		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','purchaseorder_number','fundcluster_code');
 	}
 }

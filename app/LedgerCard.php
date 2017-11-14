@@ -5,31 +5,40 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 use Auth;
 use DB;
-class SupplyLedger extends Model{
+class LedgerCard extends Model{
 
-	protected $table = 'supplyledger';
-
-	public $timestamps = true;
-	protected $fillable = ['user_id','date','stocknumber','reference','receiptquantity','receiptunitprice','issuequantity','issueunitprice','daystoconsume','user_id'];
-
+	protected $table = 'ledgercards';
 	protected $primaryKey = 'id';
+	public $timestamps = true;
+	protected $fillable = [
+		'user_id',
+		'date',
+		'stocknumber',
+		'reference',
+		'receiptquantity',
+		'receiptunitprice',
+		'issuequantity',
+		'issueunitprice',
+		'daystoconsume',
+	];
+
 
 	public static $receiptRules = array(
-	'Date' => 'required',
-	'Stock Number' => 'required',
-	'Purchase Order' => 'required|exists:purchaseorder,purchaseorderno',
-	'Receipt Quantity' => 'required',
-	'Receipt Unit Price' => 'required',
-	'Days To Consume' => 'max:100'
+		'Date' => 'required',
+		'Stock Number' => 'required',
+		'Purchase Order' => 'required|exists:purchaseorder,purchaseorderno',
+		'Receipt Quantity' => 'required',
+		'Receipt Unit Price' => 'required',
+		'Days To Consume' => 'max:100'
 	);
 
 	public static $issueRules = array(
-	'Date' => 'required',
-	'Stock Number' => 'required',
-	'Requisition and Issue Slip' => 'required',
-	'Issue Quantity' => 'required',
-	'Issue Unit Price' => 'required',
-	'Days To Consume' => 'max:100'
+		'Date' => 'required',
+		'Stock Number' => 'required',
+		'Requisition and Issue Slip' => 'required',
+		'Issue Quantity' => 'required',
+		'Issue Unit Price' => 'required',
+		'Days To Consume' => 'max:100'
 	);
 
 	public function getDateAttribute($value)

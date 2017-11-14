@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SupplyRequest extends Model
+class RequestSupply extends Model
 {
-    protected $table = 'supply_requests';
+    protected $table = 'requests_supplies';
     protected $primaryKey = 'id';
-    protected $fillable = [ 'stocknumber','request_id', 'quantity_requested','quantity_issued','comments' ];
+    protected $fillable = [ 'stocknumber', 'quantity_requested','quantity_issued','comments' ];
     public $timestamps = true;
 
     public function supply()

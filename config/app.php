@@ -14,6 +14,8 @@ return [
 
     'name' => 'Supplies Inventory Management System',
 
+    'main_agency' => env('MAIN_AGENCY','Not Set'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

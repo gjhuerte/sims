@@ -1,11 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\SupplyLedger;
-use App\SupplyTransaction;
-use App\PurchaseOrderSupply;
-use App\Supply;
-use App\LedgerView;
+use App;
 use Auth;
 use Carbon;
 use Session;
@@ -14,7 +10,7 @@ use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Input;
-class SupplyLedgerController extends Controller {
+class LedgerCardController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -26,14 +22,14 @@ class SupplyLedgerController extends Controller {
 		if(Request::ajax())
 		{
 			return json_encode([
-				'data' => LedgerView::stockNumber($stocknumber)
+				'data' => App\LedgerCard::stockNumber($stocknumber)
 										->get()
 			]);
 		}
 
-		$supply = Supply::find($stocknumber);
+		$supply = App\Supply::find($stocknumber);
 
-		return view('supplyledger.index')
+		return view('ledgercard.index')
 				->with('supply',$supply)
 				->with('title',$supply->stocknumber);
 	}
@@ -46,9 +42,9 @@ class SupplyLedgerController extends Controller {
 	 */
 	public function create($id)
 	{
-		return view('supplyledger.create')
-				->with('supply',Supply::find($id))
-				->with('title','Supply Ledger');
+		return view('ledgercard.create')
+				->with('supply',App\Supply::find($id))
+				->with('title','Supply Ledger Card');
 	}
 
 
@@ -77,15 +73,25 @@ class SupplyLedgerController extends Controller {
 
 		if($validator->fails())
 		{
-			return redirect("inventory/supply/$stocknumber/supplyledger/create")
+			return redirect("inventory/supply/$stocknumber/ledgercard/create")
 					->withInput()
 					->withErrors($validator);
 		}
 
+		$transaction = new App\LedgerCard;
+		$transaction->date = Carbon\Carbon::parse($date);
+		$transaction->stocknumber = $stocknumber;
+		$transaction->reference = $reference;
+		$transaction->receivedquantity = $receiptquantity;
+		$transaction->receivedunitprice = $receivedunitprice;
+		$transaction->daystoconsume = $daystoconsume;
+		$transaction->user_id = Auth::user()->id;
+		$transaction->receipt();
+
 		SupplyLedger::receipt($date,$stocknumber,$reference,$receiptquantity,$receiptunitprice,$daystoconsume);
 
 		Session::flash('success-message','Operation Successful');
-		return redirect("inventory/supply/$stocknumber/supplyledger");
+		return redirect("inventory/supply/$stocknumber/ledgercard");
 	}
 
 
@@ -99,15 +105,15 @@ class SupplyLedgerController extends Controller {
 	{
 		if(Request::ajax())
 		{
-			$transaction = SupplyTransaction::with('supply')->stockNumber($id)->get();
+			$transaction = StockCard::with('supply')->stockNumber($id)->get();
 			return json_encode([ 'data' => $transaction ]);
 		}
 
-		$supply = Supply::find($id);
+		$supply = App\Supply::find($id);
 
-		$supplyledger = SupplyLedger::month($month)->stockNumber($id)->get();
-		return view('supplyledger.show')
-				->with('supplyledger',$supplyledger)
+		$ledgercard = SupplyLedger::month($month)->stockNumber($id)->get();
+		return view('ledgercard.show')
+				->with('ledgercard',$ledgercard)
 				->with('month',Carbon\Carbon::parse($month)->format('F Y'))
 				->with('supply',$supply)
 				->with('title',$supply->stocknumber);
@@ -146,8 +152,8 @@ class SupplyLedgerController extends Controller {
 	public function releaseForm($id)
 	{
 		$id = $this->sanitizeString($id);
-		return view('supplyledger.release')
-				->with('supply',Supply::find($id))
+		return view('ledgercard.release')
+				->with('supply',App\Supply::find($id))
 				->with('balance',SupplyLedger::getRemainingBalance($id));
 	}
 
@@ -194,20 +200,20 @@ class SupplyLedgerController extends Controller {
 
 		if($validator->fails())
 		{
-			return redirect("inventory/supply/$stocknumber/supplyledger/release")
+			return redirect("inventory/supply/$stocknumber/ledgercard/release")
 					->withInput()
 					->withErrors($validator);
 		}
 
 		SupplyLedger::issue($date,$stocknumber,$reference,$issuequantity,$issueunitprice,$daystoconsume);
 		Session::flash('success-message','Operation Successful');
-		return redirect("inventory/supply/$stocknumber/supplyledger");
+		return redirect("inventory/supply/$stocknumber/ledgercard");
 	}
 
 	public function batchAcceptForm()
 	{
-		return View('supplyledger.batch.accept')
-		->with('title','Supply Ledger');
+		return View('ledgercard.batch.accept')
+				->with('title','Supply Ledger Card');
 	}
 
 	public function batchAccept()
@@ -232,7 +238,7 @@ class SupplyLedgerController extends Controller {
 
 			if($validator->fails())
 			{
-				return redirect("inventory/supply/supplyledger/batch/form/accept")
+				return redirect("inventory/supply/ledgercard/batch/form/accept")
 						->with('total',count($stocknumber))
 						->with('stocknumber',$stocknumber)
 						->with('quantity',$receiptquantity)
@@ -254,8 +260,8 @@ class SupplyLedgerController extends Controller {
 
 	public function batchReleaseForm()
 	{
-		return View('supplyledger.batch.release')
-		->with('title','Supply Ledger');
+		return View('ledgercard.batch.release')
+				->with('title','Supply Ledger Card');
 	}
 
 	public function batchRelease()
@@ -280,7 +286,7 @@ class SupplyLedgerController extends Controller {
 
 			if($validator->fails())
 			{
-				return redirect("inventory/supply/supplyledger/batch/form/release")
+				return redirect("inventory/supply/ledgercard/batch/form/release")
 						->with('total',count($stocknumber))
 						->with('stocknumber',$stocknumber)
 						->with('quantity',$issuequantity)
@@ -314,14 +320,13 @@ class SupplyLedgerController extends Controller {
 
 	public function printAllSupplyLedger()
 	{
-		$supplies = Supply::all();
-		$supplies = Supply::take(2)->get();
+		$supplies = App\Supply::all();
 		$data = [
 			'supplies' => $supplies
 		];
 
 		$filename = "SupplyLedger-".Carbon\Carbon::now()->format('mdYHm').".pdf";
-		$view = "supplyledger.print_all_index";
+		$view = "ledgercard.print_all_index";
 
 		return $this->printPreview($view,$data,$filename);
 
@@ -332,12 +337,12 @@ class SupplyLedgerController extends Controller {
 	public function printSupplyLedger($stocknumber)
 	{
 
-		$supplyledger = LedgerView::stockNumber($stocknumber)->get();
-		$supply = Supply::find($stocknumber);
-		$data = ['supply' => $supply, 'supplyledger' => $supplyledger ];
+		$ledgercard = App\LedgerCard::stockNumber($stocknumber)->get();
+		$supply = App\Supply::find($stocknumber);
+		$data = ['supply' => $supply, 'ledgercard' => $ledgercard ];
 
-		$filename = "SupplyLedger-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
-		$view = "supplyledger.print_index";
+		$filename = "SupplyLedgerCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
+		$view = "ledgercard.print_index";
 
 		return $this->printPreview($view,$data,$filename);
 

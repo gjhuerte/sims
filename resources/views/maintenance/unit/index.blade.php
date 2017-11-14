@@ -19,6 +19,7 @@
 				<thead>
 					<th class="col-sm-1">ID</th>
 					<th class="col-sm-1">Name</th>
+					<th class="col-sm-1">Abbreviation</th>
 					<th class="col-sm-1">Description</th>
 					<th class="no-sort col-sm-1"></th>
 				</thead>
@@ -50,6 +51,7 @@
 	        columns: [
 	            { data: "id" },
 	            { data: "name" },
+	            { data: "abbreviation" },
 	            { data: "description" },
 	            { data: function(callback){
 	            	return `

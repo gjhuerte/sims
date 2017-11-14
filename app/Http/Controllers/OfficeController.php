@@ -6,7 +6,7 @@ use Carbon;
 use Session;
 use Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 class OfficeController extends Controller {
 
@@ -15,9 +15,9 @@ class OfficeController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			return json_encode([
 				'data' => App\Office::all()
@@ -83,9 +83,20 @@ class OfficeController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show(Request $request, $id = null)
 	{
+		if($request->ajax())
+		{
+			if(Input::has('term'))
+			{
+				$code = $this->sanitizeString(Input::get('term'));
+				return json_encode( App\Office::where('code','like','%'.$code.'%')->pluck('code')->toArray());
+			}
 
+			return json_encode([
+				'data' => App\Office::findByCode($id)
+			]);
+		}
 	}
 
 
@@ -147,9 +158,9 @@ class OfficeController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			$office = App\Office::find($id);
 			$office->delete();
@@ -169,18 +180,9 @@ class OfficeController extends Controller {
 
 	public function getAllCodes()
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
-			return json_encode(Office::pluck('deptcode')->toArray());
-		}
-	}
-
-	public function getOfficeCode()
-	{
-		if(Request::ajax())
-		{
-			$code = $this->sanitizeString(Input::get('term'));
-			return json_encode(Office::where('deptcode','like','%'.$code.'%')->pluck('deptcode')->toArray());
+			return json_encode( App\Office::pluck('code')->toArray());
 		}
 	}
 

@@ -10,7 +10,7 @@
       		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyInventoryTable" width=100%>
       			<thead>
       				<th class="col-sm-1">Stock No.</th>
-      				<th class="col-sm-1">Supply Item</th>
+      				<th class="col-sm-1">Details</th>
       				<th class="col-sm-1 no-sort"></th>
       			</thead>
       		</table>

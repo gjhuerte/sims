@@ -16,7 +16,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-        {{ Form::open(array('class' => 'form-horizontal','method'=>'post','route'=>'office.store','id'=>'officeForm')) }}
+        {{ Form::open(array('class' => 'form-horizontal','method'=>'post','route'=>'supplier.store','id'=>'supplierForm')) }}
           @if (count($errors) > 0)
               <div class="alert alert-danger alert-dismissible" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -27,22 +27,50 @@
                   </ul>
               </div>
           @endif
-        <div class="" style="padding:10px;">
+        <div class="col-md-offset-3 col-md-6" style="padding:10px;">
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('deptcode','Department Code') }}
-              {{ Form::text('deptcode',Input::old('deptcode'),[
+              {{ Form::label('name','Name') }}
+              {{ Form::text('name',Input::old('name'),[
                 'class'=>'form-control',
-                'placeholder'=>'Department Code'
+                'placeholder'=>'Name'
               ]) }}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('deptname','Department Name') }}
-              {{ Form::text('deptname',Input::old('deptname'),[
+              {{ Form::label('address','Address') }}
+              {{ Form::textarea('address',Input::old('address'),[
                 'class'=>'form-control',
-                'placeholder'=>'Department Name'
+                'placeholder'=>'Suppliers Address',
+                'rows' => 4
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('contact','Contact Number') }}
+              {{ Form::text('contact',Input::old('contact'),[
+                'class'=>'form-control',
+                'placeholder'=>'Contact Number'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('website','Website') }}
+              {{ Form::text('website',Input::old('website'),[
+                'class'=>'form-control',
+                'placeholder'=>'Website'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('email','Email Address') }}
+              {{ Form::email('email',Input::old('email'),[
+                'class'=>'form-control',
+                'placeholder'=>'Email'
               ]) }}
             </div>
           </div>
@@ -53,7 +81,7 @@
               </button>
             </div>
               <div class="btn-group">
-                <button id="cancel" class="btn btn-md btn-default" type="button" onClick="window.location.href='{{ url("maintenance/office") }}'" >
+                <button id="cancel" class="btn btn-md btn-default" type="button" onClick="window.location.href='{{ url("maintenance/supplier") }}'" >
                   <span class="hidden-xs">Cancel</span>
                 </button>
               </div>
@@ -64,31 +92,4 @@
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
-@endsection
-
-@section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-
-<script>
-  $(document).ready(function(){
-
-    @if( Session::has("success-message") )
-        swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-
-    @if( Session::has("error-message") )
-        swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
-
-    $('#page-body').show();
-  });
-</script>
 @endsection

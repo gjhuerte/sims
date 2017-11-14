@@ -1,21 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-	<style>
-		a > hover{
-			text-decoration: none;
-		}
-
-		th , tbody{
-			text-align: center;
-		}
-
-		td{
-			font-size: 12px;
-		}
-	</style>
-@endsection
-
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Supplies</h3></legend>
@@ -33,13 +17,13 @@
 		<div class="panel panel-body table-responsive">
 		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyTable">
 			<thead>
-				<th>Stock No.</th>
-				<th>Entity Name</th>
-				<th>Details</th>
-				<th>Unit</th>
-				<th>Reorder Point</th>
+				<th class="col-sm-1">Stock No.</th>
+				<th class="col-sm-1">Entity Name</th>
+				<th class="col-sm-1">Details</th>
+				<th class="col-sm-1">Unit</th>
+				<th class="col-sm-1">Reorder Point</th>
 				@if(Auth::user()->access == 1)
-				<th class="no-sort"></th>
+				<th class="no-sort col-sm-1"></th>
 				@endif
 			</thead>
 		</table>
@@ -78,7 +62,7 @@
 				@if(Auth::user()->access == 1)
 	           , { data: function(callback){
 	            	return `
-	            			<a href="{{ url("maintenance/supply") }}` + '/' + callback.stocknumber + '/edit' + `" class="btn btn-default btn-sm btn-block">Edit</a>
+	            			<a href="{{ url("maintenance/supply") }}` + '/' + callback.stocknumber + '/edit' + `" class="btn btn-default btn-sm">Edit</a>
 	            	`;
 	            } }
 	            @endif

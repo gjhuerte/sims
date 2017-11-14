@@ -21,6 +21,12 @@ class CreateRequestsTable extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->string('office')->nullable();
+            $table->foreign('office')
+                ->references('code')
+                ->on('offices')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('issued_by')->nullable();
             $table->foreign('issued_by')
                 ->references('username')

@@ -94,7 +94,8 @@ class SupplyController extends Controller {
 	{
 		if($request->ajax())
 		{
-			$supply = Supply::find($id);
+
+			$supply = App\Supply::find($id);
 			return json_encode([ 'data' => $supply ]);
 		}
 	}
@@ -111,6 +112,7 @@ class SupplyController extends Controller {
 		$supply = App\Supply::find($id);
 		return view('maintenance.supply.edit')
 				->with('supply',$supply)
+				->with('unit',App\Unit::pluck('name','name'))
                 ->with('title','Supply Maintenance');
 	}
 

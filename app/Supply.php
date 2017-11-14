@@ -47,8 +47,13 @@ class Supply extends Model{
 		{
 			$balance = 0;
 		}
-
+		
 		return $balance	;
+	}
+
+	public function scopeFindByStockNumber($query,$value)
+	{
+		return $query->where('stocknumber','=',$value)->first();
 	}
 
 	public function scopeStockNumber($query,$value)

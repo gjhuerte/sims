@@ -17,7 +17,7 @@ class AMOFilter
     public function handle($request, Closure $next)
     {
 
-        if(Auth::user()->accesslevel != 1 )
+        if(Auth::user()->access != 1 )
         {
             return redirect('/');
         }

@@ -34,7 +34,7 @@
     <!-- Ladda Buttons (loading buttons) -->
     <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
     {{ HTML::style(asset('css/select.bootstrap.min.css')) }}
-    <link rel="stylesheet" href="{{ asset('css/style.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 
     <!-- Bootstrap -->
     {{ HTML::style(asset('css/jquery-ui.css')) }}
@@ -64,6 +64,7 @@
     <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

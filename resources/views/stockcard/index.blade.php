@@ -1,31 +1,16 @@
 @extends('backpack::layout')
 
 @section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-		<style>
-			#page-body{
-				display: none;
-			}
+	<style>
+	
+		a > hover{
+			text-decoration: none;
+		}
 
-			a > hover{
-				text-decoration: none;
-			}
-
-			th , tbody{
-				text-align: center;
-			}
-		</style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-  	{{ HTML::style(asset('css/buttons.bootstrap.min.css')) }}
-  	{{ HTML::style(asset('css/buttons.dataTables.min.css')) }}
-  	{{ HTML::style(asset('css/select.bootstrap.min.css')) }}
-  	<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+		th , tbody{
+			text-align: center;
+		}
+	</style>
 @endsection
 
 @section('header')
@@ -47,11 +32,7 @@
 				<thead>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
-		                <th class="text-left" colspan="4">Fund Cluster:  <span style="font-weight:normal">
-		                @foreach($supply->purchaseorder as $supplypurchaseorder)
-		                {{ $supplypurchaseorder->fundcluster."," }}
-		                @endforeach
-		                </span> </th>
+		                <th class="text-left" colspan="4">Fund Cluster:  <span style="font-weight:normal"></span> </th>
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Item:  <span style="font-weight:normal">{{ $supply->supplytype }}</span> </th>
@@ -78,33 +59,11 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-  	{{ HTML::script(asset('js/dataTables.select.min.js')) }}
-  	{{ HTML::script(asset('js/moment.min.js')) }}
-  	{{ HTML::script(asset('js/jquery.printPage.js')) }}
 
 <script>
 	$(document).ready(function() {
 
-		@if( Session::has("success-message") )
-			swal("Success!","{{ Session::pull('success-message') }}","success");
-		@endif
-		@if( Session::has("error-message") )
-			swal("Oops...","{{ Session::pull('error-message') }}","error");
-		@endif
-
 	    var table = $('#inventoryTable').DataTable({
-			select: {
-				style: 'single'
-			},
 			language: {
 					searchPlaceholder: "Search..."
 			},
@@ -118,26 +77,26 @@
 			ajax: '{{ url("inventory/supply/$supply->stocknumber/stockcard/") }}',
 			columns: [
 					{ data: function(callback){
-						return moment(callback.date).format("MMMM Do YYYY")
+						return moment(callback.date).format("MMM D, YYYY")
 					} },
 					{ data: "reference" },
 					{ data: function(callback){
-						if(callback.receiptquantity == null)
+						if(callback.received == null)
 							return 0
 						else
-							return callback.receiptquantity
+							return callback.received
 					}},
 					{ data: function(callback){
-						if(callback.issuequantity == null)
+						if(callback.issued == null)
 							return 0
 						else
-							return callback.issuequantity
+							return callback.issued
 					}},
 					{ data: function(callback){
-						if(callback.office == null || callback.office == "")
+						if(callback.organization == null || callback.organization == "")
 							return "N/A"
 						else
-							return callback.office
+							return callback.organization
 					}},
 					{ data: "balance" },
 					{ data: function(callback){
@@ -148,12 +107,6 @@
 					}},
 			],
 	    });
-
-
-	      // <button href="{{ url("inventory/supply/$supply->stocknumber/stockcard/print") }}" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
-	      //    <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-	      //    <span id="nav-text"> Print</span>
-	      // </button>
 
 	 	$("div.toolbar").html(`
 	       <a href="{{ url("inventory/supply/$supply->stocknumber/stockcard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
@@ -177,64 +130,6 @@
 		$('#release').on('click',function(){
 			window.location.href = "{{ url("inventory/supply/$supply->stocknumber/stockcard/release") }}"
 		});
-
-    $("#print").on('click',function(e){
-      var win = window.open("{{ url("inventory/supply/$supply->stocknumber/stockcard/print") }}", '_blank');
-      if (win) {
-          //Browser has allowed it to be opened
-          win.focus();
-      } else {
-          //Browser has blocked it
-          alert('Please allow popups for this website');
-      }
-        e.preventDefault();
-    })
-
-    // $('#print').on('click', function(){
-    //   html = ''
-    //   progress = 0
-    //   $.ajax({
-    //     headers: {
-    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //     },
-    //     type: 'get',
-    //     url: '{{ url("inventory/supply/$supply->stocknumber/stockcard/print") }}',
-    //     dataType: 'html',
-    //     success: function(callback){
-    //       // Create a new instance of ladda for the specified button
-    //       var l = Ladda.create( document.querySelector( '#print' ) );
-
-    //       // Start loading
-    //       l.start();
-    //       $('<iframe>', {
-    //         name: 'myiframe',
-    //         class: 'printFrame'
-    //       })
-
-    //       .appendTo('body')
-    //       .contents().find('body')
-
-    //       .append(callback);
-
-    //       setInterval(function(){
-
-    //             l.setProgress( progress );
-    //             progress = progress +  0.1
-    //       },300)
-    //       $('.printFrame').hide()
-    //       setTimeout(function(){
-    //         l.stop();
-    //         $('.printFrame').show()
-    //         window.frames['myiframe'].focus();
-    //         window.frames['myiframe'].print();
-    //         $('.printFrame').remove()
-    //       },3000)
-    //     }
-    //   })
-    //   // e.preventDefault()
-    // });
-
-		$('#page-body').show();
 	} );
 </script>
 @endsection

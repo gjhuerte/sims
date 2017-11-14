@@ -17,7 +17,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-        {{ Form::open(array('class' => 'col-md-offset-3 col-md-6  form-horizontal','method'=>'post','route'=>'office.store','id'=>'officeForm')) }}
+        {{ Form::open(array('class' => 'form-horizontal','method'=>'post','route'=>'office.store','id'=>'officeForm')) }}
             @if (count($errors) > 0)
                 <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -28,13 +28,13 @@
                     </ul>
                 </div>
             @endif
-        <div class="" style="padding:10px;">
+        <div class="col-md-offset-3 col-md-6" style="padding:10px;">
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('code','Department Code') }}
+              {{ Form::label('code','Organization Code') }}
               {{ Form::text('code',Input::old('code'),[
                 'class'=>'form-control',
-                'placeholder'=>'Department Code'
+                'placeholder'=>'Organization Code'
               ]) }}
             </div>
           </div>
@@ -43,7 +43,7 @@
               {{ Form::label('name','Organization Name') }}
               {{ Form::text('name',Input::old('name'),[
                 'class'=>'form-control',
-                'placeholder'=>'Department Name'
+                'placeholder'=>'Organization Name'
               ]) }}
             </div>
           </div>

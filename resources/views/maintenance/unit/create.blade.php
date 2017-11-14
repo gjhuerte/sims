@@ -39,6 +39,15 @@
           </div>
           <div class="form-group">
             <div class="col-md-12">
+              {{ Form::label('abbreviation','Abbreviation') }}
+              {{ Form::text('abbreviation',Input::old('abbreviation'),[
+                'class'=>'form-control',
+                'placeholder'=>'abbreviation'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
               {{ Form::label('description','Description') }}
               {{ Form::text('description',Input::old('description'),[
                 'class'=>'form-control',

@@ -47,6 +47,8 @@
 
           <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i> <span> Purchase Order</span></a></li>
 
+          <li><a href="{{ url('receipt') }}"><i class="fa fa-files-o" aria-hidden="true"></i> <span> Receipt </span></a></li>
+
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
 
           @endif
@@ -60,6 +62,8 @@
           <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
 
           <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
+
+          <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
 
           @endif
 

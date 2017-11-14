@@ -55,13 +55,31 @@ class StockCard extends Model{
 		return $this->belongsTo('App\Supply','stocknumber','stocknumber');
 	}
 
-	var $date;
-	var $stocknumber = "";
-	var $purchaseorderno = null;
-	var $reference = null;
-	var $office = "N/A";
-	var $quantity = 0;
-	var $daystoconsume = "";
+	public function setBalance()
+	{
+		$stockcard = StockCard::where('stocknumber','=',$this->stocknumber)
+								->orderBy('created_at','desc')
+								->first();
+
+		if(!isset($this->received))
+		{
+			$this->received = 0;
+		}
+
+		if(!isset($this->issued))
+		{
+			$this->issued = 0;
+		}
+
+		if( count($stockcard) > 0 )
+		{
+			$this->balance = $stockcard->balance + ( $this->received - $this->issued );
+		}
+		else
+		{
+			$this->balance = $this->received - $this->issued;
+		}
+	}
 
 	/*
 	*
@@ -70,35 +88,58 @@ class StockCard extends Model{
 	*/
 	public function receipt()
 	{
-
 		$firstname = Auth::user()->firstname;
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
-		$username =  $firstname . " " . $middlename . " " . $lastname;
-		$date = Carbon\Carbon::parse($this->date);
+		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
-		DB::statement("
-			call bal_update(
-				'$username',
-				'$date',
-				'$this->stocknumber',
-				'$this->purchaseorderno',
-				'$this->reference',
-				'$this->office',
-				'$this->quantity',
-				'0',
-				'$this->daystoconsume'
-			)
-		");
+		$receipt = Receipt::where('number','=',$this->receipt)->first();
 
+		if( count($receipt) <= 0 )
+		{
 
-		$purchaseorder = PurchaseOrderSupply::where('purchaseorderno','=',$this->purchaseorderno)
-													->where('supplyitem','=',$this->stocknumber)
+			$receipt = new Receipt;
+			$receipt->reference = $this->reference;
+			$receipt->number = $this->receipt;
+			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
+			$receipt->received_by = $fullname;
+			$receipt->supplier_name = $this->organization;
+			$receipt->save();
+		}
+
+		$supply = ReceiptSupply::where('receipt_number','=',$receipt->number )
+									->where('stocknumber','=',$this->stocknumber)
+									->first();
+
+		if( count($supply) > 0 )
+		{
+
+			$supply->quantity = $this->received + $supply->quantity;
+			$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
+		}
+		else
+		{
+			$supply = new ReceiptSupply;
+			$supply->receipt_number = $this->receipt;
+			$supply->stocknumber = $this->stocknumber;
+			$supply->quantity = $supply->remaining_quantity = $this->received;
+		}
+
+		$supply->save();
+
+		$purchaseorder = PurchaseOrderSupply::where('purchaseorder_number','=',$this->reference)
+													->where('stocknumber','=',$this->stocknumber)
 													->first();
 
+		if(count($purchaseorder) > 0)
+		{
+			$purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->received;
+			$purchaseorder->receivedquantity = $purchaseorder->receivedquantity + $this->received;
+			$purchaseorder->save();
+		}
 
-		// $purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->quantity;
-		// $purchaseorder->save();
+		$this->setBalance();
+		$this->save();
 	}
 
 
@@ -107,181 +148,66 @@ class StockCard extends Model{
 	*	Call this function when releasing
 	*
 	*/
-
-	/*
-	*
-	*	Call this function when receiving an item
-	*
-	*/
 	public function issue()
 	{
-
 		$firstname = Auth::user()->firstname;
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
 		$username =  $firstname . " " . $middlename . " " . $lastname;
 
-		$date = Carbon\Carbon::parse($this->date);
+		// $receipt = ReceiptSupply::where('stocknumber','=',$this->stocknumber)
+		// 						->where('remaining_quantity','>',0)
+		// 						->get();
 
-		$purchaseordersupply = PurchaseOrderSupply::where('supplyitem','=',$this->stocknumber)
-										->orderBy('created_at','asc')
-										->where('remainingquantity','>','0')
-										->get();
 
-		foreach($purchaseordersupply as $po)
+		// foreach($receipt as $receipt)
+		// {
+		// 	if($this->issued > 0)
+		// 	{
+		// 		if($receipt->remaining_quantity >= $this->issued)
+		// 		{
+		// 			$receipt->remaining_quantity = $receipt->remaining_quantity - $this->issued;
+		// 			$this->issued = 0;
+		// 		}
+		// 		else
+		// 		{
+		// 			$this->issued = $this->issued - $receipt->remaining_quantity;
+		// 			$receipt->remaining_quantity = 0;
+		// 		}
+
+		// 		$receipt->save();
+		// 	}
+		// }
+
+		// $this->issued = $issued;
+
+		$purchaseorder = PurchaseOrderSupply::where('stocknumber','=',$this->stocknumber)
+												->where('remainingquantity','>',0)
+												->get();
+
+		foreach($purchaseorder as $purchaseorder)
 		{
-			if($this->quantity > 0)
+			if($this->issued > 0)
 			{
-				DB::statement("
-					call bal_update(
-						'$username',
-						'$date',
-						'$this->stocknumber',
-						'$po->purchaseorderno',
-						'$this->reference',
-						'$this->office',
-						'0',
-						'$this->quantity',
-						'$this->daystoconsume'
-					)
-				");
 
-				if($this->quantity >= $po->remainingquantity)
+				if($purchaseorder->remainingquantity >= $this->issued)
 				{
-					$remaining_quantity = $this->quantity - $po->remainingquantity;
-					$this->quantity = $remaining_quantity;
-					$po->issuedquantity = $remaining_quantity;
-					$po->remainingquantity = 0;
-					$po->save();
+					$purchaseorder->remainingquantity = $purchaseorder->remainingquantity - $this->issued;
+					$this->setBalance();
+					$this->save();
+					$this->issued = 0;
 				}
 				else
 				{
-					$remaining_quantity = $po->remainingquantity - $this->quantity;
-					$this->quantity = 0;
-					$po->remainingquantity = $remaining_quantity;
-					$po->issuedquantity = $po->issuedquantity + $remaining_quantity;
-					$po->save();
+					$this->issued = $this->issued - $purchaseorder->remainingquantity;
+					$purchaseorder->remainingquantity = 0;
+					$this->setBalance();
+					$this->save();
 				}
+
+				$purchaseorder->save();
 			}
 		}
+
 	}
-
-	
-
-    
-        // DB::unprepared('
-
-        //     CREATE TRIGGER `accept_supply_trg` AFTER 
-        //     INSERT ON `supplytransaction`
-        //     FOR EACH ROW 
-        //         UPDATE purchaseorder_supply
-        //         SET receivedquantity = receivedquantity + new.receiptquantity,reference = concat(reference,",",new.reference), date = concat(date,",",new.date),updated_at = now()
-        //         WHERE supplyitem = new.stocknumber AND purchaseorderno = new.purchaseorderno AND new.issuequantity = 0 OR NULL;
-        //     ');
-        // DB::unprepared('
-
-        //     CREATE DEFINER=`root`@`localhost` PROCEDURE `bal_update`
-        //     (IN `_user_id` VARCHAR(100), IN `_date` DATE, IN `_stocknumber` VARCHAR(100), IN `_purchaseorderno` VARCHAR(100), IN `_reference` VARCHAR(100), IN `_office` VARCHAR(100), IN `_receipt` INT(11), IN `_issue` INT(11), IN `_daystoconsume` VARCHAR(100))
-        //     NO SQL
-        //         BEGIN
-
-        //             SET @endbalance = (
-        //                     SELECT balancequantity 
-        //                     FROM supplytransaction 
-        //                     WHERE date <= _date AND stocknumber = _stocknumber
-        //                     ORDER BY date DESC , id DESC
-        //                     LIMIT 1
-        //                 );
-                        
-        //             IF @endbalance IS null THEN
-        //                 SET @endbalance = 0; 
-        //             END IF;
-                        
-        //             SET @balance = @endbalance +_receipt - _issue;
-
-        //             INSERT INTO supplytransaction VALUES(null,_user_id,_date,_stocknumber,_purchaseorderno,_reference,_office,_receipt,_issue,@balance,_daystoconsume,NOW(),NOW());
-
-
-        //             UPDATE supplytransaction
-        //                 SET balancequantity = balancequantity + _receipt - _issue ,updated_at = now()
-        //                 WHERE stocknumber = _stocknumber AND date > _date;
-
-        //         END'
-        //         );
-        // DB::unprepared('
-        //             CREATE DEFINER=`root`@`localhost` PROCEDURE `ledger_update`(
-        //               IN `_user_id` VARCHAR(100), 
-        //               IN `_date` DATE, 
-        //               IN `_stocknumber` VARCHAR(100), 
-        //               IN `_reference` VARCHAR(100), 
-        //               IN `_receipt` INT(11), 
-        //               IN `_receiptprice` DECIMAL, 
-        //               IN `_issue` INT(11), 
-        //               IN `_issueprice` DECIMAL, 
-        //               IN `_daystoconsume` VARCHAR(100))
-        //             NO SQL
-        //             BEGIN
-
-        //             SET @endbalance = (
-        //                     SELECT balancequantity 
-        //                     FROM supplyledger 
-        //                     WHERE date <= _date AND stocknumber = _stocknumber
-        //                     ORDER BY date DESC , id DESC
-        //                     LIMIT 1
-        //                 );
-        //             /* last receiptprice inserted*/
-        //             SET @endreceiptprice = (
-        //                     SELECT receiptunitprice 
-        //                     FROM supplyledger 
-        //                     WHERE date <= _date AND stocknumber = _stocknumber
-        //                     ORDER BY date DESC , id DESC
-        //                     LIMIT 1
-        //                 );
-        //             /*for issue*/
-        //             IF _receiptprice IS NULL OR _receiptprice = 0 THEN
-        //             SET _receiptprice = _issueprice;
-        //             END IF;
-
-        //             /*for receipt*/
-        //             IF _issueprice IS NULL OR _issueprice = 0 THEN
-        //             SET _issueprice = _receiptprice;
-        //             END IF;
-
-        //             /* last issueprice inserted*/
-        //             SET @endissueprice = (
-        //                     SELECT issueunitprice 
-        //                     FROM supplyledger 
-        //                     WHERE date <= _date AND stocknumber = _stocknumber
-        //                     ORDER BY date DESC , id DESC
-        //                     LIMIT 1
-        //                 );    
-        //             IF @endbalance IS null THEN
-        //                 SET @endbalance = 0; 
-        //             END IF;
-                  
-        //             SET @balance = @endbalance +_receipt - _issue;
-
-        //             INSERT INTO supplyledger VALUES(
-        //                 null,
-        //                 _user_id,
-        //                 _date,
-        //                 _stocknumber,
-        //                 _reference,
-        //                 _receipt,
-        //                 _receiptprice,
-        //                 _issue,
-        //                 _issueprice,
-        //                 @balance,
-        //                 _daystoconsume,
-        //                 NOW(),
-        //                 NOW()
-        //                                             );
-
-        //             UPDATE supplytransaction
-        //                 SET balancequantity = balancequantity + _receipt - _issue ,updated_at = now()
-        //                 WHERE stocknumber = _stocknumber AND date > _date;
-
-        //         END
-        //                ');
-
 }

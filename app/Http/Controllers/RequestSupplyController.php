@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\SupplyRequest;
+use App;
 use Illuminate\Http\Request;
 
-class SupplyRequestController extends Controller
+class RequestSupplyController extends Controller
 {
     /**
      * Display a listing of the resource.

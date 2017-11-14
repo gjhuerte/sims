@@ -20,4 +20,9 @@ class Supplier extends Model
 	public static $updateRules = array(
 		'Name' => 'required'
 	);
+
+	public function purchaseorder()
+	{
+		return $this->hasMany('App\PurchaseOrder','supplier_id','id');
+	}
 }

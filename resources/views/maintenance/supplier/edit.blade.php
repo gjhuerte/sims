@@ -1,29 +1,13 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-    <style>
-      #page-two, #page-body{
-        display: none;
-      }
-    </style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Offices</h3></legend>
+		<legend><h3 class="text-muted">Suppliers</h3></legend>
       <ol class="breadcrumb">
           <li>
-              <a href="{{ url('maintenance/office') }}">Office</a>
+              <a href="{{ url('maintenance/supplier') }}">Supplier</a>
           </li>
-          <li class="active">{{ $office->deptcode }}</li>
+          <li class="active">{{ $supplier->id }}</li>
           <li class="active">Edit</li>
       </ol>
 	</section>
@@ -33,8 +17,8 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-        {{ Form::open(array('class' => 'col-md-offset-3 col-md-6  form-horizontal','method'=>'put','route'=>array('office.update',$office->deptcode),'id'=>'officeForm')) }}
-        <div class="" style="padding:10px;">
+        {{ Form::open(array('class' => 'form-horizontal','method'=>'put','route'=>array('supplier.update',$supplier->id),'id'=>'officeForm')) }}
+        <div class="col-md-offset-3 col-md-6" style="padding:10px;">
           @if (count($errors) > 0)
               <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -47,21 +31,47 @@
           @endif
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('deptcode','Department Code') }}
-              {{ Form::text('deptcode',Input::old('deptcode'),[
-                'id' => 'deptcode',
+              {{ Form::label('name','Name') }}
+              {{ Form::text('name',Input::old('name') ? Input::old('name') : $supplier->name,[
                 'class'=>'form-control',
-                'placeholder'=>'Department Code'
+                'placeholder'=>'Name'
               ]) }}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('deptname','Department Name') }}
-              {{ Form::text('deptname',Input::old('deptname'),[
-                'id' => 'deptname',
+              {{ Form::label('address','Address') }}
+              {{ Form::textarea('address',Input::old('address') ? Input::old('address') : $supplier->address,[
                 'class'=>'form-control',
-                'placeholder'=>'Department Name'
+                'placeholder'=>'Suppliers Address',
+                'rows' => 4
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('contact','Contact Number') }}
+              {{ Form::text('contact',Input::old('contact') ? Input::old('contact') : $supplier->contact,[
+                'class'=>'form-control',
+                'placeholder'=>'Contact Number'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('website','Website') }}
+              {{ Form::text('website',Input::old('website') ? Input::old('website') : $supplier->website,[
+                'class'=>'form-control',
+                'placeholder'=>'Website'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('email','Email Address') }}
+              {{ Form::email('email',Input::old('email') ? Input::old('email') : $supplier->email ,[
+                'class'=>'form-control',
+                'placeholder'=>'Email'
               ]) }}
             </div>
           </div>
@@ -72,7 +82,7 @@
               </button>
             </div>
               <div class="btn-group">
-                <button id="cancel" class="btn btn-md btn-default" type="button" onClick="window.location.href='{{ url("maintenance/office") }}'" >
+                <button id="cancel" class="btn btn-md btn-default" type="button" onClick="window.location.href='{{ url("maintenance/supplier") }}'" >
                   <span class="hidden-xs">Cancel</span>
                 </button>
               </div>
@@ -83,34 +93,4 @@
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
-@endsection
-
-@section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-
-<script>
-  $(document).ready(function(){
-
-    @if( Session::has("success-message") )
-        swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-
-    @if( Session::has("error-message") )
-        swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
-
-    $('#deptcode').val("{{ $office->deptcode }}")
-    $('#deptname').val("{{ $office->deptname }}")
-
-    $('#page-body').show();
-  });
-</script>
 @endsection
