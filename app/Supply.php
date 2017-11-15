@@ -27,7 +27,8 @@ class Supply extends Model{
 	);
 
 	protected $appends = [
-		'balance'
+		'balance',
+		'ledger_balance'
 	];
 
 	public function getBalanceAttribute($value)
@@ -41,6 +42,27 @@ class Supply extends Model{
 		$balance = StockCard::where('stocknumber','=',$stocknumber)
 						->orderBy('created_at','desc')
 						->pluck('balance')
+						->first();
+
+		if(empty($balance) || $balance == null || $balance == '')
+		{
+			$balance = 0;
+		}
+		
+		return $balance	;
+	}
+
+	public function getLedgerBalanceAttribute($value)
+	{
+		$stocknumber = '';
+		if(isset($this->stocknumber))
+		{
+			$stocknumber = $this->stocknumber;
+		}
+
+		$balance = LedgerCard::where('stocknumber','=',$stocknumber)
+						->orderBy('created_at','desc')
+						->pluck('balancequantity')
 						->first();
 
 		if(empty($balance) || $balance == null || $balance == '')

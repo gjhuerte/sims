@@ -232,7 +232,7 @@ class StockCardController extends Controller {
 		$office = $this->sanitizeString(Input::get('office'));
 		$supplier = $this->sanitizeString(Input::get("supplier"));
 		$daystoconsume = $this->sanitizeString(Input::get("daystoconsume"));
-		$stocknumber = Input::get("stocknumber");
+		$stocknumbers = Input::get("stocknumber");
 		$quantity = Input::get("quantity");
 
 		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
@@ -241,13 +241,13 @@ class StockCardController extends Controller {
 
 		DB::beginTransaction();
 
-		foreach($stocknumber as $_stocknumber)
+		foreach($stocknumbers as $stocknumber)
 		{
 			$validator = Validator::make([
-				'Stock Number' => $_stocknumber,
+				'Stock Number' => $stocknumber,
 				'Purchase Order' => $purchaseorder,
 				'Date' => $date,
-				'Receipt Quantity' => $quantity["$_stocknumber"],
+				'Receipt Quantity' => $quantity["$stocknumber"],
 				'Office' => $office,
 				'Days To Consume' => $daystoconsume
 			],App\StockCard::$receiptRules);
@@ -256,8 +256,8 @@ class StockCardController extends Controller {
 			{
 				DB::rollback();
 				return redirect("inventory/supply/stockcard/batch/form/accept")
-						->with('total',count($stocknumber))
-						->with('stocknumber',$stocknumber)
+						->with('total',count($stocknumbers))
+						->with('stocknumber',$stocknumbers)
 						->with('quantity',$quantity)
 						->with('daystoconsume',$daystoconsume)
 						->withInput()
@@ -266,11 +266,11 @@ class StockCardController extends Controller {
 
 			$transaction = new App\StockCard;
 			$transaction->date = Carbon\Carbon::parse($date);
-			$transaction->stocknumber = $_stocknumber;
+			$transaction->stocknumber = $stocknumber;
 			$transaction->reference = $purchaseorder;
 			$transaction->receipt = $deliveryreceipt;
 			$transaction->organization = $supplier;
-			$transaction->received = $quantity["$_stocknumber"];
+			$transaction->received = $quantity["$stocknumber"];
 			$transaction->daystoconsume = $daystoconsume;
 			$transaction->user_id = Auth::user()->id;
 			$transaction->receipt();

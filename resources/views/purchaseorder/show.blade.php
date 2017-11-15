@@ -46,6 +46,7 @@
 						<th>Received Quantity</th>
 						<th>Remaining Quantity</th>
 						<th>Unit Price</th>
+						<th>Amount</th>
 					</tr>
 				</thead>
 			</table>
@@ -99,52 +100,18 @@
 			  return `0`;
 			} },
 			{ data: "remainingquantity" },
-			{ data: "unitcost" }
+			{ data: function(callback){
+				if(callback.unitcost == "" || callback.unitcost == null)
+					return 0
+				return (callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+			} },
+			{ data: function(callback){
+				if(callback.unitcost == "" || callback.unitcost == null)
+					return 0
+				return (callback.receivedquantity * callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+			} }
 		],
 	 });
-
-    {{-- $('#purchaseOrderTable').on('click','.receivedquantity',function(){
-    	id = $(this).data('id')
-    	swal({
-			  title: "Purchase Order",
-			  text: "Input Received Quantity (Php):",
-			  type: "input",
-			  showCancelButton: true,
-			  closeOnConfirm: false,
-			  animation: "slide-from-top",
-			  inputPlaceholder: "Quantity"
-			},
-			function(inputValue){
-			  if (inputValue === false) return false;
-
-			  if (inputValue === "") {
-			    swal.showInputError("You need to write something!");
-			    return false
-			  }
-
-			  $.ajax({
-			    headers: {
-			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			    },
-			  	type: 'put',
-			  	url: '{{ url("purchaseorder/supply") }}' + '/' + id,
-			  	dataType: 'json',
-			  	data: {
-			  		'receivedquantity': inputValue
-			  	},
-			  	success: function(response){
-			  		if(response == 'success')
-			  		swal('Success','Operation Successful','success')
-			  		else
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  		table.ajax.reload();
-			  	},
-			  	error: function(){
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  	}
-			  })
-			});
-    }) --}}
 
     $('#purchaseOrderTable').on('click','.setprice',function(){
     	id = $(this).data('id')

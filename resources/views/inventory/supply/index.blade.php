@@ -3,10 +3,10 @@
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Supplies Inventory</h3></legend>
-	  {{-- <ol class="breadcrumb">
-	    <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}">Das</a></li>
-	    <li class="active">{{ trans('backpack::backup.backup') }}</li>
-	  </ol> --}}
+		<ol class="breadcrumb">
+			<li>Inventory</li>
+			<li class="active">Home</li>
+		</ol>
 	</section>
 @endsection
 
@@ -70,8 +70,8 @@
               	      </a>
 		            			@endif
 		            			@if(Auth::user()->access == 2)
-		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/supplyledger' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Supply Ledger</a>
-                      <a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/supplyledger/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/ledgercard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Supply Ledger</a>
+                      <a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
               	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
               	        <span id="nav-text"> Print</span>
               	      </a>
@@ -84,7 +84,7 @@
 
     @if(Auth::user()->access == 2)
 	 	$("div.toolbar").html(`
-        <a href="{{ url("inventory/supply/supplyledger/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+        <a href="{{ url("inventory/supply/ledgercard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 	        <span id="nav-text"> Print</span>
 	      </a>
@@ -120,7 +120,7 @@
 			@if(Auth::user()->access == 1)
 			window.location.href = "{{ url('inventory/supply/stockcard/batch/form/accept') }}"
 			@elseif(Auth::user()->access == 2)
-			window.location.href = "{{ url('inventory/supply/supplyledger/batch/form/accept') }}"
+			window.location.href = "{{ url('inventory/supply/ledgercard/batch/form/accept') }}"
 			@endif
 		});
 
@@ -128,7 +128,7 @@
 			@if(Auth::user()->access == 1)
 			window.location.href = "{{ url('inventory/supply/stockcard/batch/form/release') }}"
 			@elseif(Auth::user()->access == 2)
-			window.location.href = "{{ url('inventory/supply/supplyledger/batch/form/release') }}"
+			window.location.href = "{{ url('inventory/supply/ledgercard/batch/form/release') }}"
 			@endif
 
 		});

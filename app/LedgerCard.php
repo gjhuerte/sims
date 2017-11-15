@@ -26,7 +26,7 @@ class LedgerCard extends Model{
 	public static $receiptRules = array(
 		'Date' => 'required',
 		'Stock Number' => 'required',
-		'Purchase Order' => 'required|exists:purchaseorder,purchaseorderno',
+		'Purchase Order' => 'required|exists:purchaseorders,number',
 		'Receipt Quantity' => 'required',
 		'Receipt Unit Price' => 'required',
 		'Days To Consume' => 'max:100'
@@ -41,34 +41,94 @@ class LedgerCard extends Model{
 		'Days To Consume' => 'max:100'
 	);
 
-	public function getDateAttribute($value)
+	// public function getDateAttribute($value)
+	// {
+	// 	return Carbon\Carbon::parse($value)->format('jS \\of F Y');
+	// }
+
+	public function setBalance()
 	{
-		return Carbon\Carbon::parse($value)->format('jS \\of F Y');
+		$ledgercard = LedgerCard::where('stocknumber','=',$this->stocknumber)
+								->orderBy('created_at','desc')
+								->first();
+
+		if(!isset($this->receivedquantity))
+		{
+			$this->receivedquantity = 0;
+		}
+
+		if(!isset($this->issuedquantity))
+		{
+			$this->issuedquantity = 0;
+		}
+
+		if( count($ledgercard) > 0 )
+		{
+			$this->balance = $ledgercard->balancequantity + ( $this->receivedquantity - $this->issuedquantity );
+		}
+		else
+		{
+			$this->balancequantity = $this->receivedquantity - $this->issuedquantity;
+		}
 	}
+
+	public $invoice = "";
 
 	/*
 	*
 	*	Call this function when receiving an item
 	*
 	*/
-	public static function receipt($date,$stocknumber,$reference,$receiptquantity,$receiptunitprice,$daystoconsume)
+	public function receipt()
 	{
+		$firstname = Auth::user()->firstname;
+		$middlename =  Auth::user()->middlename;
+		$lastname = Auth::user()->lastname;
+		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
-		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
-		$date = Carbon\Carbon::parse($date);
-		DB::statement("
-			call ledger_update(
-				'$username',
-				'$date',
-				'$stocknumber',
-				'$reference',
-				'$receiptquantity',
-				'$receiptunitprice',
-				'0',
-				'0',
-				'$daystoconsume'
-			)
-		");
+		$receipt = Receipt::where('number','=',$this->receipt)->first();
+
+		if( count($receipt) <= 0 )
+		{
+
+			$receipt = new Receipt;
+			$receipt->reference = $this->reference;
+			$receipt->number = $this->receipt;
+			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
+			$receipt->received_by = $fullname;
+			$receipt->supplier_name = $this->organization;
+		}
+
+		if( isset($this->invoice) && $this->invoice != null )
+		{
+			$receipt->invoice = $this->invoice;
+		}
+
+		$receipt->save();
+
+		$supply = ReceiptSupply::where('receipt_number','=',$receipt->number )
+									->where('stocknumber','=',$this->stocknumber)
+									->first();
+
+		if( count($supply) > 0 )
+		{
+
+			$supply->quantity = $this->received + $supply->quantity;
+			$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
+		}
+		else
+		{
+			$supply = new ReceiptSupply;
+			$supply->receipt_number = $this->receipt;
+			$supply->stocknumber = $this->stocknumber;
+			$supply->quantity = $supply->remaining_quantity = $this->receivedquantity;
+			$supply->cost = $this->receivedunitprice;
+		}
+
+		$supply->save();
+
+		$this->setBalance();
+		$this->save();
 	}
 
 
@@ -106,12 +166,12 @@ class LedgerCard extends Model{
 		return $query->where('reference','=',$reference);
 	}
 
-	public function scopeStockNumber($query,$stocknumber)
+	public function scopeFindByStockNumber($query,$stocknumber)
 	{
 		return $query->where('stocknumber','=',$stocknumber);
 	}
 
-	public function scopeMonth($query,$month)
+	public function scopeFilterByMonth($query,$month)
 	{
 		$month = Carbon\Carbon::parse($month);
 		return $query->whereBetween('date',array(

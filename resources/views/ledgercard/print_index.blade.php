@@ -9,14 +9,12 @@
         <tr>
             <th class="text-left" colspan="7">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
             <th class="text-left" colspan="7">Fund Cluster:
-              <span style="font-weight:normal"> @foreach($supply->purchaseorder as $supplypurchaseorder) {{ $supplypurchaseorder->fundcluster }}@if($supply->purchaseorder->first() != $supplypurchaseorder && $supply->purchaseorder->last() != $supplypurchaseorder),  @endif
-            @endforeach
-              </span>
+              <span style="font-weight:normal"> </span>
             </th>
         </tr>
         <tr>
             <th class="text-left" colspan="7">Item:
-              <span style="font-weight:normal; @if(strlen($supply->supplytype) > 0)@if(strlen($supply->supplytype) > 60) font-size: 10px; @elseif(strlen($supply->supplytype) > 40) font-size: 11px; @elseif(strlen($supply->supplytype) > 20) font-size: 12px; @endif @endif">{{ $supply->supplytype }}</span> </th>
+              <span style="font-weight:normal; @if(strlen($supply->details) > 0)@if(strlen($supply->details) > 60) font-size: 10px; @elseif(strlen($supply->details) > 40) font-size: 11px; @elseif(strlen($supply->details) > 20) font-size: 12px; @endif">{{ $supply->details }}</span> </th>
             <th class="text-left" colspan="7">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
         </tr>
         <tr>
@@ -46,21 +44,29 @@
         </tr>
       </thead>
       <tbody>
-      @if(count($supply->supplyledger) > 0)
-        @foreach($supplyledger as $supplyledger)
-        <tr>
-          <td>{{ Carbon\Carbon::parse($supplyledger->date)->toFormattedDateString() }}</td>
-          <td></td>
-          <td>{{ $supplyledger->receiptquantity }}</td>
-          <td>{{ $supplyledger->receiptunitprice }}</td>
-          <td>{{ $supplyledger->receiptunitprice * $supplyledger->receiptunitprice }}</td>
-          <td>{{ $supplyledger->issuequantity }}</td>
-          <td>{{ $supplyledger->issueunitprice }}</td>
-          <td>{{ $supplyledger->issuequantity * $supplytransaction->issueunitprice }}</td>
-          <td>{{ ($supplyledger->issueunitprice * $supplyledger->receiptunitprice) / 2 }}</td>
-          <td>{{ $supplyledger->balancequantity * (($supplyledger->issueunitprice * $supplyledger->receiptunitprice) / 2)  }}</td>
-          <td></td>
-        </tr>
+        @foreach($ledgercard as $ledgercard)
+          <tr>
+            <td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M Y') }}</td>
+            <td>{{ $ledgercard->reference }}</td>
+            <td>{{ $ledgercard->receivedquantity }}</td>
+            <td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
+            <td>{{ number_format($ledgercard->receivedquantity * $ledgercard->receivedunitprice, 2) }}</td>
+            <td>{{ $ledgercard->issuedquantity }}</td>
+            <td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
+            <td>{{ number_format($ledgercard->issuedquantity * $ledgercard->issuedunitprice, 2) }}</td>
+            <td>{{ $ledgercard->balancequantity }}</td>
+            @if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
+            <td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
+            @else
+            <td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
+            @endif
+            @if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
+            <td>{{ number_format($ledgercard->receivedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+            @else
+            <td>{{ number_format( $ledgercard->issuedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+            @endif
+            <td>{{ $ledgercard->daystoconsume }}</td>
+          </tr>
         @endforeach
       @else
       <tr>

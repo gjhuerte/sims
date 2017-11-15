@@ -59,15 +59,24 @@ class ReceiptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, $id = null)
     {
         $id = $this->sanitizeString($id);
 
         if($request->ajax())
         {
-          return json_encode([
-            'data' => App\ReceiptSupply::with('supply')->where('receipt_number','=',$id)->get()
-          ]);
+            if(Input::has('term'))
+            {
+                $number = $this->sanitizeString(Input::get('term'));
+                return json_encode(
+                    App\Receipt::where('number','like',"%".$number."%")
+                    ->pluck('number') 
+                );
+            }
+
+            return json_encode([
+                'data' => App\ReceiptSupply::with('supply')->where('receipt_number','=',$id)->get()
+            ]);
         }
 
         $receipt = App\Receipt::findByNumber($id);
@@ -95,6 +104,25 @@ class ReceiptController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $id = $this->sanitizeString($id);
+
+        if($request->ajax())
+        {
+            if(Input::has('stocknumber'))
+            {
+                $cost = $this->sanitizeString(Input::get('unitprice'));
+                $stocknumber = $this->sanitizeString(Input::get('stocknumber'));
+                $receipt = App\ReceiptSupply::where('receipt_number','=',$id)
+                                                ->where('stocknumber','=',$stocknumber)
+                                                ->first();
+
+                $receipt->cost = $cost;
+                $receipt->save();
+            }
+
+            return json_encode('success');
+        }
+
         \Alert::success('Receipt Updated')->flash();
         return redirect('receipt');
     }

@@ -18,19 +18,20 @@
         </tr>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Supplier:  <span style="font-weight:normal">{{ $purchaseorder->supplier->name }}</span> </th>
-            <th class="text-left" colspan="4"></th>
+            <th class="text-left" colspan="4">Date:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($purchaseorder->date_received)->toFormattedDateString() }}</span> </th>
         </tr>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Details:  <span style="font-weight:normal">{{ $purchaseorder->details }}</span> </th>
-            <th class="text-left" colspan="4">Date:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($purchaseorder->date_received)->toFormattedDateString() }}</span> </th>
+            <th class="text-left" colspan="4"></th>
         </tr>
         <tr>
           <th>ID</th>
           <th>Supply Item</th>
           <th>Ordered Quantity</th>
           <th>Received Quantity</th>
-            <th>Remaining Quantity</th>
+          <th>Remaining Quantity</th>
           <th>Unit Price</th>
+          <th>Amount</th>
         </tr>
   		</thead>
       <tbody>
@@ -42,7 +43,8 @@
           <td>{{ $supply->orderedquantity }}</td>
           <td>{{ $supply->receivedquantity }}</td>
           <td>{{ $supply->remainingquantity }}</td>
-          <td>{{ $supply->unitcost }}</td>
+          <td>{{ number_format($supply->unitcost, 2) }}</td>
+          <td>{{ number_format($supply->receivedquantity * $supply->unitcost, 2) }}</td>
         </tr>
         @endforeach
       @else

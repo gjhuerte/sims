@@ -1,36 +1,11 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		{{ HTML::style(asset('css/select.bootstrap.min.css')) }}
-		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-		<style>
-			#page-body{
-				display: none;
-			}
-
-			a > hover{
-				text-decoration: none;
-			}
-
-			th , tbody{
-				text-align: center;
-			}
-		</style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Supply Ledger</h3></legend>
 		<ul class="breadcrumb">
 			<li><a href="{{ url('inventory/supply') }}">Supply Inventory</a></li>
-			<li><a href="{{ url("inventory/supply/$supply->stocknumber/supplyledger") }}">{{ $supply->stocknumber }}</a></li>
+			<li><a href="{{ url("inventory/supply/$supply->stocknumber/ledgercard") }}">{{ $supply->stocknumber }}</a></li>
 			<li class="active">Accept</li>
 		</ul>
 	</section>
@@ -40,7 +15,7 @@
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-			{{ Form::open(['method'=>'post','route'=>array('supply.supplyledger.store',$supply->stocknumber),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal','id'=>'acceptForm']) }}
+			{{ Form::open(['method'=>'post','route'=>array('supply.ledgercard.store',$supply->stocknumber),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal','id'=>'acceptForm']) }}
       @if (count($errors) > 0)
           <div class="alert alert-danger alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -146,7 +121,7 @@
 			});
 
 			$('#cancel').on('click',function(){
-				window.location.href = "{{ url("inventory/supply/$supply->stocknumber/supplyledger") }}"
+				window.location.href = "{{ url("inventory/supply/$supply->stocknumber/ledgercard") }}"
 			})
 
 			$('#accept').on('click',function(){

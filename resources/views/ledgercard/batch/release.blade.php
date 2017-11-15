@@ -39,7 +39,7 @@
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-			{{ Form::open(['method'=>'post','route'=>array('supply.supplyledger.batch.release'),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal','id'=>'releaseForm']) }}
+			{{ Form::open(['method'=>'post','route'=>array('supply.ledgercard.batch.release'),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal','id'=>'releaseForm']) }}
 	        @if (count($errors) > 0)
 	            <div class="alert alert-danger alert-dismissible" role="alert">
 	            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
