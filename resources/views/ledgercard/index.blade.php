@@ -115,7 +115,7 @@
 						} },
 						{ data: function(callback){
 							try{
-								quantity = callback.balancequantity
+								quantity = callback.monthlybalancequantity
 								return quantity;
 							} catch(e) { quantity = 0; return null }
 						} },

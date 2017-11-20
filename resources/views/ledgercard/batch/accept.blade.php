@@ -37,7 +37,7 @@
 				</div>
 			</div>
 			<div class="col-md-12" style="margin-top:10px;">
-				<div class="form-group">
+				<div class="form-group" id="purchaseorder-field">
 					{{ Form::label('purchaseorder','Purchase Order',[
 							'id' => 'purchaseorder-label'
 					]) }}
@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<div class="col-md-12">
-				<div class="form-group">
+				<div class="form-group" id="dr-field">
 					{{ Form::label('Delivery Receipt') }}
 					{{ Form::text('dr',Input::old('dr'),[
 						'id' => 'dr',
@@ -172,6 +172,82 @@
 
 		$('#office').autocomplete({
 			source: "{{ url('get/office/code') }}"
+		})
+
+		$('#purchaseorder').on('change keypress keyup focus',function(){
+			purchaseorder = $('#purchaseorder').val()
+			url = "{{ url('purchaseorder/checkifexists') }}"
+
+			$.ajax({
+				type: 'get',
+				url: url,
+				dataType: 'json',
+				data: {
+					'number': purchaseorder
+				},
+				success: function(response){
+					$('#purchaseorder-info').remove()
+					if(response != null)
+					{
+						$('#purchaseorder-field').append(`
+								<div id="purchaseorder-info" style="margin-top: 10px;">
+									<ul class="list-unstyled text-muted">
+										<li>Number: `+response.number+`</li>
+										<li>Date Received: `+moment(response.date_received).format('MMMM D, YYYY')+`</li>
+										<li>Details: `+response.details+`</li>
+										<li>Supplier: `+response.supplier.name+`</li>
+									</ul>
+								</div>
+							`)
+					}else {
+						$('#purchaseorder-field').append(`
+								<div id="purchaseorder-info" style="margin-top: 10px;">
+									<ul class="list-unstyled text-muted">
+										<li> Not yet available! Create it <a href="{{ url('purchaseorder/create') }}">here</a>.
+										<br /> Note: You will be redirected to Creation of Purchase Request </li>
+									</ul>
+								</div>
+							`)
+					}
+				}
+			})
+		})
+
+		$('#dr').on('change keypress keyup focus',function(){
+			receipt = $('#dr').val()
+			url = "{{ url('receipt/checkifexists') }}"
+
+			$.ajax({
+				type: 'get',
+				url: url,
+				dataType: 'json',
+				data: {
+					'number': receipt
+				},
+				success: function(response){
+					$('#dr-info').remove()
+					if(response != null)
+					{
+						$('#dr-field').append(`
+								<div id="dr-info" style="margin-top: 10px;">
+									<ul class="list-unstyled text-muted">
+										<li>Code: `+response.number+`</li>
+										<li>Invoice: `+moment(response.date_delivered).format('MMMM D, YYYY')+`</li>
+										<li>Supplier: `+response.supplier.name+`</li>
+									</ul>
+								</div>
+							`)
+					}else {
+						$('#dr-field').append(`
+								<div id="dr-info" style="margin-top: 10px;">
+									<ul class="list-unstyled text-muted">
+										<li>No record of Receipt/Invoice found! This will create a new record.</li>
+									</ul>
+								</div>
+							`)
+					}
+				}
+			})
 		})
 
 		$('#accept').on('click',function() {

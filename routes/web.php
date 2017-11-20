@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
 	Route::get('purchaseorder/{id}/print','PurchaseOrderController@printPurchaseOrder');
+
 	Route::resource('purchaseorder','PurchaseOrderController');
 
 	Route::get('request/generate','RequestController@generate');

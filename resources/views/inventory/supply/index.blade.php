@@ -58,7 +58,11 @@
 					{ data: "details" },
 					{ data: "unit" },
 					{ data: "reorderpoint" },
+					@if(Auth::user()->access == 2)
+					{ data: "ledger_balance" },
+					@else
 					{ data: "balance" },
+					@endif
 					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 		            { data: function(callback){
 		            	return `

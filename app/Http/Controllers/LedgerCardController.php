@@ -19,14 +19,12 @@ class LedgerCardController extends Controller {
 	 */
 	public function index(Request $request, $stocknumber)
 	{
+
 		if($request->ajax())
 		{
 			return json_encode([
-				'data' => App\LedgerCard::findByStockNumber($stocknumber)
+				'data' => App\MonthlyLedgerCardView::findByStockNumber($stocknumber)
 								->get()
-								->groupBy(function($item) {
-						            return Carbon\Carbon::parse($item->date)->format('F Y');
-						        })
 			]);
 		}
 

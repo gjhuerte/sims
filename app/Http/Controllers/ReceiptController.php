@@ -65,18 +65,38 @@ class ReceiptController extends Controller
 
         if($request->ajax())
         {
+            if($id == 'checkifexists')
+            {
+
+              $number = $this->sanitizeString(Input::get("number"));
+              $receipt = App\Receipt::with('supplier')->findByNumber($number)->first();
+
+              if(count($receipt) > 0)
+              {
+                return json_encode($receipt);
+              }
+
+              return json_encode(null);
+
+            }
+
             if(Input::has('term'))
             {
                 $number = $this->sanitizeString(Input::get('term'));
                 return json_encode(
                     App\Receipt::where('number','like',"%".$number."%")
-                    ->pluck('number') 
+                    ->pluck('number')
                 );
             }
 
             return json_encode([
                 'data' => App\ReceiptSupply::with('supply')->where('receipt_number','=',$id)->get()
             ]);
+        }
+
+        if($id == 'checkifexists')
+        {
+          return view('errors.404');
         }
 
         $receipt = App\Receipt::findByNumber($id);

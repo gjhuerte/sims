@@ -491,6 +491,7 @@ class ComposerStaticInit4016c2a7c8b4ab300d66f97697ef5e1f
         'CreateFundClustersTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_13_011737_create_fund_clusters_table.php',
         'CreateLanguagesTable' => __DIR__ . '/../..' . '/database/migrations/2015_09_07_190535_create_languages_table.php',
         'CreateLedgerCardsTable' => __DIR__ . '/../..' . '/database/migrations/2017_08_04_161939_create_ledger_cards_table.php',
+        'CreateMonthlyledgerView' => __DIR__ . '/../..' . '/database/migrations/2017_11_20_051759_create_monthlyledger_view.php',
         'CreateOfficesPositionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_02_08_145423_create_offices_positions_table.php',
         'CreateOfficesTable' => __DIR__ . '/../..' . '/database/migrations/2017_02_08_073456_create_offices_table.php',
         'CreatePagesTable' => __DIR__ . '/../..' . '/database/migrations/2016_05_25_121918_create_pages_table.php',

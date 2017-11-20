@@ -99,11 +99,11 @@ class PurchaseOrderController extends Controller
             $supply->receivedquantity = 0;
             $supply->save();
         }
-        
+
         DB::commit();
 
         \Alert::success('Operation Successful')->flash();
-        return redirect('purchaseorder');
+        return redirect()->back();
     }
 
     /**
@@ -116,12 +116,26 @@ class PurchaseOrderController extends Controller
     {
         if($request->ajax())
         {
+
+            if($id == 'checkifexists')
+            {
+                $number = $this->sanitizeString(Input::get('number'));
+                $purchaseorder = App\PurchaseOrder::with('supplier')->findByNumber($number)->first();
+
+                if(count($purchaseorder) > 0)
+                {
+                  return json_encode($purchaseorder);
+                }
+
+                return json_encode(null);
+            }
+            
             if(Input::has('term'))
             {
                 $number = $this->sanitizeString(Input::get('term'));
                 return json_encode(
                     App\PurchaseOrder::where('number','like',"%".$number."%")
-                    ->pluck('number') 
+                    ->pluck('number')
                 );
             }
 
@@ -132,11 +146,21 @@ class PurchaseOrderController extends Controller
             ]);
         }
 
+        if($id == 'checkifexists')
+        {
+          return view('errors.404');
+        }
+
         $purchaseorder = App\PurchaseOrder::find($id);
 
-        return view('purchaseorder.show')
-                ->with('purchaseorder',$purchaseorder)
-                ->with('title',$purchaseorder->purchaseorderno);
+        if(isset($purchaseorder->number))
+        {
+          return view('purchaseorder.show')
+                  ->with('purchaseorder',$purchaseorder)
+                  ->with('title',$purchaseorder->number);
+        }
+
+        return view('errors.404');
     }
 
     /**

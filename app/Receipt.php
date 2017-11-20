@@ -19,6 +19,11 @@ class Receipt extends Model
     	'supplier_name'
     ];
 
+    public function supplier()
+    {
+      return $this->belongsTo('App\Supplier','supplier_name','name');
+    }
+
     public function setReceivedByAttribute($value)
     {
     	$this->received_by = Auth::user()->id;
