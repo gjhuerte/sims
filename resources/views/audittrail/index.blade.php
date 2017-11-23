@@ -50,7 +50,6 @@
 @endsection
 
 @section('after_scripts')
-	{{ HTML::script(asset('js/moment.min.js')) }}
 
 <script>
 	$(document).ready(function() {

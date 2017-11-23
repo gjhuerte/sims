@@ -22,7 +22,7 @@ class CreateStockCardsTable extends Migration
                     ->references('stocknumber')
                     ->on('supplies')
                     ->onDelete('cascade');
-            $table->string('reference',100);
+            $table->string('reference',100)->nullable();
             $table->string('receipt',100)->nullable();
             $table->string('organization',100);
             $table->integer('received')->default(0);

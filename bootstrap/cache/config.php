@@ -153,6 +153,7 @@
       'setup_dashboard_routes' => false,
       'user_model_fqn' => '\\App\\User',
       'license_code' => false,
+      'organization' => 'Assets Management Office',
       'username' => 'Username',
     ),
     'crud' => 

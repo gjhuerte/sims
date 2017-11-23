@@ -21,7 +21,7 @@ class CreateLedgerCardsTable extends Migration
                     ->references('stocknumber')
                     ->on('supplies')
                     ->onDelete('cascade');
-            $table->string('reference',100);
+            $table->string('reference',100)->nullable();
             $table->string('receipt')->nullable();             
             $table->integer('receivedquantity')->default(0);
             $table->decimal('receivedunitprice')->default(0);

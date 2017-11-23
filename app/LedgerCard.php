@@ -26,7 +26,7 @@ class LedgerCard extends Model{
 	public static $receiptRules = array(
 		'Date' => 'required',
 		'Stock Number' => 'required',
-		'Purchase Order' => 'required|exists:purchaseorders,number',
+		'Purchase Order' => 'nullable|exists:purchaseorders,number',
 		'Receipt Quantity' => 'required',
 		'Receipt Unit Price' => 'required',
 		'Days To Consume' => 'max:100'
@@ -139,13 +139,13 @@ class LedgerCard extends Model{
 									->where('stocknumber','=',$this->stocknumber)
 									->first();
 
-		if( count($supply) > 0 )
-		{
+		if( count($supply) <= 0 )
+		// {
 
-			$supply->quantity = $this->received + $supply->quantity;
-			$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
-		}
-		else
+		// 	$supply->quantity = $this->received + $supply->quantity;
+		// 	$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
+		// }
+		// else
 		{
 			$supply = new ReceiptSupply;
 			$supply->receipt_number = $this->receipt;

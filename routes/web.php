@@ -14,6 +14,7 @@
 Route::middleware(['auth'])->group(function(){
 
 	Route::get('/', 'HomeController@index');
+	Route::get('import','ImportController@index');
 	Route::get('settings',['as'=>'settings.edit','uses'=>'SessionsController@edit']);
 	Route::post('settings',['as'=>'settings.update','uses'=>'SessionsController@update']);
 	Route::get('logout', 'Auth\LoginController@logout');
@@ -23,6 +24,8 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
 
 	Route::get('rsmi/months','RSMIController@getAllMonths');
+
+	Route::get('rsmi/{date}/print','RSMIController@print');
 
 	Route::get('rsmi','RSMIController@index');
 

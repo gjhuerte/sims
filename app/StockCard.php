@@ -16,8 +16,8 @@ class StockCard extends Model{
 	public static $receiptRules = array(
 		'Date' => 'required',
 		'Stock Number' => 'required',
-		'Purchase Order' => 'exists:purchaseorders,number',
-		'Delivery Receipt' => '',
+		'Purchase Order' => 'nullable|exists:purchaseorders,number',
+		'Delivery Receipt' => 'required',
 		'Office' => '',
 		'Receipt Quantity' => 'required|integer',
 		'Days To Consume' => 'max:100'
@@ -168,32 +168,6 @@ class StockCard extends Model{
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
 		$username =  $firstname . " " . $middlename . " " . $lastname;
-
-		// $receipt = ReceiptSupply::where('stocknumber','=',$this->stocknumber)
-		// 						->where('remaining_quantity','>',0)
-		// 						->get();
-
-
-		// foreach($receipt as $receipt)
-		// {
-		// 	if($this->issued > 0)
-		// 	{
-		// 		if($receipt->remaining_quantity >= $this->issued)
-		// 		{
-		// 			$receipt->remaining_quantity = $receipt->remaining_quantity - $this->issued;
-		// 			$this->issued = 0;
-		// 		}
-		// 		else
-		// 		{
-		// 			$this->issued = $this->issued - $receipt->remaining_quantity;
-		// 			$receipt->remaining_quantity = 0;
-		// 		}
-
-		// 		$receipt->save();
-		// 	}
-		// }
-
-		// $this->issued = $issued;
 
 		$purchaseorder = PurchaseOrderSupply::where('stocknumber','=',$this->stocknumber)
 												->where('remainingquantity','>',0)

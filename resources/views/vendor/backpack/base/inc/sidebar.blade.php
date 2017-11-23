@@ -11,7 +11,15 @@
           </div>
           <div class="pull-left info">
             <p>{{ Auth::user()->name }}</p>
-            <a href="#"><i class="fa fa-circle text-success"></i> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }} </a>
+            <a href="#">
+              <i class="fa fa-circle text-success"></i> 
+              <span>
+              {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
+              @if(isset(Auth::user()->position))
+              ( {{  ucfirst(Auth::user()->position) }} )
+              @endif
+              </span>
+            </a>
           </div>
         </div>
         <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -80,6 +88,7 @@
           <li><a href="{{ url('account') }}"><i class="fa fa-users" aria-hidden="true"></i> Accounts</span></a></li>
 
           <li><a href="{{ url('audittrail') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>Audit Trail</span></a></li>
+          <li><a href="{{ url('import') }}"><i class="fa fa-upload" aria-hidden="true"></i> <span>Import</span></a></li>
           @endif
 
           <!-- ======================================= -->

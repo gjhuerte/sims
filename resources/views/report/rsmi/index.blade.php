@@ -10,56 +10,61 @@
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-    	<div>
+		<button type="button" href="{{ url("rsmi/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+			<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+			<span id="nav-text"> Print</span>
+		</button>
+		<hr />
 
-			  <!-- Nav tabs -->
-			  <ul class="nav nav-tabs" role="tablist">
-			    <li role="presentation" class="active"><a href="#total" aria-controls="total" role="tab" data-toggle="tab">Issued Slip</a></li>
-			    <li role="presentation"><a href="#recap" aria-controls="recap" role="tab" data-toggle="tab">Supply</a></li>
-			  </ul>
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active">
+				<a href="#total" aria-controls="total" role="tab" data-toggle="tab">Requisition and Issue Slip</a></li>
+			<li role="presentation"><a href="#recap" aria-controls="recap" role="tab" data-toggle="tab">Recapitulation</a></li>
+		</ul>
 
-			  <!-- Tab panes -->
-			  <div class="tab-content">
-			    <div role="tabpanel" class="tab-pane fade in active" id="total" style="padding:10px;">
-					    	
-					<table class="table table-hover table-striped table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%">
-						<thead>
-							<tr>
-								<th>RIS No.</th>
-								<th>Responsibility Center Code</th>
-								<th>Stock No.</th>
-								<th>Item</th>
-								<th>Unit</th>
-								<th>Qty Issued</th>
-								<th>Unit Cost</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
-					</table>
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane fade in active" id="total" style="padding:10px;">
+				    	
+				<table class="table table-hover table-striped table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>RIS No.</th>
+							<th>Responsibility Center Code</th>
+							<th>Stock No.</th>
+							<th>Item</th>
+							<th>Unit</th>
+							<th>Qty Issued</th>
+							<th>Unit Cost</th>
+							<th>Amount</th>
+						</tr>
+					</thead>
+				</table>
 
-			    </div>
-			    <div role="tabpanel" class="tab-pane fade" id="recap" style="padding:10px;">
+		    </div>
+		    <div role="tabpanel" class="tab-pane fade" id="recap" style="padding:10px;">
 
-					<table class="table table-hover table-striped table-bordered table-condensed" id="rsmiTotalTable" cellspacing="0" width="100%">
-						<thead>
-		            <tr rowspan="2">
-		                <th class="text-left text-center" colspan="8">Recapitulation</th>
-		            </tr>
-							<tr>
-								<th>Stock No.</th>
-								<th>Qty</th>
-								<th>Item Description</th>
-								<th>Unit Cost</th>
-								<th>Total Cost</th>
-								<th>UACS Object Code</th>
-							</tr>
-						</thead>
-					</table>
-			    	
-			    </div>
-			  </div>
+				<table class="table table-hover table-striped table-bordered table-condensed" id="rsmiTotalTable" cellspacing="0" width="100%">
+					<thead>
+	            <tr rowspan="2">
+	                <th class="text-left text-center" colspan="8">Recapitulation</th>
+	            </tr>
+						<tr>
+							<th>Stock No.</th>
+							<th>Qty</th>
+							<th>Item Description</th>
+							<th>Unit Cost</th>
+							<th>Total Cost</th>
+							<th>UACS Object Code</th>
+						</tr>
+					</thead>
+				</table>
+		    	
+		    </div>
+		  </div>
 
-			</div>
+		</div>
 
     </div><!-- /.box-body -->
   </div><!-- /.box -->
@@ -91,7 +96,7 @@
 					{ data: "issued" },
 					{ data: "cost"},
 					{ data: function(callback){
-						return callback.issued * callback.cost
+						return (callback.issued * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 					}},
 			],
 	    });
@@ -109,9 +114,11 @@
 					{ data: "stocknumber" },
 					{ data: "issued" },
 					{ data: "details"},
-					{ data: "cost"},
 					{ data: function(callback){
-						return callback.issued * callback.cost
+						return parseFloat(callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+					}},
+					{ data: function(callback){
+						return (callback.issued * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 					}},
 					{ data: function(){
 						return ""
@@ -131,7 +138,8 @@
     		success: function(response){
     			option = ""
     			$.each(response.data,function(obj){
-    				option += `<option val='` + moment(obj).format("MMM YYYY") + `'>` + moment(obj).format("MMM YYYY") + `</option>'`
+	    			date = moment(obj,"MM YYYY").format("MMM YYYY")
+    				option += `<option val='` + date + `'>` + date + `</option>'`
     				$('#month').html("")
     				$('#month').append(option)
     			})
@@ -156,6 +164,12 @@
     		rsmitable.ajax.url(rsmitableurl).load()
     		rsmitotaltable.ajax.url(rsmitotaltableurl).load()
     	}
+
+    	$('#print').on('click',function(){
+    		month = $('#month').val()
+    		url = "{{ url('rsmi') }}" + '/' + month + '/print'
+    		window.open(url, '_blank');
+    	})
 	} );
 </script>
 @endsection
