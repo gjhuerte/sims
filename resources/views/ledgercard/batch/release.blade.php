@@ -1,30 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		{{ HTML::style(asset('css/select.bootstrap.min.css')) }}
-		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-		<style>
-			#page-body{
-				display: none;
-			}
-
-			a > hover{
-				text-decoration: none;
-			}
-
-			th , tbody{
-				text-align: center;
-			}
-		</style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Batch Release</h3></legend>
@@ -36,29 +11,22 @@
 @endsection
 
 @section('content')
+@include('modal.request.supply')
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-			{{ Form::open(['method'=>'post','route'=>array('supply.ledgercard.batch.release'),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal','id'=>'releaseForm']) }}
-	        @if (count($errors) > 0)
-	            <div class="alert alert-danger alert-dismissible" role="alert">
-	            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	                <ul style='margin-left: 10px;'>
-	                    @foreach ($errors->all() as $error)
-	                        <li>{{ $error }}</li>
-	                    @endforeach
-	                </ul>
-	            </div>
-	        @endif
-			<!-- <div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('Office') }}
-					{{ Form::text('office',Input::old('office'),[
-						'id' => 'office',
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div> -->
+		{{ Form::open(['method'=>'post','route'=>array('supply.ledgercard.batch.release'),'class'=>'form-horizontal','id'=>'releaseForm']) }}
+        @if (count($errors) > 0)
+            <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <ul style='margin-left: 10px;'>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div class="col-md-6">
 			<div class="col-md-12">
 				<div class="form-group">
 					{{ Form::label('Requisition Issuance Slip') }}
@@ -67,6 +35,16 @@
 					]) }}
 				</div>
 			</div>
+        	<div class="col-md-12">
+				<div class="form-group">
+					{{ Form::label('Office') }}
+					{{ Form::text('office',Input::old('office'),[
+						'id' => 'office',
+						'class' => 'form-control'
+					]) }}
+				</div>
+			</div>
+			<div id="office-details"></div>
 			<div class="col-md-12">
 				<div class="form-group">
 					{{ Form::label('Date') }}
@@ -86,15 +64,19 @@
 						'class' => 'form-control',
 					]) }}
 				</div>
-			</div>
-			<legend></legend>
+			</div>		
 			<div class="form-group">
 				<div class="col-md-12">
 				{{ Form::label('stocknumber','Stock Number') }}
+				</div>
+				<div class="col-md-9">
 				{{ Form::text('stocknumber',null,[
 					'id' => 'stocknumber',
 					'class' => 'form-control'
 				]) }}
+				</div>
+				<div class="col-md-1">
+					<button type="button" id="add-stocknumber" class="btn btn-sm btn-primary">Select</button>
 				</div>
 			</div>
 			<input type="hidden" id="supply-item" />
@@ -111,24 +93,45 @@
 			</div>
 			<div class="col-md-12">
 				<div class="form-group">
-				{{ Form::label('Unit Price') }}
+				{{ Form::label('Computation Type:') }}
+				<input type="radio" id="fifo" name="computation_type" value="fifo" /> FIFO (First In First Out)
+				<input type="radio" id="averaging" name="computation_type" value="averaging" checked/> Averaging
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-12">
+				{{ Form::label('Unit Cost') }}
+				</div>
+				<div class="col-md-9">
 				{{ Form::text('unitprice','',[
 					'id' => 'unitprice',
-					'class' => 'form-control'
+					'class' => 'form-control',
+					'readonly',
+					'style' => 'background-color:white;'
 				]) }}
+				</div>
+				<div class="col-md-1">
+					<button type="button" id="compute" class="btn btn-sm btn-primary">Compute</button>
+				</div>
+				<div class="col-md-12">
+					<p style="font-size:12px;">
+						Click the button beside the field to generate price. 
+						<br /><span class="text-danger">Note:</span> The Stock Number and Quantity fields must have value before generating Unit Cost</p>
 				</div>
 			</div>
 			<div class="btn-group" style="margin-bottom: 20px">
 				<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
 			</div>
-			<legend></legend>
+		</div>
+		<div class="col-md-6">
+			<legend>Supplies List</legend>
 			<table class="table table-hover table-condensed table-bordered" id="supplyTable">
 				<thead>
 					<tr>
 						<th>Stock Number</th>
 						<th>Information</th>
 						<th>Quantity</th>
-						<th>Unit Price</th>
+						<th>Unit Cost</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -143,35 +146,24 @@
 				</div>
 			</div>
 			{{ Form::close() }}
-
+		</div>
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-		{{ HTML::script(asset('js/moment.min.js')) }}
-
 <script>
 $('document').ready(function(){
 
 	$('#stocknumber').autocomplete({
 		source: "{{ url("get/inventory/supply/stocknumber") }}"
 	})
-/*
+
 	$('#office').autocomplete({
 		source: "{{ url('get/office/code') }}"
 	})
-*/
+
 	$('#release').on('click',function(){
 		if($('#supplyTable > tbody > tr').length == 0)
 		{
@@ -201,41 +193,67 @@ $('document').ready(function(){
 		window.location.href = "{{ url('inventory/supply') }}"
 	})
 
-	$('#stocknumber').on('change',function(){
-			$.ajax({
-				type: 'get',
-				url: '{{ url('get/supply') }}' +  '/' + $('#stocknumber').val() + '/balance',
-				dataType: 'json',
-				success: function(response){
-					try{
-						details = response.data[0].supplytype
-						$('#supply-item').val(details.toString())
-						$('#stocknumber-details').html(`
-							<div class="alert alert-warning">
-								<ul class="list-unstyled">
-									<li><strong>Item:</strong> ` + response.data[0].supplytype + ` </li>
-									<li><strong>Remaining Balance:</strong> `
-									+ (response.data[0].totalreceiptquantity-response.data[0].totalissuequantity) +
-									`</li>
-								</ul>
-							</div>
+	$('#office').on('change',function(){
+		$.ajax({
+			type: 'get',
+			url: '{{ url('maintenance/office') }}' +  '/' + $('#office').val() ,
+			dataType: 'json',
+			success: function(response){
+				try{
+					if(response.data.name)
+					{
+						$('#office-details').html(`
+							<p class="text-success"><strong>Office: </strong> ` + response.data.name + ` </p>
 						`)
-
-						$('#add').show()
-					} catch (e) {
-						$('#stocknumber-details').html(`
-							<div class="alert alert-danger">
-								<ul class="list-unstyled">
-									<li>Invalid Property Number</li>
-								</ul>
-							</div>
-						`)
-
-						$('#add').hide()
 					}
+					else
+					{
+						$('#office-details').html(`
+							<p class="text-danger"><strong>Error! </strong> Office not found </p>
+						`)
+					}
+				} catch (e) {
+					$('#office-details').html(`
+						<p class="text-danger"><strong>Error! </strong> Office not found </p>
+					`)
 				}
+			}
 		})
 	})
+
+	function setStockNumberDetails(){
+		$.ajax({
+			type: 'get',
+			url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
+			dataType: 'json',
+			success: function(response){
+				try{
+					details = response.data.details
+					$('#supply-item').val(details.toString())
+					$('#stocknumber-details').html(`
+						<div class="alert alert-info">
+							<ul class="list-unstyled">
+								<li><strong>Item:</strong> ` + details + ` </li>
+								<li><strong>Remaining Balance:</strong> `
+								+ response.data.ledger_balance +
+								`</li>
+							</ul>
+						</div>
+					`)
+
+					$('#unitprice').val("");
+				} catch (e) {
+					$('#stocknumber-details').html(`
+						<div class="alert alert-danger">
+							<ul class="list-unstyled">
+								<li>Invalid Property Number</li>
+							</ul>
+						</div>
+					`)
+				}
+			}
+		})
+	}
 
 	$( "#date" ).datepicker({
 		  changeMonth: true,
@@ -326,15 +344,65 @@ $('document').ready(function(){
 			$(object).val(date);
 	}
 
-	@if( Session::has("success-message") )
-		swal("Success!","{{ Session::pull('success-message') }}","success");
-	@endif
+    $('#stocknumber').on('change',function(){
+      setStockNumberDetails()
+    })
 
-	@if( Session::has("error-message") )
-		swal("Oops...","{{ Session::pull('error-message') }}","error");
-	@endif
+    $('#add-stocknumber').on('click',function(){
+      $('#addStockNumberModal').modal('show');
+    })
 
-	$('#page-body').show()
+    $('#supplyInventoryTable').on('click','.add-stock',function(){
+      $('#stocknumber').val($(this).data('id'))
+      $('#addStockNumberModal').modal('hide')
+      setStockNumberDetails()
+    })
+
+    var table = $('#supplyInventoryTable').DataTable({
+      language: {
+          searchPlaceholder: "Search..."
+      },
+      "processing": true,
+      ajax: "{{ url('maintenance/supply') }}",
+      columns: [
+          { data: "stocknumber" },
+          { data: "details" },
+          { data: function(callback){
+            return `
+              <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>
+            `;
+          } }
+      ],
+    });
+
+    $('#compute').on('click',function(){
+    	type = "undefined"
+    	stocknumber = $('#stocknumber').val()
+    	quantity = $('#quantity').val()
+
+    	if($('#fifo').is(':checked'))
+    	{
+    		type = "fifo"
+    	}
+
+    	if($('#averaging').is(":checked"))
+    	{
+    		type = "averaging"
+    	}
+
+		$.ajax({
+			type: 'get',
+			url: '{{ url('inventory/supply/ledgercard') }}' +  '/' + type  + '/computecost' ,
+			dataType: 'json',
+			data:{
+				'quantity' : quantity,
+				'stocknumber' : stocknumber
+			},
+			success: function(response){
+				$('#unitprice').val(response);
+			}
+		})
+    })
 })
 </script>
 @endsection

@@ -89,7 +89,7 @@
 							return moment(callback.date).format('MMMM Y')
 						} },
 						{ data: function(callback){
-							return callback.reference + " - " + callback.receipt
+							return ""
 						} },
 						{ data: "receivedquantity"},
 						{ data: function(callback){
@@ -99,7 +99,7 @@
 						} },
 						{ data: function(callback){
 							try {
-								return (callback.receivedquantity * callback.receivedunitprice).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return (callback.receivedquantity * callback.receivedunitprice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch (e) { return null }
 						} },
 						{ data: "issuedquantity" },
@@ -110,7 +110,7 @@
 						} },
 						{ data: function(callback){
 							try {
-								return (callback.issuedquantity * callback.issuedunitprice).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return (callback.issuedquantity * callback.issuedunitprice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch (e) { return null }
 						} },
 						{ data: function(callback){
@@ -141,7 +141,7 @@
 	    });
 
 	 	$("div.toolbar").html(`
-			<a href="{{ url("inventory/supply/$supply->stocknumber/ledgercard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+			<a href="{{ url("inventory/supply/$supply->stocknumber/ledgercard/printSummary") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 				<span id="nav-text"> Print</span>
 			</a>

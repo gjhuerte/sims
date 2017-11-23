@@ -12,13 +12,9 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Input;
 class ReportsController extends Controller
 {
-    function getRSMIView()
-    {
-    	return view('report.rsmi.index');
-    }
 
     function fundcluster()
     {
-    	return View::make('report.fundcluster.index');
+    	return view('report.fundcluster.index');
     }
 }

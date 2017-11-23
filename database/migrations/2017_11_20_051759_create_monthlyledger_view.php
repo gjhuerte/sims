@@ -16,35 +16,19 @@ class CreateMonthlyledgerView extends Migration
         DB::statement("
           create view monthlyledger_v as
           select
-        	date,
-        	stocknumber,
-        	reference,
-        	receipt,
-        	sum(receivedquantity) as receivedquantity,
-        	avg(receivedunitprice) as receivedunitprice,
-        	sum(issuedquantity) as issuedquantity,
-        	avg(issuedunitprice) as issuedunitprice,
-        	daystoconsume,
-        	created_by,
-        	created_at,
-        	updated_at
+          date,
+          stocknumber,
+          sum(receivedquantity) as receivedquantity,
+          avg(receivedunitprice) as receivedunitprice,
+          sum(issuedquantity) as issuedquantity,
+          avg(issuedunitprice) as issuedunitprice
         from ledgercards
         GROUP BY
-        	year(date),
-        	month(date),
-        	date,
-        	stocknumber,
-        	reference,
-        	receipt,
-        	receivedquantity,
-        	receivedunitprice,
-        	issuedquantity,
-        	issuedunitprice,
-        	daystoconsume,
-        	created_by,
-        	created_at,
-        	updated_at
-        ")
+          year(date),
+          month(date),  
+          date,
+          stocknumber 
+        ");
     }
 
     /**
@@ -54,6 +38,6 @@ class CreateMonthlyledgerView extends Migration
      */
     public function down()
     {
-        DB::statement("drop view if exists monthlyledger_v")
+        DB::statement("drop view if exists monthlyledger_v");
     }
 }

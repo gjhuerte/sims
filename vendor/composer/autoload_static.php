@@ -504,6 +504,7 @@ class ComposerStaticInit4016c2a7c8b4ab300d66f97697ef5e1f
         'CreateRequestsSuppliesTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_22_062016_create_requests_supplies_table.php',
         'CreateRequestsTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_22_061655_create_requests_table.php',
         'CreateRevisionsTable' => __DIR__ . '/..' . '/venturecraft/revisionable/src/migrations/2013_04_09_062329_create_revisions_table.php',
+        'CreateRsmiView' => __DIR__ . '/../..' . '/database/migrations/2017_11_23_110722_create_rsmi_view.php',
         'CreateSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2015_08_04_131614_create_settings_table.php',
         'CreateStockCardsTable' => __DIR__ . '/../..' . '/database/migrations/2017_08_04_161920_create_stock_cards_table.php',
         'CreateSuppliersTable' => __DIR__ . '/../..' . '/database/migrations/2017_08_04_141502_create_suppliers_table.php',

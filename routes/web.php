@@ -21,9 +21,14 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('inventory/supply/rsmi','RSMIController@rsmi');
 	Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
 	Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
-	Route::get('get/supply/inventory/stockcard/months/all','RSMIController@getAllMonths');
 
-	Route::get('report/rsmi','ReportsController@getRSMIView');
+	Route::get('rsmi/months','RSMIController@getAllMonths');
+
+	Route::get('rsmi','RSMIController@index');
+
+	Route::get('rsmi/{date}','RSMIController@getIssued');
+
+	Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
 
 	Route::get('report/fundcluster','ReportsController@getFundClusterView');
 
@@ -31,6 +36,8 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('report/fundcluster','ReportsController@fundcluster');
 
 	Route::get('dashboard','DashboardController@index');
+
+	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
 
 	/*
 	|
@@ -67,11 +74,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('get/ledgercard/checkifexisting',[
 		'as' => 'ledgercard.checkifexisting',
 		'uses' => 'LedgerCardController@checkIfLedgerCardExists'
-	]);
-
-	Route::post('get/ledgercard/copy',[
-		'as' => 'ledgercard.copy',
-		'uses' => 'LedgerCardController@release'
 	]);
 
 	Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
@@ -147,6 +149,8 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('inventory/supply/{id}/ledgercard/release','LedgerCardController@releaseForm');
 
 		Route::get('inventory/supply/{id}/ledgercard/print','LedgerCardController@printLedgerCard');
+
+		Route::get('inventory/supply/{id}/ledgercard/printSummary','LedgerCardController@printSummaryLedgerCard');
 
 		Route::get('inventory/supply/ledgercard/print','LedgerCardController@printAllLedgerCard');
 

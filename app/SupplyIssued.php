@@ -26,15 +26,15 @@ class RSMIView extends Model
 	public static function getAllMonths()
 	{
 		return RSMIView::select(
-								DB::raw("concat_ws(' ',YEAR(date),MONTH(date)) as year")
-							)
-							->groupBy(
-								DB::raw("concat_ws(YEAR(date),MONTH(date))"),
-								DB::raw("MONTH(date)"),
-								'date'
-							)
-							->orderBy('date','desc')
-							->distinct()
-							->pluck('year');	
+					DB::raw("concat_ws(' ',YEAR(date),MONTH(date)) as year")
+				)
+				->groupBy(
+					DB::raw("concat_ws(YEAR(date),MONTH(date))"),
+					DB::raw("MONTH(date)"),
+					'date'
+				)
+				->orderBy('date','desc')
+				->distinct()
+				->pluck('year');	
 	}
 }

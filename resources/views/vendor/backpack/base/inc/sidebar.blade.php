@@ -94,7 +94,7 @@
           @if(Auth::user()->access == 1 || Auth::user()->access == 2)
           <li class="header">Reports</li>
 
-          <li><a href="{{ url('report/rsmi') }}"><i class="fa fa-ticket" aria-hidden="true"></i> <span> R. S. M. I. </span></a></li>
+          <li><a href="{{ url('rsmi') }}"><i class="fa fa-ticket" aria-hidden="true"></i> <span> R. S. M. I. </span></a></li>
           @endif
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/logout') }}"><i class="fa fa-sign-out"></i> <span>{{ trans('backpack::base.logout') }}</span></a></li>

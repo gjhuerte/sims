@@ -19,7 +19,6 @@ class LedgerCardController extends Controller {
 	 */
 	public function index(Request $request, $stocknumber)
 	{
-
 		if($request->ajax())
 		{
 			return json_encode([
@@ -108,6 +107,7 @@ class LedgerCardController extends Controller {
 	 */
 	public function show(Request $request, $id,$month)
 	{
+
 		if($request->ajax())
 		{
 			$transaction = StockCard::with('supply')->findByStockNumber($id)->get();
@@ -277,26 +277,30 @@ class LedgerCardController extends Controller {
 		$reference = $this->sanitizeString(Input::get('reference'));
 		$date = $this->sanitizeString(Input::get('date'));
 		$daystoconsume = $this->sanitizeString(Input::get("daystoconsume"));
-		$stocknumber = Input::get("stocknumber");
+		$stocknumbers = Input::get("stocknumber");
 		$issuequantity = Input::get("quantity");
 		$issueunitprice = Input::get("unitprice");
 
-		foreach($stocknumber as $_stocknumber)
+		DB::beginTransaction();
+
+		foreach($stocknumbers as $stocknumber)
 		{
 			$validator = Validator::make([
 				'Stock Number' => $stocknumber,
 				'Requisition and Issue Slip' => $reference,
 				'Date' => $date,
-				'Issue Quantity' => $issuequantity["$_stocknumber"],
-				'Issue Unit Price' => $issueunitprice["$_stocknumber"],
+				'Issue Quantity' => $issuequantity["$stocknumber"],
+				'Issue Unit Price' => $issueunitprice["$stocknumber"],
 				'Days To Consume' => $daystoconsume
 			],App\LedgerCard::$issueRules);
 
 			if($validator->fails())
 			{
+				DB::rollback();
+
 				return redirect("inventory/supply/ledgercard/batch/form/release")
-						->with('total',count($stocknumber))
-						->with('stocknumber',$stocknumber)
+						->with('total',count($stocknumbers))
+						->with('stocknumber',$stocknumbers)
 						->with('quantity',$issuequantity)
 						->with('unitprice',$issueunitprice)
 						->with('daystoconsume',$daystoconsume)
@@ -304,11 +308,18 @@ class LedgerCardController extends Controller {
 						->withErrors($validator);
 			}
 		}
+		$transaction = new App\LedgerCard;
+		$transaction->date = Carbon\Carbon::parse($date);
+		$transaction->stocknumber = $stocknumber;
+		$transaction->reference = $reference;
+		$transaction->issuedquantity = $issuequantity["$stocknumber"];
+		$transaction->receivedunitprice = $issueunitprice["$stocknumber"];
+		$transaction->issuedunitprice = $issueunitprice["$stocknumber"];
+		$transaction->daystoconsume = $daystoconsume;
+		$transaction->created_by = Auth::user()->id;
+		$transaction->issue();
 
-		foreach($stocknumber as $_stocknumber)
-		{
-			App\LedgerCard::issue($date,$_stocknumber,$reference,$issuequantity["$_stocknumber"],$issueunitprice["$_stocknumber"],$daystoconsume);
-		}
+		DB::commit();
 
 		\Alert::success('Supplies Released')->flash();
 		return redirect('inventory/supply');
@@ -340,6 +351,22 @@ class LedgerCardController extends Controller {
 
 	}
 
+	public function printSummaryLedgerCard($stocknumber)
+	{
+		$ledgercard = App\MonthlyLedgerCardView::findByStockNumber($stocknumber)
+								->get();
+
+		$supply = App\Supply::find($stocknumber);
+
+		$data = ['supply' => $supply, 'ledgercard' => $ledgercard ];
+
+		$filename = "App\LedgerCardSummary-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
+		$view = "ledgercard.print_index";
+
+		return $this->printPreview($view,$data,$filename);
+
+	}
+
 	public function printLedgerCard($stocknumber)
 	{
 
@@ -348,11 +375,54 @@ class LedgerCardController extends Controller {
 
 		$data = ['supply' => $supply, 'ledgercard' => $ledgercard ];
 
-		$filename = "App\LedgerCardCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
-		$view = "ledgercard.print_index";
+		$filename = "App\LedgerCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
+		$view = "ledgercard.print_show";
 
 		return $this->printPreview($view,$data,$filename);
 
+	}
+
+	public function computeCost(Request $request, $type)
+	{
+		if($request->ajax())
+		{
+			$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
+			$quantity = $this->sanitizeString(Input::get('quantity'));
+			if($type == 'fifo')
+			{
+
+				$supply = App\ReceiptSupply::findByStockNumber($stocknumber)
+										->join('receipts','number','=','receipts_supplies.receipt_number')
+										->orderBy('date_delivered','desc')
+										->where('remaining_quantity','>',0)
+										->select('cost')
+										->pluck('cost');
+
+				if(count($supply) > 0)
+				{
+					return json_encode($supply);	
+				}
+
+			}
+			else
+			{
+
+				$supply = App\ReceiptSupply::findByStockNumber($stocknumber)
+										->where('remaining_quantity','>',0)
+										->select('cost')
+										->pluck('cost');
+
+				if(count($supply) > 0)
+				{
+					$total = $supply->sum();
+					$count = count($supply);
+
+					return json_encode($total/$count);
+				}
+			}
+
+			return json_encode(0);
+		}
 	}
 
 }

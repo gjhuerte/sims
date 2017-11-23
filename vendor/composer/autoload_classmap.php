@@ -26,6 +26,7 @@ return array(
     'CreateRequestsSuppliesTable' => $baseDir . '/database/migrations/2017_10_22_062016_create_requests_supplies_table.php',
     'CreateRequestsTable' => $baseDir . '/database/migrations/2017_10_22_061655_create_requests_table.php',
     'CreateRevisionsTable' => $vendorDir . '/venturecraft/revisionable/src/migrations/2013_04_09_062329_create_revisions_table.php',
+    'CreateRsmiView' => $baseDir . '/database/migrations/2017_11_23_110722_create_rsmi_view.php',
     'CreateSettingsTable' => $baseDir . '/database/migrations/2015_08_04_131614_create_settings_table.php',
     'CreateStockCardsTable' => $baseDir . '/database/migrations/2017_08_04_161920_create_stock_cards_table.php',
     'CreateSuppliersTable' => $baseDir . '/database/migrations/2017_08_04_141502_create_suppliers_table.php',

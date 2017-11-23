@@ -10,8 +10,22 @@ class ReceiptSupply extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
 
+	protected $appends = [
+		'total_cost'
+	];
+
     public function supply()
     {
     	return $this->belongsTo('App\Supply','stocknumber','stocknumber');
     }
+
+    public function scopeFindByStockNumber($query,$value)
+    {
+    	return $query->where('stocknumber','=',$value);
+    }
+
+	public function getTotalCostAttribute($value)
+	{
+		return $this->cost * $this->remaining_quantity;
+	}
 }

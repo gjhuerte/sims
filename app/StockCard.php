@@ -44,6 +44,20 @@ class StockCard extends Model{
 		return Carbon\Carbon::parse($value)->toFormattedDateString();
 	}
 
+	public function scopeFilterByMonth($query, $date)
+	{
+
+		return $query->whereBetween('date',[
+					$date->startOfMonth()->toDateString(),
+					$date->endOfMonth()->toDateString()
+				]);
+	}
+
+	public function scopeFilterByIssued($query)
+	{
+		return $query->where('issued','>',0);
+	}
+
 	/*
 	*
 	*	Referencing to Supply Table

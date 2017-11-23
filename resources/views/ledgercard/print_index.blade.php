@@ -47,25 +47,30 @@
         @foreach($ledgercard as $ledgercard)
           <tr>
             <td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M Y') }}</td>
-            <td>{{ $ledgercard->reference }}</td>
+            <td></td>
+
             <td>{{ $ledgercard->receivedquantity }}</td>
             <td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
             <td>{{ number_format($ledgercard->receivedquantity * $ledgercard->receivedunitprice, 2) }}</td>
+
             <td>{{ $ledgercard->issuedquantity }}</td>
             <td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
             <td>{{ number_format($ledgercard->issuedquantity * $ledgercard->issuedunitprice, 2) }}</td>
-            <td>{{ $ledgercard->balancequantity }}</td>
+
+            <td>{{ $ledgercard->receivedquantity - $ledgercard->issuedquantity }}</td>
+
             @if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
             <td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
             @else
             <td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
             @endif
+
             @if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
-            <td>{{ number_format($ledgercard->receivedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+            <td>{{ number_format($ledgercard->receivedunitprice * ($ledgercard->receivedquantity - $ledgercard->issuedquantity), 2) }}</td>
             @else
-            <td>{{ number_format( $ledgercard->issuedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+            <td>{{ number_format( $ledgercard->issuedunitprice *  ($ledgercard->receivedquantity - $ledgercard->issuedquantity), 2) }}</td>
             @endif
-            <td>{{ $ledgercard->daystoconsume }}</td>
+            <td></td>
           </tr>
         @endforeach
       @else

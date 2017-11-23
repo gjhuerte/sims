@@ -3,6 +3,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
+use DB;
+
 class Supply extends Model{
 
 	protected $table = 'supplies';
@@ -71,6 +73,11 @@ class Supply extends Model{
 		}
 		
 		return $balance	;
+	}
+
+	public function scopeIssued($query)
+	{
+		return $query->where('issuedquantity','>',0);
 	}
 
 	public function scopeFindByStockNumber($query,$value)

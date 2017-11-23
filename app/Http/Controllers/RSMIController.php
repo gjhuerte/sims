@@ -7,63 +7,84 @@ use Carbon;
 use Session;
 use Auth;
 use DB;
-use App\RSMIView;
-use App\SupplyTransaction;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use App;
+use Illuminate\Http\Request;
+
 class RSMIController extends Controller
 {
     
+    public function index()
+    {
+    	return view('report.rsmi.index');
+    }
 
-	public function rsmi()
+
+	public function getRecapitulation(Request $request, $date)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
-			if($month == 'undefined') $month = Carbon\Carbon::now();
-			else{
-				$month = Carbon\Carbon::parse($month);
-			}
+			$date = $this->convertDateToCarbon($date);
+
+			$report = App\RSMI::filterByMonth($date)->get();
 
 			return json_encode([
-				'data' => RSMIView::all()
+				'data' => $report
 			]);
 		}
 	}
 
-	public function rsmiPerMonth($month)
+	public function getIssued(Request $request, $date)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
+			$date = $this->convertDateToCarbon($date);
+
+			$report = App\RSMI::filterByMonth($date)->get();
+
 			return json_encode([
-				'data' => RSMIView::month($month)->get()
+				'data' => $report
 			]);
 		}
 	}
 
-	public function rsmiByStockNumber($month)
-	{
-		if(Request::ajax())
-		{	
-			return json_encode([
-				'data' => RSMIView::month($month)
-							->groupBy('stocknumber','supplytype','unitprice')
-							->select(
-										'stocknumber',
-										DB::raw('sum(issuequantity) as issuequantity'),
-										'supplytype',
-										'unitprice'
-									)
-							->get()
-			]);
-		}
-	}
+	// public function rsmiPerMonth(Request $request, $month)
+	// {
+	// 	if($request->ajax())
+	// 	{
+	// 		return json_encode([
+	// 			'data' => RSMIView::month($month)->get()
+	// 		]);
+	// 	}
+	// }
 
-	public function getAllMonths()
+	// public function rsmiByStockNumber(Request $request, $month)
+	// {
+	// 	if($request->ajax())
+	// 	{	
+	// 		return json_encode([
+	// 			'data' => RSMIView::month($month)
+	// 						->groupBy('stocknumber','supplytype','unitprice')
+	// 						->select(
+	// 									'stocknumber',
+	// 									DB::raw('sum(issuequantity) as issuequantity'),
+	// 									'supplytype',
+	// 									'unitprice'
+	// 								)
+	// 						->get()
+	// 		]);
+	// 	}
+	// }
+
+	public function getAllMonths(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
+			$months =  App\RSMI::select('date')
+						->orderBy('date','desc')
+						->get()
+						->groupBy('month');
 			return json_encode([
-				'data' => RSMIView::getAllMonths()
+				'data' => $months
 			]);
 		}
 	}
