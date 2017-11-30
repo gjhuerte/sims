@@ -174,6 +174,14 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['offices'])->group(function(){
 		Route::get('request/{id}/print','RequestController@print');
+		Route::get('request/{id}/approve','RequestController@getApproveForm');
+		Route::put('request/{id}/approve','RequestController@approve');
+		Route::put('request/{id}/disapprove','RequestController@disapprove');
+		Route::get('request/{id}/cancel','RequestController@getCancelForm');
+		Route::put('request/{id}/cancel',[
+			'as' => 'request.cancel',
+			'uses' => 'RequestController@cancel'
+		]);
 		Route::resource('request','RequestController');
 	});
 

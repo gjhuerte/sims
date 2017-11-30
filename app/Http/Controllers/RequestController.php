@@ -170,6 +170,7 @@ class RequestController extends Controller
                 ->with('request',$request)
                 ->with('supplyrequest',$supplyrequest)
                 ->with('title',$request->id);
+
     }
 
     /**
@@ -181,46 +182,66 @@ class RequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->ajax())
+      $stocknumbers = $request->get("stocknumber");
+      $quantity = $request->get("quantity");
+      $quantity_issued = null;
+      $array = [];
+      $issued_by = Auth::user()->username;
+      $office = Auth::user()->office;
+      $status = null;
+
+      foreach(array_flatten($stocknumbers) as $stocknumber)
+      {
+        $validator = Validator::make([
+            'Stock Number' => $stocknumber,
+            'Quantity' => $quantity["$stocknumber"]
+        ],App\Request::$issueRules);
+
+        if($validator->fails())
         {
-            $id = $this->sanitizeString($id);
-            $status = $this->sanitizeString($request->get('status'));
-            $remarks = $this->sanitizeString($request->get('reason'));
-
-            $request = App\Request::find($id);
-            $request->status = $status;
-            $request->approved_at = Carbon\Carbon::now();
-            $request->remarks = $remarks;
-            $request->save();
-
-            return json_encode('success');
+            return redirect("request/$id/edit")
+                    ->with('total',count($stocknumbers))
+                    ->with('stocknumber',$stocknumbers)
+                    ->with('quantity',$quantity)
+                    ->withInput()
+                    ->withErrors($validator);
         }
 
-        $quantity = $request->get('quantity');
-        $comment = $request->get('comment');
-        $stocknumber = $request->get('stocknumber');
-
-        DB::beginTransaction();
-
-        $request = App\Request::find($id);
-
-        foreach($stocknumber as $stocknumber)
+        if(Auth::user()->access == 1)
         {
-          $request->supply()->updateExistingPivot($stocknumber,[
-            'quantity_issued' => $quantity[$stocknumber],
-            'comments' => $comment[$stocknumber]
-          ]);
+          if( App\Supply::findByStockNumber($stocknumber)->balance <= $quantity["$stocknumber"])
+          {
+              return redirect("request/create")
+                      ->with('total',count($stocknumbers))
+                      ->with('stocknumber',$stocknumbers)
+                      ->with('quantity',$quantity)
+                      ->withInput()
+                      ->withErrors(["No more items to release for supply with stock number of $stocknumber"]);
+          }
+
+          $status = 'approved';
+          $quantity_issued = $quantity[$stocknumber];
         }
 
-        $request->issued_by = Auth::user()->username;
-        $request->status = 'approved';
-        $request->approved_at = Carbon\Carbon::now();
-        $request->save();
+        array_push($array,[
+            'quantity_requested' => $quantity["$stocknumber"],
+            'stocknumber' => $stocknumber,
+            'quantity_issued' => $quantity_issued
+        ]);
+      }
 
-        DB::commit();
+      DB::beginTransaction();
 
-        \Alert::success('Request Approved')->flash();
-        return redirect('request');
+      $request = App\Request::find($id);
+
+      $request->supply()->detach();
+      $request->supply()->attach($array);
+
+      DB::commit();
+
+      \Alert::success('Request Updated')->flash();
+      return redirect("request/$id");
+
     }
 
     /**
@@ -292,6 +313,124 @@ class RequestController extends Controller
       \Alert::success('Items Released')->flash();
       return redirect('request');
 
+    }
+
+    public function getApproveForm(Request $request, $id)
+    {
+        $request = App\Request::find($id);
+        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
+
+        return view('request.approval')
+                ->with('request',$request)
+                ->with('supplyrequest',$supplyrequest)
+                ->with('title',$request->id);
+    }
+
+    public function disapprove(Request $request, $id)
+    {
+        if($request->ajax())
+        {
+            $id = $this->sanitizeString($id);
+            $remarks = $this->sanitizeString($request->get('reason'));
+
+            $request = App\Request::find($id);
+            $request->status = "disapproved";
+            $request->approved_at = Carbon\Carbon::now();
+            $request->remarks = $remarks;
+            $request->save();
+
+            return json_encode('success');
+        }
+
+        DB::beginTransaction();
+
+        $request = App\Request::find($id);
+
+        $request->status = 'disapproved';
+        $request->approved_at = Carbon\Carbon::now();
+        $request->save();
+
+        DB::commit();
+
+        \Alert::success('Request Disapproved')->flash();
+        return redirect('request');
+
+    }
+
+    public function approve(Request $request, $id)
+    {
+        if($request->ajax())
+        {
+            $id = $this->sanitizeString($id);
+            $status = $this->sanitizeString($request->get('status'));
+            $remarks = $this->sanitizeString($request->get('reason'));
+
+            $request = App\Request::find($id);
+            $request->status = $status;
+            $request->approved_at = Carbon\Carbon::now();
+            $request->remarks = $remarks;
+            $request->save();
+
+            return json_encode('success');
+        }
+
+        $quantity = $request->get('quantity');
+        $comment = $request->get('comment');
+        $stocknumber = $request->get('stocknumber');
+
+        DB::beginTransaction();
+
+        $request = App\Request::find($id);
+
+        foreach($stocknumber as $stocknumber)
+        {
+          $request->supply()->updateExistingPivot($stocknumber,[
+            'quantity_issued' => $quantity[$stocknumber],
+            'comments' => $comment[$stocknumber]
+          ]);
+        }
+
+        $request->issued_by = Auth::user()->username;
+        $request->status = 'approved';
+        $request->approved_at = Carbon\Carbon::now();
+        $request->save();
+
+        DB::commit();
+
+        \Alert::success('Request Approved')->flash();
+        return redirect('request');
+
+    }
+
+    public function getCancelForm($id)
+    {
+        $request = App\Request::find($id);
+        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
+
+        return view('request.cancel')
+                ->with('request',$request)
+                ->with('supplyrequest',$supplyrequest)
+                ->with('title',$request->id);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+
+      $details = $this->sanitizeString($request->get('details'));
+
+      DB::beginTransaction();
+
+      $requests = App\Request::find($id);
+      $requests->status = "cancelled";
+      $requests->cancelled_by = Auth::user()->id;
+      $requests->cancelled_at = Carbon\Carbon::now();
+      $requests->remarks = $details;
+      $requests->save();
+
+      DB::commit();
+
+      \Alert::success("$requests->code Cancelled")->flash();
+      return redirect('request');
     }
 
     public function print($id)

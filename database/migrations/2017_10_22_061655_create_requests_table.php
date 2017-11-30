@@ -36,8 +36,11 @@ class CreateRequestsTable extends Migration
             $table->string('comments')->nullable();
             $table->string('remarks')->nullable();
             $table->string('status')->nullable();
+            $table->string('released_by')->nullable();
             $table->datetime('released_at')->nullable();
             $table->datetime('approved_at')->nullable();
+            $table->string('cancelled_by')->nullable();
+            $table->datetime('cancelled_at')->nullable();
             $table->timestamps();
         });
     }

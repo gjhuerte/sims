@@ -12,11 +12,11 @@
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    Release Form
+	    Request Form
 	  </h1>
 	  <ol class="breadcrumb">
-	    <li>Request</li>
-	    <li class="active">Release</li>
+	    <li><a href="{{ url('request') }}">Request</a></li>
+	    <li class="active">Approval</li>
 	  </ol>
 	</section>
 @endsection
@@ -25,7 +25,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-    {{ Form::open(['method'=>'delete','route'=>array('request.destroy',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
+    {{ Form::open(['method'=>'put','route'=>array('request.update',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
       @if (count($errors) > 0)
           <div class="alert alert-danger alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -42,28 +42,28 @@
           <tr>
             <th class="col-sm-1">Stock Number</th>
             <th class="col-sm-1">Information</th>
+            <th class="col-sm-1">Remaining Balance</th>
+            <th class="col-sm-1">Requested Quantity</th>
             <th class="col-sm-1">Issued Quantity</th>
-            <th class="col-sm-1">Released Quantity</th>
-            <th class="col-sm-1">Days to Consume</th>
+            <th class="col-sm-1">Comments</th>
           </tr>
         </thead>
         <tbody>
           @foreach($supplyrequest as $supplyrequest)
-          @if($supplyrequest->quantity_issued > 0)
           <tr>
             <td>{{ $supplyrequest->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}"</td>
-            <td>{{ $supplyrequest->supply->details }}</td>
-            <td>{{ $supplyrequest->quantity_issued }}</td>
-            <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_issued }}"  /></td>
-            <td><input type="text" name="daystoconsume[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
+            <td>{{ $supplyrequest->supply->supplytype }}</td>
+            <td>{{ $supplyrequest->supply->balance }}</td>
+            <td>{{ $supplyrequest->quantity_requested }}</td>
+            <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_requested }}"  /></td>
+            <td><input type="text" name="comment[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
           </tr>
-          @endif
           @endforeach
         </tbody>
       </table>
       <div class="pull-right">
         <div class="btn-group">
-          <button type="button" id="approve" class="btn btn-md btn-danger btn-block">Release</button>
+          <button type="button" id="approve" class="btn btn-md btn-success btn-block">Approve</button>
         </div>
         <div class="btn-group">
           <button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
@@ -75,6 +75,12 @@
 @endsection
 
 @section('after_scripts')
+    <!-- Ladda Buttons (loading buttons) -->
+    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
+    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    {{ HTML::script(asset('js/sweetalert.min.js')) }}
 
 <script>
   jQuery(document).ready(function($) {

@@ -11,6 +11,10 @@ class RequestSupply extends Model
     protected $fillable = [ 'stocknumber', 'quantity_requested','quantity_issued','comments' ];
     public $timestamps = true;
 
+    protected $dates = [
+        'created_at', 'updated_at'
+    ];
+
     public function supply()
     {
       return $this->belongsTo('App\Supply','stocknumber','stocknumber');

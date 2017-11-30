@@ -35,7 +35,7 @@
 		                <th class="text-left" colspan="4">Fund Cluster:  <span style="font-weight:normal"></span> </th>
 		            </tr>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="4">Item:  <span style="font-weight:normal">{{ $supply->supplytype }}</span> </th>
+		                <th class="text-left" colspan="4">Item:  <span style="font-weight:normal">{{ $supply->details }}</span> </th>
 		                <th class="text-left" colspan="4">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">

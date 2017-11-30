@@ -2,7 +2,7 @@
 
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Request {{ $request->code }} Details</h3></legend>
+		<legend><h3 class="text-muted">{{ $request->code }}</h3></legend>
 		<ul class="breadcrumb">
 			<li><a href="{{ url('request') }}">Request</a></li>
 			<li class="active"> {{ $request->code }} </li>
@@ -15,6 +15,15 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
+			@if(Auth::user()->username == $request->requestor && $request->status == null)
+	        <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
+	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+	    	</a>
+	        <a href="{{ url("request/$request->id/cancel") }}" class="btn btn-danger btn-sm">
+	        	<i class="fa fa-hand-stop-o" aria-hidden="true"></i> Cancel
+	        </a>
+	        <hr />
+	        @endif
 			<table class="table table-hover table-striped table-bordered table-condensed" id="requestTable" cellspacing="0" width="100%"	>
 				<thead>
             <tr rowspan="2">

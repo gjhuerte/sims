@@ -79,7 +79,7 @@
                   if(!callback.status)
                   {
                     ret_val += `
-                      <a type="button" href="{{ url('request') }}/`+callback.id+`/edit" data-id="`+callback.id+`" class="approve btn btn-success btn-sm">
+                      <a type="button" href="{{ url('request') }}/`+callback.id+`/approve" data-id="`+callback.id+`" class="approve btn btn-success btn-sm">
                           <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                       </a>
                       <button type="button" data-id="`+callback.id+`" class="disapprove btn btn-danger btn-sm">
@@ -128,7 +128,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: 'put',
-                url: '{{ url("request") }}' + "/" + id + '?status=disapproved',
+                url: '{{ url("request") }}' + "/" + id + '/disapprove',
                 data: {
                     'reason': inputValue
                 },
