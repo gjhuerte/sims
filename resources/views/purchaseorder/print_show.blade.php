@@ -14,7 +14,9 @@
   		<thead>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Number:  <span style="font-weight:normal">{{ $purchaseorder->number }}</span> </th>
-            <th class="text-left" colspan="4">Fund Cluster:  <span style="font-weight:normal"></span> </th>
+            <th class="text-left" colspan="4">Fund Cluster:  
+              <span style="font-weight:normal">{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([$purchaseorder->number])->pluck('fundcluster_code')->toArray()) }}</span> 
+            </th>
         </tr>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Supplier:  <span style="font-weight:normal">{{ $purchaseorder->supplier->name }}</span> </th>

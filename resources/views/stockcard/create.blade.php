@@ -70,6 +70,15 @@
 		</div>
 		<div class="col-md-12">
 			<div class="form-group">
+				{{ Form::label('Fund Clusters') }}
+				{{ Form::text('fundcluster',Input::old('fundcluster'),[
+					'class' => 'form-control'
+				]) }}
+				<p class="text-muted">Separate each cluster by comma</p>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="form-group">
 				{{ Form::label('Delivery Receipt') }}
 				{{ Form::text('deliveryreceipt',Input::old('deliveryreceipt'),[
 					'class' => 'form-control'

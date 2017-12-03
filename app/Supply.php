@@ -30,7 +30,8 @@ class Supply extends Model{
 
 	protected $appends = [
 		'balance',
-		'ledger_balance'
+		'ledger_balance',
+		'fund_cluster'
 	];
 
 	public function getBalanceAttribute($value)
@@ -73,6 +74,18 @@ class Supply extends Model{
 		}
 		
 		return $balance	;
+	}
+
+	public function getFundClusterAttribute($value)
+	{
+		$fundcluster = "";
+		if(isset($this->purchaseorder))
+		{
+			$purchaseorder = $this->purchaseorder->pluck('number');
+			$fundcluster = PurchaseOrderFundCluster::findByPurchaseOrderNumber($purchaseorder)
+								->pluck('fundcluster_code');
+		}
+		return $fundcluster;
 	}
 
 	public function scopeIssued($query)

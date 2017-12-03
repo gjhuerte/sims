@@ -32,7 +32,9 @@
 				<thead>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
-		                <th class="text-left" colspan="4">Fund Cluster:  <span style="font-weight:normal"></span> </th>
+		                <th class="text-left" colspan="4">Fund Cluster:  
+		                	<span style="font-weight:normal"> {{ implode(", ",  $supply->fundcluster->toArray()) }} </span>
+		                </th>
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Item:  <span style="font-weight:normal">{{ $supply->details }}</span> </th>

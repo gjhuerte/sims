@@ -35,13 +35,8 @@ class PurchaseOrder extends Model
 		return $this->belongsTo('App\Supplier','supplier_id','id');
 	}
 
-	public function fundcluster()
+	public function scopeFindByNumber($query, $number)
 	{
-		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','purchaseorder_number','fundcluster_code');
+		return $query->where('number','=',$number);
 	}
-
-  public function scopeFindByNumber($query, $number)
-  {
-    return $query->where('number','=',$number);
-  }
 }

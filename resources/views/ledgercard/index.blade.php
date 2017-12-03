@@ -145,14 +145,14 @@
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 				<span id="nav-text"> Print</span>
 			</a>
-			<button id="accept" class="btn btn-sm btn-success">
+			{{-- <button id="accept" class="btn btn-sm btn-success">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				<span id="nav-text"> Accept</span>
 			</button>
 			<button id="release" class="btn btn-sm btn-danger">
 				<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
 				<span id="nav-text"> Release</span>
-			</button>
+			</button> --}}
 		`);
 
 		$('#accept').on('click',function(){

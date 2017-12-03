@@ -68,6 +68,15 @@
 			</div>
 			<div class="col-md-12">
 				<div class="form-group">
+					{{ Form::label('Fund Clusters') }}
+					{{ Form::text('fundcluster',Input::old('fundcluster'),[
+						'class' => 'form-control'
+					]) }}
+					<p class="text-muted">Separate each cluster by comma</p>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
 					{{ Form::label('Days to Consume') }}
 					{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
 						'id' => 'daystoconsume',

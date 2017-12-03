@@ -66,6 +66,7 @@ class StockCardController extends Controller {
 		$stocknumber = Input::get("stocknumber");
 		$supplier = $this->sanitizeString(Input::get("supplier"));
 		$quantity = Input::get("quantity");
+		$fundcluster = Input::get("fundcluster");
 
 		$validator = Validator::make([
 			'Stock Number' => $stocknumber,
@@ -94,6 +95,7 @@ class StockCardController extends Controller {
 		$transaction->organization = $supplier;
 		$transaction->received = $quantity;
 		$transaction->daystoconsume = $daystoconsume;
+		$transaction->fundcluster = $fundcluster;
 		$transaction->user_id = Auth::user()->id;
 		$transaction->receipt();
 
@@ -234,6 +236,7 @@ class StockCardController extends Controller {
 		$daystoconsume = $this->sanitizeString(Input::get("daystoconsume"));
 		$stocknumbers = Input::get("stocknumber");
 		$quantity = Input::get("quantity");
+		$fundcluster = $this->sanitizeString(Input::get("fundcluster"));
 
 		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
 
@@ -270,6 +273,7 @@ class StockCardController extends Controller {
 			$transaction->reference = $purchaseorder;
 			$transaction->receipt = $deliveryreceipt;
 			$transaction->organization = $supplier;
+			$transaction->fundcluster = $fundcluster;
 			$transaction->received = $quantity["$stocknumber"];
 			$transaction->daystoconsume = $daystoconsume;
 			$transaction->user_id = Auth::user()->id;
@@ -299,6 +303,7 @@ class StockCardController extends Controller {
 		$quantity = Input::get("quantity");
 
 		DB::beginTransaction();
+
 		foreach($stocknumber as $_stocknumber)
 		{
 			$validator = Validator::make([

@@ -9,6 +9,7 @@ class StockCard extends Model{
 
 	protected $table = 'stockcards';
 	protected $primaryKey = 'id';
+	public $fundcluster = null;
 	public $timestamps = true;
 	protected $fillable = [ 'date','stocknumber','reference','receipt', 'received','issued','organization','daystoconsume'];
 
@@ -17,7 +18,7 @@ class StockCard extends Model{
 		'Date' => 'required',
 		'Stock Number' => 'required',
 		'Purchase Order' => 'nullable|exists:purchaseorders,number',
-		'Delivery Receipt' => 'required',
+		'Delivery Receipt' => 'nullable',
 		'Office' => '',
 		'Receipt Quantity' => 'required|integer',
 		'Days To Consume' => 'max:100'
@@ -107,49 +108,69 @@ class StockCard extends Model{
 		$lastname = Auth::user()->lastname;
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
-		$receipt = Receipt::where('number','=',$this->receipt)->first();
-
-		if( count($receipt) <= 0 )
+		if(isset($this->receipt) && $this->receipt != null)
 		{
 
-			$receipt = new Receipt;
-			$receipt->reference = $this->reference;
-			$receipt->number = $this->receipt;
-			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
-			$receipt->received_by = $fullname;
-			$receipt->supplier_name = $this->organization;
-			$receipt->save();
+			$receipt = Receipt::where('number','=',$this->receipt)->first();
+
+			if( count($receipt) <= 0 )
+			{
+
+				$receipt = new Receipt;
+				$receipt->reference = $this->reference;
+				$receipt->number = $this->receipt;
+				$receipt->date_delivered = Carbon\Carbon::parse($this->date);
+				$receipt->received_by = $fullname;
+				$receipt->supplier_name = $this->organization;
+				$receipt->save();
+			}
+
+			$supply = ReceiptSupply::where('receipt_number','=',$receipt->number )
+										->where('stocknumber','=',$this->stocknumber)
+										->first();
+
+			if( count($supply) > 0 )
+			{
+
+				$supply->quantity = $this->received + $supply->quantity;
+				$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
+			}
+			else
+			{
+				$supply = new ReceiptSupply;
+				$supply->receipt_number = $this->receipt;
+				$supply->stocknumber = $this->stocknumber;
+				$supply->quantity = $supply->remaining_quantity = $this->received;
+			}
+
+			$supply->save();
+			
 		}
 
-		$supply = ReceiptSupply::where('receipt_number','=',$receipt->number )
-									->where('stocknumber','=',$this->stocknumber)
-									->first();
-
-		if( count($supply) > 0 )
+		if(isset($this->reference) && $this->reference != null)
 		{
 
-			$supply->quantity = $this->received + $supply->quantity;
-			$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
-		}
-		else
-		{
-			$supply = new ReceiptSupply;
-			$supply->receipt_number = $this->receipt;
-			$supply->stocknumber = $this->stocknumber;
-			$supply->quantity = $supply->remaining_quantity = $this->received;
+			$purchaseorder = PurchaseOrderSupply::where('purchaseorder_number','=',$this->reference)
+														->where('stocknumber','=',$this->stocknumber)
+														->first();
+
+			if(count($purchaseorder) > 0)
+			{
+				$purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->received;
+				$purchaseorder->receivedquantity = $purchaseorder->receivedquantity + $this->received;
+				$purchaseorder->save();
+			}
+
 		}
 
-		$supply->save();
-
-		$purchaseorder = PurchaseOrderSupply::where('purchaseorder_number','=',$this->reference)
-													->where('stocknumber','=',$this->stocknumber)
-													->first();
-
-		if(count($purchaseorder) > 0)
+		if(isset($this->fundcluster) && $this->fundcluster != null && count(explode(",",$this->fundcluster)) > 0)
 		{
-			$purchaseorder->remainingquantity = $purchaseorder->remainingquantity + $this->received;
-			$purchaseorder->receivedquantity = $purchaseorder->receivedquantity + $this->received;
-			$purchaseorder->save();
+			$purchaseorder = PurchaseOrder::where("number","=",$this->reference)->first();
+			foreach(explode(",",$this->fundcluster) as $fundcluster)
+			{
+				$fundcluster = FundCluster::create( [ 'code' => $fundcluster ] );
+				PurchaseOrderFundCluster::create([ 'purchaseorder_number' => $purchaseorder->number, 'fundcluster_code' => $fundcluster->code ]);
+			}
 		}
 
 		$this->setBalance();
