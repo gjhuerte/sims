@@ -39,6 +39,7 @@
     35 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
     36 => 'Backpack\\PageManager\\PageManagerServiceProvider',
     37 => 'Barryvdh\\Snappy\\ServiceProvider',
+    38 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ),
   'eager' => 
   array (
@@ -66,6 +67,7 @@
     21 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
     22 => 'Backpack\\PageManager\\PageManagerServiceProvider',
     23 => 'Barryvdh\\Snappy\\ServiceProvider',
+    24 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ),
   'deferred' => 
   array (

@@ -192,21 +192,6 @@
       stocknumber = $('#stocknumber').val()
       quantity = $('#quantity').val()
       details = $('#supply-item').val()
-      addForm(stocknumber,details,quantity)
-      $('#stocknumber').text("")
-      $('#quantity').text("")
-      $('#stocknumber-details').html("")
-      $('#stocknumber').val("")
-      $('#quantity').val("")
-      $('#add').hide()
-    })
-
-    $('#add-stocknumber').on('click',function(){
-      $('#addStockNumberModal').modal('show');
-    })
-
-    function addForm(_stocknumber = "",_info ="" ,_quantity = "")
-    {
 
       row = parseInt($('#supplyTable > tbody > tr:last').text())
       if(isNaN(row))
@@ -216,18 +201,52 @@
       {
         row++
       }
+      
+      if(addForm(row,stocknumber,details,quantity))
+      {
+        $('#stocknumber').text("")
+        $('#quantity').text("")
+        $('#stocknumber-details').html("")
+        $('#stocknumber').val("")
+        $('#quantity').val("")
+      }
+    })
+
+    function addForm(row,_stocknumber = "",_info ="" ,_quantity = "")
+    {
+      error = false
+      $('.stocknumber-list').each(function() {
+          if (_stocknumber == $(this).val())
+          {
+            error = true; 
+            return;
+          }
+      });
+
+      if(error)
+      {
+        swal("Error", "Stocknumber already exists", "error");
+        return false;
+      }
+
 
       $('.hide-me').hide()
 
       $('#supplyTable > tbody').append(`
         <tr>
-          <td><input type="hidden" class="form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;background-color:white;" readonly />` + _stocknumber + `</td>
+          <td><input type="text" class="stocknumber-list form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
           <td><input type="hidden" class="form-control text-center" value="` + _info + `" name="info[` + _stocknumber + `]" style="border:none;" />` + _info + `</td>
-          <td><input type="hidden" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;background-color:white;" readonly />` + _quantity + `</td>
-          <td><button type="button" class="remove btn btn-sm btn-danger text-center"><span class="glyphicon glyphicon-remove"></span> Remove</button></td>
+          <td><input type="number" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;"  /></td>
+          <td><button type="button" class="remove btn btn-md btn-danger text-center"><span class="glyphicon glyphicon-remove"></span></button></td>
         </tr>
       `)
+
+      return true;
     }
+
+    $('#add-stocknumber').on('click',function(){
+      $('#addStockNumberModal').modal('show');
+    })
 
     var table = $('#supplyInventoryTable').DataTable({
       language: {

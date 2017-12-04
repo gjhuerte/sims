@@ -270,25 +270,43 @@ $('document').ready(function(){
 		stocknumber = $('#stocknumber').val()
 		quantity = $('#quantity').val()
 		details = $('#supply-item').val()
-		addForm(row,stocknumber,details,quantity)
-		$('#stocknumber').text("")
-		$('#quantity').text("")
-		$('#stocknumber-details').html("")
-		$('#stocknumber').val("")
-		$('#quantity').val("")
-		$('#add').hide()
+		if(addForm(row,stocknumber,details,quantity))
+		{
+			$('#stocknumber').text("")
+			$('#quantity').text("")
+			$('#stocknumber-details').html("")
+			$('#stocknumber').val("")
+			$('#quantity').val("")
+		}
 	})
 
 	function addForm(row,_stocknumber = "",_info ="" ,_quantity = "")
 	{
+		error = false
+		$('.stocknumber-list').each(function() {
+		    if (_stocknumber == $(this).val())
+		    {
+		    	error = true;	
+		    	return;
+		    }
+		});
+
+		if(error)
+		{
+			swal("Error", "Stocknumber already exists", "error");
+			return false;
+		}
+
 		$('#supplyTable > tbody').append(`
 			<tr>
-				<td><input type="text" class="form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
+				<td><input type="text" class="stocknumber-list form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
 				<td><input type="hidden" class="form-control text-center" value="` + _info + `" name="info[` + _stocknumber + `]" style="border:none;" />` + _info + `</td>
 				<td><input type="number" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;"  /></td>
 				<td><button type="button" class="remove btn btn-md btn-danger text-center"><span class="glyphicon glyphicon-remove"></span></button></td>
 			</tr>
 		`)
+
+		return true;
 	}
 
 	$('#date').on('change',function(){

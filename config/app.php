@@ -204,6 +204,7 @@ return [
         // Barryvdh\DomPDF\ServiceProvider::class,
 
         Barryvdh\Snappy\ServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
     ],
 
     /*
@@ -259,6 +260,7 @@ return [
         // 'PDF' => Barryvdh\DomPDF\Facade::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 
     ],
 

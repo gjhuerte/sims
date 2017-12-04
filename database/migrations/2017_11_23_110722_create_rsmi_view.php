@@ -38,6 +38,6 @@ class CreateRsmiView extends Migration
      */
     public function down()
     {
-        DB::statement("drop if exists rsmi_v");
+        DB::statement("drop view if exists rsmi_v");
     }
 }

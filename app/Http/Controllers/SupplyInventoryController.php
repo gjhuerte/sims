@@ -19,9 +19,10 @@ class SupplyInventoryController extends Controller {
 	{
 		if(Request::ajax())
 		{
-			return json_encode([
-				'data' => Supply::all()
-			]);
+			// return json_encode([
+			// 	'data' => App\Supply::all()
+			// ]);
+			return datatables(App\Supply::all())->toJson();
 		}
 		return view('inventory.supply.index')
                 ->with('title','Supply Inventory');
