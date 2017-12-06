@@ -121,6 +121,20 @@ class StockCard extends Model{
 				$receipt->number = $this->receipt;
 				$receipt->date_delivered = Carbon\Carbon::parse($this->date);
 				$receipt->received_by = $fullname;
+
+				if($this->organization != null && isset($this->organization))
+				{
+					$supplier = Supplier::where('name','=',$this->organization)
+											->get();
+
+					if(count($supplier) <= 0 && $supplier != null)
+					{
+						$org = new Supplier;
+						$org->name = $this->organization;
+						$org->save();
+					}
+				}
+
 				$receipt->supplier_name = $this->organization;
 				$receipt->save();
 			}

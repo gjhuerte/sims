@@ -24,7 +24,7 @@ class CreateStockCardsTable extends Migration
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('receipt',100)->nullable();
-            $table->string('organization',100);
+            $table->string('organization',100)->nullable();
             $table->integer('received')->default(0);
             $table->integer('issued')->default(0);
             $table->integer('balance')->default(0); 
