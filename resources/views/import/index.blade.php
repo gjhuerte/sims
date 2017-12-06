@@ -68,7 +68,7 @@
     		</div>
     	</div>
 
-	    {{ Form::open([ 'method' => 'post' , 'url' => array('import') ]) }}
+	    {{ Form::open([ 'method' => 'post' , 'url' => array('import'), 'enctype'=> "multipart/form-data" ]) }}
 	    <div class="col-md-6">
 	    	<div class="col-sm-12">
 	    		<div class="form-group">
@@ -112,14 +112,22 @@
 	    <div class="col-md-12">
 			<div class="panel panel-body table-responsive">
 				<table class="table table-hover table-bordered table-striped" id="importTable" width=100%>
+					@if(isset($records) && count($records) > 0)
 					<thead>
-						<th class="col-sm-1">Example Rows</th>
+						@foreach($keys as $key)
+						<th class="col-sm-1">{{ $key }}</th>
+						@endforeach
 					</thead>
 					<tbody>
+					@foreach($records as $record)
 						<tr>
-							<td>Example Rows</td>
+						@foreach($keys as $key)
+							<td>{{ $record[$key] }}</td>
+						@endforeach
 						</tr>
+					@endforeach
 					</tbody>
+					@endif
 				</table>
 			</div>
 		</div>

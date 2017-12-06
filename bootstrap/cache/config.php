@@ -54,6 +54,7 @@
       36 => 'Backpack\\PageManager\\PageManagerServiceProvider',
       37 => 'Barryvdh\\Snappy\\ServiceProvider',
       38 => 'Yajra\\DataTables\\DataTablesServiceProvider',
+      39 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
     'aliases' => 
     array (
@@ -96,6 +97,7 @@
       'PDF' => 'Barryvdh\\Snappy\\Facades\\SnappyPdf',
       'SnappyImage' => 'Barryvdh\\Snappy\\Facades\\SnappyImage',
       'DataTables' => 'Yajra\\DataTables\\Facades\\DataTables',
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
   ),
   'auth' => 
@@ -839,6 +841,265 @@
       2 => 'validation',
       3 => 'log',
       4 => 'crud',
+    ),
+  ),
+  'excel' => 
+  array (
+    'cache' => 
+    array (
+      'enable' => true,
+      'driver' => 'memory',
+      'settings' => 
+      array (
+        'memoryCacheSize' => '32MB',
+        'cacheTime' => 600,
+      ),
+      'memcache' => 
+      array (
+        'host' => 'localhost',
+        'port' => 11211,
+      ),
+      'dir' => 'C:\\xampp\\htdocs\\sims\\storage\\cache',
+    ),
+    'properties' => 
+    array (
+      'creator' => 'Maatwebsite',
+      'lastModifiedBy' => 'Maatwebsite',
+      'title' => 'Spreadsheet',
+      'description' => 'Default spreadsheet export',
+      'subject' => 'Spreadsheet export',
+      'keywords' => 'maatwebsite, excel, export',
+      'category' => 'Excel',
+      'manager' => 'Maatwebsite',
+      'company' => 'Maatwebsite',
+    ),
+    'sheets' => 
+    array (
+      'pageSetup' => 
+      array (
+        'orientation' => 'portrait',
+        'paperSize' => '9',
+        'scale' => '100',
+        'fitToPage' => false,
+        'fitToHeight' => true,
+        'fitToWidth' => true,
+        'columnsToRepeatAtLeft' => 
+        array (
+          0 => '',
+          1 => '',
+        ),
+        'rowsToRepeatAtTop' => 
+        array (
+          0 => 0,
+          1 => 0,
+        ),
+        'horizontalCentered' => false,
+        'verticalCentered' => false,
+        'printArea' => NULL,
+        'firstPageNumber' => NULL,
+      ),
+    ),
+    'creator' => 'Maatwebsite',
+    'csv' => 
+    array (
+      'delimiter' => ',',
+      'enclosure' => '"',
+      'line_ending' => '
+',
+      'use_bom' => false,
+    ),
+    'export' => 
+    array (
+      'autosize' => true,
+      'autosize-method' => 'approx',
+      'generate_heading_by_indices' => true,
+      'merged_cell_alignment' => 'left',
+      'calculate' => false,
+      'includeCharts' => false,
+      'sheets' => 
+      array (
+        'page_margin' => false,
+        'nullValue' => NULL,
+        'startCell' => 'A1',
+        'strictNullComparison' => false,
+      ),
+      'store' => 
+      array (
+        'path' => 'C:\\xampp\\htdocs\\sims\\storage\\exports',
+        'returnInfo' => false,
+      ),
+      'pdf' => 
+      array (
+        'driver' => 'DomPDF',
+        'drivers' => 
+        array (
+          'DomPDF' => 
+          array (
+            'path' => 'C:\\xampp\\htdocs\\sims\\vendor/dompdf/dompdf/',
+          ),
+          'tcPDF' => 
+          array (
+            'path' => 'C:\\xampp\\htdocs\\sims\\vendor/tecnick.com/tcpdf/',
+          ),
+          'mPDF' => 
+          array (
+            'path' => 'C:\\xampp\\htdocs\\sims\\vendor/mpdf/mpdf/',
+          ),
+        ),
+      ),
+    ),
+    'filters' => 
+    array (
+      'registered' => 
+      array (
+        'chunk' => 'Maatwebsite\\Excel\\Filters\\ChunkReadFilter',
+      ),
+      'enabled' => 
+      array (
+      ),
+    ),
+    'import' => 
+    array (
+      'heading' => 'slugged',
+      'startRow' => 1,
+      'separator' => '_',
+      'slug_whitelist' => '._',
+      'includeCharts' => false,
+      'to_ascii' => true,
+      'encoding' => 
+      array (
+        'input' => 'UTF-8',
+        'output' => 'UTF-8',
+      ),
+      'calculate' => true,
+      'ignoreEmpty' => false,
+      'force_sheets_collection' => false,
+      'dates' => 
+      array (
+        'enabled' => true,
+        'format' => false,
+        'columns' => 
+        array (
+        ),
+      ),
+      'sheets' => 
+      array (
+        'test' => 
+        array (
+          'firstname' => 'A2',
+        ),
+      ),
+    ),
+    'views' => 
+    array (
+      'styles' => 
+      array (
+        'th' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 12,
+          ),
+        ),
+        'strong' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 12,
+          ),
+        ),
+        'b' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 12,
+          ),
+        ),
+        'i' => 
+        array (
+          'font' => 
+          array (
+            'italic' => true,
+            'size' => 12,
+          ),
+        ),
+        'h1' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 24,
+          ),
+        ),
+        'h2' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 18,
+          ),
+        ),
+        'h3' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 13.5,
+          ),
+        ),
+        'h4' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 12,
+          ),
+        ),
+        'h5' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 10,
+          ),
+        ),
+        'h6' => 
+        array (
+          'font' => 
+          array (
+            'bold' => true,
+            'size' => 7.5,
+          ),
+        ),
+        'a' => 
+        array (
+          'font' => 
+          array (
+            'underline' => true,
+            'color' => 
+            array (
+              'argb' => 'FF0000FF',
+            ),
+          ),
+        ),
+        'hr' => 
+        array (
+          'borders' => 
+          array (
+            'bottom' => 
+            array (
+              'style' => 'thin',
+              'color' => 
+              array (
+                0 => 'FF000000',
+              ),
+            ),
+          ),
+        ),
+      ),
     ),
   ),
 );

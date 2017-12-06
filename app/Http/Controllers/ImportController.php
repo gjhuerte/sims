@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App;
+use Excel;
 use Carbon;
 use Session;
 use Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Http\File;
 
 class ImportController extends Controller
 {
@@ -42,7 +44,23 @@ class ImportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $type = $request->get('type');
+        $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
+        $file = $request->file('input-file-preview');
+
+        $records = Excel::load($file)->toArray();
+
+        $keys = [];
+
+        foreach($records[0] as $key=>$record)
+        {
+            array_push($keys,$key);
+        }
+
+        return view('import.index')
+            ->with('title','Import')
+            ->with('records', $records)
+            ->with('keys',$keys);
     }
 
     /**

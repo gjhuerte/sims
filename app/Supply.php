@@ -15,7 +15,7 @@ class Supply extends Model{
 	public static $rules = array(
 		'Stock Number' => 'required|unique:supplies,stocknumber',
 		'Entity Name' => 'required',
-		'Details' => 'required|unique:supplies,supplytype',
+		'Details' => 'required|unique:supplies,details',
 		'Unit' => 'required',
 		'Reorder Point' => 'required|integer'
 	);
@@ -51,7 +51,7 @@ class Supply extends Model{
 		{
 			$balance = 0;
 		}
-		
+
 		return $balance	;
 	}
 
@@ -72,7 +72,7 @@ class Supply extends Model{
 		{
 			$balance = 0;
 		}
-		
+
 		return $balance	;
 	}
 

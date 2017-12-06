@@ -14,7 +14,6 @@
 Route::middleware(['auth'])->group(function(){
 
 	Route::get('/', 'HomeController@index');
-	Route::get('import','ImportController@index');
 	Route::get('settings',['as'=>'settings.edit','uses'=>'SessionsController@edit']);
 	Route::post('settings',['as'=>'settings.update','uses'=>'SessionsController@update']);
 	Route::get('logout', 'Auth\LoginController@logout');
@@ -170,6 +169,8 @@ Route::middleware(['auth'])->group(function(){
 			'as' => 'account.accesslevel.update',
 			'uses' => 'AccountsController@changeAccessLevel'
 		]);
+		Route::get('import','ImportController@index');
+		Route::post('import','ImportController@store');
 	});
 
 	Route::middleware(['offices'])->group(function(){

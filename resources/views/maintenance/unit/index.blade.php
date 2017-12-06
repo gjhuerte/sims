@@ -2,7 +2,7 @@
 
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Offices</h3></legend>
+		<legend><h3 class="text-muted">Unit</h3></legend>
 		<ol class="breadcrumb">
 			<li><a href="{{ url('maintenance/unit') }}">Unit</a></li>
 			<li class="active">Index</li>
@@ -67,7 +67,7 @@
  			</a>
 		`);
 
-		$('#unitTable').on('click','button.remove',function(){	
+		$('#unitTable').on('click','button.remove',function(){
 		  	var removeButton = $(this);
 			removeButton.button('loading');
 			$.ajax({
@@ -89,5 +89,5 @@
 			})
 		})
 	})
-</script>	
+</script>
 @endsection

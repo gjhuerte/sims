@@ -1,21 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-    <style>
-      #page-two, #page-body{
-        display: none;
-      }
-    </style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Offices</h3></legend>

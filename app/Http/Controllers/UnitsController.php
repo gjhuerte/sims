@@ -50,10 +50,12 @@ class UnitsController extends Controller
 
         $name = $this->sanitizeString($request->get('name'));
         $description = $this->sanitizeString($request->get("description"));
+        $abbreviation = $this->sanitizeString($request->get("abbreviation"));
 
         $validator = Validator::make([
             'Name' => $name,
-            'Description' => $description
+            'Description' => $description,
+            'Abbreviation' => $abbreviation
         ],App\Unit::$rules);
 
         if($validator->fails())
@@ -66,6 +68,7 @@ class UnitsController extends Controller
         $unit = new App\Unit;
         $unit->name = $name;
         $unit->description = $description;
+        $unit->abbreviation = $abbreviation;
         $unit->save();
 
         \Alert::success('Unit Created')->flash();
@@ -80,7 +83,7 @@ class UnitsController extends Controller
      */
     public function show($id)
     {
-        
+
     }
 
     /**
@@ -115,10 +118,12 @@ class UnitsController extends Controller
     {
         $name = $this->sanitizeString($request->get('name'));
         $description = $this->sanitizeString($request->get("description"));
+        $abbreviation = $this->sanitizeString($request->get("abbreviation"));
 
         $validator = Validator::make([
             'Name' => $name,
-            'Description' => $description
+            'Description' => $description,
+            'Abbreviation' => $abbreviation
         ],App\Unit::$updateRules);
 
         if($validator->fails())
@@ -131,6 +136,7 @@ class UnitsController extends Controller
         $unit = App\Unit::find($id);
         $unit->name = $name;
         $unit->description = $description;
+        $unit->abbreviation = $abbreviation;
         $unit->save();
 
         \Alert::success('Unit Information Updated')->flash();

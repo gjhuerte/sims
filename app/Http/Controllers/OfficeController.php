@@ -109,6 +109,11 @@ class OfficeController extends Controller {
 	public function edit($id)
 	{
 		$office = App\Office::find($id);
+
+		if(count($office) <= 0)
+		{
+			return view('errors.404');
+		}
 		return view("maintenance.office.edit")
 				->with('office',$office)
 				->with('title','Office');

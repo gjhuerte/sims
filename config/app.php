@@ -205,6 +205,7 @@ return [
 
         Barryvdh\Snappy\ServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -261,6 +262,7 @@ return [
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

@@ -12,12 +12,14 @@ class Unit extends Model{
 	protected $primaryKey = 'id';
 	public static $rules = array(
 		'Name' => 'required',
-		'Description' => ''
+		'Description' => '',
+		'Abbreviation' => 'required'
 	);
 
 	public static $updateRules = array(
 		'Name' => 'required',
-		'Description' => ''
+		'Description' => '',
+		'Abbreviation' => 'required'
 	);
 
 }

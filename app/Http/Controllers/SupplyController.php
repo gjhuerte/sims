@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-	
+
 use App;
 use Carbon;
 use Session;
@@ -113,7 +113,7 @@ class SupplyController extends Controller {
 		return view('maintenance.supply.edit')
 				->with('supply',$supply)
 				->with('unit',App\Unit::pluck('name','name'))
-                ->with('title','Supply Maintenance');
+        ->with('title','Supply Maintenance');
 	}
 
 
@@ -183,7 +183,7 @@ class SupplyController extends Controller {
 		}
 
 		$supply->delete();
-		\Alert::success('Office Removed')->flash();	
+		\Alert::success('Office Removed')->flash();
 
 		return redirect('maintenance/supply');
 	}
