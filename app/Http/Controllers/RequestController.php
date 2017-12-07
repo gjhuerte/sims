@@ -455,11 +455,15 @@ class RequestController extends Controller
       $requests = App\Request::orderBy('created_at','desc')->first();
       $id = 1;
       $now = Carbon\Carbon::now();
-      $const = 'RIS-' . $now->format('y') . '-' . $now->format('m');
+      $const = $now->format('y') . '-' . $now->format('m');
 
       if(count($requests) > 0)
       {
         $id = $requests->id + 1;
+      }
+      else
+      {
+        $id = count(App\StockCard::filterByIssued()->get()) + 1;
       }
 
       if($request->ajax())
