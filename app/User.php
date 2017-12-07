@@ -259,4 +259,9 @@ class User extends \Eloquent implements Authenticatable
 
 		$audit->createRecord();
 	}
+
+	public function comments()
+    {
+        return $this->hasMany('App\RequestComments');
+    }
 }

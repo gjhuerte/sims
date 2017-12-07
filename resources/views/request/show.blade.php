@@ -39,7 +39,7 @@
 						<th>Details</th>
 						<th>Quantity Requested</th>
 						<th>Quantity Issued</th>
-						<th>Comments</th>
+						<th>Remarks</th>
 					</tr>
 				</thead>
 			</table>
@@ -83,6 +83,9 @@
           <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
         </a>
         @endif
+        <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
+          <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Comment</span>
+        </a>
     `)
 
 	} );

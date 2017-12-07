@@ -182,6 +182,8 @@ Route::middleware(['auth'])->group(function(){
 		]);
 		Route::put('request/{id}/disapprove','RequestController@disapprove');
 		Route::get('request/{id}/cancel','RequestController@getCancelForm');
+		Route::get('request/{id}/comments','RequestController@getComments');
+		Route::post('request/{id}/comments','RequestController@postComments');
 		Route::put('request/{id}/cancel',[
 			'as' => 'request.cancel',
 			'uses' => 'RequestController@cancel'

@@ -41,7 +41,7 @@
           {{ Form::text('stocknumber',null,[
             'id' => 'stocknumber',
             'class' => 'form-control',
-            'placeholder' => 'Supply Sock Number '
+            'placeholder' => 'Supply Stock Number '
           ]) }}
           <p class="text-muted" style="font-size: 10px">Press <strong>Add</strong> Button to search for list of supplies</p>
           </div>
