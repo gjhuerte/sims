@@ -45,6 +45,10 @@ class Request extends Model
       return $query->where('office','=',$value);
     }
 
+    public function comments()
+    {
+      return $this->hasMany('App\RequestComments');
+    }
   	public static $issueRules = array(
   		'Stock Number' => 'required|exists:supplies,stocknumber',
   		'Quantity' => 'required',

@@ -148,11 +148,51 @@ class RequestController extends Controller
             'data' => App\RequestSupply::with('supply')->where('request_id','=',$id)->get()
           ]);
         }
-
-        $request = App\Request::find($id);
+        $requests = App\Request::find($id);
         return view('request.show')
-              ->with('request',$request)
+              ->with('request',$requests)
               ->with('title','Request');
+    }
+
+    /**
+     * Display the specified comments.
+     *
+     *
+     * 
+     */
+    public function getComments(Request $request,$id)
+    {
+        $id = $this->sanitizeString($id);
+
+        if($request->ajax())
+        {
+          return json_encode([
+            'data' => App\RequestComments::where('request_id','=',$id)->get()
+          ]);
+        }
+
+        $requests = App\Request::find($id);
+        $comments = App\RequestComments::find($id);
+        $name = App\User::find($comments->comment_by);
+        return view('request.comments')
+              ->with('request',$requests)
+              ->with('comment',$comments)
+              ->with('name',$name);
+
+    }
+
+    public function postComments(Request $request,$id)
+    {
+      
+      $comments = new App\RequestComments;
+      $comments->requests_id = $id;
+      $comments->details = $request->get('details');
+      $comments->comment_by = Auth::user()->id;
+      $comments->save();
+
+      
+      return redirect("request/$id");
+
     }
 
     /**
