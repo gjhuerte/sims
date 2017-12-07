@@ -17,9 +17,9 @@ class RequestComments extends Model
 	{
 	    return $this->belongsTo('App\Request');
 	}
-	public function getName()
+	public function user()
 	{
-	    return $this->belongsTo('App\User','id', 'comment_by');
+	    return $this->belongsTo('App\User', 'comment_by','id');
 	}
 
 }

@@ -172,12 +172,10 @@ class RequestController extends Controller
         }
 
         $requests = App\Request::find($id);
-        $comments = App\RequestComments::find($id);
-        $name = App\User::find($comments->comment_by);
+        $comments = App\RequestComments::where("requests_id","=",$requests->id)->get();
         return view('request.comments')
               ->with('request',$requests)
-              ->with('comment',$comments)
-              ->with('name',$name);
+              ->with('comments',$comments);
 
     }
 
@@ -191,7 +189,7 @@ class RequestController extends Controller
       $comments->save();
 
       
-      return redirect("request/$id");
+      return back();
 
     }
 
