@@ -60,6 +60,13 @@ class SuppliersController extends Controller
             'Email' => $email
         ],App\Supplier::$rules);
 
+        if($validator->fails())
+        {
+            return back()
+                    ->withInput()
+                    ->withErrors($validator);
+        }
+
         $supplier = new App\Supplier;
         $supplier->name = $name;
         $supplier->address = $address;
@@ -125,7 +132,14 @@ class SuppliersController extends Controller
             'Contact' => $contact,
             'Website' => $website,
             'Email' => $email
-        ],App\Supplier::$rules);
+        ],App\Supplier::$updateRules);
+
+        if($validator->fails())
+        {
+            return back()
+                    ->withInput()
+                    ->withErrors($validator);
+        }
 
         $supplier = App\Supplier::find($id);
         $supplier->name = $name;
