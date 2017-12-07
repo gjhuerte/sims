@@ -27,7 +27,7 @@ class CreateStockCardsTable extends Migration
             $table->string('organization',100)->nullable();
             $table->integer('received')->default(0);
             $table->integer('issued')->default(0);
-            $table->integer('balance')->default(0); 
+            $table->decimal('balance',8,0)->default(0); 
             $table->string('daystoconsume',100)->default('N/A');
             $table->timestamps();
         });

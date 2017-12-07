@@ -73,7 +73,9 @@ class StockCard extends Model{
 	public function setBalance()
 	{
 		$stockcard = StockCard::where('stocknumber','=',$this->stocknumber)
+								->orderBy('date','desc')
 								->orderBy('created_at','desc')
+								->orderBy('id','desc')
 								->first();
 
 		if(!isset($this->received))
@@ -86,13 +88,13 @@ class StockCard extends Model{
 			$this->issued = 0;
 		}
 
-		if( count($stockcard) > 0 )
+		if( count($stockcard) <= 0 )
 		{
-			$this->balance = $stockcard->balance + ( $this->received - $this->issued );
+			$this->balance = $this->received - $this->issued;
 		}
 		else
 		{
-			$this->balance = $this->received - $this->issued;
+			$this->balance = $stockcard->balance + $this->received - $this->issued;
 		}
 	}
 
@@ -108,6 +110,18 @@ class StockCard extends Model{
 		$lastname = Auth::user()->lastname;
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
+		if(isset($this->organization))
+		{
+			$supplier = Supplier::where('name','=',$this->organization)->get();
+
+			if(count($supplier) <= 0	)
+			{
+				$org = new Supplier;
+				$org->name = $this->organization;
+				$org->save();
+			}
+		}
+
 		if(isset($this->receipt) && $this->receipt != null)
 		{
 
@@ -121,19 +135,6 @@ class StockCard extends Model{
 				$receipt->number = $this->receipt;
 				$receipt->date_delivered = Carbon\Carbon::parse($this->date);
 				$receipt->received_by = $fullname;
-
-				if($this->organization != null && isset($this->organization))
-				{
-					$supplier = Supplier::where('name','=',$this->organization)
-											->get();
-
-					if(count($supplier) <= 0 && $supplier != null)
-					{
-						$org = new Supplier;
-						$org->name = $this->organization;
-						$org->save();
-					}
-				}
 
 				$receipt->supplier_name = $this->organization;
 				$receipt->save();
@@ -208,27 +209,36 @@ class StockCard extends Model{
 												->where('remainingquantity','>',0)
 												->get();
 
-		foreach($purchaseorder as $purchaseorder)
+		if(count($purchaseorder) == 0)
 		{
-			if($this->issued > 0)
+			$this->setBalance();
+			$this->save();
+		}
+		else
+		{
+
+			foreach($purchaseorder as $purchaseorder)
 			{
-
-				if($purchaseorder->remainingquantity >= $this->issued)
+				if($this->issued > 0)
 				{
-					$purchaseorder->remainingquantity = $purchaseorder->remainingquantity - $this->issued;
-					$this->setBalance();
-					$this->save();
-					$this->issued = 0;
-				}
-				else
-				{
-					$this->issued = $this->issued - $purchaseorder->remainingquantity;
-					$purchaseorder->remainingquantity = 0;
-					$this->setBalance();
-					$this->save();
-				}
 
-				$purchaseorder->save();
+					if($purchaseorder->remainingquantity >= $this->issued)
+					{
+						$purchaseorder->remainingquantity = $purchaseorder->remainingquantity - $this->issued;
+						$this->setBalance();
+						$this->save();
+						$this->issued = 0;
+					}
+					else
+					{
+						$this->issued = $this->issued - $purchaseorder->remainingquantity;
+						$purchaseorder->remainingquantity = 0;
+						$this->setBalance();
+						$this->save();
+					}
+
+					$purchaseorder->save();
+				}
 			}
 		}
 

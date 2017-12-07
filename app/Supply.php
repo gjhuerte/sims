@@ -43,7 +43,9 @@ class Supply extends Model{
 		}
 
 		$balance = StockCard::where('stocknumber','=',$stocknumber)
+						->orderBy('date','desc')
 						->orderBy('created_at','desc')
+						->orderBy('id','desc')
 						->pluck('balance')
 						->first();
 
@@ -64,7 +66,9 @@ class Supply extends Model{
 		}
 
 		$balance = LedgerCard::where('stocknumber','=',$stocknumber)
+						->orderBy('date','desc')
 						->orderBy('created_at','desc')
+						->orderBy('id','desc')
 						->pluck('balancequantity')
 						->first();
 

@@ -54,7 +54,14 @@ class ImportController extends Controller
 
         $keys = [];
 
-        // DB::getSchemaBuilder()->getColumnListing('stockcards');
+        $validator = Validator::make($request->all(),[
+            'input-file-preview' => 'required|file'
+        ]);
+
+        if($validator->fails())
+        {
+            return back()->withErrors()->withInput();
+        }
 
         foreach($records[0] as $key=>$record)
         {
@@ -78,74 +85,9 @@ class ImportController extends Controller
 
         }
 
-        DB::beginTransaction();
+        $this->importStockCard($rows);
 
-
-        foreach($rows as $row)
-        {
-            $daystoconsume = "None";
-            $purchaseorder = "";
-            $deliveryreceipt = "";
-            $date = $row['date'];
-            $issued=  $row['issue'];
-            $received = intval(str_replace(",","",$row['receipt']));
-            $reference = explode(' ',$row['reference']);
-            $supplier = $row['office'];
-
-            if($reference == 'December Balance' || count($reference) == 1):
-
-                $purchaseorder = $reference;
-                $receipt = $reference;
-                $supplier = 'None';
-
-            else:
-
-                if($reference[0] == 'APR'):
-
-                    $supplier = config('app.main_agency');
-
-                endif;
-
-                if(isset($reference[1])):
-
-                    $reference = explode('/',$reference[1]);
-
-                    if(isset($reference[0]))  $purchaseorder = $reference[0];
-
-                    if(isset($reference[1]))  $receipt = $reference[1];
-
-                endif;
-            endif;
-
-            if(isset($receipt)):
-                
-                $deliveryreceipt = $receipt;
-
-            endif;
-
-            $fundcluster = '';
-            $stocknumber = $row['stockno'];
-
-            $transaction = new App\StockCard;
-            $transaction->date = Carbon\Carbon::parse($date);
-            $transaction->stocknumber = $stocknumber;
-            $transaction->reference = $purchaseorder;
-            $transaction->receipt = $deliveryreceipt;
-            $transaction->organization = $supplier;
-            $transaction->fundcluster = $fundcluster;
-            $transaction->daystoconsume = $daystoconsume;
-            $transaction->user_id = Auth::user()->id;
-
-            if($received > 0):
-                $transaction->received = $received;
-                $transaction->receipt();
-            else:
-                $transaction->issued = $issued; 
-                $transaction->issue();
-            endif;
-        }
-
-        DB::commit();
+        \Alert::success('Data Imported')->flash();
 
         return view('import.index')
             ->with('title','Import')
@@ -153,27 +95,112 @@ class ImportController extends Controller
             ->with('keys',$keys);
     }
 
-    public function importStockCard(Request $request)
+    public function importStockCard($rows)
     {
-        $type = $request->get('type');
-        $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
-        $file = $request->file('input-file-preview');
 
-        $records = Excel::load($file)->toArray();
+        DB::beginTransaction();
 
-        $keys = [];
-
-        // DB::getSchemaBuilder()->getColumnListing('stockcards');
-
-        foreach($records[0] as $key=>$record)
+        foreach($rows as $row)
         {
-            array_push($keys,$key);
+            $separator = ' ';
+            $reference = $row['reference'];
+            $daystoconsume = "None";
+            $purchaseorder = "";
+            $date = $row['date'];
+            $receipt = null;
+            $supplier = $row['office'];
+            $fundcluster = '';
+            $stocknumber = $row['stockno'];
+            $issued=  intval(str_replace(",","",$row['issue']));
+            $received = intval(str_replace(",","",$row['receipt']));
+
+            // return json_encode(count(explode(' ', 'APR PS17-02764/CSE17-4692')));
+
+            /*
+            *
+            *   check if the reference is 
+            *   December Balance
+            *   returns true if has word 'alance'
+            *
+            */
+            if(strpos($reference,'alance') != false)
+            {
+                $receipt = $reference;
+                $supplier = 'None';
+            }
+
+            else
+            {
+                /*
+                *
+                *  separates the values of reference field
+                *   if APR: APR Reference/Receipt
+                *   if PO P.O #Number date 
+                *
+                */
+                    
+                $reference = explode($separator, $reference);
+
+                if(count($reference) > 1)
+                {
+                    $index = 0;
+
+                    //  apr
+                    if($reference[0] == 'APR')
+                    {
+                        $supplier = config('app.main_agency');
+                        $separator = '/';
+                        $reference = explode('/', $reference[1]);
+                        $receipt = $reference[1];
+                        $reference = ltrim($reference[0], '#');
+                    }
+                    else
+                    {
+
+                        $receipt = $reference[2];
+                        $reference = ltrim($reference[1], '#');
+
+                    }
+
+                }
+            }
+
+            /*
+            *
+            *   store to database
+            *
+            */
+            $transaction = new App\StockCard;
+            $transaction->date = Carbon\Carbon::parse($date);
+            $transaction->stocknumber = $stocknumber;
+            $transaction->reference = (is_array($reference)) ? implode(' ', $reference) : $reference;
+            $transaction->receipt = $receipt;
+            $transaction->organization = $supplier;
+            $transaction->fundcluster = $fundcluster;
+            $transaction->daystoconsume = $daystoconsume;
+            $transaction->user_id = Auth::user()->id;
+
+            /*
+            *
+            *   check whether the received has value
+            *   if the received has value
+            *   add to receipt
+            *   if issued has value
+            *   ass to issue
+            */
+            if($received > 0)
+            {
+                $transaction->received = $received;
+                $transaction->receipt();
+            }
+            else
+            {
+                $transaction->issued = $issued; 
+                $transaction->issue();
+            }
         }
 
-        return view('import.index')
-            ->with('title','Import')
-            ->with('records', $records)
-            ->with('keys',$keys);
+        DB::commit();
     }
 
 }

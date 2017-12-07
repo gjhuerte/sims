@@ -27,7 +27,7 @@ class CreateLedgerCardsTable extends Migration
             $table->decimal('receivedunitprice')->default(0);
             $table->integer('issuedquantity')->default(0);
             $table->decimal('issuedunitprice')->default(0);
-            $table->integer('balancequantity')->default(0);
+            $table->decimal('balancequantity',8,0)->default(0); 
             $table->string('daystoconsume',100)->default('N/A');
             $table->string('created_by');
             $table->timestamps();

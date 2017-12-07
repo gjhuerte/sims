@@ -49,7 +49,9 @@ class LedgerCard extends Model{
 	public function setBalance()
 	{
 		$ledgercard = LedgerCard::where('stocknumber','=',$this->stocknumber)
+								->orderBy('date','desc')
 								->orderBy('created_at','desc')
+								->orderBy('id','desc')
 								->first();
 
 		if(!isset($this->receivedquantity))
