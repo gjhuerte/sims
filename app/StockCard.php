@@ -181,10 +181,14 @@ class StockCard extends Model{
 		if(isset($this->fundcluster) && $this->fundcluster != null && count(explode(",",$this->fundcluster)) > 0)
 		{
 			$purchaseorder = PurchaseOrder::where("number","=",$this->reference)->first();
-			foreach(explode(",",$this->fundcluster) as $fundcluster)
+
+			if(count($purchaseorder) > 0)
 			{
-				$fundcluster = FundCluster::create( [ 'code' => $fundcluster ] );
-				PurchaseOrderFundCluster::create([ 'purchaseorder_number' => $purchaseorder->number, 'fundcluster_code' => $fundcluster->code ]);
+				foreach(explode(",",$this->fundcluster) as $fundcluster)
+				{
+					$fundcluster = FundCluster::create( [ 'code' => $fundcluster ] );
+					PurchaseOrderFundCluster::create([ 'purchaseorder_number' => $purchaseorder->number, 'fundcluster_code' => $fundcluster->code ]);
+				}
 			}
 		}
 
