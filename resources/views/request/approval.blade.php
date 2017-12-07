@@ -150,10 +150,10 @@
 
             $('#supplyTable > tbody ').append(`
                 <tr>
-                  <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`"</td>
+                  <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`" /></td>
                   <td>`+response.data.details+`</td>
                   <td>`+response.data.balance+`</td>
-                  <td>0<input type="hidden" name="requested[{{ $supplyrequest->stocknumber }}]" class="form-control" value="0"  /></td>
+                  <td>0<input type="hidden" name="requested[`+response.data.stocknumber+`]" class="form-control" value="0"  /></td>
                   <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value=""  /></td>
                   <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>
                 </tr>

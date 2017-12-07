@@ -282,18 +282,57 @@ class RequestController extends Controller
       $requests->released_at = $date;
       $requests->save();
 
-      $reference = $requests->id;
+      $reference = $requests->code;
       $office = $requests->office;
 
       foreach($stocknumber as $stocknumber)
       {
-        $supplyrequest = App\RequestSupply::where('request_id','=',$id)
-                            ->where('stocknumber','=',$stocknumber)
-                            ->first();
-        $supplyrequest->save();
-        
-        $daystoconsume = $this->sanitizeString($daystoconsume[$stocknumber]);
-        $quantity = $this->sanitizeString($quantity[$stocknumber]);
+
+        if(isset($daystoconsume["$stocknumber"]) && $daystoconsume["$stocknumber"] != null)
+        {
+            $daystoconsume = $this->sanitizeString($daystoconsume["$stocknumber"]);
+        }else
+        {
+            $daystoconsume = "";
+        }
+
+        if(isset($quantity["$stocknumber"]) && $quantity["$stocknumber"] != null)
+        {
+          $quantity = $this->sanitizeString($quantity["$stocknumber"]);
+        }else
+        {
+            $quantity = 0;
+        }
+
+
+        $validator = Validator::make([
+          'Stock Number' => $stocknumber,
+          'Requisition and Issue Slip' => $reference,
+          'Date' => $date,
+          'Issued Quantity' => $quantity,
+          'Office' => $office,
+          'Days To Consume' => $daystoconsume
+        ],App\StockCard::$issueRules);
+
+        $balance = App\Supply::findByStockNumber($stocknumber)->balance;
+        if($validator->fails() || $quantity > $balance)
+        {
+
+          DB::rollback();
+
+          if($quantity > $balance)
+          {
+            $validator = [ "You cannot release quantity of $stocknumber which is greater than the remaining balance ($balance)" ];
+          }
+
+          return back()
+              ->with('total',count($stocknumber))
+              ->with('stocknumber',$stocknumber)
+              ->with('quantity',$quantity)
+              ->with('daystoconsume',$daystoconsume)
+              ->withInput()
+              ->withErrors($validator);
+        }
 
         $transaction = new App\StockCard;
         $transaction->date = $date;
@@ -399,7 +438,7 @@ class RequestController extends Controller
           }
 
           array_push($array,[
-            'quantity_requested' => isset($requested[$stocknumber]) ? $requested[$stocknumber] : 0,
+            'quantity_requested' => (isset($requested[$stocknumber])) ? $requested[$stocknumber] : 0,
             'quantity_issued' => $quantity[$stocknumber],
             'stocknumber' => $stocknumber,
             'comments' => $comment[$stocknumber]

@@ -20,6 +20,25 @@ All Notable changes to `Backpack Settings` will be documented in this file
 - Nothing
 
 
+## [2.0.26] - 2017-12-02
+
+## Added
+- Italian translation;
+- removed publishing of seeds;
+
+
+## [2.0.25] - 2017-11-22
+
+## Fixed
+- composer.json CRUD requirement - makes Settings package work on Backpack\CRUD 3.3;
+
+
+## [2.0.24] - 2017-11-14
+
+## Fixed
+- proper CRUD routes - makes Settings package work on Backpack\CRUD 3.3;
+
+
 ## [2.0.23] - 2017-11-02
 
 ## Fixed
