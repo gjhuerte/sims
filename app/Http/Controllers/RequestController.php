@@ -323,7 +323,7 @@ class RequestController extends Controller
         return view('request.approval')
                 ->with('request',$request)
                 ->with('supplyrequest',$supplyrequest)
-                ->with('title',$request->id);
+                ->with('title',$request->code);
     }
 
     public function disapprove(Request $request, $id)
@@ -359,6 +359,7 @@ class RequestController extends Controller
 
     public function approve(Request $request, $id)
     {
+
         if($request->ajax())
         {
             $id = $this->sanitizeString($id);
@@ -376,19 +377,41 @@ class RequestController extends Controller
 
         $quantity = $request->get('quantity');
         $comment = $request->get('comment');
-        $stocknumber = $request->get('stocknumber');
+        $stocknumbers = $request->get('stocknumber');
+        $requested = $request->get('requested');
+        $array = [];
+
+        foreach($stocknumbers as $stocknumber)
+        {
+          $validator = Validator::make([
+              'Stock Number' => $stocknumber,
+              'Quantity' => $quantity["$stocknumber"]
+          ],App\Request::$issueRules);
+
+          if($validator->fails())
+          {
+              return redirect("request/$id/edit")
+                      ->with('total',count($stocknumbers))
+                      ->with('stocknumber',$stocknumbers)
+                      ->with('quantity',$quantity)
+                      ->withInput()
+                      ->withErrors($validator);
+          }
+
+          array_push($array,[
+            'quantity_requested' => isset($requested[$stocknumber]) ? $requested[$stocknumber] : 0,
+            'quantity_issued' => $quantity[$stocknumber],
+            'stocknumber' => $stocknumber,
+            'comments' => $comment[$stocknumber]
+          ]);
+        }
 
         DB::beginTransaction();
 
         $request = App\Request::find($id);
 
-        foreach($stocknumber as $stocknumber)
-        {
-          $request->supply()->updateExistingPivot($stocknumber,[
-            'quantity_issued' => $quantity[$stocknumber],
-            'comments' => $comment[$stocknumber]
-          ]);
-        }
+        $request->supply()->detach();
+        $request->supply()->attach($array);
 
         $request->issued_by = Auth::user()->username;
         $request->status = 'approved';

@@ -11,6 +11,7 @@
       			<thead>
       				<th class="col-sm-1">Stock No.</th>
       				<th class="col-sm-1">Details</th>
+              <th class="col-sm-1">Unit</th>
       				<th class="col-sm-1 no-sort"></th>
       			</thead>
       		</table>
@@ -18,3 +19,26 @@
     </div> <!-- end of modal-content -->
   </div>
 </div>
+<script>
+  $(document).ready(function(){
+
+      var table = $('#supplyInventoryTable').DataTable({
+        language: {
+            searchPlaceholder: "Search..."
+        },
+        "processing": true,
+        ajax: "{{ url('inventory/supply') }}",
+        columns: [
+            { data: "stocknumber" },
+            { data: "details" },
+            { data: "unit" },
+            { data: function(callback){
+              return `
+                <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>
+              `;
+            } }
+        ],
+      });
+      
+  })
+</script>

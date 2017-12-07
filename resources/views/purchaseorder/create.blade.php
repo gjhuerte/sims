@@ -137,26 +137,6 @@
 <script>
 	$('document').ready(function(){
 
-	    var table = $('#supplyInventoryTable').DataTable({
-	      select: {
-	        style: 'single'
-	      },
-	      language: {
-	          searchPlaceholder: "Search..."
-	      },
-	      "processing": true,
-	      ajax: "{{ url('maintenance/supply') }}",
-	      columns: [
-	          { data: "stocknumber" },
-	          { data: "details" },
-	          { data: function(callback){
-	            return `
-	              <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>
-	            `;
-	          } }
-	      ],
-	    });
-
 	    $('#stocknumber').on('change',function(){
 	      setStockNumberDetails()
 	    })

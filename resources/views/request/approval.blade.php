@@ -22,10 +22,11 @@
 @endsection
 
 @section('content')
+@include('modal.request.supply')
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-    {{ Form::open(['method'=>'put','route'=>array('request.update',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
+    {{ Form::open(['method'=>'put','route'=>array('request.approve',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
       @if (count($errors) > 0)
           <div class="alert alert-danger alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -51,16 +52,17 @@
         <tbody>
           @foreach($supplyrequest as $supplyrequest)
           <tr>
-            <td>{{ $supplyrequest->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}"</td>
-            <td>{{ $supplyrequest->supply->supplytype }}</td>
+            <td>{{ $supplyrequest->stocknumber }}<input type="hidden" class="stocknumber-list" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}" /></td>
+            <td>{{ $supplyrequest->supply->details }}</td>
             <td>{{ $supplyrequest->supply->balance }}</td>
-            <td>{{ $supplyrequest->quantity_requested }}</td>
+            <td>{{ $supplyrequest->quantity_requested }}<input type="hidden" name="requested[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_requested }}"  /></td>
             <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_requested }}"  /></td>
             <td><input type="text" name="comment[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
           </tr>
           @endforeach
         </tbody>
       </table>
+      <button type="button" name="add" id="add" class="btn btn-md btn-primary pull-left">Add Supply</button>
       <div class="pull-right">
         <div class="btn-group">
           <button type="button" id="approve" class="btn btn-md btn-success btn-block">Approve</button>
@@ -75,12 +77,6 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-    <script src="{{ asset('js/jquery-ui.js') }}"></script>
-    <script src="{{ asset('js/moment.min.js') }}"></script>
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
 
 <script>
   jQuery(document).ready(function($) {
@@ -111,9 +107,61 @@
       }
     })
 
+    $('#add').on('click',function(){
+      $('#addStockNumberModal').modal('show')
+    })
+
     $('#cancel').on('click',function(){
       window.location.href = "{{ url('request') }}"
     })
+
+    $('#supplyInventoryTable').on('click','.add-stock',function(){
+
+      insertRow($(this).data('id'))
+      $('#addStockNumberModal').modal('hide')
+
+    })
+
+    function insertRow(stocknumber)
+    {
+
+      error = false
+
+      $('.stocknumber-list').each(function() {
+          if (stocknumber == $(this).val())
+          {
+            error = true; 
+            return;
+          }
+      });
+
+      if(error)
+      {
+        swal("Error", "Stocknumber already exists", "error");
+        return false;
+      }
+
+      $.ajax({
+        type: 'get',
+        url: '{{ url('inventory/supply') }}' +  '/' + stocknumber,
+        dataType: 'json',
+        success: function(response){
+
+
+            $('#supplyTable > tbody ').append(`
+                <tr>
+                  <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`"</td>
+                  <td>`+response.data.details+`</td>
+                  <td>`+response.data.balance+`</td>
+                  <td>0<input type="hidden" name="requested[{{ $supplyrequest->stocknumber }}]" class="form-control" value="0"  /></td>
+                  <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value=""  /></td>
+                  <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>
+                </tr>
+            `)
+
+        }
+      })
+    }
 
   });
 </script>

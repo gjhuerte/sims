@@ -248,23 +248,6 @@
       $('#addStockNumberModal').modal('show');
     })
 
-    var table = $('#supplyInventoryTable').DataTable({
-      language: {
-          searchPlaceholder: "Search..."
-      },
-      "processing": true,
-      ajax: "{{ url('maintenance/supply') }}",
-      columns: [
-          { data: "stocknumber" },
-          { data: "details" },
-          { data: function(callback){
-            return `
-              <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary ">Select</button>
-            `;
-          } }
-      ],
-    });
-
     $('#supplyInventoryTable').on('click','.add-stock',function(){
       $('#stocknumber').val($(this).data('id'))
       $('#addStockNumberModal').modal('hide')
