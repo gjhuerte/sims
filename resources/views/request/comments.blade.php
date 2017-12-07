@@ -36,8 +36,6 @@
                     <small>{{ Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}</small>
                 </div>
             </div>
-
-
 			@endforeach
     @endif
     {{ Form::open(array('class' => 'form-horizontal','method'=>'post','url'=>"request/$request->id/comments",'id'=>'commentsForm')) }}
