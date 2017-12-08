@@ -115,7 +115,9 @@
 					{ data: "issued" },
 					{ data: "details"},
 					{ data: function(callback){
+						if(callback.cost != null && callback.cost >= 0)
 						return parseFloat(callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+						return 0
 					}},
 					{ data: function(callback){
 						return (callback.issued * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
@@ -155,12 +157,13 @@
     	function reloadTable()
     	{
 			date = $('#month').val()
-			if(moment(date).isValid())
-			date = moment(date).format('MMMMYYYY')
+			if(moment(date,"MMMMYYYY").isValid())
+			date = moment(date,"MMMMYYYY").format('MMMM YYYY')
 			else
-			date = moment().format('MMMMYYYY')
+			date = moment().format('MMMM YYYY')
     		rsmitableurl = '{{ url("rsmi") }}' + '/' + date
     		rsmitotaltableurl = '{{ url("rsmi") }}' + '/' + date + '/recapitulation';
+
     		rsmitable.ajax.url(rsmitableurl).load()
     		rsmitotaltable.ajax.url(rsmitotaltableurl).load()
     	}

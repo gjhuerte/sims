@@ -2,7 +2,6 @@
 @section('title',"Purchase Order $purchaseorder->number")
 @section('content')
   <div id="content" class="col-sm-12">
-    <br />
     <h3 class="text-center">
     @if( $purchaseorder->supplier->name == config('app.main_agency') )
     Agency Procurement Request

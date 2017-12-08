@@ -67,7 +67,7 @@ class RSMIController extends Controller
 	public function print($date)
 	{
 
-		$date = Carbon\Carbon::parse($date);
+		$date = $this->convertDateToCarbon($date);
 
 		$ris = App\RSMI::filterByMonth($date)->get();
 

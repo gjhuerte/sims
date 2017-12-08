@@ -2,8 +2,6 @@
 @section('title',"Stock Card Preview")
 @section('content')
   @foreach($supplies as $supply)
-  <br />
-  <br />
   <div id="content" class="col-sm-12" style="{{ ($supplies->last() !== $supply) ? "page-break-after:always;" : "" }}">
   	<table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
   		<thead>

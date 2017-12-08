@@ -37,8 +37,9 @@ class Controller extends BaseController
 		// $pdf->loadHTML('<h1>Test</h1>');
 	    $header = view('layouts.header-report');
 	    return $pdf->setOption('header-html',$header)
+	        ->setOption('header-spacing',5)
 	        ->setOption('footer-center', 'Page [page]')
-	    		->stream( $filename , array('Attachment'=>0) );
+    		->stream( $filename , array('Attachment'=>0) );
 
 	}
 

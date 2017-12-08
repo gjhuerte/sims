@@ -1,13 +1,6 @@
 @extends('layouts.report')
 @section('title',"$receipt->number")
 @section('content')
-  <style>
-      th , tbody{
-        text-align: center;
-      }
-  </style>
-  <br />
-  <br />
   <div id="content" class="col-sm-12">
     <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
