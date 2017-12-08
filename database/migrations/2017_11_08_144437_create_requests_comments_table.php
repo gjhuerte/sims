@@ -19,7 +19,7 @@ class CreateRequestsCommentsTable extends Migration
             $table->foreign('requests_id')
                     ->references('id')
                     ->on('requests');
-            $table->string('details');
+            $table->text('details');
             $table->integer('comment_by')->unsigned();
             $table->foreign('comment_by')
                     ->references('id')

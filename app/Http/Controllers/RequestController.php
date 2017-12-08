@@ -172,7 +172,14 @@ class RequestController extends Controller
         }
 
         $requests = App\Request::find($id);
-        $comments = App\RequestComments::where("requests_id","=",$requests->id)->get();
+
+        if( count($requests) <= 0 )
+        {
+          return redirect('/');
+        }
+
+        $comments = App\RequestComments::where("requests_id","=",$requests->id)->orderBy('created_at','desc')->get();
+
         return view('request.comments')
               ->with('request',$requests)
               ->with('comments',$comments);

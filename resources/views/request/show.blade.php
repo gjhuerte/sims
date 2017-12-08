@@ -84,7 +84,7 @@
         </a>
         @endif
         <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
-          <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Comment</span>
+          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Comments</span>
         </a>
     `)
 
