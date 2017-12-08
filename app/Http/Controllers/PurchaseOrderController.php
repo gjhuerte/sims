@@ -66,12 +66,11 @@ class PurchaseOrderController extends Controller
         $supplier = $this->sanitizeString(Input::get('supplier'));
         
         $validator = Validator::make([
-            'Purchase Order Code' => $number,
+            'Purchase Order' => $number,
             'Date' => $date,
             'Fund Cluster' => $fundcluster,
-            'Details' => $details,
-            'Quantity' => $quantity
-        ],App\PurchaseOrder::$rules,App\PurchaseOrder::$messages);
+            'Details' => $details
+        ],App\PurchaseOrder::$rules);
 
         if($validator->fails())
         {
@@ -102,7 +101,7 @@ class PurchaseOrderController extends Controller
               'Stock Number' => $stocknumber,
               'Quantity' => $_quantity,
               'Unit Price' => $_unitprice,
-            ],App\PurchaseOrderSupply::$rules);
+            ],App\PurchaseOrderSupply::$rules,App\PurchaseOrder::$messages);
 
             if($validator->fails())
             {

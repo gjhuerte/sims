@@ -154,14 +154,16 @@ class AccountsController extends Controller {
 		$office = $this->sanitizeString(Input::get('office'));
 		$position = $this->sanitizeString(Input::get('position'));
 
+		$user = App\User::find($id);
+
 		$validator = Validator::make([
 			'Lastname' => $lastname,
 			'Firstname' => $firstname,
 			'Middlename' => $middlename,
 			'Email' => $email,
 			'Office' => $office,
-			'Username' => 'sampleusernameonly',
-		],App\User::$informationRules);
+			'Username' => $username,
+		],$user->updateRules());
 
 		if($validator->fails())
 		{
@@ -169,8 +171,7 @@ class AccountsController extends Controller {
 				->withInput()
 				->withErrors($validator);
 		}
-
-		$user = App\User::find($id);
+		
 		$user->username = $username;
 		$user->lastname = $lastname;
 		$user->firstname = $firstname;

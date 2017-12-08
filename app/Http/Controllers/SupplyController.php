@@ -123,7 +123,7 @@ class SupplyController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update(Request $request, $id)
+	public function update(Request $request,  $id)
 	{
 		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
 		$entityname = $this->sanitizeString(Input::get('entityname'));
@@ -131,13 +131,15 @@ class SupplyController extends Controller {
 		$reorderpoint = $this->sanitizeString(Input::get("reorderpoint"));
 		$details = $this->sanitizeString(Input::get('details'));
 
+		$supply = App\Supply::find($id);
+
 		$validator = Validator::make([
 			'Stock Number' => $stocknumber,
 			'Entity Name' => $entityname,
 			'Details' => $details,
 			'Unit' => $unit,
 			'Reorder Point' => $reorderpoint
-		],App\Supply::$updateRules);
+		],$supply->updateRules());
 
 		if($validator->fails())
 		{
@@ -145,8 +147,6 @@ class SupplyController extends Controller {
 					->withInput()
 					->withErrors($validator);
 		}
-
-		$supply = App\Supply::find($id);
 		$supply->stocknumber = $stocknumber;
 		$supply->entityname = $entityname;
 		$supply->details = $details;

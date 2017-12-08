@@ -16,10 +16,12 @@ class Unit extends Model{
 		'Abbreviation' => 'required|unique:units,abbreviation'
 	);
 
-	public static $updateRules = array(
-		'Name' => 'required',
-		'Description' => '',
-		'Abbreviation' => 'required'
-	);
-
+	public function updateRules(){
+		$name = $this->name;
+		return  array(
+			'Name' => 'required|unique:units,name,'.$name.',name',
+			'Description' => '',
+			'Abbreviation' => 'required'
+		);
+	}
 }

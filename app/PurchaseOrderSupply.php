@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Supply;
+
 class PurchaseOrderSupply extends Model
 {
     protected $table = 'purchaseorders_supplies';
@@ -14,7 +15,7 @@ class PurchaseOrderSupply extends Model
 
 	public static $rules = array(
 	'Stock Number' => 'required|exists:supplies,stocknumber',
-	'Quantity' => 'required|integemin:1',
+	'Quantity' => 'required|integer|min:1',
 	'Unit Price' => 'required|min:0',
 	);
 

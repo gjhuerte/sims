@@ -120,11 +120,13 @@ class UnitsController extends Controller
         $description = $this->sanitizeString($request->get("description"));
         $abbreviation = $this->sanitizeString($request->get("abbreviation"));
 
+        $unit = App\Unit::find($id);
+
         $validator = Validator::make([
             'Name' => $name,
             'Description' => $description,
             'Abbreviation' => $abbreviation
-        ],App\Unit::$updateRules);
+        ],$unit->updateRules());
 
         if($validator->fails())
         {
@@ -132,8 +134,6 @@ class UnitsController extends Controller
                     ->withInput()
                     ->withErrors($validator);
         }
-
-        $unit = App\Unit::find($id);
         $unit->name = $name;
         $unit->description = $description;
         $unit->abbreviation = $abbreviation;

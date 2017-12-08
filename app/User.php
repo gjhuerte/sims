@@ -50,15 +50,17 @@ class User extends \Eloquent implements Authenticatable
 		'New Password'=>'required|min:8|max:50'
 	);
 
-	public static $updateRules = array(
-		'Username' => 'min:4|max:20',
-		'Password' => 'min:6|max:50',
-		'First name' => 'min:2|max:100|string',
-		'Middle name' => 'min:2|max:50|string',
-		'Last name' => 'min:2|max:50|string',
-		'Email' => 'email',
-		'Office' => 'required|exists:offices,code'
-	);
+	public function updateRules(){
+		$username = $this->username;
+		return array(
+			'Username' => 'min:4|max:20|unique:Users,username,'.$username.',username',
+			'First name' => 'min:2|max:100|string',
+			'Middle name' => 'min:2|max:50|string',
+			'Last name' => 'min:2|max:50|string',
+			'Email' => 'email',
+			'Office' => 'required|exists:offices,code'
+		);
+	}
 
 	public $action;
 

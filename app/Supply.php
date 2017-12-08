@@ -20,13 +20,17 @@ class Supply extends Model{
 		'Reorder Point' => 'required|integer'
 	);
 
-	public static $updateRules = array(
-		'Stock Number' => 'required',
-		'Entity Name' => 'required',
-		'Details' => 'required',
-		'Unit' => 'required',
-		'Reorder Point' => 'integer'
-	);
+	public function updateRules()
+	{
+		$stocknumber = $this->stocknumber;
+		return array(
+				'Stock Number' => 'required|unique:supplies,stocknumber,'.$stocknumber.',stocknumber',
+				'Entity Name' => 'required',
+				'Details' => 'required',
+				'Unit' => 'required',
+				'Reorder Point' => 'integer'
+		);
+	} 
 
 	protected $appends = [
 		'balance',

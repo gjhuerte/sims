@@ -12,11 +12,11 @@ class PurchaseOrder extends Model
 	public $timestamps = true;
 
 	public static $messages = [
-    'Quantity.integer' => 'Quantity must not be 0',
+    	'Quantity.integer' => 'Quantity must not be 0',
 	];
-	
+
 	public static $rules = array(
-		'Purchase Order Code' => 'required|unique:purchaseorders,number',
+		'Purchase Order' => 'required|unique:purchaseorders,number',
 		'Date' => 'required',
 		'Fund Cluster' => '',
 		'Details' => '',
@@ -25,7 +25,7 @@ class PurchaseOrder extends Model
 
 	
 	public static $updateRules = array(
-		'Purchase Order Code' => '',
+		'Purchase Order' => '',
 		'Date' => '',
 		'Fund Cluster' => '',
 		'Details' => '',
