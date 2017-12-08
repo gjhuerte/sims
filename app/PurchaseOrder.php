@@ -11,18 +11,24 @@ class PurchaseOrder extends Model
 	protected $primaryKey = 'id';
 	public $timestamps = true;
 
+	public static $messages = [
+    'Quantity.integer' => 'Quantity must not be 0',
+	];
 	public static $rules = array(
 		'Number' => 'required|unique:purchaseorders,number',
 		'Date' => 'required',
 		'Fund Cluster' => '',
-		'Details' => ''
+		'Details' => '',
+		'Quantity' => 'integer|min:0'
 	);
 
+	
 	public static $updateRules = array(
 		'Number' => '',
 		'Date' => '',
 		'Fund Cluster' => '',
-		'Details' => ''
+		'Details' => '',
+		'Quantity' => ''
 	);
 
 	public function supply()

@@ -64,13 +64,14 @@ class PurchaseOrderController extends Controller
         $quantity = Input::get('quantity');
         $unitprice = Input::get('unitprice');
         $supplier = $this->sanitizeString(Input::get('supplier'));
-
+        
         $validator = Validator::make([
             'Number' => $number,
             'Date' => $date,
             'Fund Cluster' => $fundcluster,
-            'Details' => $details
-        ],App\PurchaseOrder::$rules);
+            'Details' => $details,
+            'Quantity' => $quantity
+        ],App\PurchaseOrder::$rules,App\PurchaseOrder::$messages);
 
         if($validator->fails())
         {
