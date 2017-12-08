@@ -116,7 +116,19 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody></tbody>
+				<tbody>
+					@if(old('stocknumber') != null)
+						@foreach(old('stocknumber') as $stocknumber)
+						<tr>
+							<td><input type="text" class="stocknumber-list form-control text-center" value="{{ $stocknumber }}" name="stocknumber[{{ $stocknumber }}]" style="border:none;" /></td>
+							<td>{{ (count($supply = App\Supply::find($stocknumber)) >= 0) ? $supply->details : "N/A" }}</td>
+							<td><input type="number" class="form-control text-center" value="{{ (old("quantity.$stocknumber") != null) ? old("quantity.$stocknumber") : "" }}" name="quantity[{{ $stocknumber }}]" style="border:none;"  /></td>
+							<td><input type="number" class="form-control text-center" value="{{ (old("unitprice.$stocknumber") != null) ? old("unitprice.$stocknumber") : "" }}" name="unitprice[{{ $stocknumber }}]" style="border:none;"  /></td>
+							<td><button type="button" class="remove btn btn-md btn-danger text-center"><span class="glyphicon glyphicon-remove"></span></button></td>
+						</tr>
+						@endforeach
+					@endif
+				</tbody>
 			</table>
 			<div class="pull-right">
 				<div class="btn-group">
@@ -266,9 +278,24 @@
 
 		function addForm(row,_stocknumber = "",_info ="" ,_quantity = "",_unitprice = "")
 		{
+			error = "";
+		      $('.stocknumber-list').each(function() {
+		          if (_stocknumber == $(this).val())
+		          {
+		            error = true; 
+		            return;
+		          }
+		      });
+
+		      if(error)
+		      {
+		        swal("Error", "Stocknumber already exists", "error");
+		        return false;
+		      }
+
 			$('#supplyTable > tbody').append(`
 				<tr>
-					<td><input type="text" class="form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
+					<td><input type="text" class="stocknumber-list form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
 					<td>` + _info + `</td>
 					<td><input type="number" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;"  /></td>
 					<td><input type="number" class="form-control text-center" value="` + _unitprice + `" name="unitprice[` + _stocknumber + `]" style="border:none;"  /></td>

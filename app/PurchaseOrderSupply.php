@@ -13,8 +13,9 @@ class PurchaseOrderSupply extends Model
 	public $timestamps = true;
 
 	public static $rules = array(
-	'Reference' => 'required',
-	'Stock Number' => 'required',
+	'Stock Number' => 'required|exists:supplies,stocknumber',
+	'Quantity' => 'required|integer|min:1',
+	'Unit Price' => 'required|min:0',
 	);
 
 	public static $updateRules = array(

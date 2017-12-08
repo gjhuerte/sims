@@ -56,7 +56,7 @@ class PurchaseOrderController extends Controller
      */
     public function store()
     {
-        $stocknumber = Input::get('stocknumber');
+        $stocknumbers = Input::get('stocknumber');
         $details = $this->sanitizeString(Input::get('details'));
         $fundcluster = $this->sanitizeString(Input::get('fundcluster'));
         $date = $this->sanitizeString(Input::get('date'));
@@ -66,7 +66,7 @@ class PurchaseOrderController extends Controller
         $supplier = $this->sanitizeString(Input::get('supplier'));
         
         $validator = Validator::make([
-            'Number' => $number,
+            'Purchase Order Code' => $number,
             'Date' => $date,
             'Fund Cluster' => $fundcluster,
             'Details' => $details,
@@ -75,6 +75,7 @@ class PurchaseOrderController extends Controller
 
         if($validator->fails())
         {
+            DB::rollback();
             return redirect('purchaseorder/create')
                     ->withInput()
                     ->withErrors($validator);
@@ -90,13 +91,32 @@ class PurchaseOrderController extends Controller
         $purchaseorder->created_by = Auth::user()->id;
         $purchaseorder->save();
 
-        foreach($stocknumber as $_stocknumber)
+        $stocknumbers = array_unique($stocknumbers);
+
+        foreach($stocknumbers as $stocknumber)
         {
+            $_quantity = $this->sanitizeString($quantity["$stocknumber"]);
+            $_unitprice = $this->sanitizeString($unitprice["$stocknumber"]);
+
+            $validator = Validator::make([
+              'Stock Number' => $stocknumber,
+              'Quantity' => $_quantity,
+              'Unit Price' => $_unitprice,
+            ],App\PurchaseOrderSupply::$rules);
+
+            if($validator->fails())
+            {
+                DB::rollback();
+                return redirect('purchaseorder/create')
+                        ->withInput()
+                        ->withErrors($validator);
+            }
+
             $supply = new App\PurchaseOrderSupply;
             $supply->purchaseorder_number = $purchaseorder->number;
-            $supply->stocknumber = $this->sanitizeString($_stocknumber);
-            $supply->orderedquantity = $quantity["$_stocknumber"];
-            $supply->unitcost = $unitprice["$_stocknumber"];
+            $supply->stocknumber = $this->sanitizeString($stocknumber);
+            $supply->orderedquantity = $_quantity;
+            $supply->unitcost = $_unitprice;
             $supply->receivedquantity = 0;
             $supply->save();
         }

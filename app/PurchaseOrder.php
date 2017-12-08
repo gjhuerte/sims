@@ -15,7 +15,7 @@ class PurchaseOrder extends Model
     'Quantity.integer' => 'Quantity must not be 0',
 	];
 	public static $rules = array(
-		'Number' => 'required|unique:purchaseorders,number',
+		'Purchase Order Code' => 'required|unique:purchaseorders,number',
 		'Date' => 'required',
 		'Fund Cluster' => '',
 		'Details' => '',
@@ -24,7 +24,7 @@ class PurchaseOrder extends Model
 
 	
 	public static $updateRules = array(
-		'Number' => '',
+		'Purchase Order Code' => '',
 		'Date' => '',
 		'Fund Cluster' => '',
 		'Details' => '',
