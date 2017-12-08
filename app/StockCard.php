@@ -186,7 +186,13 @@ class StockCard extends Model{
 			{
 				foreach(explode(",",$this->fundcluster) as $fundcluster)
 				{
-					$fundcluster = FundCluster::create( [ 'code' => $fundcluster ] );
+					$fundcluster = FundCluster::findbyCode($fundcluster);
+
+					if(count($fundcluster) <= 0)
+					{
+						$fundcluster = FundCluster::create( [ 'code' => $fundcluster ] );
+					}
+
 					PurchaseOrderFundCluster::create([ 'purchaseorder_number' => $purchaseorder->number, 'fundcluster_code' => $fundcluster->code ]);
 				}
 			}

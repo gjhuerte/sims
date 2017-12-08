@@ -11,4 +11,9 @@ class FundCluster extends Model
     public $timestamps = true;
 
     protected $fillable = [ 'code' ];
+
+    public function scopeFindByCode($query,$value)
+    {
+    	return $query->where('code','=',$value)->first();
+    }
 }
