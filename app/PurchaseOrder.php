@@ -14,6 +14,7 @@ class PurchaseOrder extends Model
 	public static $messages = [
     'Quantity.integer' => 'Quantity must not be 0',
 	];
+	
 	public static $rules = array(
 		'Purchase Order Code' => 'required|unique:purchaseorders,number',
 		'Date' => 'required',

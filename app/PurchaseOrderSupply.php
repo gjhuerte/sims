@@ -14,7 +14,7 @@ class PurchaseOrderSupply extends Model
 
 	public static $rules = array(
 	'Stock Number' => 'required|exists:supplies,stocknumber',
-	'Quantity' => 'required|integer|min:1',
+	'Quantity' => 'required|integemin:1',
 	'Unit Price' => 'required|min:0',
 	);
 
