@@ -12,7 +12,7 @@ class PurchaseOrder extends Model
 	public $timestamps = true;
 
 	public static $messages = [
-    	'Quantity.integer' => 'Quantity must not be 0',
+    'Quantity.integer' => 'Quantity must not be 0',
 	];
 
 	public static $rules = array(

@@ -19,7 +19,7 @@ class Request extends Model
       'remarks'  , 
       'status' 
     ];
-
+    
     public $appends = [
       'code'
     ];
@@ -51,6 +51,6 @@ class Request extends Model
     }
   	public static $issueRules = array(
   		'Stock Number' => 'required|exists:supplies,stocknumber',
-  		'Quantity' => 'required',
+  		'Quantity' => 'required|integer|min:1',
   	);
 }

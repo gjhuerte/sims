@@ -79,7 +79,7 @@ class RequestController extends Controller
         $validator = Validator::make([
             'Stock Number' => $stocknumber,
             'Quantity' => $quantity["$stocknumber"]
-        ],App\Request::$issueRules);
+        ],App\Request::$issueRules,App\Request::$messages);
 
         if($validator->fails())
         {
