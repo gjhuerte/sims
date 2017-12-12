@@ -7,6 +7,7 @@ use Auth;
 use DB;
 use Carbon;
 use Session;
+use PDF;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -21,15 +22,21 @@ class RequestController extends Controller
     {
         if($request->ajax())
         {
-          if(Auth::user()->accesslevel == 3)
+
+          $ret_val = App\Request::all();
+
+          if(Auth::user()->access == 3)
           {
-            return json_encode([
-              'data' => App\Request::self()->get()
-            ]);
+            if(Auth::user()->position == 'head')
+            {
+              $ret_val = App\Request::findByOffice( Auth::user()->office )->get();
+            }
+
+            $ret_val = App\Request::me()->get();
           }
 
           return json_encode([
-              'data' => App\Request::all()
+              'data' => $ret_val
           ]);
         }
 
@@ -42,10 +49,13 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('request.create')
-                ->with('title','Request');
+      $code = $this->generate($request);
+
+      return view('request.create')
+              ->with('code',$code)
+              ->with('title','Request');
     }
 
     /**
@@ -56,73 +66,70 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
-        $stocknumber = $request->get("stocknumber");
-        $quantity = $request->get("quantity");
-        $quantity_issued = null;
-        $array = [];
+      $stocknumbers = $request->get("stocknumber");
+      $quantity = $request->get("quantity");
+      $quantity_issued = null;
+      $array = [];
+      $issued_by = Auth::user()->username;
+      $office = Auth::user()->office;
+      $status = null;
 
-        foreach(array_flatten($stocknumber) as $_stocknumber)
+      foreach(array_flatten($stocknumbers) as $stocknumber)
+      {
+        $validator = Validator::make([
+            'Stock Number' => $stocknumber,
+            'Quantity' => $quantity["$stocknumber"]
+        ],App\Request::$issueRules);
+
+        if($validator->fails())
         {
-            $validator = Validator::make([
-                'Stock Number' => $stocknumber,
-                'Quantity' => $quantity["$_stocknumber"]
-            ],App\Request::$issueRules);
-
-            if($validator->fails())
-            {
-                return redirect("request/create")
-                        ->with('total',count($stocknumber))
-                        ->with('stocknumber',$stocknumber)
-                        ->with('quantity',$quantity)
-                        ->withInput()
-                        ->withErrors($validator);
-            }
-
-            if(Auth::user()->accesslevel == 1)
-            {
-              if(App\Supply::stocknumber($_stocknumber)->first()->balance <= $quantity["$_stocknumber"])
-              {
-                  return redirect("request/create")
-                          ->with('total',count($stocknumber))
-                          ->with('stocknumber',$stocknumber)
-                          ->with('quantity',$quantity)
-                          ->withInput()
-                          ->withErrors(["No more items to release for supply with stock number of $_stocknumber"]);
-              }
-
-              $quantity_issued = $quantity[$_stocknumber];
-            }
-
-            array_push($array,[
-                'quantity_requested' => $quantity["$_stocknumber"],
-                'stocknumber' => $_stocknumber,
-                'quantity_issued' => $quantity_issued
-            ]);
+            return redirect("request/create")
+                    ->with('total',count($stocknumbers))
+                    ->with('stocknumber',$stocknumbers)
+                    ->with('quantity',$quantity)
+                    ->withInput()
+                    ->withErrors($validator);
         }
 
-        $status = null;
-        $issued_by = Auth::user()->username;
-
-        if(Auth::user()->accesslevel == 1)
+        if(Auth::user()->access == 1)
         {
+          if( App\Supply::findByStockNumber($stocknumber)->balance <= $quantity["$stocknumber"])
+          {
+              return redirect("request/create")
+                      ->with('total',count($stocknumbers))
+                      ->with('stocknumber',$stocknumbers)
+                      ->with('quantity',$quantity)
+                      ->withInput()
+                      ->withErrors(["No more items to release for supply with stock number of $stocknumber"]);
+          }
+
           $status = 'approved';
+          $quantity_issued = $quantity[$stocknumber];
         }
 
-        DB::transaction(function() use ($array,$issued_by,$status){
+        array_push($array,[
+            'quantity_requested' => $quantity["$stocknumber"],
+            'stocknumber' => $stocknumber,
+            'quantity_issued' => $quantity_issued
+        ]);
+      }
 
-            $request = App\Request::create([
-                'id' => App\Request::generateID(),
-                'requestor' => Auth::user()->username,
-                'issued_by' => $issued_by,
-                'remarks' => null,
-                'status' => $status
-            ]);
+      DB::beginTransaction();
 
-            $request->supply()->sync($array);
-        });
+      $request = App\Request::create([
+        'requestor' => Auth::user()->username,
+        'issued_by' => $issued_by,
+        'office' => $office,
+        'remarks' => null,
+        'status' => $status
+      ]);
 
-        Session::flash('success-message','Request Sent');
-        return redirect('request');
+      $request->supply()->sync($array);
+
+      DB::commit();
+
+      \Alert::success('Request Sent')->flash();
+      return redirect('request');
     }
 
     /**
@@ -138,14 +145,59 @@ class RequestController extends Controller
         if($request->ajax())
         {
           return json_encode([
-            'data' => App\SupplyRequest::with('supply')->where('request_id','=',$id)->get()
+            'data' => App\RequestSupply::with('supply')->where('request_id','=',$id)->get()
+          ]);
+        }
+        $requests = App\Request::find($id);
+        return view('request.show')
+              ->with('request',$requests)
+              ->with('title','Request');
+    }
+
+    /**
+     * Display the specified comments.
+     *
+     *
+     * 
+     */
+    public function getComments(Request $request,$id)
+    {
+        $id = $this->sanitizeString($id);
+
+        if($request->ajax())
+        {
+          return json_encode([
+            'data' => App\RequestComments::where('request_id','=',$id)->get()
           ]);
         }
 
-        $request = App\Request::find($id);
-        return view('request.show')
-              ->with('request',$request)
-              ->with('title','Request');
+        $requests = App\Request::find($id);
+
+        if( count($requests) <= 0 )
+        {
+          return redirect('/');
+        }
+
+        $comments = App\RequestComments::where("requests_id","=",$requests->id)->orderBy('created_at','desc')->get();
+
+        return view('request.comments')
+              ->with('request',$requests)
+              ->with('comments',$comments);
+
+    }
+
+    public function postComments(Request $request,$id)
+    {
+      
+      $comments = new App\RequestComments;
+      $comments->requests_id = $id;
+      $comments->details = $request->get('details');
+      $comments->comment_by = Auth::user()->id;
+      $comments->save();
+
+      
+      return back();
+
     }
 
     /**
@@ -157,12 +209,13 @@ class RequestController extends Controller
     public function edit($id)
     {
         $request = App\Request::find($id);
-        $supplyrequest = App\SupplyRequest::where('request_id','=',$id)->get();
+        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
 
         return view('request.edit')
                 ->with('request',$request)
                 ->with('supplyrequest',$supplyrequest)
                 ->with('title',$request->id);
+
     }
 
     /**
@@ -174,6 +227,224 @@ class RequestController extends Controller
      */
     public function update(Request $request, $id)
     {
+      $stocknumbers = $request->get("stocknumber");
+      $quantity = $request->get("quantity");
+      $quantity_issued = null;
+      $array = [];
+      $issued_by = Auth::user()->username;
+      $office = Auth::user()->office;
+      $status = null;
+
+      foreach(array_flatten($stocknumbers) as $stocknumber)
+      {
+        $validator = Validator::make([
+            'Stock Number' => $stocknumber,
+            'Quantity' => $quantity["$stocknumber"]
+        ],App\Request::$issueRules);
+
+        if($validator->fails())
+        {
+            return redirect("request/$id/edit")
+                    ->with('total',count($stocknumbers))
+                    ->with('stocknumber',$stocknumbers)
+                    ->with('quantity',$quantity)
+                    ->withInput()
+                    ->withErrors($validator);
+        }
+
+        if(Auth::user()->access == 1)
+        {
+          if( App\Supply::findByStockNumber($stocknumber)->balance <= $quantity["$stocknumber"])
+          {
+              return redirect("request/create")
+                      ->with('total',count($stocknumbers))
+                      ->with('stocknumber',$stocknumbers)
+                      ->with('quantity',$quantity)
+                      ->withInput()
+                      ->withErrors(["No more items to release for supply with stock number of $stocknumber"]);
+          }
+
+          $status = 'approved';
+          $quantity_issued = $quantity[$stocknumber];
+        }
+
+        array_push($array,[
+            'quantity_requested' => $quantity["$stocknumber"],
+            'stocknumber' => $stocknumber,
+            'quantity_issued' => $quantity_issued
+        ]);
+      }
+
+      DB::beginTransaction();
+
+      $request = App\Request::find($id);
+
+      $request->supply()->detach();
+      $request->supply()->attach($array);
+
+      DB::commit();
+
+      \Alert::success('Request Updated')->flash();
+      return redirect("request/$id");
+
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function releaseView($id)
+    {
+        $request = App\Request::find($id);
+        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
+
+        return view('request.release')
+                ->with('request',$request)
+                ->with('supplyrequest',$supplyrequest)
+                ->with('title',$request->id);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request,$id)
+    {
+
+      $daystoconsume = $request->get('daystoconsume');
+      $quantity = $request->get('quantity');
+      $stocknumber = $request->get('stocknumber');
+      $date = Carbon\Carbon::now();
+
+      DB::beginTransaction();
+
+      $requests = App\Request::find($id);
+      $requests->status = 'released';
+      $requests->released_at = $date;
+      $requests->released_by = Auth::user()->id;
+      $requests->save();
+
+      $reference = $requests->code;
+      $office = $requests->office;
+
+      foreach($stocknumber as $stocknumber)
+      {
+
+        if(isset($daystoconsume["$stocknumber"]) && $daystoconsume["$stocknumber"] != null)
+        {
+            $daystoconsume = $this->sanitizeString($daystoconsume["$stocknumber"]);
+        }else
+        {
+            $daystoconsume = "";
+        }
+
+        if(isset($quantity["$stocknumber"]) && $quantity["$stocknumber"] != null)
+        {
+          $quantity = $this->sanitizeString($quantity["$stocknumber"]);
+        }else
+        {
+            $quantity = 0;
+        }
+
+
+        $validator = Validator::make([
+          'Stock Number' => $stocknumber,
+          'Requisition and Issue Slip' => $reference,
+          'Date' => $date,
+          'Issued Quantity' => $quantity,
+          'Office' => $office,
+          'Days To Consume' => $daystoconsume
+        ],App\StockCard::$issueRules);
+
+        $balance = App\Supply::findByStockNumber($stocknumber)->balance;
+        if($validator->fails() || $quantity > $balance)
+        {
+
+          DB::rollback();
+
+          if($quantity > $balance)
+          {
+            $validator = [ "You cannot release quantity of $stocknumber which is greater than the remaining balance ($balance)" ];
+          }
+
+          return back()
+              ->with('total',count($stocknumber))
+              ->with('stocknumber',$stocknumber)
+              ->with('quantity',$quantity)
+              ->with('daystoconsume',$daystoconsume)
+              ->withInput()
+              ->withErrors($validator);
+        }
+
+        $transaction = new App\StockCard;
+        $transaction->date = $date;
+        $transaction->stocknumber = $stocknumber;
+        $transaction->reference = $reference;
+        $transaction->organization = $office;
+        $transaction->issued  = $quantity;
+        $transaction->daystoconsume = $daystoconsume;
+        $transaction->user_id = Auth::user()->id;
+        $transaction->issue();
+      }
+
+      DB::commit();
+
+
+
+      \Alert::success('Items Released')->flash();
+      return redirect('request');
+
+    }
+
+    public function getApproveForm(Request $request, $id)
+    {
+        $request = App\Request::find($id);
+        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
+
+        return view('request.approval')
+                ->with('request',$request)
+                ->with('supplyrequest',$supplyrequest)
+                ->with('title',$request->code);
+    }
+
+    public function disapprove(Request $request, $id)
+    {
+        if($request->ajax())
+        {
+            $id = $this->sanitizeString($id);
+            $remarks = $this->sanitizeString($request->get('reason'));
+
+            $request = App\Request::find($id);
+            $request->status = "disapproved";
+            $request->approved_at = Carbon\Carbon::now();
+            $request->remarks = $remarks;
+            $request->save();
+
+            return json_encode('success');
+        }
+
+        DB::beginTransaction();
+
+        $request = App\Request::find($id);
+
+        $request->status = 'disapproved';
+        $request->approved_at = Carbon\Carbon::now();
+        $request->save();
+
+        DB::commit();
+
+        \Alert::success('Request Disapproved')->flash();
+        return redirect('request');
+
+    }
+
+    public function approve(Request $request, $id)
+    {
+
         if($request->ajax())
         {
             $id = $this->sanitizeString($id);
@@ -191,19 +462,41 @@ class RequestController extends Controller
 
         $quantity = $request->get('quantity');
         $comment = $request->get('comment');
-        $stocknumber = $request->get('stocknumber');
+        $stocknumbers = $request->get('stocknumber');
+        $requested = $request->get('requested');
+        $array = [];
+
+        foreach($stocknumbers as $stocknumber)
+        {
+          $validator = Validator::make([
+              'Stock Number' => $stocknumber,
+              'Quantity' => $quantity["$stocknumber"]
+          ],App\Request::$issueRules);
+
+          if($validator->fails())
+          {
+              return redirect("request/$id/edit")
+                      ->with('total',count($stocknumbers))
+                      ->with('stocknumber',$stocknumbers)
+                      ->with('quantity',$quantity)
+                      ->withInput()
+                      ->withErrors($validator);
+          }
+
+          array_push($array,[
+            'quantity_requested' => (isset($requested[$stocknumber])) ? $requested[$stocknumber] : 0,
+            'quantity_issued' => $quantity[$stocknumber],
+            'stocknumber' => $stocknumber,
+            'comments' => $comment[$stocknumber]
+          ]);
+        }
 
         DB::beginTransaction();
 
         $request = App\Request::find($id);
 
-        foreach($stocknumber as $stocknumber)
-        {
-          $request->supply()->updateExistingPivot($stocknumber,[
-            'quantity_issued' => $quantity[$stocknumber],
-            'comments' => $comment[$stocknumber]
-          ]);
-        }
+        $request->supply()->detach();
+        $request->supply()->attach($array);
 
         $request->issued_by = Auth::user()->username;
         $request->status = 'approved';
@@ -212,85 +505,85 @@ class RequestController extends Controller
 
         DB::commit();
 
-        Session::flash('success-message','Request Approved');
+        \Alert::success('Request Approved')->flash();
         return redirect('request');
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function releaseView($id)
+    public function getCancelForm($id)
     {
         $request = App\Request::find($id);
-        $supplyrequest = App\SupplyRequest::where('request_id','=',$id)->get();
+        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
 
-        return view('request.release')
+        return view('request.cancel')
                 ->with('request',$request)
                 ->with('supplyrequest',$supplyrequest)
                 ->with('title',$request->id);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request,$id)
+    public function cancel(Request $request, $id)
     {
-      $requests = App\Request::find($id);
-      $requests->status = 'released';
-      $requests->save();
 
-      $daystoconsume = $request->get('daystoconsume');
-      $quantity = $request->get('quantity');
-      $stocknumber = $request->get('stocknumber');
+      $details = $this->sanitizeString($request->get('details'));
 
       DB::beginTransaction();
 
-      foreach($stocknumber as $stocknumber)
-      {
-        $supplyrequest = App\SupplyRequest::where('request_id','=',$id)
-                                              ->where('stocknumber','=',$stocknumber)
-                                              ->first();
-
-        $date = Carbon\Carbon::now();
-        $purchaseorder = '';
-        $reference = $requests->id;
-        $office = App\User::where('username','=',$requests->requestor)->pluck('office')->first();
-        $daystoconsume = $this->sanitizeString($daystoconsume[$stocknumber]);
-        $quantity = $this->sanitizeString($quantity[$stocknumber]);
-
-        $supplyrequest->released_at = $date;
-        $supplyrequest->save();
-
-
-        App\SupplyTransaction::issue($date,$stocknumber,$purchaseorder,$reference,$office,$quantity,$daystoconsume);
-      }
+      $requests = App\Request::find($id);
+      $requests->status = "cancelled";
+      $requests->cancelled_by = Auth::user()->id;
+      $requests->cancelled_at = Carbon\Carbon::now();
+      $requests->remarks = $details;
+      $requests->save();
 
       DB::commit();
 
-      Session::flash('success-message','Items Released');
+      \Alert::success("$requests->code Cancelled")->flash();
       return redirect('request');
-
     }
 
     public function print($id)
     {
       $id = $this->sanitizeString($id);
-      $supplyrequests = App\SupplyRequest::with('supply')->where('request_id','=',$id)->get();
+      $supplyrequests = App\RequestSupply::with('supply')->where('request_id','=',$id)->get();
       $request = App\Request::find($id);
 
-      return view('request.print_show')
-              ->with('request',$request)
-              ->with('supplyrequests',$supplyrequests);
+      $data = [
+        'request' => $request, 
+        'supplyrequests' => $supplyrequests,
+        'approvedby' => App\Office::where('code','=','OVPAA')->first()
+      ];
 
+      $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
+      $view = "request.print_show";
 
+      return $this->printPreview($view,$data,$filename);
 
-  		$pdf = PDF::loadView('request.print_index',['request' => $request, 'supplyrequests' => $supplyrequests ]);
-  		return $pdf->download('request.pdf');
+      // return view($view);
+    }
+
+    public function generate(Request $request)
+    {
+
+      $requests = App\Request::orderBy('created_at','desc')->first();
+      $id = 1;
+      $now = Carbon\Carbon::now();
+      $const = $now->format('y') . '-' . $now->format('m');
+
+      if(count($requests) > 0)
+      {
+        $id = $requests->id + 1;
+      }
+      else
+      {
+        $id = count(App\StockCard::filterByIssued()->get()) + 1;
+      }
+
+      if($request->ajax())
+      {
+        return json_encode( $const . '-' . $id ); 
+      }
+
+      return $const . '-' . $id;
+
     }
 }

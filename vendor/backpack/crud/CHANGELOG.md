@@ -20,6 +20,14 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 
 
+## [3.2.27] - 2017-11-06
+
+## Fixed
+- inline validation on nested attributes - merged #987, fixes #986;
+- morphed entities caused records in the pivot table to duplicate - merged #772, fixes #369;
+- browse field used slash instead of backslash on windows - fixes #496;
+- endless loop when using date_range filter - merged #1092;
+
 
 ## [3.2.26] - 2017-10-25
 

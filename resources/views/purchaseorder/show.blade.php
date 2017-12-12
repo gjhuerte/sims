@@ -1,32 +1,19 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-	<style>
-
-		a > hover{
-			text-decoration: none;
-		}
-
-		th , tbody{
-			text-align: center;
-		}
-	</style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Purchase Order</h3></legend>
+		<legend>
+			<h3 class="text-muted">
+			    @if( $purchaseorder->supplier->name == config('app.main_agency') )
+			    Agency Procurement Request
+			    @else
+			    Purchase Order
+			    @endif
+			</h3>
+		</legend>
 		<ul class="breadcrumb">
 			<li><a href="{{ url('purchaseorder') }}">Purchase Order</a></li>
-			<li class="active"> {{ $purchaseorder->purchaseorderno }} </li>
+			<li class="active"> {{ $purchaseorder->id }} </li>
 		</ul>
 	</section>
 @endsection
@@ -36,27 +23,33 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
+			<a href="{{ url("purchaseorder/$purchaseorder->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+				<span id="nav-text"> Print</span>
+			</a>
+			<hr />
 			<table class="table table-hover table-striped table-bordered table-condensed" id="purchaseOrderTable" cellspacing="0" width="100%"	>
 				<thead>
 
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="4">Purchase Order Number:  <span style="font-weight:normal">{{ $purchaseorder->purchaseorderno }}</span> </th>
-		                <th class="text-left" colspan="4">Fund Cluster:  <span style="font-weight:normal">{{ $purchaseorder->fundcluster }}</span> </th>
+		                <th class="text-left" colspan="4">Purchase Order Number:  <span style="font-weight:normal">{{ $purchaseorder->number }}</span> </th>
+		                <th class="text-left" colspan="4">Fund Cluster:  
+	                		<span style="font-weight:normal">{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([$purchaseorder->number])->pluck('fundcluster_code')->toArray()) }}</span> 
+	                	</th>
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Details:  <span style="font-weight:normal">{{ $purchaseorder->details }}</span> </th>
-		                <th class="text-left" colspan="4">Date:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($purchaseorder->date)->toFormattedDateString() }}</span> </th>
+		                <th class="text-left" colspan="4">Date:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($purchaseorder->date_received)->toFormattedDateString() }}</span> </th>
 		            </tr>
 		            <tr>
 						<th>ID</th>
-						<th>Supply Item</th>
+						<th>Stock Number</th>
 						<th>Details</th>
 						<th>Ordered Quantity</th>
 						<th>Received Quantity</th>
+						<th>Remaining Quantity</th>
 						<th>Unit Price</th>
-						@if(Auth::user()->accesslevel == 2)
-						<th class="col-md-1 no-sort"></th>
-						@endif
+						<th>Amount</th>
 					</tr>
 				</thead>
 			</table>
@@ -68,124 +61,61 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
 
 <script>
 	$(document).ready(function() {
 
-		@if( Session::has("success-message") )
-			swal("Success!","{{ Session::pull('success-message') }}","success");
-		@endif
-		@if( Session::has("error-message") )
-			swal("Oops...","{{ Session::pull('error-message') }}","error");
-		@endif
-
     var table = $('#purchaseOrderTable').DataTable({
-			select: {
-				style: 'single'
-			},
-			language: {
-					searchPlaceholder: "Search..."
-			},
-    	columnDefs:[
-       	 { targets: 'no-sort', orderable: false },
-      ],
-			"processing": true,
-			ajax: "{{ url("purchaseorder/$purchaseorder->purchaseorderno") }}",
-			columns: [
-				{ data: "id" },
-				{ data: "supplyitem" },
-				{ data: function(callback){
-          html = `<p style="font-size:`;
-          if(callback.supply.supplytype.length > 60)
-          html += "11"
-          else if(callback.supply.supplytype.length > 40)
-          html += "12"
-          else if(callback.supply.supplytype.length > 20)
-          html += "13"
-          html += `px;">`+callback.supply.supplytype+"</p>"
-          return html;
-
-        } },
-				{ data: "orderedquantity" },
-        { data: function(callback){
-          if(callback.receivedquantity != 0 && callback.receivedquantity != null)
-          {
-            return callback.receivedquantity
-          }
-
-          {{-- @if(Auth::user()->accesslevel == 2)
-        	return `
-        			<button class="receivedquantity btn btn-sm btn-primary" data-id="`+callback.id+`">
-                <span class="glyphicon glyphicon-list"></span> Set Quantity
-              </button>
-        	`;
-          @else --}}
-          return `0`;
-          {{-- @endif --}}
-        } },
-				{ data: "unitprice" },
-				@if(Auth::user()->accesslevel == 2)
-        { data: function(callback){
-        	return `
-        			<button class="setprice btn btn-sm btn-success" data-id="`+callback.id+`"><span class="glyphicon glyphicon-usd"></span> Set Price
-              </button>
-        	`;
-        } }
-        @endif
+		select: {
+			style: 'single'
+		},
+		language: {
+				searchPlaceholder: "Search..."
+		},
+		columnDefs:[
+			 { targets: 'no-sort', orderable: false },
 		],
-    });
+		"processing": true,
+		ajax: "{{ url("purchaseorder/$purchaseorder->id") }}",
+		columns: [
+			{ data: "id" },
+			{ data: "supply.stocknumber" },
+			{ data: function(callback){
+				html = `<p style="font-size:`;
+				length = callback.supply.details.length
+				supply = callback.supply.details
+				if(length > 60)
+				html += "11"
+				else if(length > 40)
+				html += "12"
+				else if(length > 20)
+				html += "13"
+				html += `px;">`+ supply +"</p>"
+				return html;
 
-    {{-- $('#purchaseOrderTable').on('click','.receivedquantity',function(){
-    	id = $(this).data('id')
-    	swal({
-			  title: "Purchase Order",
-			  text: "Input Received Quantity (Php):",
-			  type: "input",
-			  showCancelButton: true,
-			  closeOnConfirm: false,
-			  animation: "slide-from-top",
-			  inputPlaceholder: "Quantity"
-			},
-			function(inputValue){
-			  if (inputValue === false) return false;
-
-			  if (inputValue === "") {
-			    swal.showInputError("You need to write something!");
-			    return false
+	    	} },
+			{ data: "orderedquantity" },
+			{ data: function(callback){
+			  if(callback.receivedquantity != 0 && callback.receivedquantity != null)
+			  {
+			    return callback.receivedquantity
 			  }
 
-			  $.ajax({
-			    headers: {
-			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			    },
-			  	type: 'put',
-			  	url: '{{ url("purchaseorder/supply") }}' + '/' + id,
-			  	dataType: 'json',
-			  	data: {
-			  		'receivedquantity': inputValue
-			  	},
-			  	success: function(response){
-			  		if(response == 'success')
-			  		swal('Success','Operation Successful','success')
-			  		else
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  		table.ajax.reload();
-			  	},
-			  	error: function(){
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  	}
-			  })
-			});
-    }) --}}
+			  return `0`;
+			} },
+			{ data: "remainingquantity" },
+			{ data: function(callback){
+				if(callback.unitcost == "" || callback.unitcost == null)
+					return 0
+				return (callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+			} },
+			{ data: function(callback){
+				if(callback.unitcost == "" || callback.unitcost == null)
+					return 0
+				return (callback.receivedquantity * callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+			} }
+		],
+	 });
 
     $('#purchaseOrderTable').on('click','.setprice',function(){
     	id = $(this).data('id')
@@ -228,7 +158,7 @@
 			  	}
 			  })
 			});
-    })
+    	})
 	} );
 </script>
 @endsection

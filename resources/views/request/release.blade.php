@@ -1,20 +1,7 @@
 @extends('backpack::layout')
 
 @section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
     <style>
-
-      #page-body,#add{
-        display: none;
-      }
-
-      a > hover{
-        text-decoration: none;
-      }
 
       th , tbody{
         text-align: center;
@@ -27,10 +14,10 @@
 	  <h1>
 	    Release Form
 	  </h1>
-	  {{-- <ol class="breadcrumb">
-	    <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}">Das</a></li>
-	    <li class="active">{{ trans('backpack::backup.backup') }}</li>
-	  </ol> --}}
+	  <ol class="breadcrumb">
+	    <li>Request</li>
+	    <li class="active">Release</li>
+	  </ol>
 	</section>
 @endsection
 
@@ -49,7 +36,7 @@
               </ul>
           </div>
       @endif
-      <legend><h3 class="text-muted">Request No. {{ $request->id }}</h3></legend>
+      <legend><h3 class="text-muted">{{ $request->code }}</h3></legend>
       <table class="table table-hover table-condensed table-bordered" id="supplyTable">
         <thead>
           <tr>
@@ -65,7 +52,7 @@
           @if($supplyrequest->quantity_issued > 0)
           <tr>
             <td>{{ $supplyrequest->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}"</td>
-            <td>{{ $supplyrequest->supply->supplytype }}</td>
+            <td>{{ $supplyrequest->supply->details }}</td>
             <td>{{ $supplyrequest->quantity_issued }}</td>
             <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_issued }}"  /></td>
             <td><input type="text" name="daystoconsume[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
@@ -88,12 +75,6 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-    <script src="{{ asset('js/jquery-ui.js') }}"></script>
-    <script src="{{ asset('js/moment.min.js') }}"></script>
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
 
 <script>
   jQuery(document).ready(function($) {
@@ -125,18 +106,8 @@
     })
 
     $('#cancel').on('click',function(){
-      window.location.href = "{{ url('inventory/supply') }}"
+      window.location.href = "{{ url('request') }}"
     })
-
-    @if( Session::has("success-message") )
-      swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-
-    @if( Session::has("error-message") )
-      swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
-
-    $('#page-body').show()
 
   });
 </script>

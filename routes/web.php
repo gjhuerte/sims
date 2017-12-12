@@ -13,149 +13,189 @@
 
 Route::middleware(['auth'])->group(function(){
 
-	Route::resource('/', 'HomeController');
+	Route::get('/', 'HomeController@index');
+	Route::get('settings',['as'=>'settings.edit','uses'=>'SessionsController@edit']);
+	Route::post('settings',['as'=>'settings.update','uses'=>'SessionsController@update']);
+	Route::get('logout', 'Auth\LoginController@logout');
 
 	Route::get('inventory/supply/rsmi','RSMIController@rsmi');
 	Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
 	Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
-	Route::get('get/supply/inventory/stockcard/months/all','RSMIController@getAllMonths');
-	Route::get('logout', 'Auth\LoginController@logout');
 
-	Route::get('report/rsmi','ReportsController@getRSMIView');
+	Route::get('rsmi/months','RSMIController@getAllMonths');
+
+	Route::get('rsmi/{date}/print','RSMIController@print');
+
+	Route::get('rsmi','RSMIController@index');
+
+	Route::get('rsmi/{date}','RSMIController@getIssued');
+
+	Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
 
 	Route::get('report/fundcluster','ReportsController@getFundClusterView');
 
 	Route::get('report/ris/{college}','ReportsController@getRISPerCollege');
 	Route::get('report/fundcluster','ReportsController@fundcluster');
+
+	Route::get('dashboard','DashboardController@index');
+
+	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
+
 	/*
-	*
-	* Supply Inventory Modules
+	|
+	| Supply Inventory Modules
+	|
 	*/
-	// supply modules
 	Route::resource('inventory/supply','SupplyInventoryController');
 	// return all supply stock number
 	Route::get('get/inventory/supply/stocknumber/all','StockCardController@getAllStockNumber');
 	// return stock number for autocomplete
-	Route::get('get/inventory/supply/stocknumber','StockCardController@getSupplyStockNumber');
+	Route::get('get/inventory/supply/stocknumber','SupplyInventoryController@show');
 
 	/*
-	*
-	* Office Modules
+	|
+	| Office Modules
+	|
 	*/
 	Route::get('get/office/code/all','OfficeController@getAllCodes');
 
-	Route::get('get/office/code','OfficeController@getOfficeCode');
+	Route::get('get/office/code','OfficeController@show');
 
-	Route::get('get/purchaseorder/all','PurchaseOrderController@getAllPurchaseOrder');
+	Route::get('get/purchaseorder/all','PurchaseOrderController@show');
+
+	Route::get('get/receipt/all','ReceiptController@show');
 
 	Route::resource('maintenance/supply','SupplyController');
 
 	Route::resource('maintenance/office','OfficeController');
 
-	Route::post('get/supplyledger/checkifexisting',[
-		'as' => 'supplyledger.checkifexisting',
-		'uses' => 'SupplyLedgerController@checkIfSupplyLedgerExists'
-	]);
+	Route::resource('maintenance/unit','UnitsController');
 
-	Route::post('get/supplyledger/copy',[
-		'as' => 'supplyledger.copy',
-		'uses' => 'SupplyLedgerController@release'
+	Route::resource('maintenance/supplier','SuppliersController');
+
+	Route::post('get/ledgercard/checkifexisting',[
+		'as' => 'ledgercard.checkifexisting',
+		'uses' => 'LedgerCardController@checkIfLedgerCardExists'
 	]);
 
 	Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
+	Route::get('purchaseorder/{id}/print','PurchaseOrderController@printPurchaseOrder');
+
 	Route::resource('purchaseorder','PurchaseOrderController');
 
-	Route::get('settings',['as'=>'settings.edit','uses'=>'SessionsController@edit']);
+	Route::get('request/generate','RequestController@generate');
 
-	Route::post('settings',['as'=>'settings.update','uses'=>'SessionsController@update']);
+	Route::get('receipt/{receipt}/print','ReceiptController@printReceipt');
 
-});
+	Route::resource('receipt','ReceiptController');
 
-Route::middleware(['auth','amo'])->group(function(){
+	Route::middleware(['amo'])->group(function(){
 
-	Route::get('inventory/supply/stockcard/batch/form/accept',[
+		Route::get('inventory/supply/stockcard/batch/form/accept',[
 			'as' => 'supply.stockcard.batch.accept.form',
 			'uses' => 'StockCardController@batchAcceptForm'
-	]);
+		]);
 
-	Route::get('inventory/supply/stockcard/batch/form/release',[
+		Route::get('inventory/supply/stockcard/batch/form/release',[
 			'as' => 'supply.stockcard.batch.release.form',
 			'uses' => 'StockCardController@batchReleaseForm'
-	]);
+		]);
 
-	Route::post('inventory/supply/stockcard/batch/accept',[
+		Route::post('inventory/supply/stockcard/batch/accept',[
 			'as' => 'supply.stockcard.batch.accept',
 			'uses' => 'StockCardController@batchAccept'
-	]);
+		]);
 
-	Route::post('inventory/supply/stockcard/batch/release',[
+		Route::post('inventory/supply/stockcard/batch/release',[
 			'as' => 'supply.stockcard.batch.release',
 			'uses' => 'StockCardController@batchRelease'
-	]);
+		]);
 
-	Route::get('inventory/supply/{id}/stockcard/release','StockCardController@releaseForm');
+		Route::get('inventory/supply/{id}/stockcard/release','StockCardController@releaseForm');
 
-	Route::get('inventory/supply/{id}/stockcard/print','StockCardController@printStockCard');
+		Route::get('inventory/supply/{id}/stockcard/print','StockCardController@printStockCard');
 
 		Route::get('inventory/supply/stockcard/print','StockCardController@printAllStockCard');
 
-	Route::resource('inventory/supply.stockcard','StockCardController');
+		Route::resource('inventory/supply.stockcard','StockCardController');
 
-	Route::get('request/{id}/release',[
-		'as' => 'request.release',
-		'uses' => 'RequestController@releaseView'
-	]);
+		Route::get('request/{id}/release',[
+			'as' => 'request.release',
+			'uses' => 'RequestController@releaseView'
+		]);
 
-});
+	});
 
-Route::middleware(['auth','accounting'])->group(function(){
+	Route::middleware(['accounting'])->group(function(){
 
-	Route::get('inventory/supply/supplyledger/batch/form/accept',[
-			'as' => 'supply.supplyledger.batch.accept.form',
-			'uses' => 'SupplyLedgerController@batchAcceptForm'
-	]);
+		Route::get('records/uncopied','LedgerCardController@showUncopiedRecords');
+		Route::post('records/copy','LedgerCardController@copy');
 
-	Route::get('inventory/supply/supplyledger/batch/form/release',[
-			'as' => 'supply.supplyledger.batch.release.form',
-			'uses' => 'SupplyLedgerController@batchReleaseForm'
-	]);
+		Route::get('inventory/supply/ledgercard/batch/form/accept',[
+			'as' => 'supply.ledgercard.batch.accept.form',
+			'uses' => 'LedgerCardController@batchAcceptForm'
+		]);
 
-	Route::post('inventory/supply/supplyledger/batch/accept',[
-			'as' => 'supply.supplyledger.batch.accept',
-			'uses' => 'SupplyLedgerController@batchAccept'
-	]);
+		Route::get('inventory/supply/ledgercard/batch/form/release',[
+			'as' => 'supply.ledgercard.batch.release.form',
+			'uses' => 'LedgerCardController@batchReleaseForm'
+		]);
 
-	Route::post('inventory/supply/supplyledger/batch/release',[
-			'as' => 'supply.supplyledger.batch.release',
-			'uses' => 'SupplyLedgerController@batchRelease'
-	]);
+		Route::post('inventory/supply/ledgercard/batch/accept',[
+			'as' => 'supply.ledgercard.batch.accept',
+			'uses' => 'LedgerCardController@batchAccept'
+		]);
 
-	Route::get('inventory/supply/{id}/supplyledger/release','SupplyLedgerController@releaseForm');
+		Route::post('inventory/supply/ledgercard/batch/release',[
+			'as' => 'supply.ledgercard.batch.release',
+			'uses' => 'LedgerCardController@batchRelease'
+		]);
 
-	Route::get('inventory/supply/{id}/supplyledger/print','SupplyLedgerController@printSupplyLedger');
+		Route::get('inventory/supply/{id}/ledgercard/release','LedgerCardController@releaseForm');
 
-	Route::get('inventory/supply/supplyledger/print','SupplyLedgerController@printAllSupplyLedger');
+		Route::get('inventory/supply/{id}/ledgercard/print','LedgerCardController@printLedgerCard');
 
-	Route::resource('inventory/supply.supplyledger','SupplyLedgerController');
+		Route::get('inventory/supply/{id}/ledgercard/printSummary','LedgerCardController@printSummaryLedgerCard');
+
+		Route::get('inventory/supply/ledgercard/print','LedgerCardController@printAllLedgerCard');
+
+		Route::resource('inventory/supply.ledgercard','LedgerCardController');
 
 
-});
+	});
 
-Route::middleware(['auth','admin'])->group(function(){
-	Route::get('audittrail','AuditTrailController@index');
-	Route::resource('account','AccountsController');
-	Route::post('account/password/reset','AccountsController@resetPassword');
-
-	Route::put('account/access/update',[
+	Route::middleware(['admin'])->group(function(){
+		Route::get('audittrail','AuditTrailController@index');
+		Route::resource('account','AccountsController');
+		Route::post('account/password/reset','AccountsController@resetPassword');
+		Route::put('account/access/update',[
 			'as' => 'account.accesslevel.update',
 			'uses' => 'AccountsController@changeAccessLevel'
- 		]);
-});
+		]);
+		Route::get('import','ImportController@index');
+		Route::post('import','ImportController@store');
+	});
 
-Route::middleware(['auth','offices'])->group(function(){
+	Route::middleware(['offices'])->group(function(){
+		Route::get('request/{id}/print','RequestController@print');
+		Route::get('request/{id}/approve','RequestController@getApproveForm');
+		Route::put('request/{id}/approve',[
+			'as' => 'request.approve',
+			'uses' => 'RequestController@approve'
+		]);
+		Route::put('request/{id}/disapprove','RequestController@disapprove');
+		Route::get('request/{id}/cancel','RequestController@getCancelForm');
+		Route::get('request/{id}/comments','RequestController@getComments');
+		Route::post('request/{id}/comments','RequestController@postComments');
+		Route::put('request/{id}/cancel',[
+			'as' => 'request.cancel',
+			'uses' => 'RequestController@cancel'
+		]);
+		Route::resource('request','RequestController');
+	});
 
-	Route::get('request/{id}/print','RequestController@print');
-	Route::resource('request','RequestController');
+	Route::get('get/supply/stocknumber','SupplyInventoryController@show');
+
 });
 
 Auth::routes();

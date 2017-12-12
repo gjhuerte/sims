@@ -1,34 +1,15 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		{{ HTML::style(asset('css/select.bootstrap.min.css')) }}
-		<link rel="stylesheet" href="{{ asset('css/style.min.css') }}" />
-		<style type="text/css">
-			#page-body{
-				display: none;
-			}
-		</style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Accounts</h3></legend>
-	  {{-- <ol class="breadcrumb">
-	    <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}">Das</a></li>
-	    <li class="active">{{ trans('backpack::backup.backup') }}</li>
-	  </ol> --}}
+	  <ol class="breadcrumb">
+	    <li class="active">Account</li>
+	  </ol>
 	</section>
 @endsection
 
 @section('content')
-@include('modal.account.access')
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
@@ -52,33 +33,10 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-		{{ HTML::script(asset('js/dataTables.select.min.js')) }}
+@include('modal.account.access')
 
 <script>
 	$(document).ready(function() {
-    @if( Session::has("success-message") )
-        new PNotify({
-            title: "Success!",
-            text: "{{ Session::pull('success-message') }}",
-            type: "success"
-        });
-    @endif
-    @if( Session::has("error-message") )
-        new PNotify({
-            title: "Oops...",
-            text: "{{ Session::pull('error-message') }}",
-            type: "warning"
-        });
-    @endif
 
 	  	var table = $('#userTable').DataTable({
 			"pageLength": 100,
@@ -101,19 +59,19 @@
 			  { data: "middlename" },
 			  { data: "email" },
 			  { data: function(param){
-			  	if(param.accesslevel == 0){
+			  	if(param.access == 0){
 			  		return 'Administator';
 			  	}
 
-			  	if(param.accesslevel == 1){
+			  	if(param.access == 1){
 			  		return 'AMO';
 			  	}
 
-			  	if(param.accesslevel == 2){
+			  	if(param.access == 2){
 			  		return 'Accounting';
 			  	}
 
-			  	if(param.accesslevel == 3){
+			  	if(param.access == 3){
 			  		return 'Offices';
 			  	}
 			  }},
@@ -122,32 +80,14 @@
     	});
 
 	 	$("div.toolbar").html(`
- 			<button id="new" class="btn btn-primary btn-flat" style="margin-right:5px;padding: 5px 10px;" data-target="reservationItemsAddModal" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span>  New</button>
+ 			<a id="new" href="{{ url('account/create') }}" class="btn btn-primary btn-flat" style="margin-right:5px;padding: 5px 10px;" data-target="reservationItemsAddModal" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span>  
+ 				New
+ 			</a>
  			<button id="edit" class="btn btn-default btn-flat" style="margin-right:5px;padding: 6px 10px;" style="display:none;"><span class="glyphicon glyphicon-pencil"></span>  Update</button>
  			<button id="access" class="btn btn-success btn-flat" style="margin-right:5px;padding: 5px 10px;" style="display:none;"><span class="glyphicon glyphicon-task"></span> Change Access Level</button>
  			<button id="reset" class="btn btn-info btn-flat" style="margin-right:5px;padding: 5px 10px;" style="display:none;"><span class="glyphicon glyphicon"></span> Reset Password</button>
  			<button id="delete" class="btn btn-danger btn-flat" style="margin-right:5px;padding: 5px 10px;" style="display:none;"><span class="glyphicon glyphicon-trash"></span> Remove</button>
 		`);
-
-    // table
-    //     .on( 'select', function ( e, dt, type, indexes ) {
-    //         // var rowData = table.rows( indexes ).data().toArray();
-    //         // events.prepend( '<div><b>'+type+' selection</b> - '+JSON.stringify( rowData )+'</div>' );
-    //         $('#edit').show()
-    //         $('#access').show()
-    //         $('#activate').show()
-    //         $('#reset').show()
-    //         $('#delete').show()
-    //     } )
-    //     .on( 'deselect', function ( e, dt, type, indexes ) {
-    //         // var rowData = table.rows( indexes ).data().toArray();
-    //         // events.prepend( '<div><b>'+type+' <i>de</i>selection</b> - '+JSON.stringify( rowData )+'</div>' );
-    //         $('#edit').hide()
-    //         $('#access').hide()
-    //         $('#activate').hide()
-    //         $('#reset').hide()
-    //         $('#delete').hide()
-    //     } );
 
 	    $('#new').on('click',function(){
 	    	window.location.href = "{{ url('account/create') }}"
@@ -163,19 +103,19 @@
 					table.row('.selected').data().lastname)
 					$('#accesslevel-oldaccesslevel').val(
 						function(){
-						  	if(table.row('.selected').data().accesslevel == 0){
+						  	if(table.row('.selected').data().access == 0){
 						  		return 'Administrator';
 						  	}
 
-						  	if(table.row('.selected').data().accesslevel == 1){
+						  	if(table.row('.selected').data().access == 1){
 						  		return 'AMO';
 						  	}
 
-						  	if(table.row('.selected').data().accesslevel == 2){
+						  	if(table.row('.selected').data().access == 2){
 						  		return 'Accounting';
 						  	}
 
-						  	if(table.row('.selected').data().accesslevel == 3){
+						  	if(table.row('.selected').data().access == 3){
 						  		return 'Offices';
 						  	}
 						})
@@ -245,7 +185,7 @@
 				{
 			        swal({
 			          title: "Are you sure?",
-			          text: "Account will be removed from database?",
+			          text: "Account will be permanently removed",
 			          type: "warning",
 			          showCancelButton: true,
 			          confirmButtonText: "Yes, delete it!",
@@ -269,7 +209,6 @@
 							success: function(response){
 								if(response == 'success'){
 									swal('Operation Successful','Account removed from database','success')
-					        		table.row('.selected').remove().draw( false );
 					        	}else if(response == 'invalid'){
 									swal('Operation Unsuccessful','You need to have atleast one account','error')
 								}else if(response == 'self'){
@@ -277,6 +216,8 @@
 								}else{
 									swal('Operation Unsuccessful','Error occurred while deleting a record','error')
 								}
+
+								table.ajax.reload()
 							},
 							error: function(){
 								swal('Operation Unsuccessful','Error occurred while deleting a record','error')
@@ -291,8 +232,6 @@
 				swal('Oops..','You must choose atleast 1 row','error');
 			}
 	    });
-
-		$('#page-body').show();
 	} );
 </script>
 @endsection

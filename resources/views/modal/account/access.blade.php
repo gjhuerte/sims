@@ -44,6 +44,14 @@
             <li class="list-group-item">
               <div class="radio">
                 <label>
+                  <input type="radio" name="newaccesslevel" value="0">
+                  Administrator
+                </label>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="radio">
+                <label>
                   <input type="radio" name="newaccesslevel" value="1">
                   AMO
                 </label>

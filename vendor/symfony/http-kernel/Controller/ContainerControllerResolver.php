@@ -13,6 +13,8 @@ namespace Symfony\Component\HttpKernel\Controller;
 
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * A controller resolver searching for a controller in a psr-11 container when using the "service:method" notation.
@@ -29,6 +31,20 @@ class ContainerControllerResolver extends ControllerResolver
         $this->container = $container;
 
         parent::__construct($logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getController(Request $request)
+    {
+        $controller = parent::getController($request);
+
+        if (is_array($controller) && isset($controller[0]) && is_string($controller[0]) && $this->container->has($controller[0])) {
+            $controller[0] = $this->instantiateController($controller[0]);
+        }
+
+        return $controller;
     }
 
     /**
@@ -71,6 +87,17 @@ class ContainerControllerResolver extends ControllerResolver
             return $this->container->get($class);
         }
 
-        return parent::instantiateController($class);
+        try {
+            return parent::instantiateController($class);
+        } catch (\ArgumentCountError $e) {
+        } catch (\ErrorException $e) {
+        } catch (\TypeError $e) {
+        }
+
+        if ($this->container instanceof Container && isset($this->container->getRemovedIds()[$class])) {
+            throw new \LogicException(sprintf('Controller "%s" cannot be fetched from the container because it is private. Did you forget to tag the service with "controller.service_arguments"?', $class), 0, $e);
+        }
+
+        throw $e;
     }
 }

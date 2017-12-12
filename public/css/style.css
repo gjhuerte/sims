@@ -73,3 +73,26 @@
     background: inherit;
     left: 20px;
 }
+
+.line-either-side {
+  overflow: hidden;
+  text-align: center;
+}
+.line-either-side:before,
+.line-either-side:after {
+  background-color: #e5e5e5;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+.line-either-side:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+.line-either-side:after {
+  left: 0.5em;
+  margin-right: -50%;
+}

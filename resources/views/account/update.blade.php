@@ -1,21 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-    <style>
-      #page-body{
-        display: none;
-      }
-    </style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
-
 @section('header')
 	<section class="content-header">
     <legend><h3 class="text-muted">Account Update</h3></legend>
@@ -32,19 +16,19 @@
   <div class="box" style="padding:10px;">
     <div class="box-body">
           {{ Form::model($user,array('route'=>array('account.update',$user->id),'method'=>'PUT',
-            'class' => 'col-sm-offset-3 col-sm-6 form-horizontal',
+            'class' => 'form-horizontal',
             'id' => 'updateForm'
           )) }}
-              @if (count($errors) > 0)
-                 <div class="alert alert-danger alert-dismissible" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <ul class="list-unstyled" style='margin-left: 10px;'>
-                          @foreach ($errors->all() as $error)
-                              <li class="text-capitalize">{{ $error }}</li>
-                          @endforeach
-                      </ul>
-                  </div>
-              @endif
+          @if (count($errors) > 0)
+             <div class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <ul class="list-unstyled" style='margin-left: 10px;'>
+                      @foreach ($errors->all() as $error)
+                          <li class="text-capitalize">{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
           <div class="form-group">
             <div class="col-md-12">
             {{ Form::label('username','Username') }}
@@ -56,8 +40,8 @@
             <p class="text-muted" style="font-size: 10px;"><span class="text-success">Note:</span>The Username will be used for logging in.</p>
             </div>
           </div>
-          <div class="form-group">
-            <div class="col-md-12">
+          <div class="col-md-4">
+           <div class="form-group">
             {{ Form::label('firstname','Firstname') }}
             {{ Form::text('firstname',Input::old('firstname'),[
                 'class' => 'form-control',
@@ -66,8 +50,8 @@
               ]) }}
             </div>
           </div>
-          <div class="form-group">
-            <div class="col-md-12">
+          <div class="col-md-4">
+            <div class="form-group">
             {{ Form::label('middlename','Middlename') }}
             {{  Form::text('middlename',Input::old('middlename'),[
                   'class' => 'form-control',
@@ -76,8 +60,8 @@
                 ])}}
             </div>
           </div>
-          <div class="form-group">
-            <div class="col-md-12">
+          <div class="col-md-4">
+            <div class="form-group">
             {{ Form::label('lastname','Lastname') }}
              {{ Form::text('lastname',Input::old('lastname'),[
                 'class' => 'form-control',
@@ -106,38 +90,29 @@
           </div>
           <div class="form-group">
             <div class="col-md-12">
+            {{ Form::label('position','Position') }}
+            {{ Form::text('position',Input::old('position'),[
+              'class'=>'form-control'
+            ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
             {{  Form::submit('Update',[
               'class' => 'btn btn-lg btn-primary btn-block'
             ]) }}
             </div>
           </div>
         {{ Form::close() }}
-
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-    <script type="text/javascript" src="{{ asset('js/jquery.validate.min.js') }}"></script>
-
+<script type="text/javascript" src="{{ asset('js/jquery.validate.min.js') }}"></script>
 <script>
   $(document).ready(function(){
-    @if( Session::has("success-message") )
-      swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-    @if( Session::has("error-message") )
-      swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
 
     $( "#registrationForm" ).validate( {
       rules: {
@@ -245,7 +220,6 @@
       }
     } );
 
-    $('#page-body').show();
   });
 </script>
 @endsection

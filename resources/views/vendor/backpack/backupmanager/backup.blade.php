@@ -24,7 +24,7 @@
       <button id="create-new-backup-button" href="{{ url(config('backpack.base.route_prefix', 'admin').'/backup/create') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> {{ trans('backpack::backup.create_a_new_backup') }}</span></button>
       <br>
       <h3>{{ trans('backpack::backup.existing_backups') }}:</h3>
-      <table class="table table-hover table-condensed">
+      <table class="table table-hover table-condensed" id="backupTable">
         <thead>
           <tr>
             <th>#</th>
@@ -64,6 +64,8 @@
 
 <script>
   jQuery(document).ready(function($) {
+
+    $('#backupTable').DataTable();
 
     // capture the Create new backup button
     $("#create-new-backup-button").click(function(e) {

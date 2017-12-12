@@ -13,7 +13,7 @@
         "settings admin"
     ],
     "homepage": "https://github.com/laravel-backpack/settings",
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Cristian Tabacitu",
@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "backpack/crud": "3.2.*"
+        "backpack/crud": "^3.2"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.*",
