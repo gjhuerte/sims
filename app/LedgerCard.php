@@ -64,14 +64,7 @@ class LedgerCard extends Model{
 			$this->issuedquantity = 0;
 		}
 
-		if( count($ledgercard) > 0 )
-		{
-			$this->balancequantity = $ledgercard->balancequantity + ( $this->receivedquantity - $this->issuedquantity );
-		}
-		else
-		{
-			$this->balancequantity = $this->receivedquantity - $this->issuedquantity;
-		}
+		$this->balancequantity = ( isset($ledgercard->balance) ? $ledgercard->balance : 0 ) + $this->receivedquantity - $this->issuedquantity;
 	}
 
 	public function scopeQuantity($query,$quantity)
@@ -117,46 +110,23 @@ class LedgerCard extends Model{
 		$lastname = Auth::user()->lastname;
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
-		$receipt = Receipt::where('number','=',$this->receipt)->first();
+		$receipt = Receipt::firstOrCreate([
+			'number','=',$this->receipt
+		],[
+			'reference' => $this->reference,
+			'number' => $this->receipt,
+			'date_delivered' => Carbon\Carbon::parse($this->date),
+			'received_by' => $fullname,
+			'supplier_name' => $this->organization,
+			'invoice' => isset($this->invoice) ? $this->invoice : null
+		]);
 
-		if( count($receipt) <= 0 )
-		{
-
-			$receipt = new Receipt;
-			$receipt->reference = $this->reference;
-			$receipt->number = $this->receipt;
-			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
-			$receipt->received_by = $fullname;
-			$receipt->supplier_name = $this->organization;
-		}
-
-		if( isset($this->invoice) && $this->invoice != null )
-		{
-			$receipt->invoice = $this->invoice;
-		}
-
-		$receipt->save();
-
-		$supply = ReceiptSupply::where('receipt_number','=',$receipt->number )
-									->where('stocknumber','=',$this->stocknumber)
-									->first();
-
-		if( count($supply) <= 0 )
-		// {
-
-		// 	$supply->quantity = $this->received + $supply->quantity;
-		// 	$supply->remaining_quantity = $supply->remaining_quantity + $this->received;
-		// }
-		// else
-		{
-			$supply = new ReceiptSupply;
-			$supply->receipt_number = $this->receipt;
-			$supply->stocknumber = $this->stocknumber;
-			$supply->quantity = $supply->remaining_quantity = $this->receivedquantity;
-			$supply->cost = $this->receivedunitprice;
-		}
-
-		$supply->save();
+		$supply = ReceiptSupply::updateOrCreate([
+			'receipt_number' => $receipt->number,
+			'stocknumber' => $this->stocknumber,
+		],[
+			'cost' => $this->receivedunitprice
+		]);
 
 		$this->setBalance();
 		$this->save();

@@ -17,12 +17,11 @@
 		<div class="panel panel-body table-responsive">
 			<table class="table table-hover table-striped" id="purchaseOrderTable">
 				<thead>
-          <th class="col-sm-1">ID</th>
-					<th class="col-sm-1">Number</th>
-					<th class="col-sm-1">Date</th>
-					<th class="col-sm-1">Details</th>
-          <th class="col-sm-1">Supplier</th>
-					<th class="no-sort col-sm-1"></th>
+          			<th class="">ID</th>
+					<th class="">Number</th>
+					<th class="">Date</th>
+         			<th class="">Supplier</th>
+					<th class="no-sort"></th>
 				</thead>
 			</table>
 		</div>
@@ -53,9 +52,8 @@
           { data: "id" },
 					{ data: "number" },
 					{ data: function(callback){
-						return moment(callback.date).format("MMMM d, YYYY")
+						return moment(callback.date_received).format("MMMM d, YYYY")
 					} },
-					{ data: "details" },
           { data: "supplier.name" },
 					{ data: function(callback){
 						url = '{{ url("purchaseorder") }}' + '/' + callback.id

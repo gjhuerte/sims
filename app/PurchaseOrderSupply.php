@@ -8,7 +8,7 @@ use App\Supply;
 class PurchaseOrderSupply extends Model
 {
     protected $table = 'purchaseorders_supplies';
-	protected $fillable = ['user_id','purchaseorder_id','stocknumber','orderedquantity','receivedquantity','unitprice'];
+	protected $fillable = ['user_id','purchaseorder_number','stocknumber','orderedquantity','receivedquantity', 'remainingquantity', 'unitprice'];
 	protected $primaryKey = 'id';
 	public $incrementing = true;
 	public $timestamps = true;
@@ -27,5 +27,10 @@ class PurchaseOrderSupply extends Model
 	public function supply()
 	{
 		return $this->belongsTo('App\Supply','stocknumber','stocknumber');
+	}
+
+	public function purchaseorder()
+	{
+		return $this->belongsTo('App\PurchaseOrder','purchaseorder_number','number');
 	}
 }

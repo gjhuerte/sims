@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseOrder extends Model
 {
   	protected $table = 'purchaseorders';
-	protected $fillable = ['number','date_received','details'];
+	protected $fillable = [ 'number','date_received','details', 'supplier_id' ];
 	protected $primaryKey = 'id';
 	public $timestamps = true;
 
@@ -45,5 +45,10 @@ class PurchaseOrder extends Model
 	public function scopeFindByNumber($query, $number)
 	{
 		return $query->where('number','=',$number);
+	}
+
+	public function scopeFindByID($query, $id)
+	{
+		return $query->where('id','=',$id);
 	}
 }

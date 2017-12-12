@@ -43,7 +43,8 @@
 		            </tr>
 		            <tr>
 						<th>ID</th>
-						<th>Supply Item</th>
+						<th>Stock Number</th>
+						<th>Details</th>
 						<th>Ordered Quantity</th>
 						<th>Received Quantity</th>
 						<th>Remaining Quantity</th>
@@ -78,6 +79,7 @@
 		ajax: "{{ url("purchaseorder/$purchaseorder->id") }}",
 		columns: [
 			{ data: "id" },
+			{ data: "supply.stocknumber" },
 			{ data: function(callback){
 				html = `<p style="font-size:`;
 				length = callback.supply.details.length
