@@ -59,6 +59,10 @@ class StockCard extends Model{
 		return $query->where('issued','>',0);
 	}
 
+	public function scopeFilterByReceived($query)
+	{
+		return $query->where('received','>',0);
+	}
 	/*
 	*
 	*	Referencing to Supply Table
@@ -218,5 +222,10 @@ class StockCard extends Model{
 			}
 		}
 
+	}
+
+	public function transaction()
+	{
+		return $this->belongsTo('App\Transaction','id','id');
 	}
 }

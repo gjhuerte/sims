@@ -111,10 +111,9 @@ class LedgerCard extends Model{
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
 		$receipt = Receipt::firstOrCreate([
-			'number','=',$this->receipt
-		],[
-			'reference' => $this->reference,
 			'number' => $this->receipt,
+			'reference' => $this->reference
+		],[
 			'date_delivered' => Carbon\Carbon::parse($this->date),
 			'received_by' => $fullname,
 			'supplier_name' => $this->organization,
@@ -128,6 +127,7 @@ class LedgerCard extends Model{
 			'cost' => $this->receivedunitprice
 		]);
 
+		$this->created_by = $fullname;
 		$this->setBalance();
 		$this->save();
 	}
@@ -174,6 +174,7 @@ class LedgerCard extends Model{
 		}
 
 		$this->issuedquantity = $issued;
+		$this->created_by = $fullname;
 		$this->setBalance();
 		$this->save();
 	}

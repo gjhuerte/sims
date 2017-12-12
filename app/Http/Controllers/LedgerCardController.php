@@ -308,6 +308,7 @@ class LedgerCardController extends Controller {
 						->withErrors($validator);
 			}
 		}
+
 		$transaction = new App\LedgerCard;
 		$transaction->date = Carbon\Carbon::parse($date);
 		$transaction->stocknumber = $stocknumber;
@@ -423,6 +424,55 @@ class LedgerCardController extends Controller {
 
 			return json_encode(0);
 		}
+	}
+
+	public function showUncopiedRecords(Request $request)
+	{
+		$records = App\StockCard::with('supply')->doesntHave('transaction')->get();
+
+		if($request->ajax())
+		{
+			return json_encode([ 'data' => $records ]);
+		}
+
+		return view('record.uncopied')
+				->with('records',$records);
+	}
+
+	public function copy(Request $request)
+	{
+		$unitprice = $request->get('unitprice');
+		$record = $request->get('record');
+		$issued = $record['issued'];
+		$organization = $record['organization'];
+		$received = $record['received'];
+		$stocknumber = $record['stocknumber'];
+		$reference = $record['reference'];
+		$receipt = $record['receipt'];
+		$date = $record['date'];
+		$daystoconsume = "";
+
+		$transaction = new App\LedgerCard;
+		$transaction->date = Carbon\Carbon::parse($date);
+		$transaction->stocknumber = $stocknumber;
+		$transaction->reference = $reference;
+		$transaction->receipt = $receipt;
+		$transaction->receivedunitprice = $unitprice;
+		$transaction->issuedunitprice = $unitprice;
+		$transaction->daystoconsume = $daystoconsume;
+		$transaction->created_by = Auth::user()->id;
+
+		if($issued > 0 && $issued != null):
+			$transaction->issuedquantity = $issued;
+			$transaction->issue();
+		endif;
+
+		if($received > 0 && $received != null):
+			$transaction->receivedquantity = $received;
+			$transaction->receipt();
+		endif;
+
+		return json_encode('success');
 	}
 
 }

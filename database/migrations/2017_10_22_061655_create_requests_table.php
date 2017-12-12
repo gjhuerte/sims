@@ -15,7 +15,7 @@ class CreateRequestsTable extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('requestor');
+            $table->string('requestor')->nullable();
             $table->foreign('requestor')
                 ->references('username')
                 ->on('users')

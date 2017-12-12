@@ -46,7 +46,10 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th class="col-sm-1">  Prepared By: </th>
+          <th class="col-sm-1">  Requested By: </th>
+          <th class="col-sm-1">  Approved By: </th>
+          <th class="col-sm-1">  Issued By: </th>
+          <th class="col-sm-1">  Received By: </th>
           {{-- <th class="col-sm-1">   </th>
           <th class="col-sm-1">   </th> --}}
         </tr>
@@ -56,9 +59,30 @@
           <td class="text-center">
             <br />
             <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ App\User::where('username','=',$request->requestor)->first()->firstname }} {{ App\User::where('username','=',$request->requestor)->first()->lastname }}</span>
             <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->office }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">{{ App\User::where('username','=',$request->requestor)->first()->office }}</span>
+          </td>
+          <td class="text-center">
+            <br />
+            <br />
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ $approvedby->head }}</span>
+            <br />
+            <span id="office" class="text-center" style="font-size:10px;">{{ $approvedby->name }}</span>
+          </td>
+          <td class="text-center">
+            <br />
+            <br />
+            <span id="name" style="margin-top: 30px; font-size: 15px;"></span>
+            <br />
+            <span id="office" class="text-center" style="font-size:10px;"></span>
+          </td>
+          <td class="text-center">
+            <br />
+            <br />
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> </span>
+            <br />
+            <span id="office" class="text-center" style="font-size:10px;"></span>
           </td>
           {{-- <td></td>
           <td></td> --}}
