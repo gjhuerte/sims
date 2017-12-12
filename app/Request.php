@@ -27,7 +27,7 @@ class Request extends Model
     public function getCodeAttribute($value)
     {
       $date = Carbon\Carbon::parse($this->created_at);
-      return 'RIS' . '-' . $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
+      return $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
     }
 
   	public function supply()
