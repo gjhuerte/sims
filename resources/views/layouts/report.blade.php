@@ -9,6 +9,11 @@
 
     <!-- Bootstrap 3.3.5 -->
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}/bootstrap/css/bootstrap.min.css">
+    <style>
+     thead { display: table-header-group }
+      tfoot { display: table-row-group }
+      tr { page-break-inside: avoid }
+    </style>
     @yield('style-include')
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

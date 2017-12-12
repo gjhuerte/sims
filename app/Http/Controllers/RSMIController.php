@@ -7,64 +7,83 @@ use Carbon;
 use Session;
 use Auth;
 use DB;
-use App\RSMIView;
-use App\SupplyTransaction;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use App;
+use Illuminate\Http\Request;
+
 class RSMIController extends Controller
 {
     
+    public function index()
+    {
+    	return view('report.rsmi.index');
+    }
 
-	public function rsmi()
+
+	public function getRecapitulation(Request $request, $date)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
-			if($month == 'undefined') $month = Carbon\Carbon::now();
-			else{
-				$month = Carbon\Carbon::parse($month);
-			}
+			$date = $this->convertDateToCarbon($date);
+
+			$report = App\RSMI::filterByMonth($date)
+								->groupBy('stocknumber','issued','details','cost')
+								->select('stocknumber',DB::raw("sum(issued) as issued"),'details',DB::raw("avg(cost) as cost"))
+								->get();
 
 			return json_encode([
-				'data' => RSMIView::all()
+				'data' => $report
 			]);
 		}
 	}
 
-	public function rsmiPerMonth($month)
+	public function getIssued(Request $request, $date)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
+			$date = $this->convertDateToCarbon($date);
+
+			$report = App\RSMI::filterByMonth($date)->get();
+
 			return json_encode([
-				'data' => RSMIView::month($month)->get()
+				'data' => $report
 			]);
 		}
 	}
 
-	public function rsmiByStockNumber($month)
+	public function getAllMonths(Request $request)
 	{
-		if(Request::ajax())
-		{	
+		if($request->ajax())
+		{
+			$months =  App\RSMI::select('date')
+						->orderBy('date','desc')
+						->get()
+						->groupBy('month');
 			return json_encode([
-				'data' => RSMIView::month($month)
-							->groupBy('stocknumber','supplytype','unitprice')
-							->select(
-										'stocknumber',
-										DB::raw('sum(issuequantity) as issuequantity'),
-										'supplytype',
-										'unitprice'
-									)
-							->get()
+				'data' => $months
 			]);
 		}
 	}
 
-	public function getAllMonths()
+	public function print($date)
 	{
-		if(Request::ajax())
-		{
-			return json_encode([
-				'data' => RSMIView::getAllMonths()
-			]);
-		}
+
+		$date = $this->convertDateToCarbon($date);
+
+		$ris = App\RSMI::filterByMonth($date)->get();
+
+        $recapitulation = App\RSMI::filterByMonth($date)
+								->groupBy('stocknumber','issued','details','cost')
+								->select('stocknumber',DB::raw("sum(issued) as issued"),'details',DB::raw("avg(cost) as cost"))
+								->get();
+
+        $data = [
+            'ris' => $ris,
+            'recapitulation' => $recapitulation
+        ];
+
+        $filename = "RSMI-".Carbon\Carbon::parse($date)->format('mdYHm').".pdf";
+        $view = "report.rsmi.print_index";
+
+        return $this->printPreview($view,$data,$filename);
 	}
 }

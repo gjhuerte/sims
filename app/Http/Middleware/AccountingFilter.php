@@ -16,7 +16,7 @@ class AccountingFilter
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->accesslevel != 2 )
+        if(Auth::user()->access != 2 )
         {
             return redirect('/');
         }

@@ -1,55 +1,9 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-    <style>
-
-      #page-body,#add{
-        display: none;
-      }
-
-      a > hover{
-        text-decoration: none;
-      }
-
-      th , tbody{
-        text-align: center;
-      }
-
-    	.line-either-side {
-    		overflow: hidden;
-    		text-align: center;
-    	}
-    	.line-either-side:before,
-    	.line-either-side:after {
-    		background-color: #e5e5e5;
-    		content: "";
-    		display: inline-block;
-    		height: 1px;
-    		position: relative;
-    		vertical-align: middle;
-    		width: 50%;
-    	}
-    	.line-either-side:before {
-    		right: 0.5em;
-    		margin-left: -50%;
-    	}
-    	.line-either-side:after {
-    		left: 0.5em;
-    		margin-right: -50%;
-    	}
-    </style>
-@endsection
-
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    Request Form
+	    Request No. {{ $code }}
 	  </h1>
 	  <ol class="breadcrumb">
 	    <li><a href="{{ url('request') }}">Request</a></li>
@@ -77,13 +31,17 @@
       <div class="col-sm-4">
         <div class="form-group" style="margin-top: 20px">
           <div class="col-sm-12">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
           {{ Form::label('stocknumber','Stock Number') }}
           </div>
           <div class="col-sm-10">
           {{ Form::text('stocknumber',null,[
             'id' => 'stocknumber',
             'class' => 'form-control',
-            'placeholder' => 'Supply Sock Number '
+            'placeholder' => 'Supply Stock Number '
           ]) }}
           <p class="text-muted" style="font-size: 10px">Press <strong>Add</strong> Button to search for list of supplies</p>
           </div>
@@ -139,14 +97,6 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-    <script src="{{ asset('js/jquery-ui.js') }}"></script>
-    <script src="{{ asset('js/moment.min.js') }}"></script>
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
 
 <script>
   jQuery(document).ready(function($) {
@@ -207,19 +157,17 @@
     {
       $.ajax({
         type: 'get',
-        url: '{{ url('get/supply') }}' +  '/' + $('#stocknumber').val() + '/balance',
+        url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
         dataType: 'json',
         success: function(response){
           try{
-            details = response.data[0].supplytype
+            details = response.data.details
             $('#supply-item').val(details.toString())
             $('#stocknumber-details').html(`
               <div class="alert alert-info">
                 <ul class="list-unstyled">
-                  <li><strong>Item:</strong> ` + response.data[0].supplytype + ` </li>
-                  @if(Auth::user()->accesslevel == 1 )
-                  <li><strong>Remaining Balance:</strong> ` + response.data[0].balance + ` </li>
-                  @endif
+                  <li><strong>Item:</strong> ` + details + ` </li>
+                  <li><strong>Remaining Balance:</strong> ` + response.data.balance + ` </li>
                 </ul>
               </div>
             `)
@@ -244,21 +192,6 @@
       stocknumber = $('#stocknumber').val()
       quantity = $('#quantity').val()
       details = $('#supply-item').val()
-      addForm(stocknumber,details,quantity)
-      $('#stocknumber').text("")
-      $('#quantity').text("")
-      $('#stocknumber-details').html("")
-      $('#stocknumber').val("")
-      $('#quantity').val("")
-      $('#add').hide()
-    })
-
-    $('#add-stocknumber').on('click',function(){
-      $('#addStockNumberModal').modal('show');
-    })
-
-    function addForm(_stocknumber = "",_info ="" ,_quantity = "")
-    {
 
       row = parseInt($('#supplyTable > tbody > tr:last').text())
       if(isNaN(row))
@@ -268,38 +201,52 @@
       {
         row++
       }
+      
+      if(addForm(row,stocknumber,details,quantity))
+      {
+        $('#stocknumber').text("")
+        $('#quantity').text("")
+        $('#stocknumber-details').html("")
+        $('#stocknumber').val("")
+        $('#quantity').val("")
+      }
+    })
+
+    function addForm(row,_stocknumber = "",_info ="" ,_quantity = "")
+    {
+      error = false
+      $('.stocknumber-list').each(function() {
+          if (_stocknumber == $(this).val())
+          {
+            error = true; 
+            return;
+          }
+      });
+
+      if(error)
+      {
+        swal("Error", "Stocknumber already exists", "error");
+        return false;
+      }
+
 
       $('.hide-me').hide()
 
       $('#supplyTable > tbody').append(`
         <tr>
-          <td><input type="hidden" class="form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;background-color:white;" readonly />` + _stocknumber + `</td>
+          <td><input type="text" class="stocknumber-list form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
           <td><input type="hidden" class="form-control text-center" value="` + _info + `" name="info[` + _stocknumber + `]" style="border:none;" />` + _info + `</td>
-          <td><input type="hidden" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;background-color:white;" readonly />` + _quantity + `</td>
-          <td><button type="button" class="remove btn btn-sm btn-danger text-center"><span class="glyphicon glyphicon-remove"></span> Remove</button></td>
+          <td><input type="number" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;"  /></td>
+          <td><button type="button" class="remove btn btn-md btn-danger text-center"><span class="glyphicon glyphicon-remove"></span></button></td>
         </tr>
       `)
+
+      return true;
     }
 
-    var table = $('#supplyInventoryTable').DataTable({
-      select: {
-        style: 'single'
-      },
-      language: {
-          searchPlaceholder: "Search..."
-      },
-      "processing": true,
-      ajax: "{{ url('maintenance/supply') }}",
-      columns: [
-          { data: "stocknumber" },
-          { data: "supplytype" },
-          { data: function(callback){
-            return `
-              <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-primary btn-block">Select</button>
-            `;
-          } }
-      ],
-    });
+    $('#add-stocknumber').on('click',function(){
+      $('#addStockNumberModal').modal('show');
+    })
 
     $('#supplyInventoryTable').on('click','.add-stock',function(){
       $('#stocknumber').val($(this).data('id'))
@@ -352,16 +299,6 @@
       $('#date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
       setDate("#date");
     @endif
-
-    @if( Session::has("success-message") )
-      swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-
-    @if( Session::has("error-message") )
-      swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
-
-    $('#page-body').show()
 
   });
 </script>

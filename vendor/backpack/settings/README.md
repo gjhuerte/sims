@@ -18,7 +18,7 @@ An interface for the administrator to easily change application settings. Uses L
 1) In your terminal:
 
 ``` bash
-$ composer require backpack/settings
+composer require backpack/settings
 ```
 
 2) For Laravel <5.5 apps, add the service provider to your config/app.php file:
@@ -28,9 +28,11 @@ Backpack\Settings\SettingsServiceProvider::class,
 
 3) Run the migration and add some example settings:
 ```bash
-$ php artisan vendor:publish --provider="Backpack\Settings\SettingsServiceProvider"
-$ php artisan migrate
-$ php artisan db:seed --class="Backpack\Settings\database\seeds\SettingsTableSeeder"
+php artisan vendor:publish --provider="Backpack\Settings\SettingsServiceProvider"
+php artisan migrate
+
+## if you want to have some example entries in the database
+php artisan db:seed --class="Backpack\Settings\database\seeds\SettingsTableSeeder"
 ```
 
 4) [Optional] Add a menu item for it in resources/views/vendor/backpack/base/inc/sidebar.blade.php or menu.blade.php:

@@ -1,8 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Supply;
-use App\SupplyTransaction;
+use App;
 use Carbon;
 use Session;
 use DB;
@@ -20,9 +19,10 @@ class SupplyInventoryController extends Controller {
 	{
 		if(Request::ajax())
 		{
-			return json_encode([
-				'data' => Supply::all()
-			]);
+			// return json_encode([
+			// 	'data' => App\Supply::all()
+			// ]);
+			return datatables(App\Supply::all())->toJson();
 		}
 		return view('inventory.supply.index')
                 ->with('title','Supply Inventory');
@@ -91,11 +91,20 @@ class SupplyInventoryController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($id = null)
 	{
 		if(Request::ajax())
 		{
-			return json_encode([ 'data' => Supply::where('stocknumber','=',$id)->first() ]);
+			if(Input::has('term'))
+			{
+
+				$stocknumber = $this->sanitizeString(Input::get('term'));
+				return App\Supply::where('stocknumber','like','%'.$stocknumber.'%')
+								->pluck('stocknumber')
+								->toJson();
+			}
+
+			return json_encode([ 'data' => App\Supply::where('stocknumber','=',$id)->first() ]);
 		}
 	}
 

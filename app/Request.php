@@ -10,43 +10,47 @@ class Request extends Model
 {
     protected $table = 'requests';
     protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $fillable = [ 'id' , 'requestor' , 'issued_by' , 'remarks'  , 'status' ];
+    public $incrementing = true;
     public $timestamps = true;
+    protected $fillable = [ 
+      'requestor' , 
+      'office' ,
+      'issued_by' , 
+      'remarks'  , 
+      'status' 
+    ];
+    
+    public $appends = [
+      'code'
+    ];
+
+    public function getCodeAttribute($value)
+    {
+      $date = Carbon\Carbon::parse($this->created_at);
+      return $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
+    }
 
   	public function supply()
   	{
-  		return $this->belongsToMany('App\Supply','supply_requests','request_id','stocknumber');
+  		return $this->belongsToMany('App\Supply','requests_supplies','request_id','stocknumber');
   	}
 
-    public function scopeSelf($query)
+    public function scopeMe($query)
     {
       return $query->where('requestor','=',Auth::user()->username);
     }
 
-    public static function generateID()
+    public function scopeFindByOffice($query,$value)
     {
-      $id = Request::orderBy('created_at','desc')->pluck('id')->first();
-
-      if($id != '' && isset($id) && $id != null )
-      {
-        $id = explode('-',$id);
-        $id = $id[3];
-        $id = $id + 1;
-      }
-      else
-      {
-        $id = 1;
-      }
-
-      $date = Carbon\Carbon::now()->format('mdy');
-      $office = Auth::user()->office;
-      $id = 'RIS'. '-' . $date . '-' . $office . '-' . $id;
-      return $id;
+      return $query->where('office','=',$value);
     }
 
+    public function comments()
+    {
+      return $this->hasMany('App\RequestComments');
+    }
   	public static $issueRules = array(
-  		'Stock Number' => 'required|exists:supply,stocknumber',
-  		'Quantity' => 'required',
+  		'Stock Number' => 'required|exists:supplies,stocknumber',
+  		'Quantity' => 'required|integer|min:1',
   	);
 }

@@ -4,34 +4,33 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Supply;
+
 class PurchaseOrderSupply extends Model
 {
-    protected $table = 'purchaseorder_supply';
-	protected $fillable = ['user_id','purchaseorderno','reference','date','supplyitem','orderedquantity','receivedquantity','unitprice'];
+    protected $table = 'purchaseorders_supplies';
+	protected $fillable = ['user_id','purchaseorder_number','stocknumber','orderedquantity','receivedquantity', 'remainingquantity', 'unitprice'];
 	protected $primaryKey = 'id';
 	public $incrementing = true;
 	public $timestamps = true;
 
 	public static $rules = array(
-	'User Id' => '',
-	'Purchase Order No' => 'required',
-	'Supply Item' => 'required',
-	'Ordered Quantity' => 'required',
-	'Received Quantity' => '',
-	'Unit Price' => ''
+	'Stock Number' => 'required|exists:supplies,stocknumber',
+	'Quantity' => 'required|integer|min:1',
+	'Unit Price' => 'required|min:0',
 	);
 
 	public static $updateRules = array(
-	'User Id' => '',
-	'Purchase Order No' => '',
-	'Supply Item' => '',
-	'Ordered Quantity' => '',
-	'Received Quantity' => '',
-	'Unit Price' => ''
+	'Reference' => '',
+	'Stock Number' => ''
 	);
 
 	public function supply()
 	{
-		return $this->belongsTo('App\Supply','supplyitem','stocknumber');
+		return $this->belongsTo('App\Supply','stocknumber','stocknumber');
+	}
+
+	public function purchaseorder()
+	{
+		return $this->belongsTo('App\PurchaseOrder','purchaseorder_number','number');
 	}
 }

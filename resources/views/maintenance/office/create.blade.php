@@ -1,20 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-    <style>
-      #page-two, #page-body{
-        display: none;
-      }
-    </style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
-@endsection
 
 @section('header')
 	<section class="content-header">
@@ -32,7 +17,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-        {{ Form::open(array('class' => 'col-md-offset-3 col-md-6  form-horizontal','method'=>'post','route'=>'office.store','id'=>'officeForm')) }}
+        {{ Form::open(array('class' => 'form-horizontal','method'=>'post','route'=>'office.store','id'=>'officeForm')) }}
             @if (count($errors) > 0)
                 <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -43,22 +28,40 @@
                     </ul>
                 </div>
             @endif
-        <div class="" style="padding:10px;">
+        <div class="col-md-offset-3 col-md-6" style="padding:10px;">
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('deptcode','Department Code') }}
-              {{ Form::text('deptcode',Input::old('deptcode'),[
+              {{ Form::label('code','Organization Code') }}
+              {{ Form::text('code',Input::old('code'),[
                 'class'=>'form-control',
-                'placeholder'=>'Department Code'
+                'placeholder'=>'Organization Code'
               ]) }}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::label('deptname','Department Name') }}
-              {{ Form::text('deptname',Input::old('deptname'),[
+              {{ Form::label('name','Organization Name') }}
+              {{ Form::text('name',Input::old('name'),[
                 'class'=>'form-control',
-                'placeholder'=>'Department Name'
+                'placeholder'=>'Organization Name'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('description','Description') }}
+              {{ Form::text('description',Input::old('description'),[
+                'class'=>'form-control',
+                'placeholder'=>'Description'
+              ]) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12">
+              {{ Form::label('head','Organization Head') }}
+              {{ Form::text('head',Input::old('head'),[
+                'class'=>'form-control',
+                'placeholder'=>'Full Name'
               ]) }}
             </div>
           </div>
@@ -80,31 +83,4 @@
     </div><!-- /.box-body -->
   </div><!-- /.box -->
 
-@endsection
-
-@section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-
-<script>
-  $(document).ready(function(){
-
-    @if( Session::has("success-message") )
-        swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-
-    @if( Session::has("error-message") )
-        swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
-
-    $('#page-body').show();
-  });
-</script>
 @endsection

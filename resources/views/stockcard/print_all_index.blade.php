@@ -2,8 +2,6 @@
 @section('title',"Stock Card Preview")
 @section('content')
   @foreach($supplies as $supply)
-  <br />
-  <br />
   <div id="content" class="col-sm-12" style="{{ ($supplies->last() !== $supply) ? "page-break-after:always;" : "" }}">
   	<table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
   		<thead>
@@ -17,7 +15,7 @@
         </tr>
         <tr>
             <th class="text-left" colspan="4">Item:
-              <span style="font-weight:normal; @if(strlen($supply->supplytype) > 0)@if(strlen($supply->supplytype) > 60) font-size: 10px; @elseif(strlen($supply->supplytype) > 40) font-size: 11px; @elseif(strlen($supply->supplytype) > 20) font-size: 12px; @endif @endif">{{ $supply->supplytype }}</span> </th>
+              <span style="font-weight:normal; @if(strlen($supply->details) > 0)@if(strlen($supply->details) > 60) font-size: 10px; @elseif(strlen($supply->details) > 40) font-size: 11px; @elseif(strlen($supply->details) > 20) font-size: 12px; @endif @endif">{{ $supply->details }}</span> </th>
             <th class="text-left" colspan="3">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
         </tr>
         <tr>

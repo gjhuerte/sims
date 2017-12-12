@@ -23,7 +23,12 @@ class CrudController extends BaseController
     use AjaxTable, Reorder, Revisions, ShowDetailsRow, SaveActions;
 
     public $data = [];
+
+    /**
+     * @var CrudPanel
+     */
     public $crud;
+
     public $request;
 
     public function __construct()

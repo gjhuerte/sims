@@ -11,6 +11,8 @@ return [
     |
     */
 
+    'organization' => env('ORGANIZATION'),
+
     // Project name. Shown in the breadcrumbs and a few other places.
     'project_name' => 'Supplies Inventory Management System',
 

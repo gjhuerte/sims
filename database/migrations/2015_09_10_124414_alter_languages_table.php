@@ -24,7 +24,8 @@ class AlterLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('languages', function ($table) {
+        Schema::table('languages', function ($table) 
+        {
             $table->dropColumn('script');
             $table->dropColumn('native');
         });

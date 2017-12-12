@@ -1,18 +1,11 @@
 @extends('backpack::layout')
 
 @section('after_styles')
-    <!-- Ladda Buttons (loading buttons) -->
-    <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-    <style>
-        td{
-            font-size: 12px;
-        }
-    </style>
-
-    <!-- Bootstrap -->
-    {{ HTML::style(asset('css/jquery-ui.css')) }}
-    {{ HTML::style(asset('css/sweetalert.css')) }}
-    {{ HTML::style(asset('css/dataTables.bootstrap.min.css')) }}
+<style>
+    th , tbody{
+      text-align: center;
+    }
+</style>
 @endsection
 
 @section('header')
@@ -20,10 +13,10 @@
 	  <h1>
 	    Request
 	  </h1>
-	  {{-- <ol class="breadcrumb">
-	    <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}">Das</a></li>
-	    <li class="active">{{ trans('backpack::backup.backup') }}</li>
-	  </ol> --}}
+	  <ol class="breadcrumb">
+	    <li>Request</li>
+	    <li class="active">Home</li>
+	  </ol>
 	</section>
 @endsection
 
@@ -36,7 +29,7 @@
           <tr>
             <th class="col-sm-1">Request No.</th>
             <th class="col-sm-1">Request Date</th>
-            @if(Auth::user()->accesslevel == 1)
+            @if(Auth::user()->access == 1)
             <th class="col-sm-1">Requestor</th>
             @endif
             <th class="col-sm-1">Remarks</th>
@@ -54,17 +47,6 @@
 @endsection
 
 @section('after_scripts')
-    <!-- Ladda Buttons (loading buttons) -->
-    <script src="{{ asset('vendor/backpack/ladda/spin.js') }}"></script>
-    <script src="{{ asset('vendor/backpack/ladda/ladda.js') }}"></script>
-
-    {{ HTML::script(asset('js/jquery-ui.js')) }}
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{ HTML::script(asset('js/sweetalert.min.js')) }}
-    {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
-    {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
-    {{ HTML::script(asset('js/moment.min.js')) }}
-
 <script>
   jQuery(document).ready(function($) {
 
@@ -81,24 +63,28 @@
         "processing": true,
         ajax: "{{ url('request') }}",
         columns: [
-                { data: "id" },
+                { data: "code" },
                 { data: function(callback){
                     return moment(callback.created_at).format("MMMM D, YYYY")
                 } },
-                @if(Auth::user()->accesslevel == 1)
-                { data: "requestor" },
+                @if(Auth::user()->access == 1)
+                { data: "office" },
                 @endif
                 { data: "remarks" },
                 { data: "status" },
                 { data: function(callback){
                   ret_val = "";
 
-                  @if(Auth::user()->accesslevel == 1)
+                  @if(Auth::user()->access == 1)
                   if(!callback.status)
                   {
                     ret_val += `
-                      <a type="button" href="{{ url('request') }}/`+callback.id+`/edit" data-id="`+callback.id+`" class="approve btn btn-success btn-sm"><i class="fa fa-thumbs-up" aria-hidden="true"></i></a>
-                      <button type="button" data-id="`+callback.id+`" class="disapprove btn btn-danger btn-sm"><i class="fa fa-thumbs-down" aria-hidden="true"></i></button>
+                      <a type="button" href="{{ url('request') }}/`+callback.id+`/approve" data-id="`+callback.id+`" class="approve btn btn-success btn-sm">
+                          <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                      </a>
+                      <button type="button" data-id="`+callback.id+`" class="disapprove btn btn-danger btn-sm">
+                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                      </button>
                     `
                   }
                   @endif
@@ -116,7 +102,7 @@
       <a id="create" href="{{ url('request/create') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> Create a Request</span></a>
     `)
 
-    @if(Auth::user()->accesslevel == 1)
+    @if(Auth::user()->access == 1)
 
     $('#requestTable').on('click','.disapprove',function(){
         id = $(this).data('id')
@@ -142,7 +128,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: 'put',
-                url: '{{ url("request") }}' + "/" + id + '?status=disapproved',
+                url: '{{ url("request") }}' + "/" + id + '/disapprove',
                 data: {
                     'reason': inputValue
                 },
@@ -164,16 +150,6 @@
     });
 
     @endif
-
-    @if( Session::has("success-message") )
-        swal("Success!","{{ Session::pull('success-message') }}","success");
-    @endif
-
-    @if( Session::has("error-message") )
-        swal("Oops...","{{ Session::pull('error-message') }}","error");
-    @endif
-
-    $('#page-body').show()
   });
 </script>
 @endsection

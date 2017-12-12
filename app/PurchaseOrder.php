@@ -2,33 +2,53 @@
 
 namespace App;
 
-use App\Supply;
 use Illuminate\Database\Eloquent\Model;
 
 class PurchaseOrder extends Model
 {
-  	protected $table = 'purchaseorder';
-	protected $fillable = ['purchaseorderno','date','fundcluster','details'];
-	protected $primaryKey = 'purchaseorderno';
-	public $incrementing = false;
+  	protected $table = 'purchaseorders';
+	protected $fillable = [ 'number','date_received','details', 'supplier_id' ];
+	protected $primaryKey = 'id';
 	public $timestamps = true;
 
+	public static $messages = [
+    'Quantity.integer' => 'Quantity must not be 0',
+	];
+
 	public static $rules = array(
-	'Purchase Order' => 'required|unique:purchaseorder,purchaseorderno',
-	'Date' => 'required',
-	'Fund Cluster' => '',
-	'Details' => ''
+		'Purchase Order' => 'required|unique:purchaseorders,number',
+		'Date' => 'required',
+		'Fund Cluster' => '',
+		'Details' => '',
+		'Quantity' => 'integer|min:0'
 	);
 
+	
 	public static $updateRules = array(
-	'Purchase Order No' => '',
-	'Date' => '',
-	'Fund Cluster' => '',
-	'Details' => ''
+		'Purchase Order' => '',
+		'Date' => '',
+		'Fund Cluster' => '',
+		'Details' => '',
+		'Quantity' => ''
 	);
 
 	public function supply()
 	{
-		return $this->belongsToMany('App\Supply','purchaseorder_supply','supplyitem','purchaseorderno');
+		return $this->belongsToMany('App\Supply','purchaseorders_supplies','stocknumber','purchaseorder_number');
+	}
+
+	public function supplier()
+	{
+		return $this->belongsTo('App\Supplier','supplier_id','id');
+	}
+
+	public function scopeFindByNumber($query, $number)
+	{
+		return $query->where('number','=',$number);
+	}
+
+	public function scopeFindByID($query, $id)
+	{
+		return $query->where('id','=',$id);
 	}
 }

@@ -110,13 +110,9 @@ trait Create
                 }
             }
 
-            if (isset($field['morph']) && $field['morph']) {
-                $values = isset($data[$field['name']]) ? $data[$field['name']] : [];
-                if ($model->{$field['name']}) {
-                    $model->{$field['name']}()->update($values);
-                } else {
-                    $model->{$field['name']}()->create($values);
-                }
+            if (isset($field['morph']) && $field['morph'] && isset($data[$field['name']])) {
+                $values = $data[$field['name']];
+                $model->{$field['name']}()->sync($values);
             }
         }
     }

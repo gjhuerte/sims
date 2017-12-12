@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers;
-	
-use App\Supply;
+
+use App;
 use Carbon;
 use Session;
 use Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 class SupplyController extends Controller {
 
@@ -15,12 +15,12 @@ class SupplyController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			return json_encode([
-				'data' => Supply::all()
+				'data' => App\Supply::all()
 			]);
 		}
 		return view('maintenance.supply.index')
@@ -33,9 +33,10 @@ class SupplyController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create(Request $request)
 	{
 		return view('maintenance.supply.create')
+				->with('unit',App\Unit::pluck('name','name'))
                 ->with('title','Supply Maintenance');
 	}
 
@@ -45,30 +46,23 @@ class SupplyController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 
 		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
 		$entityname = $this->sanitizeString(Input::get('entityname'));
 		$description = $this->sanitizeString(Input::get('description'));
 		$unit = $this->sanitizeString(Input::get('unit'));
-
-		if(Input::has('price'))
-		{
-			$price = $this->sanitizeString(Input::get('price'));
-		} else 
-			$price = null;
-
 		$reorderpoint = $this->sanitizeString(Input::get("reorderpoint"));
-		$supplytype = $this->sanitizeString(Input::get('supplytype'));
+		$details = $this->sanitizeString(Input::get('details'));
 
 		$validator = Validator::make([
 			'Stock Number' => $stocknumber,
 			'Entity Name' => $entityname,
-			'Supply Type' => $supplytype,
+			'Details' => $details,
 			'Unit' => $unit,
 			'Reorder Point' => $reorderpoint
-		],Supply::$rules);
+		],App\Supply::$rules);
 
 		if($validator->fails())
 		{
@@ -77,15 +71,15 @@ class SupplyController extends Controller {
 					->withErrors($validator);
 		}
 
-		$supply = new Supply;
+		$supply = new App\Supply;
 		$supply->stocknumber = $stocknumber;
 		$supply->entityname = $entityname;
-		$supply->supplytype = $supplytype;
+		$supply->details = $details;
 		$supply->unit = $unit;
 		$supply->reorderpoint = $reorderpoint;
 		$supply->save();
 
-		Session::flash('success-message','Supply added to inventory');
+		\Alert::success('Supply added to inventory')->flash();
 		return redirect('maintenance/supply');
 	}
 
@@ -96,11 +90,12 @@ class SupplyController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show(Request $request, $id)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
-			$supply = Supply::find($id);
+
+			$supply = App\Supply::find($id);
 			return json_encode([ 'data' => $supply ]);
 		}
 	}
@@ -112,12 +107,13 @@ class SupplyController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit(Request $request, $id)
 	{
-		$supply = Supply::find($id);
+		$supply = App\Supply::find($id);
 		return view('maintenance.supply.edit')
 				->with('supply',$supply)
-                ->with('title','Supply Maintenance');
+				->with('unit',App\Unit::pluck('name','name'))
+        ->with('title','Supply Maintenance');
 	}
 
 
@@ -127,22 +123,23 @@ class SupplyController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request,  $id)
 	{
 		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
 		$entityname = $this->sanitizeString(Input::get('entityname'));
-		$description = $this->sanitizeString(Input::get('description'));
 		$unit = $this->sanitizeString(Input::get('unit'));
 		$reorderpoint = $this->sanitizeString(Input::get("reorderpoint"));
-		$supplytype = $this->sanitizeString(Input::get('supplytype'));
+		$details = $this->sanitizeString(Input::get('details'));
+
+		$supply = App\Supply::find($id);
 
 		$validator = Validator::make([
 			'Stock Number' => $stocknumber,
 			'Entity Name' => $entityname,
-			'Supply Type' => $supplytype,
+			'Details' => $details,
 			'Unit' => $unit,
 			'Reorder Point' => $reorderpoint
-		],Supply::$updateRules);
+		],$supply->updateRules());
 
 		if($validator->fails())
 		{
@@ -150,16 +147,14 @@ class SupplyController extends Controller {
 					->withInput()
 					->withErrors($validator);
 		}
-
-		$supply = Supply::find($id);
 		$supply->stocknumber = $stocknumber;
 		$supply->entityname = $entityname;
-		$supply->supplytype = $supplytype;
+		$supply->details = $details;
 		$supply->unit = $unit;
 		$supply->reorderpoint = $reorderpoint;
 		$supply->save();
 
-		Session::flash('success-message','Supply information update');
+		\Alert::success('Supply information update')->flash();
 		return redirect('maintenance/supply');
 	}
 
@@ -170,22 +165,25 @@ class SupplyController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
-			$supply = Supply::find($id);
+			$supply = App\Supply::find($id);
 			$supply->delete();
 			return json_encode('success');
 		}
 
-		try{
-			$supply = Supply::find($id);
-			$supply->delete();
-			Session::flash('success-message','Office Removed');	
-		} catch (Exception $e) {
+		$supply = App\Supply::find($id);
+
+		if(count($supply) <= 0 )
+		{
 			Session::flash('error-message','Problem Encountered While Processing Your Data');
-		} 
+			return redirect()->back();
+		}
+
+		$supply->delete();
+		\Alert::success('Office Removed')->flash();
 
 		return redirect('maintenance/supply');
 	}
