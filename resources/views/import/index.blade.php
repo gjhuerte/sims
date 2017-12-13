@@ -56,7 +56,6 @@
 	    			<li class="text-muted">
 	    				Browse for Excel File. Only the following are supported types: 
 	    				<ul>
-	    					<li>xlsx</li>
 	    					<li>csv</li>
 	    				</ul>
 	    			</li>
@@ -74,7 +73,7 @@
 	    		<div class="form-group">
 		            <!-- image-preview-filename input [CUT FROM HERE]-->
 		            <div class="input-group image-preview">
-		                <input type="text" value="{{ old('input-file-preview') ? old('input-file-preview') : "" }}" class="form-control image-preview-filename" disabled="disabled"> <!-- don't give a name === doesn't send on POST/GET -->
+		                <input type="text" value="{{ old('input-file-preview') ? old('input-file-preview') : "" }}" class="form-control image-preview-filename" readonly style="background-color:white;"> <!-- don't give a name === doesn't send on POST/GET -->
 		                <span class="input-group-btn">
 		                    <!-- image-preview-input -->
 		                    <div class="btn btn-default image-preview-input">
@@ -109,10 +108,10 @@
 	    		</div>
 	    	</div>
 	    </div>
+		@if(isset($records) && count($records) > 0)
 	    <div class="col-md-12">
 			<div class="panel panel-body table-responsive">
 				<table class="table table-hover table-bordered table-striped" id="importTable" width=100%>
-					@if(isset($records) && count($records) > 0)
 					<thead>
 						@foreach($keys as $key)
 						<th class="col-sm-1">{{ $key }}</th>
@@ -127,9 +126,9 @@
 						</tr>
 					@endforeach
 					</tbody>
-					@endif
 				</table>
 			</div>
+			@endif
 		</div>
 
 
@@ -144,16 +143,7 @@
 <script>
 	$(document).ready(function(){
 
-		$('#importTable').DataTable();
-
 		$(function() {
-		    // Clear event
-		    $('.image-preview-clear').click(function(){
-		        $('.image-preview-filename').val("");
-		        $('.image-preview-clear').hide();
-		        $('.image-preview-input input:file').val("");
-		        $(".image-preview-input-title").text("Browse"); 
-		    }); 
 		    // Create the preview image
 		    $(".image-preview-input input:file").change(function (){     
 		        var img = $('<img/>', {

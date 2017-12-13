@@ -7,7 +7,7 @@ class Office extends Model{
 
 	protected $table = 'offices';
 	protected $primaryKey = 'id';
-	protected $fillable = ['code','name','description'];
+	protected $fillable = ['code','name','description', 'head'];
 	public $timestamps = false;
 
 	public static $rules = array(

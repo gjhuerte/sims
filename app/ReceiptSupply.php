@@ -9,6 +9,13 @@ class ReceiptSupply extends Model
     protected $table = 'receipts_supplies';
     protected $primaryKey = 'id';
     public $timestamps = true;
+    protected $fillable = [
+        'receipt_number',
+        'stocknumber',
+        'quantity',
+        'remaining_quantity',
+        'cost'
+    ];
 
 	protected $appends = [
 		'total_cost'

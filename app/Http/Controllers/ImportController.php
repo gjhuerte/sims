@@ -29,16 +29,6 @@ class ImportController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -50,10 +40,6 @@ class ImportController extends Controller
         $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
         $file = $request->file('input-file-preview');
 
-        $records = Excel::load($file)->toArray();
-
-        $keys = [];
-
         $validator = Validator::make($request->all(),[
             'input-file-preview' => 'required|file'
         ]);
@@ -63,10 +49,33 @@ class ImportController extends Controller
             return back()->withErrors()->withInput();
         }
 
-        foreach($records[0] as $key=>$record)
-        {
-            array_push($keys,$key);
-        }
+        $records = Excel::load($file)->toArray();
+
+        $keys = $this->getRecordColumns($records[0]);
+        $rows = $this->clean($records, $keys);
+
+        DB::beginTransaction();
+
+        if($type == 'stockcard'):
+            $this->importStockCard($rows);
+        else:
+            DB::rollback();
+            \Alert::error('Incorrect data for importing')->flash();
+            return redirect('import')->with('records',$rows)->withInput();
+        endif;
+
+        DB::commit();
+
+        \Alert::success('Data Imported')->flash();
+
+        return view('import.index')
+            ->with('title','Import')
+            ->with('records', $records)
+            ->with('keys',$keys);
+    }
+
+    public function clean($records , $keys)
+    {
 
         $rows = [];
 
@@ -85,20 +94,22 @@ class ImportController extends Controller
 
         }
 
-        $this->importStockCard($rows);
+        return $rows;
+    }
 
-        \Alert::success('Data Imported')->flash();
+    public function getRecordColumns($record)
+    {
+        $keys = [];
+        foreach($record as $key=>$record)
+        {
+            array_push($keys,$key);
+        }
 
-        return view('import.index')
-            ->with('title','Import')
-            ->with('records', $records)
-            ->with('keys',$keys);
+        return $keys;
     }
 
     public function importStockCard($rows)
     {
-
-        DB::beginTransaction();
 
         foreach($rows as $row)
         {
@@ -199,8 +210,6 @@ class ImportController extends Controller
                 $transaction->issue();
             }
         }
-
-        DB::commit();
     }
 
 }

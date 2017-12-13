@@ -79,7 +79,7 @@ class RequestController extends Controller
         $validator = Validator::make([
             'Stock Number' => $stocknumber,
             'Quantity' => $quantity["$stocknumber"]
-        ],App\Request::$issueRules,App\Request::$messages);
+        ],App\Request::$issueRules);
 
         if($validator->fails())
         {
@@ -325,6 +325,7 @@ class RequestController extends Controller
       $requests = App\Request::find($id);
       $requests->status = 'released';
       $requests->released_at = $date;
+      $requests->released_by = Auth::user()->id;
       $requests->save();
 
       $reference = $requests->code;
@@ -546,7 +547,11 @@ class RequestController extends Controller
       $supplyrequests = App\RequestSupply::with('supply')->where('request_id','=',$id)->get();
       $request = App\Request::find($id);
 
-      $data = ['request' => $request, 'supplyrequests' => $supplyrequests ];
+      $data = [
+        'request' => $request, 
+        'supplyrequests' => $supplyrequests,
+        'approvedby' => App\Office::where('code','=','OVPAA')->first()
+      ];
 
       $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
       $view = "request.print_show";

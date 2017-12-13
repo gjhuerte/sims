@@ -28,7 +28,7 @@
           <!-- ================================================ -->
           <!-- ==== Recommended place for admin menu items ==== -->
           <!-- ================================================ -->
-          {{-- <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}"><i class="fa fa-dashboard"></i> <span>{{ trans('backpack::base.dashboard') }}</span></a></li> --}}
+          <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}"><i class="fa fa-dashboard"></i> <span>{{ trans('backpack::base.dashboard') }}</span></a></li>
 
           @if(false)
 
@@ -76,6 +76,8 @@
           @endif
 
           @if(Auth::user()->access == 2)
+
+          <li><a href="{{ url('records/uncopied') }}"><i class="fa fa-clock-o" aria-hidden="true"></i> <span> Pending AMO Records </span></a></li>
 
           @endif
 

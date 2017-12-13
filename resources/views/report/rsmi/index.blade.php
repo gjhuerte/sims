@@ -1,5 +1,13 @@
 @extends('backpack::layout')
 
+@section('after_styles')
+<style>
+	th {
+		white-space: nowrap;
+	}
+</style>
+@endsection
+
 @section('header')
 	<section class="content-header">
     <legend><h3 class="text-muted">Reports on Supplies and Materials Issued</h3></legend>
@@ -30,14 +38,14 @@
 				<table class="table table-hover table-striped table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%">
 					<thead>
 						<tr>
-							<th>RIS No.</th>
-							<th>Responsibility Center Code</th>
-							<th>Stock No.</th>
-							<th>Item</th>
-							<th>Unit</th>
-							<th>Qty Issued</th>
-							<th>Unit Cost</th>
-							<th>Amount</th>
+							<th class="col-sm-1">RIS No.</th>
+							<th class="col-sm-1">Responsibility Center Code</th>
+							<th class="col-sm-1">Stock No.</th>
+							<th class="col-sm-1">Item</th>
+							<th class="col-sm-1">Unit</th>
+							<th class="col-sm-1">Qty Issued</th>
+							<th class="col-sm-1">Unit Cost</th>
+							<th class="col-sm-1">Amount</th>
 						</tr>
 					</thead>
 				</table>

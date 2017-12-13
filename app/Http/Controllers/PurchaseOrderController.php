@@ -137,6 +137,11 @@ class PurchaseOrderController extends Controller
         if($request->ajax())
         {
 
+            /**
+            * used to check if the purchase order exists
+            * if exists @return purchase order information
+            * else @return null
+            */
             if($id == 'checkifexists')
             {
                 $number = $this->sanitizeString(Input::get('number'));
@@ -150,6 +155,12 @@ class PurchaseOrderController extends Controller
                 return json_encode(null);
             }
             
+            /**
+            * used in suggestion jquery
+            * add term in get method
+            * return purchase order with same term
+            *
+            */
             if(Input::has('term'))
             {
                 $number = $this->sanitizeString(Input::get('term'));
@@ -159,9 +170,15 @@ class PurchaseOrderController extends Controller
                 );
             }
 
+            /**
+            * returns view of the purchase order supply
+            * finds the supply information then return the values
+            */
             return json_encode([
                 'data' => App\PurchaseOrderSupply::with('supply')
-                            ->where('purchaseorder_number','=', App\PurchaseOrder::find($id)->pluck('number') )
+                            ->whereHas('purchaseorder',function($query) use($id) {
+                              $query->findByID($id);
+                            })
                             ->get()
             ]);
         }

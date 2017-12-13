@@ -128,6 +128,9 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['accounting'])->group(function(){
 
+		Route::get('records/uncopied','LedgerCardController@showUncopiedRecords');
+		Route::post('records/copy','LedgerCardController@copy');
+
 		Route::get('inventory/supply/ledgercard/batch/form/accept',[
 			'as' => 'supply.ledgercard.batch.accept.form',
 			'uses' => 'LedgerCardController@batchAcceptForm'
