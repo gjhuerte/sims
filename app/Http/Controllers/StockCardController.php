@@ -378,7 +378,6 @@ class StockCardController extends Controller {
 
 		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "stockcard.print_all_index";
-
 		return $this->printPreview($view,$data,$filename);
 
 		// return view($view)

@@ -32,16 +32,16 @@
   			</tr>
   		</thead>
       <tbody>
-      @if(count($supply->supplytransaction) > 0)
-        @foreach($supply->supplytransaction as $supplytransaction)
+      @if(count($supply->stockcards) > 0)
+        @foreach($supply->stockcards as $stockcard)
         <tr>
-          <td>{{ Carbon\Carbon::parse($supplytransaction->date)->toFormattedDateString() }}</td>
-          <td>{{ $supplytransaction->reference }}</td>
-          <td>{{ $supplytransaction->receiptquantity }}</td>
-          <td>{{ $supplytransaction->issuequantity }}</td>
-          <td>{{ $supplytransaction->office }}</td>
-          <td>{{ $supplytransaction->balancequantity }}</td>
-          <td class="col-sm-1">{{ $supplytransaction->daystoconsume }}</td>
+          <td>{{ Carbon\Carbon::parse($stockcard->date)->toFormattedDateString() }}</td>
+          <td>{{ $stockcard->reference }}</td>
+          <td>{{ $stockcard->received }}</td>
+          <td>{{ $stockcard->issued }}</td>
+          <td>{{ $stockcard->organization }}</td>
+          <td>{{ $stockcard->balance }}</td>
+          <td class="col-sm-1">{{ $stockcard->daystoconsume }}</td>
         </tr>
         @endforeach
       @else

@@ -113,12 +113,12 @@ class Supply extends Model{
 
 	public function stockcards()
 	{
-		return $this->hasMany('App\StockCards','stocknumber','stocknumber');
+		return $this->hasMany('App\StockCard','stocknumber','stocknumber');
 	}
 
 	public function ledgercards()
 	{
-		return $this->hasMany('App\LedgerCards','stocknumber','stocknumber');
+		return $this->hasMany('App\LedgerCard','stocknumber','stocknumber');
 	}
 
 	public function getUnitPriceAttribute($value)
