@@ -18,11 +18,15 @@ class CreatePurchaseOrdersFundClustersTable extends Migration
             $table->string('purchaseorder_number',100);
             $table->foreign('purchaseorder_number')
                     ->references('number')
-                    ->on('purchaseorders');
+                    ->on('purchaseorders')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->string('fundcluster_code');
             $table->foreign('fundcluster_code')
                     ->references('code')
-                    ->on('fundclusters');
+                    ->on('fundclusters')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->timestamps();
         });
     }

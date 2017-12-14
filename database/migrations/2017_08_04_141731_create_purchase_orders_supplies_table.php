@@ -19,6 +19,7 @@ class CreatePurchaseOrdersSuppliesTable extends Migration
             $table->foreign('purchaseorder_number')
                     ->references('number')
                     ->on('purchaseorders')
+                    ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('date',100)->nullable();

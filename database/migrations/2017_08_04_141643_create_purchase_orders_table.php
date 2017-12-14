@@ -22,7 +22,9 @@ class CreatePurchaseOrdersTable extends Migration
             $table->integer('supplier_id')->unsigned();
             $table->foreign('supplier_id')
                     ->references('id')
-                    ->on('suppliers');
+                    ->on('suppliers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->string('status')->nullable();
             $table->timestamps();
         });

@@ -18,12 +18,16 @@ class CreateRequestsCommentsTable extends Migration
             $table->integer('requests_id')->unsigned();
             $table->foreign('requests_id')
                     ->references('id')
-                    ->on('requests');
+                    ->on('requests')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->text('details');
             $table->integer('comment_by')->unsigned();
             $table->foreign('comment_by')
                     ->references('id')
-                    ->on('users');
+                    ->on('users')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

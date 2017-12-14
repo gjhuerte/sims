@@ -23,7 +23,9 @@ class CreateReceiptsTable extends Migration
             $table->string('supplier_name',100)->nullable();
             $table->foreign('supplier_name')
                     ->references('name')
-                    ->on('suppliers');
+                    ->on('suppliers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -20,6 +20,7 @@ class CreateLedgerCardsTable extends Migration
             $table->foreign('stocknumber')
                     ->references('stocknumber')
                     ->on('supplies')
+                    ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('receipt')->nullable();             

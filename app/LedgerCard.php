@@ -111,9 +111,9 @@ class LedgerCard extends Model{
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
 
 		$receipt = Receipt::firstOrCreate([
-			'number' => $this->receipt,
-			'reference' => $this->reference
+			'number' => $this->receipt
 		],[
+			'reference' => $this->reference,
 			'date_delivered' => Carbon\Carbon::parse($this->date),
 			'received_by' => $fullname,
 			'supplier_name' => $this->organization,

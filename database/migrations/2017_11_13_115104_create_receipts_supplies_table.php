@@ -18,11 +18,15 @@ class CreateReceiptsSuppliesTable extends Migration
             $table->string('receipt_number');
             $table->foreign('receipt_number')
                     ->references('number')
-                    ->on('receipts');
+                    ->on('receipts')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->string('stocknumber');
             $table->foreign('stocknumber')
                     ->references('stocknumber')
-                    ->on('supplies');
+                    ->on('supplies')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->integer('quantity');
             $table->integer('remaining_quantity');
             $table->float('cost')->nullable();

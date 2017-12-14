@@ -18,7 +18,9 @@ class CreateOfficesPositionsTable extends Migration
             $table->string('office_code',20)->nullable();
             $table->foreign('office_code')
                     ->references('code')
-                    ->on('offices');
+                    ->on('offices')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->string('title',50)->unique();
             $table->string('description')->nullable();
             $table->timestamps();

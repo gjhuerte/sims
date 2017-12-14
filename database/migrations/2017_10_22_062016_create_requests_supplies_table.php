@@ -19,11 +19,13 @@ class CreateRequestsSuppliesTable extends Migration
             $table->foreign('stocknumber')
                     ->references('stocknumber')
                     ->on('supplies')
+                    ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->integer('request_id')->unsigned();
             $table->foreign('request_id')
                     ->references('id')
                     ->on('requests')
+                    ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->integer('quantity_requested')
                     ->setDefault('1');

@@ -21,6 +21,7 @@ class CreateStockCardsTable extends Migration
             $table->foreign('stocknumber')
                     ->references('stocknumber')
                     ->on('supplies')
+                    ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('receipt',100)->nullable();

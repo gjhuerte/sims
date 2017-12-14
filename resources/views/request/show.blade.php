@@ -39,7 +39,7 @@
 						<th>Details</th>
 						<th>Quantity Requested</th>
 						<th>Quantity Issued</th>
-						<th>Remarks</th>
+						<th>Notes</th>
 					</tr>
 				</thead>
 			</table>
@@ -84,7 +84,7 @@
         </a>
         @endif
         <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
-          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Comments</span>
+          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Commentary</span>
         </a>
     `)
 
