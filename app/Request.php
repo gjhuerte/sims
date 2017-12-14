@@ -20,6 +20,11 @@ class Request extends Model
       'status' 
     ];
     
+    public static $issueRules = array(
+      'Stock Number' => 'required|exists:supplies,stocknumber',
+      'Quantity' => 'required|integer|min:1',
+    );
+    
     public $appends = [
       'code'
     ];
@@ -49,8 +54,4 @@ class Request extends Model
     {
       return $this->hasMany('App\RequestComments');
     }
-  	public static $issueRules = array(
-  		'Stock Number' => 'required|exists:supplies,stocknumber',
-  		'Quantity' => 'required|integer|min:1',
-  	);
 }

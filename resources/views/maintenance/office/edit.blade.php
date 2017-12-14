@@ -17,7 +17,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-        {{ Form::open(array('class' => 'col-md-offset-3 col-md-6  form-horizontal','method'=>'put','route'=>array('office.update',$office->deptcode),'id'=>'officeForm')) }}
+        {{ Form::open(array('method'=>'put','class' => 'form-horizontal','route'=>array('office.update',$office->id),'id'=>'officeForm')) }}
         <div class="" style="padding:10px;">
           @if (count($errors) > 0)
               <div class="alert alert-danger alert-dismissible" role="alert">
@@ -29,7 +29,7 @@
                 </ul>
               </div>
           @endif
-        <div class="" style="padding:10px;">
+        <div class="col-md-offset-3 col-md-6  " style="padding:10px;">
           <div class="form-group">
             <div class="col-md-12">
               {{ Form::label('code','Department Code') }}
