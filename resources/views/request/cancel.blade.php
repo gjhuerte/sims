@@ -1,18 +1,9 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-    <style>
-
-      th , tbody{
-        text-align: center;
-      }
-    </style>
-@endsection
-
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    Cancel {{ $request->code }}
+	    {{ $request->code }}
 	  </h1>
 	  <ol class="breadcrumb">
 	    <li><a href="{{ url('request') }}">Request</a></li>
@@ -36,8 +27,8 @@
               </ul>
           </div>
       @endif
-      <legend><h3 class="text-muted">{{ $request->code }}</h3></legend>
-      <table class="table table-hover table-condensed table-bordered" id="supplyTable">
+      <legend><h4 class="">Cancel Request No. {{ $request->code }} ? </h4></legend>
+      <table class="table table-hover table-bordered table-condensed" id="supplyTable">
         <thead>
           <tr>
             <th class="col-sm-1">Stock Number</th>

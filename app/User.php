@@ -142,9 +142,9 @@ class User extends \Eloquent implements Authenticatable
 	}
 
 
-	public function office()
+	public function officeInfo()
 	{
-		return $this->belongsTo('App\Office','office','deptcode');
+		return $this->belongsTo('App\Office','office','code');
 	}
 
 	public function createAuditTrail()

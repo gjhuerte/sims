@@ -62,6 +62,12 @@
           @endforeach
         </tbody>
       </table>
+      <div class="form-group">
+        <div class="col-md-12">
+          <label>Remarks</label>
+          <textarea class="form-control" name="remarks"></textarea>
+        </div>
+      </div>
       <button type="button" name="add" id="add" class="btn btn-md btn-primary pull-left">Add Supply</button>
       <div class="pull-right">
         <div class="btn-group">
