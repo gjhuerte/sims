@@ -40,7 +40,7 @@ class ImportController extends Controller
         $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
         $file = $request->file('input-file-preview');
         $destinationPath = public_path('files');
-        $file->move($destinationPath, $input['imagename']);
+        $file->move($destinationPath, $file);
 
         $validator = Validator::make($request->all(),[
             'input-file-preview' => 'required|file'
