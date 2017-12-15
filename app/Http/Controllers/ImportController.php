@@ -40,7 +40,7 @@ class ImportController extends Controller
         $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
         $file = $request->file('input-file-preview');
         $destinationPath = public_path('files');
-        $file->move($destinationPath, $file);
+        $file->move($destinationPath, $file->getClientOriginalName());
 
         $validator = Validator::make($request->all(),[
             'input-file-preview' => 'required|file'
@@ -48,7 +48,7 @@ class ImportController extends Controller
 
         if($validator->fails())
         {
-            return back()->withErrors()->withInput();
+            return back()->withErrors($validator)->withInput();
         }
 
         $records = Excel::load($file)->toArray();
