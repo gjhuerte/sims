@@ -1,13 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-<style>
-    th , tbody{
-      text-align: center;
-    }
-</style>
-@endsection
-
 @section('header')
 	<section class="content-header">
 	  <h1>

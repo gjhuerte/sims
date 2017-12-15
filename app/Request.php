@@ -40,6 +40,16 @@ class Request extends Model
   		return $this->belongsToMany('App\Supply','requests_supplies','request_id','stocknumber');
   	}
 
+    public function requestorInfo()
+    {
+      return $this->belongsTo('App\User','requestor','username');
+    }
+
+    public function officeInfo()
+    {
+      return $this->belongsTo('App\Office','office','code');
+    }
+
     public function scopeMe($query)
     {
       return $query->where('requestor','=',Auth::user()->username);

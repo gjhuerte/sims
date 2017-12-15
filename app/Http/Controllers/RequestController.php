@@ -25,7 +25,7 @@ class RequestController extends Controller
 
           $ret_val = App\Request::all();
 
-          if(Auth::user()->access == 3)
+          if(Auth::user()->access != 1)
           {
             if(Auth::user()->position == 'head')
             {
@@ -91,21 +91,21 @@ class RequestController extends Controller
                     ->withErrors($validator);
         }
 
-        if(Auth::user()->access == 1)
-        {
-          if( App\Supply::findByStockNumber($stocknumber)->balance <= $quantity["$stocknumber"])
-          {
-              return redirect("request/create")
-                      ->with('total',count($stocknumbers))
-                      ->with('stocknumber',$stocknumbers)
-                      ->with('quantity',$quantity)
-                      ->withInput()
-                      ->withErrors(["No more items to release for supply with stock number of $stocknumber"]);
-          }
+        // if(Auth::user()->access == 1)
+        // {
+        //   if( App\Supply::findByStockNumber($stocknumber)->balance <= $quantity["$stocknumber"])
+        //   {
+        //       return redirect("request/create")
+        //               ->with('total',count($stocknumbers))
+        //               ->with('stocknumber',$stocknumbers)
+        //               ->with('quantity',$quantity)
+        //               ->withInput()
+        //               ->withErrors(["Items exceed the amout for supply with stock number of $stocknumber"]);
+        //   }
 
-          $status = 'approved';
-          $quantity_issued = $quantity[$stocknumber];
-        }
+        //   $status = 'approved';
+        //   $quantity_issued = $quantity[$stocknumber];
+        // }
 
         array_push($array,[
             'quantity_requested' => $quantity["$stocknumber"],
@@ -411,37 +411,6 @@ class RequestController extends Controller
                 ->with('title',$request->code);
     }
 
-    public function disapprove(Request $request, $id)
-    {
-        if($request->ajax())
-        {
-            $id = $this->sanitizeString($id);
-            $remarks = $this->sanitizeString($request->get('reason'));
-
-            $request = App\Request::find($id);
-            $request->status = "disapproved";
-            $request->approved_at = Carbon\Carbon::now();
-            $request->remarks = $remarks;
-            $request->save();
-
-            return json_encode('success');
-        }
-
-        DB::beginTransaction();
-
-        $request = App\Request::find($id);
-
-        $request->status = 'disapproved';
-        $request->approved_at = Carbon\Carbon::now();
-        $request->save();
-
-        DB::commit();
-
-        \Alert::success('Request Disapproved')->flash();
-        return redirect('request');
-
-    }
-
     public function approve(Request $request, $id)
     {
 
@@ -465,6 +434,7 @@ class RequestController extends Controller
         $stocknumbers = $request->get('stocknumber');
         $requested = $request->get('requested');
         $array = [];
+        $remarks = $this->sanitizeString( $request->get('remarks') );
 
         foreach($stocknumbers as $stocknumber)
         {
@@ -494,10 +464,11 @@ class RequestController extends Controller
         DB::beginTransaction();
 
         $request = App\Request::find($id);
-
+        
         $request->supply()->detach();
         $request->supply()->attach($array);
 
+        $request->remarks = $remarks;
         $request->issued_by = Auth::user()->username;
         $request->status = 'approved';
         $request->approved_at = Carbon\Carbon::now();
@@ -506,6 +477,37 @@ class RequestController extends Controller
         DB::commit();
 
         \Alert::success('Request Approved')->flash();
+        return redirect('request');
+
+    }
+
+    public function disapprove(Request $request, $id)
+    {
+        if($request->ajax())
+        {
+            $id = $this->sanitizeString($id);
+            $remarks = $this->sanitizeString($request->get('reason'));
+
+            $request = App\Request::find($id);
+            $request->status = "disapproved";
+            $request->approved_at = Carbon\Carbon::now();
+            $request->remarks = $remarks;
+            $request->save();
+
+            return json_encode('success');
+        }
+
+        DB::beginTransaction();
+
+        $request = App\Request::find($id);
+
+        $request->status = 'disapproved';
+        $request->approved_at = Carbon\Carbon::now();
+        $request->save();
+
+        DB::commit();
+
+        \Alert::success('Request Disapproved')->flash();
         return redirect('request');
 
     }

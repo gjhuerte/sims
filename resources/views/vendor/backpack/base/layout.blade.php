@@ -66,6 +66,7 @@
     <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/initial.js') }}"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

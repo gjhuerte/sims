@@ -11,15 +11,14 @@
       <thead>
           <tr rowspan="2">
               <th class="text-left" colspan="3">Request Slip:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
-              <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ $request->office }}</span> </th>
-          </tr>
-          <tr rowspan="2">
-              <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
-              <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ $request->status }}</span> </th>
+              <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ isset($request->officeInfo->name) ? $request->officeInfo->name : $request->office }}</span> </th>
           </tr>
           <tr rowspan="2">
               <th class="text-left" colspan="3">Date Requested:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($request->created_at)->toFormattedDateString() }}</span> </th>
-              <th class="text-left" colspan="3"> <span style="font-weight:normal"></span> </th>
+              <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ isset($request->status) ? $request->status : 'Undecided' }}</span> </th>
+          </tr>
+          <tr rowspan="2">
+              <th class="text-left" colspan="6">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
           </tr>
           <tr>
           <th class="col-sm-1">Stock Number</th>
@@ -59,16 +58,16 @@
           <td class="text-center">
             <br />
             <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ App\User::where('username','=',$request->requestor)->first()->firstname }} {{ App\User::where('username','=',$request->requestor)->first()->lastname }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ isset($request->requestorInfo->firstname) ? $request->requestorInfo->firstname : "" }} {{ isset($request->requestorInfo->lastname) ? $request->requestorInfo->lastname : "" }}</span>
             <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ App\User::where('username','=',$request->requestor)->first()->office }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">{{ isset($request->requestorInfo->officeInfo->name) ? $request->requestorInfo->officeInfo->name : "" }}</span>
           </td>
           <td class="text-center">
             <br />
             <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ $approvedby->head }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ isset($approvedby->head) ? $approvedby->head : "" }}</span>
             <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ $approvedby->name }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">{{ isset($approvedby->name) ? $approvedby->name : "" }}</span>
           </td>
           <td class="text-center">
             <br />
