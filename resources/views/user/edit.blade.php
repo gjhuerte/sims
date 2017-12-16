@@ -118,7 +118,7 @@
       <div class="col-sm-12">
        <div class="form-group">
         {{ Form::label('confirm','Confirm Password') }}
-        {{ Form::password('confirm',[
+        {{ Form::password('newpassword_confirmation',[
             'id' => 'confirm',
             'class' => 'form-control',
             'placeholder' => 'confirm'
