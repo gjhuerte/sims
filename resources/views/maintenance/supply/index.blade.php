@@ -18,7 +18,6 @@
 		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyTable">
 			<thead>
 				<th class="col-sm-1">Stock No.</th>
-				<th class="col-sm-1">Entity Name</th>
 				<th class="col-sm-1">Details</th>
 				<th class="col-sm-1">Unit</th>
 				<th class="col-sm-1">Reorder Point</th>
@@ -55,7 +54,6 @@
 			ajax: "{{ url('maintenance/supply') }}",
 			columns: [
 				{ data: "stocknumber" },
-				{ data: "entityname" },
 				{ data: "details" },
 				{ data: "unit" },
 				{ data: "reorderpoint" }

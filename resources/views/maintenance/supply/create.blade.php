@@ -48,15 +48,6 @@
 		</div>
 		<div class="col-md-12">
 			<div class="form-group">
-				{{ Form::label('Entity Name') }}
-				{{ Form::text('entityname',"Polytechnic University Of the Philippines",[
-					'class' => 'form-control',
-					'readonly'
-				]) }}
-			</div>
-		</div>
-		<div class="col-md-12">
-			<div class="form-group">
 				{{ Form::label('Details') }}
 				{{ Form::text('details',Input::old('details'),[
 					'id' => 'details',
