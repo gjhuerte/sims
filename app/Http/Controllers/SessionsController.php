@@ -5,6 +5,7 @@ use App\User;
 use Carbon;
 use Session;
 use Validator;
+use Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Input;
