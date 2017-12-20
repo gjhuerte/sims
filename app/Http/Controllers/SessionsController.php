@@ -97,11 +97,12 @@ use AuthenticatesUsers;
 		}
 
 		if(!($password == "" && $newpassword == "")){
-
+			$confirm = $this->sanitizeString(Input::get('newpassword_confirmation'));
 
 			$validator = Validator::make([
 				'Current Password'=>$password,
-				'New Password'=>$newpassword
+				'New Password'=>$newpassword,
+				'Confirm Password' => $confirm
 			],User::$passwordRules);
 
 			if( $validator->fails() )

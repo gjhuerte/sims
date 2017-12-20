@@ -47,7 +47,8 @@ class User extends \Eloquent implements Authenticatable
 
 	public static $passwordRules = array(
 		'Current Password'=>'required|min:8|max:50',
-		'New Password'=>'required|min:8|max:50'
+		'New Password'=>'required|min:8|max:50',
+		'Confirm Password'=>'required|min:8|max:50|same:New Password',
 	);
 
 	public function updateRules(){
