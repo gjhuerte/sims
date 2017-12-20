@@ -15,16 +15,27 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
-		<table class="table table-hover table-condensed" id="supplyInventoryTable" width=100%>
+		<table class="table table-hover table-bordered" id="supplyInventoryTable" width=100%>
 			<thead>
-				<th class="col-sm-1">Stock No.</th>
-				<th class="col-sm-1">Supply Item</th>
-				<th class="col-sm-1">Unit</th>
-				<th class="col-sm-1">Reorder Point</th>
-				<th class="col-sm-1">Remaining Balance</th>
-				@if(Auth::user()->access == 1 || Auth::user()->access == 2)
-				<th class="col-sm-1 no-sort"></th>
-				@endif
+				<tr>
+					<th colspan="4"></th>
+					<th colspan="2">Remaining Balance</th>
+				</tr>
+				<tr>
+					<th class="col-sm-1">Stock No.</th>
+					<th class="col-sm-1">Supply Item</th>
+					<th class="col-sm-1">Unit</th>
+					@if(Auth::user()->access == 1)
+					<th class="col-sm-1">Reorder Point</th>
+					@else
+					<th class="col-sm-1">Unit Price (Moving Average)</th>
+					@endif
+					<th class="col-sm-1">Ledger Card</th>
+					<th class="col-sm-1">Stock Card</th>
+					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
+					<th class="col-sm-1 no-sort"></th>
+					@endif
+				</tr>
 			</thead>
 		</table>
 		</div>
@@ -39,7 +50,7 @@
 	$(document).ready(function() {
 
 	    var table = $('#supplyInventoryTable').DataTable({
-
+	    	serverSide: true,
 			language: {
 					searchPlaceholder: "Search..."
 			},
@@ -57,12 +68,15 @@
 					{ data: "stocknumber" },
 					{ data: "details" },
 					{ data: "unit" },
+					@if(Auth::user()->access == 1)
 					{ data: "reorderpoint" },
-					@if(Auth::user()->access == 2)
-					{ data: "ledger_balance" },
 					@else
-					{ data: "balance" },
+					{ data: function(callback){
+						return parseFloat(callback.unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+					} },
 					@endif
+					{ data: "ledger_balance" },
+					{ data: "balance" },
 					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 		            { data: function(callback){
 		            	return `

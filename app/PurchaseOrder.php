@@ -37,6 +37,11 @@ class PurchaseOrder extends Model
 		return $this->belongsToMany('App\Supply','purchaseorders_supplies','stocknumber','purchaseorder_number');
 	}
 
+	public function fundcluster()
+	{
+		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','purchaseorder_number','fundcluster_code');
+	}
+
 	public function supplier()
 	{
 		return $this->belongsTo('App\Supplier','supplier_id','id');
@@ -50,5 +55,17 @@ class PurchaseOrder extends Model
 	public function scopeFindByID($query, $id)
 	{
 		return $query->where('id','=',$id);
+	}
+
+	public function updateFundCluster()
+	{
+		if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)
+		{
+			foreach(explode(",", $this->fundcluster) as $fundcluster)
+			{
+				$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
+				PurchaseOrderFundCluster::firstOrCreate([ 'purchaseorder_number' => $this->number, 'fundcluster_code' => $fundcluster->code ]);
+			}
+		}
 	}
 }

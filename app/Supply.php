@@ -35,8 +35,21 @@ class Supply extends Model{
 	protected $appends = [
 		'balance',
 		'ledger_balance',
-		'fund_cluster'
+		'fund_cluster',
+		'unitcost'
 	];
+
+	public function getUnitCostAttribute($value)
+	{
+		$supply = ReceiptSupply::findByStockNumber($this->stocknumber)
+								->where('remaining_quantity','>',0)
+								->select('cost')
+								->avg('cost');
+		if(count($supply) > 0)
+			return $supply;
+		else
+			return 0;
+	}
 
 	public function getBalanceAttribute($value)
 	{

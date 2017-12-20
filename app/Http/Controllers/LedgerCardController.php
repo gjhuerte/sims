@@ -452,6 +452,16 @@ class LedgerCardController extends Controller {
 		$date = $record['date'];
 		$daystoconsume = "";
 
+		$transaction = App\LedgerCard::where('date','=', $date)
+										->where('reference','=', $reference)
+										->where('receipt','=', $receipt)
+										->where('receivedunitprice','=', $unitprice)
+										->where('issuedunitprice','=', $unitprice)
+										->where('stocknumber','=', $stocknumber)
+										->get();
+
+		if(count($transaction) > 0) return json_encode('duplicate');
+
 		$transaction = new App\LedgerCard;
 		$transaction->date = Carbon\Carbon::parse($date);
 		$transaction->stocknumber = $stocknumber;

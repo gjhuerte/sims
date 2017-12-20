@@ -27,6 +27,7 @@
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 				<span id="nav-text"> Print</span>
 			</a>
+            <button type="button" id="updateFundCluster" class="copy btn btn-primary btn-sm">Update Fund Cluster</button>
 			<hr />
 			<table class="table table-hover table-striped table-bordered table-condensed" id="purchaseOrderTable" cellspacing="0" width="100%"	>
 				<thead>
@@ -66,6 +67,7 @@
 	$(document).ready(function() {
 
     var table = $('#purchaseOrderTable').DataTable({
+    	serverSide: true,
 		select: {
 			style: 'single'
 		},
@@ -117,16 +119,17 @@
 		],
 	 });
 
-    $('#purchaseOrderTable').on('click','.setprice',function(){
-    	id = $(this).data('id')
+    $('#updateFundCluster').on('click',function(){
+    	id = "{{ isset($purchaseorder->id) ? $purchaseorder->id : null }}"
     	swal({
 			  title: "Purchase Order",
-			  text: "Input Purchase Order Price (Php):",
+			  text: "Input Fund Clusters:",
 			  type: "input",
 			  showCancelButton: true,
 			  closeOnConfirm: false,
 			  animation: "slide-from-top",
-			  inputPlaceholder: "Php XX.XX"
+			  inputPlaceholder: "Comma separate each fund cluster",
+			  inputValue: "{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([isset($purchaseorder->number) ? $purchaseorder->number : ""])->pluck('fundcluster_code')->toArray()) }}"
 			},
 			function(inputValue){
 			  if (inputValue === false) return false;
@@ -141,17 +144,17 @@
 			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			    },
 			  	type: 'put',
-			  	url: '{{ url("purchaseorder/supply") }}' + '/' + id,
+			  	url: '{{ url("purchaseorder") }}' + '/' + id,
 			  	dataType: 'json',
 			  	data: {
-			  		'unitprice': inputValue
+			  		'fundcluster': inputValue
 			  	},
 			  	success: function(response){
 			  		if(response == 'success')
 			  		swal('Success','Operation Successful','success')
 			  		else
 			  		swal('Error','Problem Occurred while processing your data','error')
-			  		table.ajax.reload();
+			  		location.reload()	
 			  	},
 			  	error: function(){
 			  		swal('Error','Problem Occurred while processing your data','error')

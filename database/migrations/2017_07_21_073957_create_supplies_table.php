@@ -17,6 +17,12 @@ class CreateSuppliesTable extends Migration {
 			$table->increments('id');
 			$table->string('stocknumber')->unique();
 			$table->string('entityname',200);
+			$table->string('category_name')->nullable();
+			$table->foreign('category_name')
+					->references('name')
+					->on('categories')
+					->onUpdate('cascade')
+					->onDelete('cascade');
             $table->string('details');		
             $table->string('unit')->nullable();
             $table->integer('reorderpoint')->nullable();

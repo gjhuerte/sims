@@ -145,6 +145,7 @@
 				    {
 				        'X-CSRF-Token': $('input[name="_token"]').val()
 				    },
+					async: false, 
 					type: 'post',
 					url: '{{ url("account/password/reset") }}',
 					data: {
@@ -200,6 +201,7 @@
 						    {
 						        'X-CSRF-Token': $('input[name="_token"]').val()
 						    },
+          					async: false, 
 							type: 'delete',
 							url: '{{ url("account/") }}' + "/" + table.row('.selected').data().id,
 							data: {
