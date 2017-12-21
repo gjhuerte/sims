@@ -73,6 +73,10 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::resource('maintenance/supplier','SuppliersController');
 
+	Route::resource('maintenance/category','CategoriesController');
+
+	Route::resource('uacs','CategoriesController');
+
 	Route::post('get/ledgercard/checkifexisting',[
 		'as' => 'ledgercard.checkifexisting',
 		'uses' => 'LedgerCardController@checkIfLedgerCardExists'
