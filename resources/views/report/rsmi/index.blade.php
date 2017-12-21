@@ -87,6 +87,7 @@
 		var date = moment().format('MMMMYYYY');
 
 	    var rsmitable = $('#rsmiTable').DataTable({
+        	serverSide: true,
 			language: {
 					searchPlaceholder: "Search..."
 			},
@@ -110,6 +111,7 @@
 	    });
 
 	    var rsmitotaltable = $('#rsmiTotalTable').DataTable({
+        	serverSide: true,
 			language: {
 					searchPlaceholder: "Search..."
 			},

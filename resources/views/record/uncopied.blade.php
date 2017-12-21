@@ -110,6 +110,7 @@
           headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           },
+          async: false, 
           type: 'post',
           url: '{{ url("records/copy") }}',
           dataType: 'json',

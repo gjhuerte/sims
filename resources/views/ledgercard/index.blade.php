@@ -94,7 +94,7 @@
 						{ data: "receivedquantity"},
 						{ data: function(callback){
 							try{
-								return parseInt(callback.receivedunitprice).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return parseFloat(callback.receivedunitprice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch(e) { quantity = 0; return null }
 						} },
 						{ data: function(callback){
@@ -105,7 +105,7 @@
 						{ data: "issuedquantity" },
 						{ data: function(callback){
 							try{
-								return parseInt(callback.issuedunitprice)
+								return parseFloat(callback.issuedunitprice)
 							} catch(e) { quantity = 0; return null }
 						} },
 						{ data: function(callback){
@@ -121,7 +121,7 @@
 						} },
 						{ data: function(callback){
 							try{
-								unitcost = (parseInt(callback.issuedunitprice) + parseInt(callback.receivedunitprice)) / 2
+								unitcost = (parseFloat(callback.issuedunitprice) + parseFloat(callback.receivedunitprice)) / 2
 								return unitcost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch(e) { unitcost = 0; return null }
 						} },

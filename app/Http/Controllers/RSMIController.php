@@ -30,6 +30,8 @@ class RSMIController extends Controller
 								->select('stocknumber',DB::raw("sum(issued) as issued"),'details',DB::raw("avg(cost) as cost"))
 								->get();
 
+			return datatables($report)->toJson();
+
 			return json_encode([
 				'data' => $report
 			]);
@@ -43,6 +45,8 @@ class RSMIController extends Controller
 			$date = $this->convertDateToCarbon($date);
 
 			$report = App\RSMI::filterByMonth($date)->get();
+			
+			return datatables($report)->toJson();
 
 			return json_encode([
 				'data' => $report

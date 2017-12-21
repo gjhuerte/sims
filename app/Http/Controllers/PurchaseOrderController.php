@@ -24,9 +24,10 @@ class PurchaseOrderController extends Controller
     {
         if($request->ajax())
         {
-            return json_encode([
-                'data'=> App\PurchaseOrder::with('supplier')->get()
-            ]);
+            return datatables(App\PurchaseOrder::with('supplier')->get())->toJson();
+            // return json_encode([
+            //     'data'=> App\PurchaseOrder::with('supplier')->get()
+            // ]);
         }
 
 
@@ -174,13 +175,12 @@ class PurchaseOrderController extends Controller
             * returns view of the purchase order supply
             * finds the supply information then return the values
             */
-            return json_encode([
-                'data' => App\PurchaseOrderSupply::with('supply')
+
+            return datatables(App\PurchaseOrderSupply::with('supply')
                             ->whereHas('purchaseorder',function($query) use($id) {
                               $query->findByID($id);
-                            })
-                            ->get()
-            ]);
+                            })->get())
+                            ->toJson();
         }
 
         if($id == 'checkifexists')
@@ -226,21 +226,27 @@ class PurchaseOrderController extends Controller
           {
             $id = $this->sanitizeString(Input::get('no'));
           }
+
           $purchaseorder = App\PurchaseOrder::find($id);
 
           if(count($purchaseorder) > 0)
           {
             if(Input::has('fundcluster'))
             {
+              $purchaseorderfundcluster = App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([$purchaseorder->number])->get()->each(function ($obj, $key) {
+                $obj->delete();
+              });
+
               $purchaseorder->fundcluster = $this->sanitizeString(Input::get('fundcluster'));
+              $purchaseorder->updateFundCluster();
             }
 
             if(Input::has('status'))
             {
               $purchaseorder->status = 'paid';
+              $purchaseorder->save();
             }
 
-            $purchaseorder->save();
             return json_encode('success');
           }
 

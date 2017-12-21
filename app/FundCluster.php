@@ -16,4 +16,9 @@ class FundCluster extends Model
     {
     	return $query->where('code','=',$value)->first();
     }
+
+	public function purchaseorder()
+	{
+		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_fundclusters','purchaseorder_number','fundcluster_code');
+	}
 }

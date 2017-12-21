@@ -139,16 +139,16 @@ class ImportController extends Controller
         {
             $separator = ' ';
             $reference = $row['reference'];
-            $issuedunitprice = intval(str_replace(",","",$row['issuedprice']));
-            $receiptunitprice = intval(str_replace(",","",$row['receiptprice']));
+            $issuedunitprice = floatVal(str_replace(",","",$row['issuedprice']));
+            $receiptunitprice = floatVal(str_replace(",","",$row['receiptprice']));
             $daystoconsume = "None";
             $purchaseorder = "";
             $date = $row['date'];
             $receipt = null;
             $fundcluster = '';
             $stocknumber = $row['stockno'];
-            $issued =  intval(str_replace(",","",$row['issue']));
-            $received = intval(str_replace(",","",$row['receipt']));
+            $issued =  floatVal(str_replace(",","",$row['issue']));
+            $received = floatVal(str_replace(",","",$row['receipt']));
 
             // return json_encode(count(explode(' ', 'APR PS17-02764/CSE17-4692')));
 

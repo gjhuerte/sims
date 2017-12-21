@@ -12,6 +12,7 @@
       				<th class="col-sm-1">Stock No.</th>
       				<th class="col-sm-1">Details</th>
               <th class="col-sm-1">Unit</th>
+              <th class="col-sm-1">Balance</th>
       				<th class="col-sm-1 no-sort"></th>
       			</thead>
       		</table>
@@ -23,6 +24,7 @@
   $(document).ready(function(){
 
       var table = $('#supplyInventoryTable').DataTable({
+        serverSide: true,
         language: {
             searchPlaceholder: "Search..."
         },
@@ -32,6 +34,7 @@
             { data: "stocknumber" },
             { data: "details" },
             { data: "unit" },
+            { data: "balance" },
             { data: function(callback){
               return `
                 <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>
