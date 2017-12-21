@@ -9,6 +9,10 @@ use DB;
 use Carbon;
 use Session;
 use Validator;
+
+// use App\Fileentry;
+// use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -36,44 +40,62 @@ class ImportController extends Controller
      */
     public function store(Request $request)
     {
-        $type = $request->get('type');
-        $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
-        $file = $request->file('input-file-preview');
-
-        $validator = Validator::make($request->all(),[
-            'input-file-preview' => 'required|file'
-        ]);
-
-        if($validator->fails())
+        if($request->file('input-file-preview'))
         {
-            return back()->withErrors()->withInput();
+            $type = $request->get('type');
+            $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
+            $file = $request->file('input-file-preview');
+
+            // $extension = $file->getClientOriginalExtension();
+            // Storage::disk('local')->put($file->getFilename().'.'.$extension,  File::get($file));
+
+            // $entry = new Fileentry();
+            // $entry->mime = $file->getClientMimeType();
+            // $entry->original_filename = $file->getClientOriginalName();
+            // $entry->filename = $file->getFilename().'.'.$extension;
+            // $entry->save();
+
+            // $entry = Fileentry::where('filename', '=', $filename)->firstOrFail();
+            // $file = Storage::disk('local')->get($entry->filename);
+
+            $validator = Validator::make($request->all(),[
+                'input-file-preview' => 'required|file'
+            ]);
+
+            if($validator->fails())
+            {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $records = Excel::load($file)->get()->toArray();
+
+            $keys = $this->getRecordColumns($records[0]);
+            $rows = $this->clean($records, $keys);
+
+            DB::beginTransaction();
+
+            if($type == 'stockcard'):
+                $this->importStockCard($rows);
+            elseif($type == 'ledgercard'):
+                $this->importLedgerCard($rows);
+            else:
+                DB::rollback();
+                \Alert::error('Incorrect data for importing')->flash();
+                return redirect('import')->with('records',$rows)->withInput();
+            endif;
+
+            DB::commit();
+
+            \Alert::success('Data Imported')->flash();
+
+            return view('import.index')
+                ->with('title','Import')
+                ->with('records', $records)
+                ->with('keys',$keys);
         }
 
-        $records = Excel::load($file)->toArray();
-
-        $keys = $this->getRecordColumns($records[0]);
-        $rows = $this->clean($records, $keys);
-
-        DB::beginTransaction();
-
-        if($type == 'stockcard'):
-            $this->importStockCard($rows);
-        elseif($type == 'ledgercard'):
-            $this->importLedgerCard($rows);
-        else:
-            DB::rollback();
-            \Alert::error('Incorrect data for importing')->flash();
-            return redirect('import')->with('records',$rows)->withInput();
-        endif;
-
-        DB::commit();
-
-        \Alert::success('Data Imported')->flash();
-
-        return view('import.index')
-            ->with('title','Import')
-            ->with('records', $records)
-            ->with('keys',$keys);
+        \Alert::error('No Data Found')->flash();
+        return back();
     }
 
     public function clean($records , $keys)

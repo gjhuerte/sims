@@ -8,13 +8,12 @@ use DB;
 class Supply extends Model{
 
 	protected $table = 'supplies';
-	protected $fillable = ['stocknumber','entityname','details','unit','reorderpoint'];
+	protected $fillable = ['stocknumber','details','unit','reorderpoint'];
 	protected $primaryKey = 'stocknumber';
 	public $incrementing = false;
 	public $timestamps = true;
 	public static $rules = array(
 		'Stock Number' => 'required|unique:supplies,stocknumber',
-		'Entity Name' => 'required',
 		'Details' => 'required|unique:supplies,details',
 		'Unit' => 'required',
 		'Reorder Point' => 'required|integer'
@@ -25,7 +24,6 @@ class Supply extends Model{
 		$stocknumber = $this->stocknumber;
 		return array(
 				'Stock Number' => 'required|unique:supplies,stocknumber,'.$stocknumber.',stocknumber',
-				'Entity Name' => 'required',
 				'Details' => 'required',
 				'Unit' => 'required',
 				'Reorder Point' => 'integer'

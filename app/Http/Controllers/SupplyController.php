@@ -50,7 +50,6 @@ class SupplyController extends Controller {
 	{
 
 		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
-		$entityname = $this->sanitizeString(Input::get('entityname'));
 		$description = $this->sanitizeString(Input::get('description'));
 		$unit = $this->sanitizeString(Input::get('unit'));
 		$reorderpoint = $this->sanitizeString(Input::get("reorderpoint"));
@@ -58,7 +57,6 @@ class SupplyController extends Controller {
 
 		$validator = Validator::make([
 			'Stock Number' => $stocknumber,
-			'Entity Name' => $entityname,
 			'Details' => $details,
 			'Unit' => $unit,
 			'Reorder Point' => $reorderpoint
@@ -73,7 +71,6 @@ class SupplyController extends Controller {
 
 		$supply = new App\Supply;
 		$supply->stocknumber = $stocknumber;
-		$supply->entityname = $entityname;
 		$supply->details = $details;
 		$supply->unit = $unit;
 		$supply->reorderpoint = $reorderpoint;
@@ -126,7 +123,6 @@ class SupplyController extends Controller {
 	public function update(Request $request,  $id)
 	{
 		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
-		$entityname = $this->sanitizeString(Input::get('entityname'));
 		$unit = $this->sanitizeString(Input::get('unit'));
 		$reorderpoint = $this->sanitizeString(Input::get("reorderpoint"));
 		$details = $this->sanitizeString(Input::get('details'));
@@ -135,7 +131,6 @@ class SupplyController extends Controller {
 
 		$validator = Validator::make([
 			'Stock Number' => $stocknumber,
-			'Entity Name' => $entityname,
 			'Details' => $details,
 			'Unit' => $unit,
 			'Reorder Point' => $reorderpoint
@@ -148,7 +143,6 @@ class SupplyController extends Controller {
 					->withErrors($validator);
 		}
 		$supply->stocknumber = $stocknumber;
-		$supply->entityname = $entityname;
 		$supply->details = $details;
 		$supply->unit = $unit;
 		$supply->reorderpoint = $reorderpoint;
