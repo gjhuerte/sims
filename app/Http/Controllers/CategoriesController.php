@@ -6,6 +6,7 @@ use App;
 use Carbon;
 use Session;
 use Validator;
+use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -177,5 +178,40 @@ class CategoriesController extends Controller
 			\Alert::error('Problem Encountered While Processing Your Data')->flash();
 		}
 		return redirect('maintenance/category');
+	}
+
+	public function showAssign($id)
+	{
+		$category = App\Category::find($id);
+		$supply = App\Supply::findByCategoryName($category->name)->get();
+		return view('maintenance.category.assign')
+					->with('category',$category)
+					->with('supply', $supply);
+	}
+
+	public function assign(Request $request, $id)
+	{	
+		$id = $this->sanitizeString($id);
+		$category = App\Category::find($id);
+
+		DB::beginTransaction();
+
+		App\Supply::findByCategoryName($category->name)->update([ 'category_name' => null ]);
+		App\Supply::whereIn('stocknumber', $request->get('stocknumber'))->update([ 'category_name' => $category->name ]);
+
+		// foreach($request->get('stocknumber') as $stocknumber)
+		// {
+		// 	$stocknumber = $this->sanitizeString($stocknumber);
+
+		// 	$supply = App\Supply::findByStockNumber($stocknumber);
+		// 	$supply->category_name = $category->name;
+		// 	$supply->save();
+		// }
+
+		DB::commit();
+
+		\Alert::success("Category $category->name sync with Supplies")->flash();
+		return redirect("maintenance/category/assign/$id");
+
 	}
 }

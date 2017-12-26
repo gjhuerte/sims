@@ -16,7 +16,7 @@ class CreateSuppliesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('stocknumber')->unique();
-			$table->string('entityname',200);
+			$table->string('entityname',200)->nullable();
 			$table->string('category_name')->nullable();
 			$table->foreign('category_name')
 					->references('name')

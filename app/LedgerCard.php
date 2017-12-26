@@ -124,6 +124,8 @@ class LedgerCard extends Model{
 			'receipt_number' => $receipt->number,
 			'stocknumber' => $this->stocknumber,
 		],[
+			'quantity' => $this->receivedquantity,
+			'remaining_quantity' => $this->receivedquantity,
 			'cost' => $this->receivedunitprice
 		]);
 

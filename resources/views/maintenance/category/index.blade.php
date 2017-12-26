@@ -52,6 +52,7 @@
 	            { data: "uacs_code" },
 	            { data: function(callback){
 	            	return `
+	            			<a href="{{ url("maintenance/category/assign") }}` + '/' + callback.id + `" class="btn btn-sm btn-info">Assign</a>
 	            			<a href="{{ url("maintenance/category") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
 	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Category" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;

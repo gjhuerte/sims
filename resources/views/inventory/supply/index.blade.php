@@ -18,8 +18,8 @@
 		<table class="table table-hover table-bordered" id="supplyInventoryTable" width=100%>
 			<thead>
 				<tr>
-					<th colspan="4"></th>
-					<th colspan="2">Remaining Balance</th>
+					<th colspan="4" class="text-center">Information</th>
+					<th colspan="2" class="text-center">Remaining Balance</th>
 				</tr>
 				<tr>
 					<th class="col-sm-1">Stock No.</th>
@@ -28,7 +28,7 @@
 					@if(Auth::user()->access == 1)
 					<th class="col-sm-1">Reorder Point</th>
 					@else
-					<th class="col-sm-1">Unit Price (Moving Average)</th>
+					<th class="col-sm-1">Cost (Ave)</th>
 					@endif
 					<th class="col-sm-1">Ledger Card</th>
 					<th class="col-sm-1">Stock Card</th>

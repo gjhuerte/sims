@@ -117,6 +117,11 @@ class Supply extends Model{
 		return $query->where('stocknumber','=',$value)->first();
 	}
 
+	public function scopeFindByCategoryName($query, $value)
+	{
+		return $query->where('category_name', '=', $value);
+	}
+
 	public function scopeStockNumber($query,$value)
 	{
 		return $query->where('stocknumber','=',$value);
