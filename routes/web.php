@@ -168,7 +168,7 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('inventory/supply.ledgercard','LedgerCardController');
 
-
+		Route::resource('fundcluster','FundClusterController');
 	});
 
 	Route::middleware(['admin'])->group(function(){
@@ -202,6 +202,7 @@ Route::middleware(['auth'])->group(function(){
 	});
 
 	Route::get('get/supply/stocknumber','SupplyInventoryController@show');
+
 
 });
 

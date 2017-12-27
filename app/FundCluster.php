@@ -10,7 +10,12 @@ class FundCluster extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
 
-    protected $fillable = [ 'code' ];
+    protected $fillable = [ 'code','description' ];
+
+    public static $rules = array(
+        'Code' => 'required|unique:fundclusters,code',
+        'Description' => 'required'
+    );
 
     public function scopeFindByCode($query,$value)
     {
