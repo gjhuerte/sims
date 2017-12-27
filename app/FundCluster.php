@@ -10,7 +10,7 @@ class FundCluster extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
 
-    protected $fillable = [ 'code','description' ];
+    protected $fillable = [ 'code' ];
 
     public static $rules = array(
         'Code' => 'required|unique:fundclusters,code',

@@ -16,7 +16,7 @@ class CreateFundClustersTable extends Migration
         Schema::create('fundclusters', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
