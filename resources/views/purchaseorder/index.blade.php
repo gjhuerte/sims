@@ -19,7 +19,7 @@
 				<thead>
           			<th class="">ID</th>
 					<th class="">Number</th>
-					<th class="">Date</th>
+					<th class="date-field">Date</th>
          			<th class="">Supplier</th>
 					<th class="no-sort"></th>
 				</thead>
@@ -42,7 +42,8 @@
 					searchPlaceholder: "Search..."
 			},
 	    	columnDefs:[
-				     { targets: 'no-sort', orderable: false },
+		     	{ targets: 'no-sort', orderable: false },
+		     	{ targets: '2', 'type': 'datetime-moment' }
 	    	],
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 							"<'row'<'col-sm-12'tr>>" +
@@ -52,9 +53,7 @@
 			columns: [
 	          	{ data: "id" },
 				{ data: "number" },
-				{ data: function(callback){
-					return moment(callback.date_received).format("MMMM d, YYYY")
-				} },
+				{ data: 'date_received_parsed' },
 	          	{ data: "supplier.name" },
 				{ data: function(callback){
 					url = '{{ url("purchaseorder") }}' + '/' + callback.id

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon;
 
 class PurchaseOrder extends Model
 {
@@ -31,6 +32,15 @@ class PurchaseOrder extends Model
 		'Details' => '',
 		'Quantity' => ''
 	);
+
+	protected $appends = [
+		'date_received_parsed'
+	];
+
+	public function getDateReceivedParsedAttribute()
+	{
+		return Carbon\Carbon::parse($this->date_received)->toFormattedDateString();
+	}
 
 	public function supply()
 	{

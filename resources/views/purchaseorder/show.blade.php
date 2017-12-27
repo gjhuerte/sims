@@ -82,20 +82,7 @@
 		columns: [
 			{ data: "id" },
 			{ data: "supply.stocknumber" },
-			{ data: function(callback){
-				html = `<p style="font-size:`;
-				length = callback.supply.details.length
-				supply = callback.supply.details
-				if(length > 60)
-				html += "11"
-				else if(length > 40)
-				html += "12"
-				else if(length > 20)
-				html += "13"
-				html += `px;">`+ supply +"</p>"
-				return html;
-
-	    	} },
+			{ data: "supply.details" },
 			{ data: "orderedquantity" },
 			{ data: function(callback){
 			  if(callback.receivedquantity != 0 && callback.receivedquantity != null)
