@@ -41,6 +41,8 @@ class LedgerCard extends Model{
 		'Days To Consume' => 'max:100'
 	);
 
+	public $fundcluster = null;
+
 	// public function getDateAttribute($value)
 	// {
 	// 	return Carbon\Carbon::parse($value)->format('jS \\of F Y');
@@ -119,6 +121,31 @@ class LedgerCard extends Model{
 			'supplier_name' => $this->organization,
 			'invoice' => isset($this->invoice) ? $this->invoice : null
 		]);
+
+		if(isset($this->organization))
+		{
+			$supplier = Supplier::firstOrCreate([ 'name' => $this->organization ]);
+		}
+
+		if(isset($this->reference) && $this->reference != null)
+		{
+			$purchaseorder = PurchaseOrder::firstOrCreate([
+				'number' => $this->reference 
+			], [
+				'date_received' => Carbon\Carbon::parse($this->date),
+				'supplier_id' => isset($supplier->id) ? $supplier->id : null 
+			]);
+
+			if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)
+			{
+				foreach(explode(",",$this->fundcluster) as $fundcluster)
+				{
+					$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
+					PurchaseOrderFundCluster::firstOrCreate([ 'purchaseorder_number' => $purchaseorder->number, 'fundcluster_code' => $fundcluster->code ]);
+				}
+			}
+
+		}
 
 		$supply = ReceiptSupply::updateOrCreate([
 			'receipt_number' => $receipt->number,

@@ -19,8 +19,11 @@ class MonthlyLedgerCardView extends Model
 
     public function getMonthlybalancequantityAttribute($value)
     {
-  		$received = LedgerCard::findByStockNumber($this->stocknumber)->sum('receivedquantity');
-  		$issued = LedgerCard::findByStockNumber($this->stocknumber)->sum('issuedquantity');
-  		return $received - $issued; 
+      $received = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)->where('date','<',$this->date)->sum('receivedquantity');
+      $issued = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)->where('date','<',$this->date)->sum('issuedquantity');
+      $prev = $received - $issued;
+  		$received = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)->where('date','=',$this->date)->sum('receivedquantity');
+  		$issued = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)->where('date','=',$this->date)->sum('issuedquantity');
+  		return $prev + ($received - $issued); 
     }
 }

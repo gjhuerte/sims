@@ -105,7 +105,7 @@
 						{ data: "issuedquantity" },
 						{ data: function(callback){
 							try{
-								return parseFloat(callback.issuedunitprice)
+								return parseFloat(callback.issuedunitprice).toFixed(2)
 							} catch(e) { quantity = 0; return null }
 						} },
 						{ data: function(callback){
@@ -115,19 +115,19 @@
 						} },
 						{ data: function(callback){
 							try{
-								quantity = callback.monthlybalancequantity
+								quantity = callback.monthlybalancequantity.toFixed(2)
 								return quantity;
 							} catch(e) { quantity = 0; return null }
 						} },
 						{ data: function(callback){
 							try{
 								unitcost = (parseFloat(callback.issuedunitprice) + parseFloat(callback.receivedunitprice)) / 2
-								return unitcost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return unitcost.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch(e) { unitcost = 0; return null }
 						} },
 						{ data: function(callback){
 							try{
-								return (quantity * unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return (quantity * unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch (e) { return null }
 						} },
 						{ data: function(){

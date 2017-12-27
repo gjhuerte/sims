@@ -30,21 +30,28 @@ class Supply extends Model{
 		);
 	} 
 
+	// protected $appends = [
+	// 	'balance',
+	// 	'ledger_balance',
+	// 	'fund_cluster',
+	// 	'unitcost'
+	// ];
+
 	protected $appends = [
 		'balance',
 		'ledger_balance',
-		'fund_cluster',
 		'unitcost'
 	];
 
 	public function getUnitCostAttribute($value)
 	{
-		$supply = ReceiptSupply::findByStockNumber($this->stocknumber)
+		$cost = ReceiptSupply::findByStockNumber($this->stocknumber)
 								->where('remaining_quantity','>',0)
+								->whereNotNull('cost')
 								->select('cost')
 								->avg('cost');
-		if(count($supply) > 0)
-			return $supply;
+		if(count($cost) > 0)
+			return $cost;
 		else
 			return 0;
 	}
@@ -95,17 +102,17 @@ class Supply extends Model{
 		return $balance	;
 	}
 
-	public function getFundClusterAttribute($value)
-	{
-		$fundcluster = "";
-		if(isset($this->purchaseorder))
-		{
-			$purchaseorder = $this->purchaseorder->pluck('number');
-			$fundcluster = PurchaseOrderFundCluster::findByPurchaseOrderNumber($purchaseorder)
-								->pluck('fundcluster_code');
-		}
-		return $fundcluster;
-	}
+	// public function getFundClusterAttribute($value)
+	// {
+	// 	$fundcluster = "";
+	// 	if(isset($this->purchaseorders))
+	// 	{
+	// 		$purchaseorder = $this->purchaseorders->pluck('number');
+	// 		$fundcluster = PurchaseOrderFundCluster::findByPurchaseOrderNumber($purchaseorder)
+	// 							->pluck('fundcluster_code');
+	// 	}
+	// 	return $fundcluster;
+	// }
 
 	public function scopeIssued($query)
 	{
@@ -142,7 +149,7 @@ class Supply extends Model{
 		return number_format($value,2,'.',',');
 	}
 
-	public function purchaseorder()
+	public function purchaseorders()
 	{
 		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies','stocknumber','id');
 	}

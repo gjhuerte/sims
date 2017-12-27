@@ -428,20 +428,22 @@ class LedgerCardController extends Controller {
 
 	public function showUncopiedRecords(Request $request)
 	{
-		$records = App\StockCard::with('supply')->doesntHave('transaction')->get();
-
 		if($request->ajax())
 		{
-			return json_encode([ 'data' => $records ]);
+			return datatables(
+				App\StockCard::doesntHave('transaction')
+					->select('id', 'date', 'reference', 'receipt', 'organization', 'received', 'issued', 'stocknumber')
+					->get()
+			)->toJson();
 		}
 
-		return view('record.uncopied')
-				->with('records',$records);
+		return view('record.uncopied');
 	}
 
 	public function copy(Request $request)
 	{
 		$unitprice = $request->get('unitprice');
+		$fundcluster = $request->get('fundcluster');
 		$record = $request->get('record');
 		$issued = $record['issued'];
 		$organization = $record['organization'];
@@ -462,25 +464,64 @@ class LedgerCardController extends Controller {
 
 		if(count($transaction) > 0) return json_encode('duplicate');
 
+		DB::beginTransaction();
+
 		$transaction = new App\LedgerCard;
 		$transaction->date = Carbon\Carbon::parse($date);
 		$transaction->stocknumber = $stocknumber;
 		$transaction->reference = $reference;
 		$transaction->receipt = $receipt;
+		$transaction->fundcluster = $fundcluster;
 		$transaction->receivedunitprice = $unitprice;
 		$transaction->issuedunitprice = $unitprice;
 		$transaction->daystoconsume = $daystoconsume;
 		$transaction->created_by = Auth::user()->id;
 
 		if($issued > 0 && $issued != null):
+
+			$validator = Validator::make([
+				'Stock Number' => $stocknumber,
+				'Requisition and Issue Slip' => $reference,
+				'Date' => $date,
+				'Issue Quantity' => $issued,
+				'Issue Unit Price' => $unitprice,
+				'Days To Consume' => $daystoconsume
+			],App\LedgerCard::$issueRules);
+
+			if($validator->fails())
+			{
+				DB::rollback();
+
+				return json_encode('error');
+			}
+
 			$transaction->issuedquantity = $issued;
 			$transaction->issue();
 		endif;
 
 		if($received > 0 && $received != null):
+
+			$validator = Validator::make([
+				'Stock Number' => $stocknumber,
+				'Purchase Order' => $purchaseorder,
+				'Date' => $date,
+				'Receipt Quantity' => $received,
+				'Receipt Unit Price' => $unitprice,
+				'Days To Consume' => $daystoconsume
+			], App\LedgerCard::$receiptRules);
+
+			if($validator->fails())
+			{
+				DB::rollback();
+
+				return json_encode('error');
+			}
+
 			$transaction->receivedquantity = $received;
 			$transaction->receipt();
 		endif;
+
+		DB::commit();
 
 		return json_encode('success');
 	}
