@@ -88,14 +88,13 @@ class FundClusterController extends Controller
      */
     public function show(Request $request, $id)
     {
-		$fund = App\FundCluster::find($id);
+		$fundcluster = App\FundCluster::find($id);
 
 		if($request->ajax())
 		{
-			return datatables(App\PurchaseOrderFundCluster::where("fundcluster_code","=",$fund->code))->toJson();
+			return datatables(App\PurchaseOrder::with('supplier')->whereIn('number', App\PurchaseOrderFundCluster::where('fundcluster_code','=',$fundcluster->code)->pluck('purchaseorder_number')->toArray())->get())->toJson();
 		}
 		return view('fundcluster.show')
-				->with('fundcode',$fund->code)
-				->with('fund',$id);
+				->with('fundcluster',$fundcluster);
     }
 }

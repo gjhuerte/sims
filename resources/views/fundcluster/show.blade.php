@@ -2,7 +2,7 @@
 
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Fund Cluster {{ $fundcode }}</h3></legend>
+		<legend><h3 class="text-muted">Fund Cluster {{ $fundcluster->code }}</h3></legend>
 	  <ol class="breadcrumb">
 	    <li>Fund Cluster</li>
 	    <li class="active">Home</li>
@@ -18,7 +18,9 @@
 			<table class="table table-hover table-striped" id="fundclusterTable">
 				<thead>
           			<th class="">ID</th>
-					<th class="">Reference</th>
+					<th class="">Purchase Order / APR</th>
+					<th class="">Date Received</th>
+					<th class="">Supplier</th>
 					<th class="no-sort"></th>
 				</thead>
 			</table>
@@ -49,10 +51,14 @@
 							"<'row'<'col-sm-12'tr>>" +
 							"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 			"processing": true,
-			ajax: "{{ url("fundcluster/$fund") }}",
+			ajax: "{{ url("fundcluster/$fundcluster->id") }}",
 			columns: [
 	          	{ data: "id" },
-				{ data: "purchaseorder_number" },
+				{ data: "number" },
+				{ data: function(callback){
+					return moment(callback.date_received).format("MMMM d, YYYY")
+				} },
+				{ data: "supplier.name" },
 				{ data: function(callback){
 					url = '{{ url("purchaseorder") }}' + '/' + callback.id
 		            html = `
