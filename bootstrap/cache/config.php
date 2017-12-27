@@ -409,7 +409,7 @@
         'engine' => NULL,
         'dump' => 
         array (
-          'dump_binary_path' => 'C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin',
+          'dump_binary_path' => 'C:\\xampp\\apache\\bin',
           0 => 'use_single_transaction',
           'timeout' => 300,
         ),
