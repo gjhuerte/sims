@@ -64,7 +64,7 @@ class LedgerCard extends Model{
 			$this->issuedquantity = 0;
 		}
 
-		$this->balancequantity = ( isset($ledgercard->balance) ? $ledgercard->balance : 0 ) + $this->receivedquantity - $this->issuedquantity;
+		$this->balancequantity = ( isset($ledgercard->balancequantity) ? $ledgercard->balancequantity : 0 ) + $this->receivedquantity - $this->issuedquantity;
 	}
 
 	public function scopeQuantity($query,$quantity)
