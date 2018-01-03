@@ -22,9 +22,8 @@ class CategoriesController extends Controller
 	{
 		if($request->ajax())
 		{
-			return json_encode([
-				'data' => App\Category::all()
-			]);
+			$categories = App\Category::all();
+			return datatables($categories)->toJson();
 		}
 		return view('maintenance.category.index')
 					->with('title','Category');
@@ -108,6 +107,8 @@ class CategoriesController extends Controller
 	 */
 	public function edit($id)
 	{
+
+		$id = $this->sanitizeString($id);
 		$category = App\Category::find($id);
 
 		if(count($category) <= 0)
@@ -128,6 +129,8 @@ class CategoriesController extends Controller
 	 */
 	public function update($id)
 	{
+
+		$id = $this->sanitizeString($id);
 		$name = $this->sanitizeString(Input::get('name'));
 		$code = $this->sanitizeString(Input::get('code'));
 
@@ -162,22 +165,23 @@ class CategoriesController extends Controller
 	 */
 	public function destroy(Request $request, $id)
 	{
-		if($request->ajax())
-		{
-			$category = App\Category::find($id);
-			$category->delete();
-			return json_encode('success');
-		}
+			$id = $this->sanitizeString($id);
 
-		try
-		{
+			if($request->ajax())
+			{
+				$category = App\Category::find($id);
+
+				if(count($category) <= 0) return json_encode('error');
+				$category->delete();
+				return json_encode('success');
+			}
+
 			$category = App\Category::find($id);
+			if(count($category) <= 0) \Alert::error('Problem Encountered While Processing Your Data')->flash();
 			$category->delete();
 			\Alert::success('Category Removed')->flash();
-		} catch (Exception $e) {
-			\Alert::error('Problem Encountered While Processing Your Data')->flash();
-		}
-		return redirect('maintenance/category');
+
+			return redirect('maintenance/category');
 	}
 
 	public function showAssign($id)
@@ -190,23 +194,19 @@ class CategoriesController extends Controller
 	}
 
 	public function assign(Request $request, $id)
-	{	
+	{
 		$id = $this->sanitizeString($id);
 		$category = App\Category::find($id);
+		$stocknumbers = [];
+
+		foreach($request->get('stocknumber') as $stocknumber):
+			array_push($stocknumbers, $this->sanitizeString($stocknumber));
+		endforeach;
 
 		DB::beginTransaction();
 
-		App\Supply::findByCategoryName($category->name)->update([ 'category_name' => null ]);
-		App\Supply::whereIn('stocknumber', $request->get('stocknumber'))->update([ 'category_name' => $category->name ]);
-
-		// foreach($request->get('stocknumber') as $stocknumber)
-		// {
-		// 	$stocknumber = $this->sanitizeString($stocknumber);
-
-		// 	$supply = App\Supply::findByStockNumber($stocknumber);
-		// 	$supply->category_name = $category->name;
-		// 	$supply->save();
-		// }
+		App\Supply::findByCategoryName($category->name)->update([ 'category_id' => null ]);
+		App\Supply::whereIn('stocknumber', $stocknumbers)->update([ 'category_id' => $category->id ]);
 
 		DB::commit();
 

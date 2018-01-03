@@ -19,9 +19,7 @@ class UnitsController extends Controller
         if($request->ajax())
         {
             $units = App\Unit::all();
-            return json_encode([
-                'data' => $units
-            ]);
+            return datatables($units)->toJson();
         }
 
         return view('maintenance.unit.index')
@@ -116,6 +114,7 @@ class UnitsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $id = $this->sanitizeString($id); 
         $name = $this->sanitizeString($request->get('name'));
         $description = $this->sanitizeString($request->get("description"));
         $abbreviation = $this->sanitizeString($request->get("abbreviation"));
@@ -151,6 +150,8 @@ class UnitsController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $id = $this->sanitizeString($id);
+
         if($request->ajax())
         {
             $unit = App\Unit::find($id);
@@ -165,6 +166,12 @@ class UnitsController extends Controller
         }
 
         $unit = App\Unit::find($id);
+
+        if(count($unit) <= 0)
+        {
+            return json_encode('error');
+        }
+
         $unit->delete();
 
         \Alert::success('Unit Removed')->flash();

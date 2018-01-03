@@ -65,7 +65,8 @@ class PurchaseOrderController extends Controller
         $quantity = Input::get('quantity');
         $unitprice = Input::get('unitprice');
         $supplier = $this->sanitizeString(Input::get('supplier'));
-        
+        $records = [];
+
         $validator = Validator::make([
             'Purchase Order' => $number,
             'Date' => $date,
@@ -82,14 +83,6 @@ class PurchaseOrderController extends Controller
         }
 
         DB::beginTransaction();
-
-        $purchaseorder = new App\PurchaseOrder;
-        $purchaseorder->number = $number;
-        $purchaseorder->date_received = Carbon\Carbon::parse($date);
-        $purchaseorder->details = $details;
-        $purchaseorder->supplier_id = $supplier;
-        $purchaseorder->created_by = Auth::user()->id;
-        $purchaseorder->save();
 
         $stocknumbers = array_unique($stocknumbers);
 
@@ -112,14 +105,25 @@ class PurchaseOrderController extends Controller
                         ->withErrors($validator);
             }
 
-            $supply = new App\PurchaseOrderSupply;
-            $supply->purchaseorder_number = $purchaseorder->number;
-            $supply->stocknumber = $this->sanitizeString($stocknumber);
-            $supply->orderedquantity = $_quantity;
-            $supply->unitcost = $_unitprice;
-            $supply->receivedquantity = 0;
-            $supply->save();
+
+            $supply = App\Supply::findByStockNumber($stocknumber);
+
+            $records[$supply->id] = [
+              'ordered_quantity' => $_quantity,
+              'unitcost' => $_unitprice,
+              'received_quantity' => 0
+            ];
         }
+
+        $purchaseorder = new App\PurchaseOrder;
+        $purchaseorder->number = $number;
+        $purchaseorder->date_received = Carbon\Carbon::parse($date);
+        $purchaseorder->details = $details;
+        $purchaseorder->supplier_id = $supplier;
+        $purchaseorder->created_by = Auth::user()->id;
+        $purchaseorder->save();
+
+        $purchaseorder->supply()->attach( $records );
 
         DB::commit();
 
@@ -135,6 +139,9 @@ class PurchaseOrderController extends Controller
      */
     public function show(Request $request, $id=null)
     {
+
+        $id = $this->sanitizeString($id);
+
         if($request->ajax())
         {
 
@@ -155,7 +162,7 @@ class PurchaseOrderController extends Controller
 
                 return json_encode(null);
             }
-            
+
             /**
             * used in suggestion jquery
             * add term in get method
@@ -175,27 +182,25 @@ class PurchaseOrderController extends Controller
             * returns view of the purchase order supply
             * finds the supply information then return the values
             */
-
-            return datatables(App\PurchaseOrderSupply::with('supply')
-                            ->whereHas('purchaseorder',function($query) use($id) {
-                              $query->findByID($id);
-                            })->get())
-                            ->toJson();
+            $purchaseorder = App\PurchaseOrder::find($id);
+            return datatables($purchaseorder->supply)->addColumn('pivot.amount', function() use ($purchaseorder){
+              return $purchaseorder->supply()->first()->received_quantity * $purchaseorder->supply()->first()->unitcost;
+            })->toJson();
         }
 
-        if($id == 'checkifexists')
-        {
-          return view('errors.404');
-        }
+        if($id != 'checkifexists'):
 
-        $purchaseorder = App\PurchaseOrder::find($id);
+          $purchaseorder = App\PurchaseOrder::find($id);
+          $fundcluster = isset($purchaseorder->fundcluster) ? $purchaseorder->fundcluster : 'None';
+          if(isset($purchaseorder->number))
+          {
+            return view('purchaseorder.show')
+                    ->with('purchaseorder',$purchaseorder)
+                    ->with('title',$purchaseorder->number)
+                    ->with('fundcluster', $fundcluster);
+          }
 
-        if(isset($purchaseorder->number))
-        {
-          return view('purchaseorder.show')
-                  ->with('purchaseorder',$purchaseorder)
-                  ->with('title',$purchaseorder->number);
-        }
+        endif;
 
         return view('errors.404');
     }
@@ -233,12 +238,33 @@ class PurchaseOrderController extends Controller
           {
             if(Input::has('fundcluster'))
             {
-              $purchaseorderfundcluster = App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([$purchaseorder->number])->get()->each(function ($obj, $key) {
-                $obj->delete();
-              });
+                $fundclusters = $this->sanitizeString($request->get('fundcluster'));
+                $_fundclusters = [];
 
-              $purchaseorder->fundcluster = $this->sanitizeString(Input::get('fundcluster'));
-              $purchaseorder->updateFundCluster();
+                if(count(explode(", " , $fundclusters) > 0)):
+                  $fundclusters = explode(", " , $fundclusters);
+                elseif(count(explode("," , $fundclusters) > 0)):
+                  $fundclusters = explode("," , $fundclusters);
+                else:
+                  $fundcluster = null;
+                endif;
+
+                foreach($fundclusters as $fundcluster):
+                  $fundcluster = App\FundCluster::firstOrCreate([ 'code' => $fundcluster ]);
+                  array_push($_fundclusters, $fundcluster->id);
+
+                  $validator = Validator::make( [ 'fundclusters' =>  $fundclusters ], [
+                    'fundclusters' => 'array|required'
+                  ]);
+
+                  if($validator->fails())
+                  {
+                    return json_encode($validator->errors()->first());
+                  }
+
+                endforeach;
+
+                $purchaseorder->fundcluster()->sync($_fundclusters);
             }
 
             if(Input::has('status'))

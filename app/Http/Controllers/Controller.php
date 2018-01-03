@@ -22,7 +22,7 @@ class Controller extends BaseController
 	}
 
 	public function convertDateToCarbon($date)
-	{	
+	{
 		if($date == 'undefined' || $date == "" || $date == null || !isset($date) || $date == 'null' ) return Carbon\Carbon::now();
 
 		return Carbon\Carbon::parse($date);

@@ -15,20 +15,20 @@ class CreateLedgerCardsTable extends Migration
     {
         Schema::create('ledgercards', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('date');                           
-            $table->string('stocknumber');
-            $table->foreign('stocknumber')
-                    ->references('stocknumber')
+            $table->date('date');                   
+            $table->integer('supply_id')->unsigned();
+            $table->foreign('supply_id')
+                    ->references('id')
                     ->on('supplies')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('receipt')->nullable();             
-            $table->integer('receivedquantity')->default(0);
-            $table->decimal('receivedunitprice')->default(0);
-            $table->integer('issuedquantity')->default(0);
-            $table->decimal('issuedunitprice')->default(0);
-            $table->decimal('balancequantity',8,0)->default(0); 
+            $table->integer('received_quantity')->default(0);
+            $table->decimal('received_unitcost')->default(0);
+            $table->integer('issued_quantity')->default(0);
+            $table->decimal('issued_unitcost')->default(0);
+            $table->decimal('balance_quantity',8,0)->default(0); 
             $table->string('daystoconsume',100)->default('N/A');
             $table->string('created_by');
             $table->timestamps();

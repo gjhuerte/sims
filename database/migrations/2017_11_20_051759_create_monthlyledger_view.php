@@ -14,20 +14,24 @@ class CreateMonthlyledgerView extends Migration
     public function up()
     {
         DB::statement("
-          create view monthlyledger_v as
+          CREATE VIEW monthlyledger_v AS
           SELECT
-            max(date) as date,
-            stocknumber,
-            sum(receivedquantity) AS receivedquantity,
-            avg(receivedunitprice) AS receivedunitprice,
-            sum(issuedquantity) AS issuedquantity,
-            avg(issuedunitprice) AS issuedunitprice
-          FROM
-            ledgercards
+                max(date) as date,
+                supplies.stocknumber,
+                sum(received_quantity) AS received_quantity,
+                avg(received_unitcost) AS received_unitcost,
+                sum(issued_quantity) AS issued_quantity,
+            avg(issued_unitcost) AS issued_unitcost
+            FROM
+                ledgercards
+            LEFT JOIN 
+                supplies
+            ON
+                supplies.id = ledgercards.supply_id
           GROUP BY
-            YEAR (date),
-            MONTH (date), 
-            stocknumber 
+                YEAR (date),
+                MONTH (date), 
+                supplies.stocknumber 
         ");
     }
 

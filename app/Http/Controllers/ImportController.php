@@ -27,7 +27,6 @@ class ImportController extends Controller
      */
     public function index()
     {
-
         return view('import.index')
             ->with('title','Import');
     }
@@ -45,18 +44,6 @@ class ImportController extends Controller
             $type = $request->get('type');
             $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
             $file = $request->file('input-file-preview');
-
-            // $extension = $file->getClientOriginalExtension();
-            // Storage::disk('local')->put($file->getFilename().'.'.$extension,  File::get($file));
-
-            // $entry = new Fileentry();
-            // $entry->mime = $file->getClientMimeType();
-            // $entry->original_filename = $file->getClientOriginalName();
-            // $entry->filename = $file->getFilename().'.'.$extension;
-            // $entry->save();
-
-            // $entry = Fileentry::where('filename', '=', $filename)->firstOrFail();
-            // $file = Storage::disk('local')->get($entry->filename);
 
             $validator = Validator::make($request->all(),[
                 'input-file-preview' => 'required|file'
@@ -154,7 +141,7 @@ class ImportController extends Controller
 
             /*
             *
-            *   check if the reference is 
+            *   check if the reference is
             *   December Balance
             *   returns true if has word 'alance'
             *
@@ -170,10 +157,10 @@ class ImportController extends Controller
                 *
                 *  separates the values of reference field
                 *   if APR: APR Reference/Receipt
-                *   if PO P.O #Number date 
+                *   if PO P.O #Number date
                 *
                 */
-                    
+
                 $reference = explode($separator, $reference);
 
                 if(count($reference) > 1)
@@ -229,7 +216,7 @@ class ImportController extends Controller
             }
             else
             {
-                $transaction->issuedquantity = $issued; 
+                $transaction->issuedquantity = $issued;
                 $transaction->issue();
             }
         }
@@ -256,7 +243,7 @@ class ImportController extends Controller
 
             /*
             *
-            *   check if the reference is 
+            *   check if the reference is
             *   December Balance
             *   returns true if has word 'alance'
             *
@@ -273,10 +260,10 @@ class ImportController extends Controller
                 *
                 *  separates the values of reference field
                 *   if APR: APR Reference/Receipt
-                *   if PO P.O #Number date 
+                *   if PO P.O #Number date
                 *
                 */
-                    
+
                 $reference = explode($separator, $reference);
 
                 if(count($reference) > 1)
@@ -333,7 +320,7 @@ class ImportController extends Controller
             }
             else
             {
-                $transaction->issued = $issued; 
+                $transaction->issued = $issued;
                 $transaction->issue();
             }
         }

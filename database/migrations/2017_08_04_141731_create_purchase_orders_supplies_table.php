@@ -15,19 +15,24 @@ class CreatePurchaseOrdersSuppliesTable extends Migration
     {
         Schema::create('purchaseorders_supplies', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('purchaseorder_number',100);
-            $table->foreign('purchaseorder_number')
-                    ->references('number')
+            $table->integer('purchaseorder_id')->unsigned();
+            $table->foreign('purchaseorder_id')
+                    ->references('id')
                     ->on('purchaseorders')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('reference',100)->nullable();
             $table->string('date',100)->nullable();
-            $table->string('stocknumber',100);
+            $table->integer('supply_id')->unsigned();
+            $table->foreign('supply_id')
+                    ->references('id')
+                    ->on('supplies')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->decimal('unitcost')->default(0);
-            $table->integer('orderedquantity');
-            $table->integer('receivedquantity')->default(0);
-            $table->integer('remainingquantity')->default(0);
+            $table->integer('ordered_quantity')->default(0);
+            $table->integer('received_quantity')->default(0);
+            $table->integer('remaining_quantity')->default(0);
             $table->timestamps();
         });
     }

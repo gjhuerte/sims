@@ -7,7 +7,7 @@ use Carbon;
 
 class PurchaseOrder extends Model
 {
-  	protected $table = 'purchaseorders';
+	protected $table = 'purchaseorders';
 	protected $fillable = [ 'number','date_received','details', 'supplier_id' ];
 	protected $primaryKey = 'id';
 	public $timestamps = true;
@@ -24,7 +24,7 @@ class PurchaseOrder extends Model
 		'Quantity' => 'integer|min:0'
 	);
 
-	
+
 	public static $updateRules = array(
 		'Purchase Order' => '',
 		'Date' => '',
@@ -33,9 +33,9 @@ class PurchaseOrder extends Model
 		'Quantity' => ''
 	);
 
-	protected $appends = [
-		'date_received_parsed'
-	];
+  protected $appends = [
+		'date_received_parsed',
+  ];
 
 	public function getDateReceivedParsedAttribute()
 	{
@@ -44,12 +44,15 @@ class PurchaseOrder extends Model
 
 	public function supply()
 	{
-		return $this->belongsToMany('App\Supply','purchaseorders_supplies','stocknumber','purchaseorder_number');
+		return $this->belongsToMany('App\Supply','purchaseorders_supplies','purchaseorder_id','supply_id')
+          ->withPivot('unitcost', 'received_quantity', 'reference', 'date', 'ordered_quantity', 'remaining_quantity')
+          ->withTimestamps();
 	}
 
 	public function fundcluster()
 	{
-		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','purchaseorder_number','fundcluster_code');
+		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','purchaseorder_id','fundcluster_id')
+          ->withTimestamps();
 	}
 
 	public function supplier()
@@ -65,17 +68,5 @@ class PurchaseOrder extends Model
 	public function scopeFindByID($query, $id)
 	{
 		return $query->where('id','=',$id);
-	}
-
-	public function updateFundCluster()
-	{
-		if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)
-		{
-			foreach(explode(",", $this->fundcluster) as $fundcluster)
-			{
-				$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
-				PurchaseOrderFundCluster::firstOrCreate([ 'purchaseorder_number' => $this->number, 'fundcluster_code' => $fundcluster->code ]);
-			}
-		}
 	}
 }

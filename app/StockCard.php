@@ -63,6 +63,12 @@ class StockCard extends Model{
 	{
 		return $query->where('received','>',0);
 	}
+
+	public function scopeFindBySupplyId($query, $value)
+	{
+		return $query->where('supply_id', '=', $value);
+	}
+
 	/*
 	*
 	*	Referencing to Supply Table
@@ -122,8 +128,8 @@ class StockCard extends Model{
 		if(isset($this->receipt) && $this->receipt != null)
 		{
 
-			$receipt = Receipt::firstOrCreate([ 
-				'number' => $this->receipt 
+			$receipt = Receipt::firstOrCreate([
+				'number' => $this->receipt
 			], [
 				'reference' => isset($this->reference) ? $this->reference : null,
 				'date_delivered' => Carbon\Carbon::parse($this->date),
@@ -141,13 +147,13 @@ class StockCard extends Model{
 			$supply->quantity = (isset($supply->quantity) ? $supply->quantity : 0) + $this->received;
 			$supply->stocknumber = $this->stocknumber;
 			$supply->save();
-			
+
 		}
 
 		if(isset($this->reference) && $this->reference != null)
 		{
 			$purchaseorder = PurchaseOrder::firstOrCreate([
-				'number' => $this->reference 
+				'number' => $this->reference
 			], [
 				'date_received' => Carbon\Carbon::parse($this->date),
 				'supplier_id' => $supplier->id

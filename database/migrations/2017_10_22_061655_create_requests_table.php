@@ -15,25 +15,25 @@ class CreateRequestsTable extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('requestor')->nullable();
-            $table->foreign('requestor')
-                ->references('username')
+            $table->string('local')->nullable();
+            $table->integer('requestor_id')->unsigned()->nullable();
+            $table->foreign('requestor_id')
+                ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('office')->nullable();
-            $table->foreign('office')
-                ->references('code')
+            $table->integer('office_id')->unsigned()->nullable();
+            $table->foreign('office_id')
+                ->references('id')
                 ->on('offices')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('issued_by')->nullable();
+            $table->integer('issued_by')->unsigned()->nullable();
             $table->foreign('issued_by')
-                ->references('username')
+                ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('comments')->nullable();
             $table->string('remarks')->nullable();
             $table->string('status')->nullable();
             $table->string('released_by')->nullable();

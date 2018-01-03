@@ -8,10 +8,11 @@ use DB;
 class Supply extends Model{
 
 	protected $table = 'supplies';
+	protected $primaryKey = 'id';
 	protected $fillable = ['stocknumber','details','unit','reorderpoint'];
-	protected $primaryKey = 'stocknumber';
 	public $incrementing = false;
 	public $timestamps = true;
+
 	public static $rules = array(
 		'Stock Number' => 'required|unique:supplies,stocknumber',
 		'Details' => 'required|unique:supplies,details',
@@ -28,14 +29,7 @@ class Supply extends Model{
 				'Unit' => 'required',
 				'Reorder Point' => 'integer'
 		);
-	} 
-
-	// protected $appends = [
-	// 	'balance',
-	// 	'ledger_balance',
-	// 	'fund_cluster',
-	// 	'unitcost'
-	// ];
+	}
 
 	protected $appends = [
 		'balance',
@@ -47,9 +41,9 @@ class Supply extends Model{
 	{
 		$cost = ReceiptSupply::findByStockNumber($this->stocknumber)
 								->where('remaining_quantity','>',0)
-								->whereNotNull('cost')
-								->select('cost')
-								->avg('cost');
+								->whereNotNull('unitcost')
+								->select('unitcost')
+								->avg('unitcost');
 		if(count($cost) > 0)
 			return $cost;
 		else
@@ -58,13 +52,8 @@ class Supply extends Model{
 
 	public function getBalanceAttribute($value)
 	{
-		$stocknumber = '';
-		if(isset($this->stocknumber))
-		{
-			$stocknumber = $this->stocknumber;
-		}
 
-		$balance = StockCard::where('stocknumber','=',$stocknumber)
+		$balance = StockCard::findBySupplyId($this->id)
 						->orderBy('date','desc')
 						->orderBy('created_at','desc')
 						->orderBy('id','desc')
@@ -81,17 +70,11 @@ class Supply extends Model{
 
 	public function getLedgerBalanceAttribute($value)
 	{
-		$stocknumber = '';
-		if(isset($this->stocknumber))
-		{
-			$stocknumber = $this->stocknumber;
-		}
-
-		$balance = LedgerCard::where('stocknumber','=',$stocknumber)
+		$balance = LedgerCard::findBySupplyId($this->id)
 						->orderBy('date','desc')
 						->orderBy('created_at','desc')
 						->orderBy('id','desc')
-						->pluck('balancequantity')
+						->pluck('balance_quantity')
 						->first();
 
 		if(empty($balance) || $balance == null || $balance == '')
@@ -101,18 +84,6 @@ class Supply extends Model{
 
 		return $balance	;
 	}
-
-	// public function getFundClusterAttribute($value)
-	// {
-	// 	$fundcluster = "";
-	// 	if(isset($this->purchaseorders))
-	// 	{
-	// 		$purchaseorder = $this->purchaseorders->pluck('number');
-	// 		$fundcluster = PurchaseOrderFundCluster::findByPurchaseOrderNumber($purchaseorder)
-	// 							->pluck('fundcluster_code');
-	// 	}
-	// 	return $fundcluster;
-	// }
 
 	public function scopeIssued($query)
 	{
@@ -126,7 +97,14 @@ class Supply extends Model{
 
 	public function scopeFindByCategoryName($query, $value)
 	{
-		return $query->where('category_name', '=', $value);
+		return $query->whereHas('category', function($query) use ($value){
+			$query->where('name', '=', $value);
+		} );
+	}
+
+	public function scopeFindByCategoryId($query, $value)
+	{
+		return $query->where('category_id', '=', $value);
 	}
 
 	public function scopeStockNumber($query,$value)
@@ -151,7 +129,29 @@ class Supply extends Model{
 
 	public function purchaseorders()
 	{
-		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies','stocknumber','id');
+		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies','purchaseorder_id', 'supply_id')
+          ->withPivot('unitcost', 'received_quantity', 'reference', 'date', 'supply_id', 'ordered_quantity', 'remaining_quantity')
+          ->withTimestamps();
+	}
+
+	public function receipts()
+	{
+		return $this->belongsToMany('App\Receipt','receipts_supplies','supply_id','id');
+	}
+
+	public function requests()
+	{
+		return $this->belongsToMany('App\Request','requests_supplies','supply_id','id');
+	}
+
+	public function category()
+	{
+		return $this->belongsTo('App\Category', 'category_id', 'id');
+	}
+
+	public function unit()
+	{
+		return $this->belongsTo('App\Unit', 'unit_id', 'id');
 	}
 
 }

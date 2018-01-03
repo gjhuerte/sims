@@ -19,9 +19,9 @@ class SupplyController extends Controller {
 	{
 		if($request->ajax())
 		{
-			return json_encode([
-				'data' => App\Supply::all()
-			]);
+
+			$supplies = App\Supply::with('unit')->get();
+			return datatables($supplies)->toJson();
 		}
 		return view('maintenance.supply.index')
                 ->with('title','Supply Maintenance');

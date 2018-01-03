@@ -21,23 +21,15 @@ class PurchaseOrderSupply extends Model
 	);
 
 	public static $updateRules = array(
-	'Reference' => '',
-	'Stock Number' => ''
+  	'Reference' => '',
+  	'Stock Number' => ''
 	);
 
 	protected $attributes = [
-        'receivedquantity' => 0,
-        'unitcost' => 0,
-    ];
-
-    protected $appends = [
-    	'amount'
-    ];
-
-    public function getAmountAttribute()
-    {
-    	return $this->receivedquantity * $this->unitcost;
-    }
+      'receivedquantity' => 0,
+      'unitcost' => 0,
+      'amount' => 0
+  ];
 
 	public function supply()
 	{

@@ -84,6 +84,11 @@ class LedgerCard extends Model{
 		return $query->where('stocknumber','=',$stocknumber);
 	}
 
+	public function scopeFindBySupplyId($query,$stocknumber)
+	{
+		return $query->where('supply_id','=',$stocknumber);
+	}
+
 	public function scopeFilterByMonth($query,$month)
 	{
 		$month = Carbon\Carbon::parse($month);
@@ -130,10 +135,10 @@ class LedgerCard extends Model{
 		if(isset($this->reference) && $this->reference != null)
 		{
 			$purchaseorder = PurchaseOrder::firstOrCreate([
-				'number' => $this->reference 
+				'number' => $this->reference
 			], [
 				'date_received' => Carbon\Carbon::parse($this->date),
-				'supplier_id' => isset($supplier->id) ? $supplier->id : null 
+				'supplier_id' => isset($supplier->id) ? $supplier->id : null
 			]);
 
 			if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)

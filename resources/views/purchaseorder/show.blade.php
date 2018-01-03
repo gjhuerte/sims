@@ -34,8 +34,8 @@
 
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Code:  <span style="font-weight:normal">{{ isset($purchaseorder->number) ? $purchaseorder->number : "" }}</span> </th>
-		                <th class="text-left" colspan="4">Fund Cluster:  
-	                		<span style="font-weight:normal">{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([isset($purchaseorder->number) ? $purchaseorder->number : ""])->pluck('fundcluster_code')->toArray()) }}</span> 
+		                <th class="text-left" colspan="4">Fund Cluster:
+	                		<span style="font-weight:normal">{{ count($purchaseorder->fundcluster->pluck('code')) > 0 ? implode( $purchaseorder->fundcluster->pluck('code')->toArray(), ",") : "None" }}</span>
 	                	</th>
 		            </tr>
 		            <tr rowspan="2">
@@ -81,13 +81,13 @@
 		ajax: "{{ url("purchaseorder/$purchaseorder->id") }}",
 		columns: [
 			{ data: "id" },
-			{ data: "supply.stocknumber" },
-			{ data: "supply.details" },
-			{ data: "orderedquantity" },
-			{ data: "receivedquantity" },
-			{ data: "remainingquantity" },
-			{ data: "unitcost" },
-			{ data: "amount" }
+			{ data: "stocknumber" },
+			{ data: "details" },
+			{ data: "pivot.ordered_quantity" },
+			{ data: "pivot.received_quantity" },
+			{ data: "pivot.remaining_quantity" },
+			{ data: "pivot.unitcost" },
+			{ data: "pivot.amount" }
 		],
 	 });
 
@@ -101,7 +101,7 @@
 			  closeOnConfirm: false,
 			  animation: "slide-from-top",
 			  inputPlaceholder: "Comma separate each fund cluster",
-			  inputValue: "{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([isset($purchaseorder->number) ? $purchaseorder->number : ""])->pluck('fundcluster_code')->toArray()) }}"
+				inputValue: "{{ count($purchaseorder->fundcluster->pluck('code')) > 0 ? implode( $purchaseorder->fundcluster->pluck('code')->toArray(), ",") : '' }}"
 			},
 			function(inputValue){
 			  if (inputValue === false) return false;
@@ -123,10 +123,12 @@
 			  	},
 			  	success: function(response){
 			  		if(response == 'success')
-			  		swal('Success','Operation Successful','success')
+						{
+				  		swal('Success','Operation Successful','success')
+				  		location.reload()
+						}
 			  		else
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  		location.reload()	
+			  		swal('Error',response,'error')
 			  	},
 			  	error: function(){
 			  		swal('Error','Problem Occurred while processing your data','error')

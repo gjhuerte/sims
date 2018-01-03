@@ -15,14 +15,19 @@ class CreateReceiptsTable extends Migration
     {
         Schema::create('receipts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('reference');
+            $table->integer('purchaseorder_id')->unsigned()->nullable();
+            $table->foreign('purchaseorder_id')
+                    ->references('id')
+                    ->on('purchaseorders')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->string('number')->unique();
             $table->string('invoice')->nullable();
             $table->datetime('date_delivered')->nullable();
             $table->string('received_by')->nullable();
-            $table->string('supplier_name',100)->nullable();
-            $table->foreign('supplier_name')
-                    ->references('name')
+            $table->integer('supplier_id')->unsigned();
+            $table->foreign('supplier_id')
+                    ->references('id')
                     ->on('suppliers')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');

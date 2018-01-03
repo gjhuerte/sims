@@ -15,15 +15,15 @@ class CreatePurchaseOrdersFundClustersTable extends Migration
     {
         Schema::create('purchaseorders_fundclusters', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('purchaseorder_number',100);
-            $table->foreign('purchaseorder_number')
-                    ->references('number')
+            $table->integer('purchaseorder_id')->unsigned();
+            $table->foreign('purchaseorder_id')
+                    ->references('id')
                     ->on('purchaseorders')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->string('fundcluster_code');
-            $table->foreign('fundcluster_code')
-                    ->references('code')
+            $table->integer('fundcluster_id')->unsigned();
+            $table->foreign('fundcluster_id')
+                    ->references('id')
                     ->on('fundclusters')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');

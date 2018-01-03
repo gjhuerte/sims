@@ -24,7 +24,7 @@ class FundCluster extends Model
                 'Code' => 'required|unique:fundclusters,code,' . $code . ',code',
                 'Description' => 'required'
         );
-    } 
+    }
 
     public function scopeFindByCode($query,$value)
     {
@@ -33,6 +33,7 @@ class FundCluster extends Model
 
 	public function purchaseorders()
 	{
-		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_fundclusters','fundcluster_code','purchaseorder_number');
+		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','fundcluster_id','purchaseorder_id')
+          ->withTimestamps();
 	}
 }

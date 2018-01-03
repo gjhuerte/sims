@@ -16,15 +16,20 @@ class CreateSuppliesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('stocknumber')->unique();
-			$table->string('entityname',200)->default('Polytechnic University of the Philippines');
-			$table->string('category_name')->nullable();
-			$table->foreign('category_name')
-					->references('name')
+			$table->string('entity_name',200)->default('Polytechnic University of the Philippines');
+			$table->integer('category_id')->unsigned()->nullable();
+			$table->foreign('category_id')
+					->references('id')
 					->on('categories')
 					->onUpdate('cascade')
 					->onDelete('cascade');
             $table->string('details');		
-            $table->string('unit')->nullable();
+            $table->integer('unit_id')->unsigned()->nullable();
+            $table->foreign('unit_id')
+            		->references('id')
+            		->on('units')
+            		->onUpdate('cascade')
+            		->onDelete('cascade');
             $table->integer('reorderpoint')->nullable();
 			$table->timestamps();
 		});

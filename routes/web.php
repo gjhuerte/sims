@@ -46,7 +46,8 @@ Route::middleware(['auth'])->group(function(){
 	| Supply Inventory Modules
 	|
 	*/
-	Route::resource('inventory/supply','SupplyInventoryController');
+	Route::get('inventory/supply','SupplyInventoryController@index');
+	Route::get('inventory/supply/{id}','SupplyInventoryController@getSupplyInformation');
 	// return all supply stock number
 	Route::get('get/inventory/supply/stocknumber/all','StockCardController@getAllStockNumber');
 	// return stock number for autocomplete

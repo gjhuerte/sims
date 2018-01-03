@@ -18,53 +18,9 @@
   <div class="box">
     <div class="box-body">
         {{ Form::open(array('class' => 'form-horizontal','method'=>'post','route'=>'office.store','id'=>'officeForm')) }}
-            @if (count($errors) > 0)
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <ul style='margin-left: 10px;'>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
         <div class="col-md-offset-3 col-md-6" style="padding:10px;">
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('code','Organization Code') }}
-              {{ Form::text('code',Input::old('code'),[
-                'class'=>'form-control',
-                'placeholder'=>'Organization Code'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('name','Organization Name') }}
-              {{ Form::text('name',Input::old('name'),[
-                'class'=>'form-control',
-                'placeholder'=>'Organization Name'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('description','Description') }}
-              {{ Form::text('description',Input::old('description'),[
-                'class'=>'form-control',
-                'placeholder'=>'Description'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('head','Organization Head') }}
-              {{ Form::text('head',Input::old('head'),[
-                'class'=>'form-control',
-                'placeholder'=>'Full Name'
-              ]) }}
-            </div>
-          </div>
+          @include('errors.alert')
+          @include('maintenance.office.form')
           <div class="pull-right">
             <div class="btn-group">
               <button id="submit" class="btn btn-md btn-primary" type="submit">

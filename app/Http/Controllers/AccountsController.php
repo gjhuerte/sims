@@ -24,9 +24,9 @@ class AccountsController extends Controller {
 	{
 		if($request->ajax())
 		{
-			return json_encode([
-				'data' => App\User::all()
-			]);
+
+			$users = App\User::all();
+			return datatables($users)->toJson();
 		}
 		return view('account.index')
 				->with('title','Accounts');
@@ -171,7 +171,7 @@ class AccountsController extends Controller {
 				->withInput()
 				->withErrors($validator);
 		}
-		
+
 		$user->username = $username;
 		$user->lastname = $lastname;
 		$user->firstname = $firstname;

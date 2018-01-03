@@ -55,7 +55,7 @@
 			columns: [
 				{ data: "stocknumber" },
 				{ data: "details" },
-				{ data: "unit" },
+				{ data: "unit.name" },
 				{ data: "reorderpoint" }
 				@if(Auth::user()->access == 1)
 	           , { data: function(callback){

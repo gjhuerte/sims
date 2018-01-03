@@ -21,14 +21,14 @@ class CreateRequestsCommentsTable extends Migration
                     ->on('requests')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->text('details');
-            $table->integer('comment_by')->unsigned();
-            $table->foreign('comment_by')
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')
                     ->references('id')
                     ->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->timestamps();
+            $table->longtext('details');
             $table->softDeletes();
         });
     }

@@ -67,7 +67,7 @@
 			columns: [
 					{ data: "stocknumber" },
 					{ data: "details" },
-					{ data: "unit" },
+					{ data: "unit.name" },
 					@if(Auth::user()->access == 1)
 					{ data: "reorderpoint" },
 					@else

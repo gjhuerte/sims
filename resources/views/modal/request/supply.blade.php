@@ -9,6 +9,7 @@
           <p class="text-primary">* Click the select button of your desired supply</p>
       		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyInventoryTable" width=100%>
       			<thead>
+      				<th class="col-sm-1">ID</th>
       				<th class="col-sm-1">Stock No.</th>
       				<th class="col-sm-1">Details</th>
               <th class="col-sm-1">Unit</th>
@@ -31,9 +32,10 @@
         "processing": true,
         ajax: "{{ url('inventory/supply') }}",
         columns: [
+            { data: "id" },
             { data: "stocknumber" },
             { data: "details" },
-            { data: "unit" },
+            { data: "unit.name" },
             { data: "balance" },
             { data: function(callback){
               return `
@@ -42,6 +44,6 @@
             } }
         ],
       });
-      
+
   })
 </script>
