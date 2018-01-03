@@ -14,7 +14,7 @@
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-		{{ Form::open(['method'=>'post','route'=>array('fundcluster.store'),'class'=>'form-horizontal','id'=>'fundClusterForm']) }}
+		{{ Form::open(['method'=>'put','route'=>array('fundcluster.update', $fundcluster->id),'class'=>'form-horizontal','id'=>'fundClusterForm']) }}
         @if (count($errors) > 0)
             <div class="alert alert-danger alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -29,7 +29,7 @@
 		<div class="pull-right">
 			<div class="btn-group">
 				<button id="submit" class="btn btn-md btn-primary" type="submit">
-					<span class="hidden-xs">Create</span>
+					<span class="hidden-xs">Update</span>
 				</button>
 			</div>
 			<div class="btn-group">

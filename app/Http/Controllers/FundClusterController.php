@@ -97,4 +97,49 @@ class FundClusterController extends Controller
 		return view('fundcluster.show')
 				->with('fundcluster',$fundcluster);
     }
+
+    public function edit(Request $request, $id)
+    {
+        $fundcluster = App\FundCluster::find($id);
+
+        return view('fundcluster.edit')
+                ->with('fundcluster', $fundcluster);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $code = Input::get('code');
+        $description = $this->sanitizeString(Input::get('description'));
+
+        $fundcluster = App\FundCluster::find($id);
+        
+        $validator = Validator::make([
+            'Code' => $code,
+            'Description' => $description
+        ], $fundcluster->updateRules());
+
+        if($validator->fails())
+        {
+            DB::rollback();
+            return redirect('fundcluster/create')
+                    ->withInput()
+                    ->withErrors($validator);
+        }
+
+        DB::beginTransaction();
+        $fundcluster->code = $code;
+        $fundcluster->description = $description;
+        $fundcluster->save();
+
+        DB::commit();
+
+        \Alert::success('Operation Successful')->flash();
+        return view('fundcluster.index');
+    }
 }

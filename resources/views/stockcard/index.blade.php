@@ -26,14 +26,14 @@
 
 @section('content')
 <!-- Default box -->
-  <div class="box" style="padding:10px">
+<div class="box" style="padding:10px">
     <div class="box-body">
 			<table class="table table-hover table-striped table-bordered table-condensed" id="inventoryTable" cellspacing="0" width="100%">
 				<thead>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
 		                <th class="text-left" colspan="4">Fund Cluster:  
-		                	<span style="font-weight:normal"> {{ implode(", ",  $supply->fundcluster->toArray()) }} </span>
+		                	<span style="font-weight:normal"> {{ isset($supply->fundcluster) ? implode(", ",  $supply->fundcluster->toArray()) : 'None' }} </span>
 		                </th>
 		            </tr>
 		            <tr rowspan="2">
@@ -56,8 +56,7 @@
 				</thead>
 			</table>
     </div><!-- /.box-body -->
-  </div><!-- /.box -->
-
+</div><!-- /.box -->
 @endsection
 
 @section('after_scripts')

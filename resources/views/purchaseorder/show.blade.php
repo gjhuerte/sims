@@ -84,25 +84,10 @@
 			{ data: "supply.stocknumber" },
 			{ data: "supply.details" },
 			{ data: "orderedquantity" },
-			{ data: function(callback){
-			  if(callback.receivedquantity != 0 && callback.receivedquantity != null)
-			  {
-			    return callback.receivedquantity
-			  }
-
-			  return `0`;
-			} },
+			{ data: "receivedquantity" },
 			{ data: "remainingquantity" },
-			{ data: function(callback){
-				if(callback.unitcost == "" || callback.unitcost == null)
-					return 0
-				return (callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-			} },
-			{ data: function(callback){
-				if(callback.unitcost == "" || callback.unitcost == null)
-					return 0
-				return (callback.receivedquantity * callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-			} }
+			{ data: "unitcost" },
+			{ data: "amount" }
 		],
 	 });
 

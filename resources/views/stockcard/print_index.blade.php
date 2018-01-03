@@ -7,8 +7,11 @@
         <tr>
             <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
             <th class="text-left" colspan="3">Fund Cluster:
-              <span style="font-weight:normal"> @foreach($supply->purchaseorder as $supplypurchaseorder) {{ $supplypurchaseorder->fundcluster }}@if($supply->purchaseorder->first() != $supplypurchaseorder && $supply->purchaseorder->last() != $supplypurchaseorder),  @endif
-            @endforeach
+              <span style="font-weight:normal"> 
+              @if(isset($supply->purchaseorder))
+                @foreach($supply->purchaseorder as $supplypurchaseorder) {{ $supplypurchaseorder->fundcluster }}@if($supply->purchaseorder->first() != $supplypurchaseorder && $supply->purchaseorder->last() != $supplypurchaseorder),  @endif
+                @endforeach
+              @endif
               </span>
             </th>
         </tr>

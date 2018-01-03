@@ -14,6 +14,7 @@ class CreateUacsView extends Migration
     public function up()
     {
         DB::statement("
+            CREATE VIEW uacs_v AS
             SELECT
                 purchaseorders.date_received AS date_received,
                 supplies.stocknumber AS stocknumber,
@@ -21,7 +22,9 @@ class CreateUacsView extends Migration
                 receipts.number as receipt_number,
                 receipts.invoice as invoice,
                 purchaseorders_supplies.unitcost as purchaseorder_unitcost,
-                receipts_supplies.cost as receipts_supplies,
+                purchaseorders_supplies.receivedquantity as purchaseorder_quantity,
+                receipts_supplies.cost as receipt_unitcost,
+                receipts_supplies.quantity as receipt_quantity,
                 supplies.details AS details,
                 supplies.category_name AS category_name,
                 categories.uacs_code AS uacs_code,

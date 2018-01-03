@@ -21,4 +21,13 @@ class UACS extends Model
     	$date = Carbon\Carbon::parse($this->date_received);
     	return $date->month . " " . $date->year;
     }
+
+    public function scopeFilterByMonth($query, $date)
+    {
+
+        return $query->whereBetween('date_received',[
+                    $date->startOfMonth()->toDateString(),
+                    $date->endOfMonth()->toDateString()
+                ]);
+    }
 }

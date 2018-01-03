@@ -17,6 +17,15 @@ class FundCluster extends Model
         'Description' => 'required'
     );
 
+    public function updateRules()
+    {
+        $code = $this->code;
+        return array(
+                'Code' => 'required|unique:fundclusters,code,' . $code . ',code',
+                'Description' => 'required'
+        );
+    } 
+
     public function scopeFindByCode($query,$value)
     {
     	return $query->where('code','=',$value)->first();

@@ -78,7 +78,9 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::resource('maintenance/category','CategoriesController');
 
+	Route::get('uacs/months', 'UACSController@getAllMonths');
 	Route::get('uacs', 'UACSController@getIndex');
+	Route::get('uacs/{month}', 'UACSController@getUACS');
 
 	Route::post('get/ledgercard/checkifexisting',[
 		'as' => 'ledgercard.checkifexisting',

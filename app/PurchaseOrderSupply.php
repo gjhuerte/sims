@@ -7,6 +7,7 @@ use App\Supply;
 
 class PurchaseOrderSupply extends Model
 {
+
     protected $table = 'purchaseorders_supplies';
 	protected $fillable = ['user_id','purchaseorder_number','stocknumber','orderedquantity','receivedquantity', 'remainingquantity', 'unitprice'];
 	protected $primaryKey = 'id';
@@ -23,6 +24,20 @@ class PurchaseOrderSupply extends Model
 	'Reference' => '',
 	'Stock Number' => ''
 	);
+
+	protected $attributes = [
+        'receivedquantity' => 0,
+        'unitcost' => 0,
+    ];
+
+    protected $appends = [
+    	'amount'
+    ];
+
+    public function getAmountAttribute()
+    {
+    	return $this->receivedquantity * $this->unitcost;
+    }
 
 	public function supply()
 	{

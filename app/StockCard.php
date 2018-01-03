@@ -76,6 +76,9 @@ class StockCard extends Model{
 
 	public function setBalance()
 	{
+		$received = 0;
+		$issued = 0;
+
 		$stockcard = StockCard::where('stocknumber','=',$this->stocknumber)
 								->orderBy('date','desc')
 								->orderBy('created_at','desc')
@@ -85,14 +88,17 @@ class StockCard extends Model{
 		if(!isset($this->received))
 		{
 			$this->received = 0;
+			$issued = $this->issued;
 		}
 
 		if(!isset($this->issued))
 		{
 			$this->issued = 0;
+			$received = $this->received;
 		}
 
-		$this->balance = (isset($stockcard->balance) ? $stockcard->balance : 0) + ( $this->received - $this->issued ) ;
+		$this->balance = 0;
+		$this->balance = (isset($stockcard->balance) ? $stockcard->balance : 0) + ( $received - $issued ) ;
 	}
 
 	/*

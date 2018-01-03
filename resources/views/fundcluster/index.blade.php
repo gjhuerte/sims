@@ -58,6 +58,9 @@
 						<a type='button' href='` + url + `' class='btn btn-default btn-sm'>
 		                	<span class="glyphicon glyphicon-list"></span> View
 		             	</a>
+						<a type='button' href='` + url + `/edit' class='btn btn-warning btn-sm'>
+		                	<span class="glyphicon glyphicon-pencil"></span> Update
+		             	</a>
 		            `
 					return html
 				} }
