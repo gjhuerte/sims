@@ -25,7 +25,7 @@ class CreateReceiptsTable extends Migration
             $table->string('invoice')->nullable();
             $table->datetime('date_delivered')->nullable();
             $table->string('received_by')->nullable();
-            $table->integer('supplier_id')->unsigned();
+            $table->integer('supplier_id')->unsigned()->nullable();
             $table->foreign('supplier_id')
                     ->references('id')
                     ->on('suppliers')

@@ -42,14 +42,14 @@ class PurchaseOrder extends Model
 		return Carbon\Carbon::parse($this->date_received)->toFormattedDateString();
 	}
 
-	public function supply()
+	public function supplies()
 	{
 		return $this->belongsToMany('App\Supply','purchaseorders_supplies','purchaseorder_id','supply_id')
           ->withPivot('unitcost', 'received_quantity', 'reference', 'date', 'ordered_quantity', 'remaining_quantity')
           ->withTimestamps();
 	}
 
-	public function fundcluster()
+	public function fundclusters()
 	{
 		return $this->belongsToMany('App\FundCluster','purchaseorders_fundclusters','purchaseorder_id','fundcluster_id')
           ->withTimestamps();

@@ -32,7 +32,7 @@ class Supply extends Model{
 	}
 
 	protected $appends = [
-		'balance',
+		'stock_balance',
 		'ledger_balance',
 		'unitcost'
 	];
@@ -50,14 +50,14 @@ class Supply extends Model{
 			return 0;
 	}
 
-	public function getBalanceAttribute($value)
+	public function getStockBalanceAttribute($value)
 	{
 
 		$balance = StockCard::findBySupplyId($this->id)
 						->orderBy('date','desc')
 						->orderBy('created_at','desc')
 						->orderBy('id','desc')
-						->pluck('balance')
+						->pluck('balance_quantity')
 						->first();
 
 		if(empty($balance) || $balance == null || $balance == '')
@@ -129,7 +129,7 @@ class Supply extends Model{
 
 	public function purchaseorders()
 	{
-		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies','purchaseorder_id', 'supply_id')
+		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies', 'supply_id','purchaseorder_id')
           ->withPivot('unitcost', 'received_quantity', 'reference', 'date', 'supply_id', 'ordered_quantity', 'remaining_quantity')
           ->withTimestamps();
 	}
@@ -141,7 +141,9 @@ class Supply extends Model{
 
 	public function requests()
 	{
-		return $this->belongsToMany('App\Request','requests_supplies','supply_id','id');
+		return $this->belongsToMany('App\Request','requests_supplies','supply_id','id')
+            ->withPivot('quantity_requested', 'quantity_issued', 'quantity_released', 'comments')
+            ->withTimestamps();
 	}
 
 	public function category()

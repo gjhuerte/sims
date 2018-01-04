@@ -141,6 +141,7 @@ class PurchaseOrderController extends Controller
     {
 
         $id = $this->sanitizeString($id);
+        $purchaseorder = App\PurchaseOrder::find($id);
 
         if($request->ajax())
         {
@@ -173,8 +174,7 @@ class PurchaseOrderController extends Controller
             {
                 $number = $this->sanitizeString(Input::get('term'));
                 return json_encode(
-                    App\PurchaseOrder::where('number','like',"%".$number."%")
-                    ->pluck('number')
+                    App\PurchaseOrder::where('number','like',"%".$number."%")->pluck('number')
                 );
             }
 
@@ -182,15 +182,11 @@ class PurchaseOrderController extends Controller
             * returns view of the purchase order supply
             * finds the supply information then return the values
             */
-            $purchaseorder = App\PurchaseOrder::find($id);
-            return datatables($purchaseorder->supply)->addColumn('pivot.amount', function() use ($purchaseorder){
-              return $purchaseorder->supply()->first()->received_quantity * $purchaseorder->supply()->first()->unitcost;
-            })->toJson();
+            return datatables($purchaseorder->supplies)->toJson();
         }
 
         if($id != 'checkifexists'):
-
-          $purchaseorder = App\PurchaseOrder::find($id);
+          
           $fundcluster = isset($purchaseorder->fundcluster) ? $purchaseorder->fundcluster : 'None';
           if(isset($purchaseorder->number))
           {
@@ -236,11 +232,18 @@ class PurchaseOrderController extends Controller
 
           if(count($purchaseorder) > 0)
           {
+
+            /**
+             * update information for fundcluster
+             */
             if(Input::has('fundcluster'))
             {
                 $fundclusters = $this->sanitizeString($request->get('fundcluster'));
                 $_fundclusters = [];
 
+                /**
+                 * check the best suited explode for fundcluster
+                 */
                 if(count(explode(", " , $fundclusters) > 0)):
                   $fundclusters = explode(", " , $fundclusters);
                 elseif(count(explode("," , $fundclusters) > 0)):
@@ -250,9 +253,22 @@ class PurchaseOrderController extends Controller
                 endif;
 
                 foreach($fundclusters as $fundcluster):
+
+                  /**
+                   * initialize fundcluster if not existing
+                   * @var [fundcluster]
+                   */
                   $fundcluster = App\FundCluster::firstOrCreate([ 'code' => $fundcluster ]);
+
+                  /**
+                   * add to array
+                   */
                   array_push($_fundclusters, $fundcluster->id);
 
+                  /**
+                   * validates that the field has fund cluster
+                   * @var [type]
+                   */
                   $validator = Validator::make( [ 'fundclusters' =>  $fundclusters ], [
                     'fundclusters' => 'array|required'
                   ]);
@@ -264,7 +280,10 @@ class PurchaseOrderController extends Controller
 
                 endforeach;
 
-                $purchaseorder->fundcluster()->sync($_fundclusters);
+                /**
+                 * save the field
+                 */
+                $purchaseorder->fundclusters()->sync($_fundclusters);
             }
 
             if(Input::has('status'))

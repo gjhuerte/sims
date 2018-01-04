@@ -35,7 +35,7 @@
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Code:  <span style="font-weight:normal">{{ isset($purchaseorder->number) ? $purchaseorder->number : "" }}</span> </th>
 		                <th class="text-left" colspan="4">Fund Cluster:
-	                		<span style="font-weight:normal">{{ count($purchaseorder->fundcluster->pluck('code')) > 0 ? implode( $purchaseorder->fundcluster->pluck('code')->toArray(), ",") : "None" }}</span>
+	                		<span style="font-weight:normal">{{ count($purchaseorder->fundclusters) > 0 ? implode( $purchaseorder->fundclusters->pluck('code')->toArray(), ",") : "None" }}</span>
 	                	</th>
 		            </tr>
 		            <tr rowspan="2">
@@ -87,7 +87,9 @@
 			{ data: "pivot.received_quantity" },
 			{ data: "pivot.remaining_quantity" },
 			{ data: "pivot.unitcost" },
-			{ data: "pivot.amount" }
+			{ data: function(callback){
+				return parseFloat(callback.pivot.ordered_quantity * callback.pivot.unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+			} , orderable: false}
 		],
 	 });
 
@@ -101,7 +103,7 @@
 			  closeOnConfirm: false,
 			  animation: "slide-from-top",
 			  inputPlaceholder: "Comma separate each fund cluster",
-				inputValue: "{{ count($purchaseorder->fundcluster->pluck('code')) > 0 ? implode( $purchaseorder->fundcluster->pluck('code')->toArray(), ",") : '' }}"
+				inputValue: "{{ count($purchaseorder->fundclusters()) > 0 ? implode( $purchaseorder->fundclusters()->pluck('code')->toArray(), ",") : '' }}"
 			},
 			function(inputValue){
 			  if (inputValue === false) return false;

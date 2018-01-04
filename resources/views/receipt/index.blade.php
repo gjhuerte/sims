@@ -49,6 +49,7 @@
   jQuery(document).ready(function($) {
 
     var table = $('#receiptTable').DataTable({
+        serverSide: true,
         language: {
                 searchPlaceholder: "Search..."
         },
@@ -61,13 +62,14 @@
         "processing": true,
         ajax: "{{ url('receipt') }}",
         columns: [
-                { data: "id" },
+                { data: "id"},
                 { data: "number" },
                 { data: "invoice" },
-                { data: "supplier_name" },
                 { data: function(callback){
-                    return moment(callback.date_delivered).format("MMMM D, YYYY")
-                } },
+                  if(callback.supplier) return callback.supplier
+                  return null
+                }, name: null },
+                { data: "parsed_date_delivered" },
                 { data: function(callback){
                   ret_val = "";
 

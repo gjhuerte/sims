@@ -13,8 +13,8 @@ class Request extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $fillable = [ 
-      'requestor' , 
-      'office' ,
+      'requestor_id' , 
+      'office_id' ,
       'issued_by' , 
       'remarks'  , 
       'status' 
@@ -26,7 +26,7 @@ class Request extends Model
     );
     
     public $appends = [
-      'code'
+      'code', 'date_requested'
     ];
 
     public function getCodeAttribute($value)
@@ -35,19 +35,26 @@ class Request extends Model
       return $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
     }
 
-  	public function supply()
-  	{
-  		return $this->belongsToMany('App\Supply','requests_supplies','request_id','stocknumber');
-  	}
-
-    public function requestorInfo()
+    public function getDateRequestedAttribute($value)
     {
-      return $this->belongsTo('App\User','requestor','username');
+      return Carbon\Carbon::parse($this->created_at)->toFormattedDateString();
     }
 
-    public function officeInfo()
+  	public function supplies()
+  	{
+  		return $this->belongsToMany('App\Supply','requests_supplies','request_id','supply_id')
+            ->withPivot('quantity_requested', 'quantity_issued', 'quantity_released', 'comments')
+            ->withTimestamps();
+  	}
+
+    public function requestor()
     {
-      return $this->belongsTo('App\Office','office','code');
+      return $this->belongsTo('App\User','requestor_id','id');
+    }
+
+    public function office()
+    {
+      return $this->belongsTo('App\Office','office_id','id');
     }
 
     public function scopeMe($query)
@@ -57,7 +64,7 @@ class Request extends Model
 
     public function scopeFindByOffice($query,$value)
     {
-      return $query->where('office','=',$value);
+      return $query->where('office_id','=',$value);
     }
 
     public function comments()

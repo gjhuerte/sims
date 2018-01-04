@@ -48,14 +48,18 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($supplyrequest as $supplyrequest)
-          @if($supplyrequest->quantity_issued > 0)
+          @foreach($request->supplies as $supply)
+          @if($supply->pivot->quantity_issued > 0)
           <tr>
-            <td>{{ $supplyrequest->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}"</td>
-            <td>{{ $supplyrequest->supply->details }}</td>
-            <td>{{ $supplyrequest->quantity_issued }}</td>
-            <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_issued }}"  /></td>
-            <td><input type="text" name="daystoconsume[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
+            <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}"</td>
+            <td>{{ $supply->details }}</td>
+            <td>{{ $supply->pivot->quantity_issued }}</td>
+            <td><input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  /></td>
+            <td><input type="text" name="daystoconsume[{{ $supply->stocknumber }}]" class="form-control" /></td>
+          </tr>
+          @elseif($supply->stock_balance <= 0)
+          <tr>
+            <td colspan=5 class="text-center">Supply with stocknumber of {{ $supply->stocknumber }} is not available for release and has {{ $supply->stock_balance }} balance.</td>
           </tr>
           @endif
           @endforeach
@@ -66,7 +70,7 @@
           <button type="button" id="approve" class="btn btn-md btn-danger btn-block">Release</button>
         </div>
         <div class="btn-group">
-          <button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
+          <button type="button" id="cancel" class="btn btn-md btn-default" onclick='window.location.href = "{{ url('request') }}"'>Cancel</button>
         </div>
       </div>
       {{ Form::close() }}
@@ -103,10 +107,6 @@
               }
             })
       }
-    })
-
-    $('#cancel').on('click',function(){
-      window.location.href = "{{ url('request') }}"
     })
 
   });

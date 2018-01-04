@@ -18,18 +18,17 @@ class StockCardController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index(Request $request, $stocknumber)
+	public function index(Request $request, $id)
 	{
 		if($request->ajax())
 		{
-			return json_encode([
-				'data' => App\StockCard::where('stocknumber','=',$stocknumber)
+			$stockcard = App\StockCard::findBySupplyId($id)
 											->orderBy('date','asc')
-											->get()
-			]);
+											->get();
+			return datatables($stockcard)->toJson();
 		}
 
-		$supply = App\Supply::find($stocknumber);
+		$supply = App\Supply::find($id);
 		return View('stockcard.index')
 				->with('supply',$supply)
 				->with('title',$supply->stocknumber);
@@ -41,14 +40,12 @@ class StockCardController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create($id)
+	public function create()
 	{
-		$supply = App\Supply::find($id);
 		$supplier = App\Supplier::pluck('name','name');
-		return View('stockcard.create')
-				->with('supply',$supply)
-				->with('supplier',$supplier)
-				->with('title','Stock Card');
+		return view('stockcard.accept')
+			->with('title','Accept')
+			->with('supplier',$supplier);
 	}
 
 
@@ -59,50 +56,62 @@ class StockCardController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$purchaseorder = $this->sanitizeString(Input::get('purchaseorder'));
-		$deliveryreceipt = $this->sanitizeString(Input::get('dr'));
-		$date = $this->sanitizeString(Input::get('date'));
-		$daystoconsume = $this->sanitizeString(Input::get("daystoconsume"));
-		$stocknumber = Input::get("stocknumber");
-		$supplier = $this->sanitizeString(Input::get("supplier"));
-		$quantity = Input::get("quantity");
-		$fundcluster = Input::get("fundcluster");
+		$purchaseorder = $this->sanitizeString($request->get('purchaseorder'));
+		$deliveryreceipt = $this->sanitizeString($request->get('receipt'));
+		$date = $this->sanitizeString($request->get('date'));
+		$office = $this->sanitizeString($request->get('office'));
+		$supplier = $this->sanitizeString($request->get("supplier"));
+		$daystoconsume = $request->get("daystoconsume");
+		$stocknumbers = $request->get("stocknumber");
+		$quantity = $request->get("quantity");
+		$fundcluster = $this->sanitizeString($request->get("fundcluster"));
 
-		$validator = Validator::make([
-			'Stock Number' => $stocknumber,
-			'Purchase Order' => $purchaseorder,
-			'Delivery Receipt' => $deliveryreceipt,
-			'Date' => $date,
-			'Receipt Quantity' => $quantity,
-			'Office' => $supplier,
-			'Days To Consume' => $daystoconsume
-		],App\StockCard::$receiptRules);
+		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
 
-		if($validator->fails())
-		{
-			return redirect("inventory/supply/$stocknumber/stockcard/create")
-					->withInput()
-					->withErrors($validator);
-		}
+		$date = Carbon\Carbon::parse($date);
 
 		DB::beginTransaction();
 
-		$transaction = new App\StockCard;
-		$transaction->date = Carbon\Carbon::parse($date);
-		$transaction->stocknumber = $stocknumber;
-		$transaction->reference = $purchaseorder;
-		$transaction->receipt = $deliveryreceipt;
-		$transaction->organization = $supplier;
-		$transaction->received = $quantity;
-		$transaction->daystoconsume = $daystoconsume;
-		$transaction->fundcluster = $fundcluster;
-		$transaction->user_id = Auth::user()->id;
-		$transaction->receipt();
+		foreach($stocknumbers as $stocknumber)
+		{
+			$validator = Validator::make([
+				'Stock Number' => $stocknumber,
+				'Purchase Order' => $purchaseorder,
+				'Date' => $date,
+				'Receipt Quantity' => $quantity["$stocknumber"],
+				'Office' => $office,
+				'Days To Consume' => $daystoconsume["$stocknumber"]
+			],App\StockCard::$receiptRules);
+
+			if($validator->fails())
+			{
+				DB::rollback();
+				return redirect("inventory/supply/stockcard/accept")
+						->with('total',count($stocknumbers))
+						->with('stocknumber',$stocknumbers)
+						->with('quantity',$quantity)
+						->with('daystoconsume',$daystoconsume)
+						->withInput()
+						->withErrors($validator);
+			}
+
+			$transaction = new App\StockCard;
+			$transaction->date = Carbon\Carbon::parse($date);
+			$transaction->stocknumber = $stocknumber;
+			$transaction->reference = $purchaseorder;
+			$transaction->receipt = $deliveryreceipt;
+			$transaction->organization = $supplier;
+			$transaction->fundcluster = $fundcluster;
+			$transaction->received_quantity = $quantity["$stocknumber"];
+			$transaction->daystoconsume = $daystoconsume["$stocknumber"];
+			$transaction->user_id = Auth::user()->id;
+			$transaction->receipt();
+		}
 
 		DB::commit();
 
 		\Alert::success('Supplies Received')->flash();
-		return redirect("inventory/supply/$stocknumber/stockcard");
+		return redirect('inventory/supply');
 	}
 
 
@@ -153,14 +162,10 @@ class StockCardController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function releaseForm($id)
+	public function releaseForm()
 	{
-		$supply = App\Supply::find($id);
-		$balance = App\Supply::findByStockNumber($supply->stocknumber)->balance;
-		return View('stockcard.release')
-				->with('supply',$supply)
-				->with('balance',$balance)
-				->with('title','Stock Card');
+		return view('stockcard.release')
+			->with('title','Release');
 	}
 
 
@@ -170,137 +175,15 @@ class StockCardController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function release(Request $request)
 	{
-		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
-		$reference = $this->sanitizeString(Input::get('requisitionissueslip'));
-		$date = $this->sanitizeString(Input::get('date'));
-		$issuequantity = $this->sanitizeString(Input::get('quantity'));
-		$office = $this->sanitizeString(Input::get('office'));
-		$daystoconsume = $this->sanitizeString(Input::get('daystoconsume'));
-
-		$validator = Validator::make([
-			'Stock Number' => $stocknumber,
-			'Requisition and Issue Slip' => $reference,
-			'Date' => $date,
-			'Issued Quantity' => $issuequantity,
-			'Office' => $office,
-			'Days To Consume' => $daystoconsume
-		],App\StockCard::$issueRules);
-
-		if($validator->fails())
-		{
-			return redirect("inventory/supply/$stocknumber/stockcard/release")
-					->withInput()
-					->withErrors($validator);
-		}
-
-		$balance = App\Supply::findByStockNumber($stocknumber)->balance;
-		if($issuequantity > $balance)
-		{
-			return redirect("inventory/supply/$stocknumber/stockcard/release")
-					->withInput()
-					->withErrors([ "You cannot release quantity of $stocknumber which is greater than the remaining balance ($balance)" ]);
-
-		}
-
-		$transaction = new App\StockCard;
-		$transaction->date = Carbon\Carbon::parse($date);
-		$transaction->stocknumber = $stocknumber;
-		$transaction->reference = $reference;
-		$transaction->organization = $office;
-		$transaction->issued  = $issuequantity;
-		$transaction->daystoconsume = $daystoconsume;
-		$transaction->user_id = Auth::user()->id;
-		$transaction->issue();
-
-		\Alert::success('Supplies Released')->flash();
-		return redirect("inventory/supply/$stocknumber/stockcard");
-	}
-
-	public function batchAcceptForm()
-	{
-		$supplier = App\Supplier::pluck('name','name');
-		return view('stockcard.batch.accept')
-			->with('title','Batch Accept')
-			->with('supplier',$supplier);
-	}
-
-	public function batchAccept()
-	{
-		$purchaseorder = $this->sanitizeString(Input::get('purchaseorder'));
-		$deliveryreceipt = $this->sanitizeString(Input::get('dr'));
-		$date = $this->sanitizeString(Input::get('date'));
-		$office = $this->sanitizeString(Input::get('office'));
-		$supplier = $this->sanitizeString(Input::get("supplier"));
-		$daystoconsume = $this->sanitizeString(Input::get("daystoconsume"));
-		$stocknumbers = Input::get("stocknumber");
-		$quantity = Input::get("quantity");
-		$fundcluster = $this->sanitizeString(Input::get("fundcluster"));
-
-		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
-
-		$date = Carbon\Carbon::parse($date);
-
-		DB::beginTransaction();
-
-		foreach($stocknumbers as $stocknumber)
-		{
-			$validator = Validator::make([
-				'Stock Number' => $stocknumber,
-				'Purchase Order' => $purchaseorder,
-				'Date' => $date,
-				'Receipt Quantity' => $quantity["$stocknumber"],
-				'Office' => $office,
-				'Days To Consume' => $daystoconsume
-			],App\StockCard::$receiptRules);
-
-			if($validator->fails())
-			{
-				DB::rollback();
-				return redirect("inventory/supply/stockcard/batch/form/accept")
-						->with('total',count($stocknumbers))
-						->with('stocknumber',$stocknumbers)
-						->with('quantity',$quantity)
-						->with('daystoconsume',$daystoconsume)
-						->withInput()
-						->withErrors($validator);
-			}
-
-			$transaction = new App\StockCard;
-			$transaction->date = Carbon\Carbon::parse($date);
-			$transaction->stocknumber = $stocknumber;
-			$transaction->reference = $purchaseorder;
-			$transaction->receipt = $deliveryreceipt;
-			$transaction->organization = $supplier;
-			$transaction->fundcluster = $fundcluster;
-			$transaction->received = $quantity["$stocknumber"];
-			$transaction->daystoconsume = $daystoconsume;
-			$transaction->user_id = Auth::user()->id;
-			$transaction->receipt();
-		}
-
-		DB::commit();
-
-		\Alert::success('Supplies Received')->flash();
-		return redirect('inventory/supply');
-	}
-
-	public function batchReleaseForm()
-	{
-		return view('stockcard.batch.release')
-			->with('title','Batch Release');
-	}
-
-	public function batchRelease()
-	{
-		$purchaseorder = $this->sanitizeString(Input::get('purchaseorder'));
-		$reference = $this->sanitizeString(Input::get('reference'));
-		$date = $this->sanitizeString(Input::get('date'));
-		$office = $this->sanitizeString(Input::get('office'));
-		$daystoconsume = $this->sanitizeString(Input::get("daystoconsume"));
-		$stocknumber = Input::get("stocknumber");
-		$quantity = Input::get("quantity");
+		$purchaseorder = $this->sanitizeString($request->get('purchaseorder'));
+		$reference = $this->sanitizeString($request->get('reference'));
+		$date = $this->sanitizeString($request->get('date'));
+		$office = $this->sanitizeString($request->get('office'));
+		$daystoconsume = $request->get("daystoconsume");
+		$stocknumber = $request->get("stocknumber");
+		$quantity = $request->get("quantity");
 
 		DB::beginTransaction();
 
@@ -315,7 +198,7 @@ class StockCardController extends Controller {
 				'Days To Consume' => $daystoconsume
 			],App\StockCard::$issueRules);
 
-			$balance = App\Supply::findByStockNumber($_stocknumber)->balance;
+			$balance = App\Supply::findByStockNumber($_stocknumber)->stock_balance;
 			if($validator->fails() || $quantity["$_stocknumber"] > $balance)
 			{
 
@@ -326,7 +209,7 @@ class StockCardController extends Controller {
 					$validator = [ "You cannot release quantity of $_stocknumber which is greater than the remaining balance ($balance)" ];
 				}
 
-				return redirect("inventory/supply/stockcard/batch/form/release")
+				return redirect("inventory/supply/stockcard/release")
 						->with('total',count($stocknumber))
 						->with('stocknumber',$stocknumber)
 						->with('quantity',$quantity)
@@ -340,8 +223,8 @@ class StockCardController extends Controller {
 			$transaction->stocknumber = $_stocknumber;
 			$transaction->reference = $reference;
 			$transaction->organization = $office;
-			$transaction->issued  = $quantity["$_stocknumber"];
-			$transaction->daystoconsume = $daystoconsume;
+			$transaction->issued_quantity  = $quantity["$_stocknumber"];
+			$transaction->daystoconsume = $daystoconsume["$_stocknumber"];
 			$transaction->user_id = Auth::user()->id;
 			$transaction->issue();
 		}
@@ -364,14 +247,12 @@ class StockCardController extends Controller {
 		$view = "stockcard.print_index";
 
 		return $this->printPreview($view,$data,$filename);
-
-		// return view($view);
 	}
 
 	public function printAllStockCard()
 	{
 		$supplies = App\Supply::all();
-		// $supplies = Supply::take(2)->get();
+
 		$data = [
 			'supplies' => $supplies
 		];
@@ -379,9 +260,6 @@ class StockCardController extends Controller {
 		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "stockcard.print_all_index";
 		return $this->printPreview($view,$data,$filename);
-
-		// return view($view)
-		// 				->with('supplies',$supplies);
 	}
 
 

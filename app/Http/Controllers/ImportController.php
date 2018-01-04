@@ -196,8 +196,8 @@ class ImportController extends Controller
             $transaction->stocknumber = $stocknumber;
             $transaction->reference = (is_array($reference)) ? implode(' ', $reference) : $reference;
             $transaction->receipt = $receipt;
-            $transaction->issuedunitprice = $issuedunitprice;
-            $transaction->receivedunitprice = $receiptunitprice;
+            $transaction->issued_unitprice = $issuedunitprice;
+            $transaction->received_unitprice = $receiptunitprice;
             $transaction->daystoconsume = $daystoconsume;
             $transaction->created_by = Auth::user()->id;
 
@@ -211,12 +211,12 @@ class ImportController extends Controller
             */
             if($received > 0)
             {
-                $transaction->receivedquantity = $received;
+                $transaction->received_quantity = $received;
                 $transaction->receipt();
             }
             else
             {
-                $transaction->issuedquantity = $issued;
+                $transaction->issued_quantity = $issued;
                 $transaction->issue();
             }
         }
@@ -315,12 +315,12 @@ class ImportController extends Controller
             */
             if($received > 0)
             {
-                $transaction->received = $received;
+                $transaction->received_quantity = $received;
                 $transaction->receipt();
             }
             else
             {
-                $transaction->issued = $issued;
+                $transaction->issued_quantity = $issued;
                 $transaction->issue();
             }
         }

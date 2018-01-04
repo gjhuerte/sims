@@ -15,7 +15,7 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
-			@if(Auth::user()->username == $request->requestor && $request->status == null)
+			@if(isset($request->requestor_id) && Auth::user()->username == $request->requestor_id && $request->status == null)
 	        <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
 	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 	    	</a>
@@ -28,7 +28,7 @@
 				<thead>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="3">Request Slip:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
-		                <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ $request->office }}</span> </th>
+		                <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ isset($request->office) ? $request->office->code : 'None' }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
@@ -66,10 +66,10 @@
 			ajax: "{{ url("request/$request->id") }}",
 			columns: [
 					{ data: "stocknumber" },
-					{ data: "supply.details" },
-					{ data: "quantity_requested" },
-					{ data: "quantity_issued" },
-					{ data: "comments" }
+					{ data: "details" },
+					{ data: "pivot.quantity_requested" },
+					{ data: "pivot.quantity_issued" },
+					{ data: "pivot.comments" }
 			],
     });
 

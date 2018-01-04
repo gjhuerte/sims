@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Auth;
+use Carbon;
 
 class Receipt extends Model
 {
@@ -18,6 +19,22 @@ class Receipt extends Model
     	'received_by',
     	'supplier_name'
     ];
+
+    protected $appends = [
+        'parsed_date_delivered'
+    ];
+
+    public function getParsedDateDeliveredAttribute($value)
+    {
+        return Carbon\Carbon::parse($this->date_delivered)->toFormattedDateString();
+    }
+
+    public function supplies()
+    {
+        return $this->belongsToMany('App\Supply', 'receipts_supplies')
+            ->withPivot('quantity', 'remaining_quantity', 'unitcost')
+            ->withTimestamps();
+    }
 
     public function supplier()
     {

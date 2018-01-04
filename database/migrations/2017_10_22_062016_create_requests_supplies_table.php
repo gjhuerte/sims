@@ -30,6 +30,7 @@ class CreateRequestsSuppliesTable extends Migration
             $table->integer('quantity_requested')->default(0);
             $table->integer('quantity_issued')->nullable();
             $table->integer('quantity_released')->nullable();
+            $table->string('comments')->nullable();
             $table->timestamps();
         });
     }

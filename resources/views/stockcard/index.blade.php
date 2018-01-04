@@ -33,7 +33,7 @@
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
 		                <th class="text-left" colspan="4">Fund Cluster:  
-		                	<span style="font-weight:normal"> {{ isset($supply->fundcluster) ? implode(", ",  $supply->fundcluster->toArray()) : 'None' }} </span>
+		                	<span style="font-weight:normal"> </span>
 		                </th>
 		            </tr>
 		            <tr rowspan="2">
@@ -41,7 +41,7 @@
 		                <th class="text-left" colspan="4">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="4">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit }}</span>  </th>
+		                <th class="text-left" colspan="4">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit->name }}</span>  </th>
 		                <th class="text-left" colspan="4">Reorder Point: <span style="font-weight:normal">{{ $supply->reorderpoint }}</span> </th>
 		            </tr>
 					<tr>
@@ -75,37 +75,15 @@
 				{ "type": "date", "targets": 0 },
 			],
 			"processing": true,
-			ajax: '{{ url("inventory/supply/$supply->stocknumber/stockcard/") }}',
+			ajax: '{{ url("inventory/supply/$supply->id/stockcard/") }}',
 			columns: [
-					{ data: function(callback){
-						return moment(callback.date).format("MMM D, YYYY")
-					} },
+					{ data: "parsed_date"},
 					{ data: "reference" },
-					{ data: function(callback){
-						if(callback.received == null)
-							return 0
-						else
-							return callback.received
-					}},
-					{ data: function(callback){
-						if(callback.issued == null)
-							return 0
-						else
-							return callback.issued
-					}},
-					{ data: function(callback){
-						if(callback.organization == null || callback.organization == "")
-							return "N/A"
-						else
-							return callback.organization
-					}},
-					{ data: "balance" },
-					{ data: function(callback){
-						if(callback.daystoconsume == null || callback.daystoconsume == "")
-							return "N/A"
-						else
-							return callback.daystoconsume
-					}},
+					{ data: "received_quantity"},
+					{ data: "issued_quantity" },
+					{ data: "organization" },
+					{ data: "balance_quantity" },
+					{ data: "daystoconsume" },
 			],
 	    });
 
@@ -114,23 +92,7 @@
 	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 	        <span id="nav-text"> Print</span>
 	      </a>
-			<button type="button" id="accept" class="btn btn-sm btn-success">
-				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-				<span id="nav-text"> Accept</span>
-			</button>
-			<button type="button" id="release" class="btn btn-sm btn-danger">
-				<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-				<span id="nav-text"> Release</span>
-			</button>
 		`);
-
-		$('#accept').on('click',function(){
-			window.location.href = "{{ url("inventory/supply/$supply->stocknumber/stockcard/create") }}"
-		});
-
-		$('#release').on('click',function(){
-			window.location.href = "{{ url("inventory/supply/$supply->stocknumber/stockcard/release") }}"
-		});
 	} );
 </script>
 @endsection

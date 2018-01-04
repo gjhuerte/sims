@@ -76,7 +76,7 @@
 					} },
 					@endif
 					{ data: "ledger_balance" },
-					{ data: "balance" },
+					{ data: "stock_balance" },
 					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 		            { data: function(callback){
 		            	return `
@@ -100,56 +100,22 @@
 			],
 	    });
 
-    @if(Auth::user()->access == 2)
+		@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 	 	$("div.toolbar").html(`
-        <a href="{{ url("inventory/supply/ledgercard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
-	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-	        <span id="nav-text"> Print</span>
-	      </a>
-				<button id="accept" class="btn btn-sm btn-success">
-					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					<span id="nav-text"> Batch Accept</span>
-				</button>
-				<button id="release" class="btn btn-sm btn-danger">
-					<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-					<span id="nav-text"> Batch Release</span>
-				</button>
+			<a @if(Auth::user()->access == 1) href="{{ url("inventory/supply/stockcard/print") }}" @else href="{{ url("inventory/supply/ledgercard/print") }}" @endif target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+				<span id="nav-text"> Print</span>
+			</a>
+			<a @if(Auth::user()->access == 1) href = "{{ url('inventory/supply/stockcard/accept') }}" @else href = "{{ url('inventory/supply/ledgercard/accept') }}" @endif  id="accept" class="btn btn-sm btn-success">
+				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+				<span id="nav-text"> Accept</span>
+			</a>
+			<a @if(Auth::user()->access == 1) href = "{{ url('inventory/supply/stockcard/release') }}" @else href = "{{ url('inventory/supply/ledgercard/release') }}" @endif id="release" class="btn btn-sm btn-danger">
+				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+				<span id="nav-text"> Release</span>
+			</a>
 		`);
 		@endif
-
-		@if(Auth::user()->access == 1)
-	 	$("div.toolbar").html(`
-      <a href="{{ url("inventory/supply/stockcard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
-        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-        <span id="nav-text"> Print</span>
-      </a>
-			<button id="accept" class="btn btn-sm btn-success">
-				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-				<span id="nav-text"> Batch Accept</span>
-			</button>
-			<button id="release" class="btn btn-sm btn-danger">
-				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-				<span id="nav-text"> Batch Release</span>
-			</button>
-		`);
-		@endif
-
-		$('#accept').on("click",function(){
-			@if(Auth::user()->access == 1)
-			window.location.href = "{{ url('inventory/supply/stockcard/batch/form/accept') }}"
-			@elseif(Auth::user()->access == 2)
-			window.location.href = "{{ url('inventory/supply/ledgercard/batch/form/accept') }}"
-			@endif
-		});
-
-		$('#release').on('click',function(){
-			@if(Auth::user()->access == 1)
-			window.location.href = "{{ url('inventory/supply/stockcard/batch/form/release') }}"
-			@elseif(Auth::user()->access == 2)
-			window.location.href = "{{ url('inventory/supply/ledgercard/batch/form/release') }}"
-			@endif
-
-		});
 
 		$('#page-body').show();
 	} );

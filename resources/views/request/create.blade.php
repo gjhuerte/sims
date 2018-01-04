@@ -167,7 +167,7 @@
               <div class="alert alert-info">
                 <ul class="list-unstyled">
                   <li><strong>Item:</strong> ` + details + ` </li>
-                  <li><strong>Remaining Balance:</strong> ` + response.data.balance + ` </li>
+                  <li><strong>Remaining Balance:</strong> ` + response.data.stock_balance + ` </li>
                 </ul>
               </div>
             `)

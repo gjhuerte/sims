@@ -36,7 +36,7 @@
             { data: "stocknumber" },
             { data: "details" },
             { data: "unit.name" },
-            { data: "balance" },
+            { data: "stock_balance" },
             { data: function(callback){
               return `
                 <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>

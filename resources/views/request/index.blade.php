@@ -56,11 +56,14 @@
         ajax: "{{ url('request') }}",
         columns: [
                 { data: "code" },
-                { data: function(callback){
-                    return moment(callback.created_at).format("MMMM D, YYYY")
-                } },
+                { data: 'date_requested' },
                 @if(Auth::user()->access == 1)
-                { data: "office" },
+                { data: function(callback){
+                  if(callback.office) return callback.office.code
+
+                  if(callback.requestor) callback.requestor.username
+                  return null
+                } },
                 @endif
                 { data: "remarks" },
                 { data: "status" },

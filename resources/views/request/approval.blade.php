@@ -50,13 +50,13 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($supplyrequest as $supplyrequest)
+          @foreach($request->supplies as $supplyrequest)
           <tr>
             <td>{{ $supplyrequest->stocknumber }}<input type="hidden" class="stocknumber-list" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}" /></td>
-            <td>{{ $supplyrequest->supply->details }}</td>
-            <td>{{ $supplyrequest->supply->balance }}</td>
-            <td>{{ $supplyrequest->quantity_requested }}<input type="hidden" name="requested[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_requested }}"  /></td>
-            <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->quantity_requested }}"  /></td>
+            <td>{{ $supplyrequest->details }}</td>
+            <td>{{ $supplyrequest->balance }}</td>
+            <td>{{ $supplyrequest->pivot->quantity_requested }}<input type="hidden" name="requested[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->pivot->quantity_requested }}"  /></td>
+            <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->pivot->quantity_requested }}"  /></td>
             <td><input type="text" name="comment[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
           </tr>
           @endforeach

@@ -31,10 +31,7 @@ class Controller extends BaseController
 	public function printPreview( $view , $data=[] , $filename="Preview.php" )
 	{
 		$pdf = PDF::loadView($view,$data);
-		// dd($filename);
-		// return $pdf->download($filename);
-		// $pdf = App::make('dompdf.wrapper');
-		// $pdf->loadHTML('<h1>Test</h1>');
+		
 	    $header = view('layouts.header-report');
 	    return $pdf->setOption('header-html',$header)
 	        ->setOption('header-spacing',5)
