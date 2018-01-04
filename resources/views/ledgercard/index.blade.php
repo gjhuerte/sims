@@ -20,15 +20,14 @@
 			<table class="table table-hover table-striped table-bordered table-condensed" id="inventoryTable" cellspacing="0" width="100%">
 				<thead>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="7">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
-		                <th class="text-left" colspan="7">Fund Cluster: <span style="font-weight:normal"></span> </th>
+		                <th class="text-left" colspan="14">Entity Name:  <span style="font-weight:normal">{{ $supply->entity_name }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="7">Item:  <span style="font-weight:normal">{{ $supply->details }}</span> </th>
 		                <th class="text-left" colspan="7">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="7">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit }}</span>  </th>
+		                <th class="text-left" colspan="7">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit->name }}</span>  </th>
 		                <th class="text-left" colspan="7">Reorder Point: <span style="font-weight:normal">{{ $supply->reorderpoint }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
@@ -91,26 +90,26 @@
 						{ data: function(callback){
 							return ""
 						} },
-						{ data: "receivedquantity"},
+						{ data: "received_quantity"},
 						{ data: function(callback){
 							try{
-								return parseFloat(callback.receivedunitprice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return parseFloat(callback.received_unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch(e) { quantity = 0; return null }
 						} },
 						{ data: function(callback){
 							try {
-								return (callback.receivedquantity * callback.receivedunitprice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return (callback.received_quantity * callback.received_unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch (e) { return null }
 						} },
-						{ data: "issuedquantity" },
+						{ data: "issued_quantity" },
 						{ data: function(callback){
 							try{
-								return parseFloat(callback.issuedunitprice).toFixed(2)
+								return parseFloat(callback.issued_unitcost).toFixed(2)
 							} catch(e) { quantity = 0; return null }
 						} },
 						{ data: function(callback){
 							try {
-								return (callback.issuedquantity * callback.issuedunitprice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+								return (callback.issued_quantity * callback.issued_unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch (e) { return null }
 						} },
 						{ data: function(callback){
@@ -121,7 +120,7 @@
 						} },
 						{ data: function(callback){
 							try{
-								unitcost = (parseFloat(callback.issuedunitprice) + parseFloat(callback.receivedunitprice)) / 2
+								unitcost = (parseFloat(callback.issued_unitcost) + parseFloat(callback.received_unitcost)) / 2
 								return unitcost.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch(e) { unitcost = 0; return null }
 						} },
@@ -145,23 +144,7 @@
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 				<span id="nav-text"> Print</span>
 			</a>
-			{{-- <button id="accept" class="btn btn-sm btn-success">
-				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-				<span id="nav-text"> Accept</span>
-			</button>
-			<button id="release" class="btn btn-sm btn-danger">
-				<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-				<span id="nav-text"> Release</span>
-			</button> --}}
 		`);
-
-		$('#accept').on('click',function(){
-			window.location.href = "{{ url('inventory/supply') }}" + '/' + "{{ $supply->stocknumber }}" + '/ledgercard/create'
-		});
-
-		$('#release').on('click',function(){
-			window.location.href = "{{ url('inventory/supply') }}" + '/' + "{{ $supply->stocknumber }}" + '/ledgercard/release'
-		});
 	});
 </script>
 @endsection

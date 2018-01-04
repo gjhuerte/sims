@@ -8,9 +8,9 @@
       <div class="modal-body">
         <div class="form-group">
           <label>Unit Price</label>
-          <input type="text" class="form-control" placeholder="Unit Price" value="" name="unitprice" id="unitprice" required />
+          <input type="text" class="form-control" placeholder="Unit Price" value="" name="unitcost" id="unitcost" required />
         </div>
-        <div class="form-group">
+        <div class="form-group" id="fundcluster-form">
           <label>Fund Cluster</label>
           <p style="font-size: 13px;">Separate each cluster by comma</p>
           <input type="text" class="form-control" placeholder="Fund Cluster" value="" name="fundcluster" id="fundcluster" required />
@@ -26,8 +26,9 @@
 
 <script>
   $(document).ready(function(){
+
     $('#recordFormModal').on('hidden.bs.modal', function(){
-      $('#unitprice').val("").closest('.form-group').removeClass('has-error')
+      $('#unitcost').val("").closest('.form-group').removeClass('has-error')
       $('#fundcluster').val("").closest('.form-group').removeClass('has-error')
     })
 

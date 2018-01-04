@@ -76,26 +76,26 @@
                 { data: "reference" },
                 { data: "receipt" },
                 { data: "organization" },
-                { data: "stocknumber" },
-                { data: "received" },
-                { data: "issued" },
+                { data: "supply.stocknumber" },
+                { data: "received_quantity" },
+                { data: "issued_quantity" },
                 { data: function(callback){
-                  return `<button type="button" data-id="`+callback.id+`" data-date="`+callback.date+`" data-reference="`+callback.reference+`" data-receipt="`+callback.receipt+`" data-organization="`+callback.organization+`" data-stocknumber="`+callback.stocknumber+`" data-received="`+callback.received+`" data-issued="`+callback.issued+`" class="copy btn btn-primary btn-sm">Copy</button>`
+                  return `<button type="button" data-id="`+callback.id+`" data-date="`+callback.date+`" data-reference="`+callback.reference+`" data-receipt="`+callback.receipt+`" data-organization="`+callback.organization+`" data-stocknumber="`+callback.supply.stocknumber+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Copy</button>`
                 } }
         ],
     });
 
     $('#copy').on('click', function(){
         fundcluster = $('#fundcluster').val()
-        unitprice = $('#unitprice').val()
+        unitcost = $('#unitcost').val()
 
-        if (typeof unitprice === 'undefined' || unitprice == null || unitprice == "")
-          $('#unitprice').closest('.form-group').removeClass('has-success').addClass('has-error');
+        if (typeof unitcost === 'undefined' || unitcost == null || unitcost == "")
+          $('#unitcost').closest('.form-group').removeClass('has-success').addClass('has-error');
         else if (typeof fundcluster === 'undefined' || fundcluster == null || fundcluster == "")
           $('#fundcluster').closest('.form-group').removeClass('has-success').addClass('has-error');
         else
         {
-          $('#unitprice').closest('.form-group').removeClass('has-error')
+          $('#unitcost').closest('.form-group').removeClass('has-error')
           $('#fundcluster').closest('.form-group').removeClass('has-error')
           $.ajax({
             headers: {
@@ -106,16 +106,17 @@
             url: '{{ url("records/copy") }}',
             dataType: 'json',
             data: {
-              'unitprice': unitprice,
+              'unitcost': unitcost,
               'record' : record,
               'fundcluster': fundcluster
             },
             success: function(response){
+              console.log(response)
               $('#recordFormModal').modal('hide')
               if(response == 'success')
-              swal('Success','Operation Successful','success')
+                swal('Success','Operation Successful','success')
               else
-              swal('Error','Problem Occurred while processing your data','error')
+                swal('Error','Problem Occurred while processing your data','error')
               table.ajax.reload();
             },
             error: function(){
@@ -124,8 +125,15 @@
           })
         }
     })
+
     $('#recordsTable').on('click','.copy',function(){
       record = $(this).data()
+
+      if( $(this).data('received') > 0 ) 
+        $('#fundcluster-form').show()
+      else
+        $('#fundcluster-form').hide()
+      
       $('#recordFormModal').modal('show')
     })
   });

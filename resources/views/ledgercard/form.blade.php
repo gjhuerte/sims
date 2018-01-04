@@ -1,160 +1,118 @@
-@extends('backpack::layout')
-
-@section('header')
-	<section class="content-header">
-		<legend><h3 class="text-muted">Batch Accept</h3></legend>
-		<ul class="breadcrumb">
-			<li><a href="{{ url('inventory/supply') }}">Supply Inventory</a></li>
-			<li class="active">Batch Accept</li>
-		</ul>
-	</section>
-@endsection
-
-@section('content')
-@include('modal.request.supply')
-<!-- Default box -->
-  <div class="box" style="padding:10px;">
-    <div class="box-body">
-		{{ Form::open(['method'=>'post','route'=>array('supply.ledgercard.batch.accept'),'class'=>'form-horizontal','id'=>'acceptForm']) }}
-        @if (count($errors) > 0)
-            <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <ul style='margin-left: 10px;'>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <div class="col-md-4">
-        	<div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('Supplier') }}
-					{{ Form::select('supplier',$supplier,Input::old('supplier'),[
-						'id' => 'supplier',
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div>
-			<div class="col-md-12" style="margin-top:10px;">
-				<div class="form-group" id="purchaseorder-field">
-					{{ Form::label('purchaseorder','Purchase Order',[
-							'id' => 'purchaseorder-label'
-					]) }}
-					{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
-						'id' => 'purchaseorder',
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="form-group" id="dr-field">
-					{{ Form::label('Delivery Receipt') }}
-					{{ Form::text('dr',Input::old('dr'),[
-						'id' => 'dr',
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('Invoice Number') }}
-					{{ Form::text('invoice',Input::old('invoice'),[
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('Date') }}
-					{{ Form::text('date',Input::old('date'),[
-						'id' => 'date',
-						'class' => 'form-control',
-						'readonly',
-						'style' => 'background-color: white;'
-					]) }}
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('Days to Consume') }}
-					{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
-						'id' => 'daystoconsume',
-						'class' => 'form-control',
-					]) }}
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-md-12">
-				{{ Form::label('stocknumber','Stock Number') }}
-				</div>
-				<div class="col-md-9">
-				{{ Form::text('stocknumber',null,[
-					'id' => 'stocknumber',
-					'class' => 'form-control'
-				]) }}
-				</div>
-				<div class="col-md-1">
-					<button type="button" id="add-stocknumber" class="btn btn-sm btn-primary">Select</button>
-				</div>
-			</div>
-			<input type="hidden" id="supply-item" />
-			<div id="stocknumber-details">
-			</div>
-			<div class="col-md-12">
-				<div class="form-group">
-				{{ Form::label('Quantity') }}
-				{{ Form::text('quantity','',[
-					'id' => 'quantity',
-					'class' => 'form-control'
-				]) }}
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="form-group">
-				{{ Form::label('Unit Price') }}
-				{{ Form::text('unitprice','',[
-					'id' => 'unitprice',
-					'class' => 'form-control'
-				]) }}
-				</div>
-			</div>
-			<div class="btn-group" style="margin-bottom: 20px;">
-				<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
-			</div>
+<div class="col-md-4">
+	<div class="col-md-12">
+		<div class="form-group">
+			{{ Form::label('Supplier') }}
+			{{ Form::select('supplier',$supplier,Input::old('supplier'),[
+				'id' => 'supplier',
+				'class' => 'form-control'
+			]) }}
 		</div>
-		<div class="col-md-8">
-			<legend>Supplies</legend>
-			<table class="table table-hover table-condensed table-bordered" id="supplyTable">
-				<thead>
-					<tr>
-						<th>Stock Number</th>
-						<th>Information</th>
-						<th>Quantity</th>
-						<th>Unit Price</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-			<div class="pull-right">
-				<div class="btn-group">
-					<button type="button" id="accept" class="btn btn-md btn-primary btn-block">Accept</button>
-				</div>
-				<div class="btn-group">
-					<button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
-				</div>
-			</div>
+	</div>
+	<div class="col-md-12" style="margin-top:10px;">
+		<div class="form-group" id="purchaseorder-field">
+			{{ Form::label('purchaseorder','Purchase Order',[
+					'id' => 'purchaseorder-label'
+			]) }}
+			{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
+				'id' => 'purchaseorder',
+				'class' => 'form-control'
+			]) }}
 		</div>
-		{{ Form::close() }}
-
-    </div><!-- /.box-body -->
-  </div><!-- /.box -->
-
-@endsection
-
-@section('after_scripts')
+	</div>
+	<div class="col-md-12">
+		<div class="form-group" id="dr-field">
+			{{ Form::label('Delivery Receipt') }}
+			{{ Form::text('dr',Input::old('dr'),[
+				'id' => 'dr',
+				'class' => 'form-control'
+			]) }}
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="form-group">
+			{{ Form::label('Date') }}
+			{{ Form::text('date',Input::old('date'),[
+				'id' => 'date',
+				'class' => 'form-control',
+				'readonly',
+				'style' => 'background-color: white;'
+			]) }}
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="form-group">
+			{{ Form::label('Days to Consume') }}
+			{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
+				'id' => 'daystoconsume',
+				'class' => 'form-control',
+			]) }}
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-12">
+		{{ Form::label('stocknumber','Stock Number') }}
+		</div>
+		<div class="col-md-9">
+		{{ Form::text('stocknumber',null,[
+			'id' => 'stocknumber',
+			'class' => 'form-control'
+		]) }}
+		</div>
+		<div class="col-md-1">
+			<button type="button" id="add-stocknumber" class="btn btn-sm btn-primary">Select</button>
+		</div>
+	</div>
+	<input type="hidden" id="supply-item" />
+	<div id="stocknumber-details">
+	</div>
+	<div class="col-md-12">
+		<div class="form-group">
+		{{ Form::label('Quantity') }}
+		{{ Form::text('quantity','',[
+			'id' => 'quantity',
+			'class' => 'form-control'
+		]) }}
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="form-group">
+		{{ Form::label('Unit Price') }}
+		{{ Form::text('unitprice','',[
+			'id' => 'unitprice',
+			'class' => 'form-control'
+		]) }}
+		</div>
+	</div>
+	<div class="btn-group" style="margin-bottom: 20px;">
+		<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
+	</div>
+</div>
+<div class="col-md-8">
+	<legend>Supplies</legend>
+	<table class="table table-hover table-condensed table-bordered" id="supplyTable">
+		<thead>
+			<tr>
+				<th>Stock Number</th>
+				<th>Information</th>
+				<th>Quantity</th>
+				<th>Unit Price</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<div class="col-md-12">
+	<div class="pull-right">
+		<div class="btn-group">
+			<button type="button" id="accept" class="btn btn-md btn-primary btn-block">Accept</button>
+		</div>
+		<div class="btn-group">
+			<button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
+		</div>
+	</div>
+</div>
 <script>
 	$('document').ready(function(){
 
@@ -437,4 +395,3 @@
 	    })
 	})
 </script>
-@endsection

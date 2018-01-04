@@ -17,7 +17,7 @@
     <div class="box-body">
 		{{ Form::open(['method'=>'post','route'=>array('supply.stockcard.accept'),'class'=>'form-horizontal','id'=>'stockCardForm']) }}
 		@include('errors.alert')
-		@include('stockcard.form')
+		@include('inventory.supply.form')
 		{{ Form::close() }}
     </div><!-- /.box-body -->
   </div><!-- /.box -->

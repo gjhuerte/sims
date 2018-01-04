@@ -200,7 +200,7 @@
           if(response.data)
           {
             details = response.data.details
-            balance = response.data.balance
+            balance = response.data.stock_balance
             ret_val = response.data
             html_data = `
               <div class="alert alert-info">
@@ -285,8 +285,8 @@
       }
     })
 
-    @foreach($supplyrequest as $supplyrequest)
-      addForm("{{ $supplyrequest->stocknumber }}","{{ $supplyrequest->supply->details }}", "{{ $supplyrequest->quantity_requested }}")
+    @foreach($request->supplies as $supplyrequest)
+      addForm("{{ $supplyrequest->stocknumber }}","{{ $supplyrequest->details }}", "{{ $supplyrequest->pivot->quantity_requested }}")
     @endforeach
 
     @if(null !== old('stocknumber'))

@@ -146,7 +146,7 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::get('inventory/supply/ledgercard/release',[
 			'as' => 'supply.ledgercard.release.form',
-			'uses' => 'LedgerCardController@breleaseForm'
+			'uses' => 'LedgerCardController@releaseForm'
 		]);
 
 		Route::post('inventory/supply/ledgercard/accept',[
