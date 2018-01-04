@@ -259,7 +259,7 @@ class LedgerCardController extends Controller {
 		$supplies = App\Supply::all();
 		$data = [
 			'supplies' => $supplies
-		];
+		]; 
 
 		$filename = "App\LedgerCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "ledgercard.print_all_index";
@@ -287,8 +287,8 @@ class LedgerCardController extends Controller {
 	public function printLedgerCard($stocknumber)
 	{
 
-		$ledgercard = App\LedgerCard::findByStockNumber($stocknumber)->get();
 		$supply = App\Supply::find($stocknumber);
+		$ledgercard = App\LedgerCard::findBySupplyId($supply->id)->get();
 
 		$data = ['supply' => $supply, 'ledgercard' => $ledgercard ];
 

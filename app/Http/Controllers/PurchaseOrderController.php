@@ -313,7 +313,7 @@ class PurchaseOrderController extends Controller
     public function printPurchaseOrder($id)
     {
         $purchaseordersupply = App\PurchaseOrderSupply::with('supply')
-            ->where('purchaseorder_number','=', App\PurchaseOrder::find($id)->pluck('number') )
+            ->where('id','=', App\PurchaseOrder::find($id)->pluck('number') )
             ->get();
 
         $purchaseorder = App\PurchaseOrder::find($id);

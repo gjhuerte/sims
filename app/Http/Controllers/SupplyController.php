@@ -19,7 +19,6 @@ class SupplyController extends Controller {
 	{
 		if($request->ajax())
 		{
-
 			$supplies = App\Supply::with('unit')->get();
 			return datatables($supplies)->toJson();
 		}

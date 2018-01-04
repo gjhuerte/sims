@@ -253,5 +253,5 @@ class LedgerCard extends Model{
 
 		$this->save();
 	}
-
+	
 }
