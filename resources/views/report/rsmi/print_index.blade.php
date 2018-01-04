@@ -26,7 +26,7 @@
           <td>{{ $report->office }}</td>
           <td style="white-space: nowrap;">{{ $report->stocknumber }}</td>
           <td>{{ $report->details }}</td>
-          <td>{{ $report->unit }}</td>
+          <td>{{ $report->name }}</td>
           <td>{{ $report->issued_quantity }}</td>
           <td>{{ number_format($report->cost,2) }}</td>
           <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
@@ -54,7 +54,7 @@
         <tr>
           <td>{{ $report->stocknumber }}</td>
           <td>{{ $report->details }}</td>
-          <td>{{ $report->issuedquantity }}</td>
+          <td>{{ $report->issued_quantity }}</td>
           <td>{{ number_format($report->cost,2) }}</td>
           <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
           <td></td>

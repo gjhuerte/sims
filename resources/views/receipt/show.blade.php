@@ -32,6 +32,7 @@
 			          </tr>
 			          <tr>
 						<th class="col-sm-1">Stock Number</th>
+						<th class="col-sm-1">Item</th>
 						<th class="col-sm-1">Delivered Quantity</th>
 						<th class="col-sm-1">Remaining Quantity</th>
 						<th class="col-sm-1">Unit Cost</th>
@@ -67,6 +68,7 @@
 				ajax: "{{ url("receipt/$receipt->number") }}",
 				columns: [
 					{ data: "stocknumber" },
+					{ data: "details" },
 					{ data: "pivot.quantity" },
 					{ data: "pivot.remaining_quantity" },
 					{ data: "pivot.unitcost"},

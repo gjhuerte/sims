@@ -22,6 +22,7 @@
       </tr>
     </thead>
     <tbody>
+    @if(count($receiptsupplies) > 0)
       @foreach($receiptsupplies as $receiptsupply)
       <tr>
         <td>{{ $receiptsupply->stocknumber }}</td>
@@ -32,31 +33,13 @@
         <td>{{ $receiptsupply->quantity * ( isset($receiptsupply->cost) && $receiptsupply->cost != "" && $receiptsupply->cost != null ) ? $receiptsupply->cost : 0 }}</td>
       </tr>
       @endforeach
-      </tbody>
-    </table>
-  </div>
-  <div id="footer" class="col-sm-12">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th class="col-sm-1">  Prepared By: </th>
-          {{-- <th class="col-sm-1">   </th>
-          <th class="col-sm-1">   </th> --}}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-center">
-            <br />
-            <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
-            <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->office }}</span>
-          </td>
-          {{-- <td></td>
-          <td></td> --}}
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    @else
+    <tr>
+      <td colspan=7 class="col-sm-12"><p class="text-center">  No record </p></td>
+    </tr>
+    @endif
+    </tbody>
+  </table>
+</div>
+@include('vendor.print_footer')
 @endsection

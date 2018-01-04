@@ -26,7 +26,7 @@ class ReceiptController extends Controller
             return datatables($receipts)->toJson();
         }
 
-        return view('receipt.index')
+        return view('receipt.index') 
                 ->with('title','Receipt');
     }
 
@@ -192,7 +192,7 @@ class ReceiptController extends Controller
 
     public function printReceipt($receipt)
     {
-        $receiptsupplies = App\ReceiptSupply::with('supply')->where('receipt_number','=',$receipt)->get();
+        $receiptsupplies = App\ReceiptSupply::with('supply')->where('receipt_id','=',$receipt)->get();
         $receipt = App\Receipt::findByNumber($receipt);
 
         $data = ['receipt' => $receipt, 'receiptsupplies' => $receiptsupplies ];
