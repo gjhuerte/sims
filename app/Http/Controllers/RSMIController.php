@@ -69,8 +69,8 @@ class RSMIController extends Controller
 		$ris = App\RSMI::filterByMonth($date)->get();
 
         $recapitulation = App\RSMI::filterByMonth($date)
-								->groupBy('stocknumber','issued','details','cost')
-								->select('stocknumber',DB::raw("sum(issued) as issued"),'details',DB::raw("avg(cost) as cost"))
+								->groupBy('stocknumber','issued_quantity','details','cost')
+								->select('stocknumber',DB::raw("sum(issued_quantity) as issued_quantity"),'details',DB::raw("avg(cost) as cost"))
 								->get();
 
         $data = [

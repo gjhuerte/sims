@@ -212,5 +212,9 @@ class LedgerCard extends Model{
 		$this->setBalance();
 		$this->save();
 	}
-
+	
+	public function supply()
+	{
+		return $this->belongsTo('App\Supply','supply_id','id');
+	}
 }

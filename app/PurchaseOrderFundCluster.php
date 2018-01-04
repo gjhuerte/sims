@@ -7,7 +7,7 @@ use App\Supply;
 class PurchaseOrderFundCluster extends Model
 {
     protected $table = 'purchaseorders_fundclusters';
-	protected $fillable = ['purchaseorder_number','fundcluster_code'];
+	protected $fillable = ['purchaseorder_id','fundcluster_id'];
 	protected $primaryKey = 'id';
 	public $incrementing = true;
 	public $timestamps = true;
@@ -24,11 +24,11 @@ class PurchaseOrderFundCluster extends Model
 
 	public function scopeFindByPurchaseOrderNumber($query,$value)
 	{
-		$query->whereIn('purchaseorder_number',$value);
+		$query->whereIn('purchaseorder_id',$value);
 	}
 
 	public function fundcluster()
 	{
-		return $this->belongsTo('App\FundCluster','fundcluster_code','code');
+		return $this->belongsTo('App\FundCluster','fundcluster_id','id');
 	}
 }

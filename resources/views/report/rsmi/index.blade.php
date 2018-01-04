@@ -101,11 +101,11 @@
 					{ data: "office" },
 					{ data: "stocknumber"},
 					{ data: "details" },
-					{ data: "unit" },
-					{ data: "issued" },
+					{ data: "name" },
+					{ data: "issued_quantity" },
 					{ data: "cost"},
 					{ data: function(callback){
-						return (callback.issued * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+						return (callback.issued_quantity * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 					}},
 			],
 	    });
@@ -122,7 +122,7 @@
 			ajax: '{{ url("rsmi") }}' + '/' + date + '/recapitulation',
 			columns: [
 					{ data: "stocknumber" },
-					{ data: "issued" },
+					{ data: "issued_quantity" },
 					{ data: "details"},
 					{ data: function(callback){
 						if(callback.cost != null && callback.cost >= 0)
@@ -130,7 +130,7 @@
 						return 0
 					}},
 					{ data: function(callback){
-						return (callback.issued * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+						return (callback.issued_quantity * callback.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 					}},
 					{ data: function(){
 						return ""
