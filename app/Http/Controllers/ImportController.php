@@ -21,6 +21,15 @@ use Illuminate\Http\File;
 class ImportController extends Controller
 {
     /**
+     * importing options
+     * @var [type]
+     */
+    public $options = [
+        'stockcard' => 'Stock Card',
+        'ledgercard' => 'Ledger Card'
+    ];
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -28,7 +37,8 @@ class ImportController extends Controller
     public function index()
     {
         return view('import.index')
-            ->with('title','Import');
+            ->with('title','Import')
+            ->with('options', $this->options);
     }
 
     /**
@@ -68,21 +78,18 @@ class ImportController extends Controller
             else:
                 DB::rollback();
                 \Alert::error('Incorrect data for importing')->flash();
-                return redirect('import')->with('records',$rows)->withInput();
+                return redirect('import')->withInput();
             endif;
 
             DB::commit();
 
             \Alert::success('Data Imported')->flash();
 
-            return view('import.index')
-                ->with('title','Import')
-                ->with('records', $records)
-                ->with('keys',$keys);
+            return redirect('import');
         }
 
         \Alert::error('No Data Found')->flash();
-        return back();
+        return redirect('import');
     }
 
     public function clean($records , $keys)
@@ -321,6 +328,7 @@ class ImportController extends Controller
             else
             {
                 $transaction->issued_quantity = $issued;
+                $transaction->daystoconsume = App\StockCard::computeDaysToConsume($stocknumber);
                 $transaction->issue();
             }
         }

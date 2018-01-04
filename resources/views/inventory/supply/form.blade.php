@@ -308,7 +308,10 @@ $('document').ready(function(){
 						</div>
 					`)
 
-					$('#add').show()
+					$.getJSON( "{{ url('inventory/supply')  }}" +  '/' + $('#stocknumber').val() + '/compute/daystoconsume', function( data ) {
+					  $('#daystoconsume').val(data)
+					});
+					    				
 				} catch (e) {
 					$('#stocknumber-details').html(`
 						<div class="alert alert-danger">
@@ -318,7 +321,6 @@ $('document').ready(function(){
 						</div>
 					`)
 
-					$('#add').hide()
 				}
 			}
 		})

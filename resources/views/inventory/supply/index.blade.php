@@ -59,6 +59,7 @@
 	      	],
 			@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
+							"<'col-sm-12'<'search'>>" +
 							"<'row'<'col-sm-12'tr>>" +
 							"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 			@endif
@@ -81,15 +82,15 @@
 		            { data: function(callback){
 		            	return `
 		            			@if(Auth::user()->access == 1)
-		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/stockcard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Stockcard</a>
-                      <a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Stockcard</a>
+                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
               	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
               	        <span id="nav-text"> Print</span>
               	      </a>
 		            			@endif
 		            			@if(Auth::user()->access == 2)
-		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/ledgercard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Supply Ledger</a>
-                      <a href="{{ url("inventory/supply") }}` + '/' + callback.stocknumber  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Supply Ledger</a>
+                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
               	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
               	        <span id="nav-text"> Print</span>
               	      </a>
@@ -99,6 +100,10 @@
 		            @endif
 			],
 	    });
+
+	    $("div.search").html(`
+			<a href="{{ url('inventory/supply/advancesearch') }}" style="font-size: 10px;" class="pull-right col-md-offset-11 col-md-1">Advance Search</a>
+    	`)
 
 		@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 	 	$("div.toolbar").html(`
@@ -116,8 +121,6 @@
 			</a>
 		`);
 		@endif
-
-		$('#page-body').show();
 	} );
 </script>
 @endsection

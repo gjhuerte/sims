@@ -92,11 +92,11 @@
 	    		<div class="col-sm-12">
 		    		<div class="input-group">
 		    			<select class="form-control" value="{{ old('type') ? old('type') : "" }}" id="type" name="type">
-		    				<option value="purchaseorder">Purchase Order</option>
-		    				<option value="stockcard">Stock Card</option>
-		    				<option value="ledgercard">Ledger Card</option>
-		    				<option value="Unit">Unit</option>
-		    				<option value="supplier">Supplier</option>
+		    			@if(count($options) > 0)
+		    				@foreach($options as $key => $value)
+		    				<option value="{{ $key }}">{{ $value }}</option>
+		    				@endforeach
+		    			@endif
 		    			</select>
 		    			<div class="input-group-btn">
 		    				<button type="submit" id="import" class="btn btn-md btn-primary">

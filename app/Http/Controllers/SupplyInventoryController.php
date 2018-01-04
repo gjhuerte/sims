@@ -55,5 +55,9 @@ class SupplyInventoryController extends Controller {
 		}
 	}
 
+	public function advanceSearch()
+	{
+		return view('errors.404');
+	}
 
 }

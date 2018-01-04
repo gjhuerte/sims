@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 use Auth;
 use DB;
+
 class StockCard extends Model{
 
 	protected $table = 'stockcards';
@@ -322,5 +323,35 @@ class StockCard extends Model{
 			});
 		}
 
+	}
+
+	public static function computeDaysToConsume($stocknumber)
+	{
+
+		$range = [];
+		$prev = null;
+
+		/**
+		 * [$stockcard description]
+		 * get the range of each date
+		 * @var [type]
+		 */
+		$stockcard = StockCard::findByStockNumber($stocknumber)->filterByIssued()->orderBy('date', 'desc')->get();
+
+		foreach($stockcard as $stock):
+			if($prev):
+				array_push($range, Carbon\Carbon::parse($stock->date)->diffInDays($prev) );
+			else:
+				$prev = Carbon\Carbon::parse($stock->date);
+			endif;
+		endforeach;
+
+		/**
+		 * using frequency and averaging
+		 * @var [type]
+		 */
+		
+		if(count($range) <= 1 ) return 30;
+		else return	intval(collect($range)->avg());
 	}
 }

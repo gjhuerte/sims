@@ -264,6 +264,9 @@ class StockCardController extends Controller {
 		return $this->printPreview($view,$data,$filename);
 	}
 
-
+	public function estimateDaysToConsume(Request $request, $stocknumber)
+	{
+		return json_encode(App\StockCard::computeDaysToConsume($stocknumber));
+	}
 
 }

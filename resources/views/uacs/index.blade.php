@@ -12,18 +12,27 @@
 
 @section('content')
 <!-- Default box -->
-  <div class="box">
+  <div class="box" style="padding:10px;">
     <div class="box-body">
+    	<legend>UACS Codes</legend>
+    	<ul class="list-unstyled text-muted">
+    		<li>This field requires a list of categories. If you havent created a category first, proceeed to <a href="{{ url('category') }}">Category</a> to create one</li>
+    		<li>Assign stock number to category for this to be generated</li>
+    		<li>Assign Fund Cluster to their corresponding Purchase Order</li>
+    	</ul>
 		<div class="panel panel-body table-responsive">
 			<table class="table table-striped table-hover table-justified table-bordered" id='uacsTable'>
 				<thead>
+					<th class="col-sm-1 no-sort">Fund Cluster</th>
 				@if(count($uacs_codes) > 0)
-					<th class="col-sm-1">Fund Cluster</th>
 					@foreach($uacs_codes as $uacs_code)
-					<th class="col-sm-1">{{ $uacs_code }}</th>
+					<th class="col-sm-1 no-sort">{{ $uacs_code }}</th>
 					@endforeach
 				@endif
 				</thead>
+				<tbody>
+					
+				</tbody>
 			</table>
 		</div>
 
@@ -40,6 +49,7 @@
 		var date = moment().format("MMM YYYY");
 
 	    var table = $('#uacsTable').DataTable( {
+	    	@if(count($uacs_codes) > 0)
 	    	serverSide: true,
 	    	columnDefs:[
 				{ targets: 'no-sort', orderable: false },
@@ -84,8 +94,10 @@
 
     			reloadTable()
     		}
+    	@endif
     	})
 
+    	@if(count($uacs_codes) > 0)
     	$('#month').on('change',function(){
     		reloadTable()
     	})
@@ -101,6 +113,7 @@
 
     		table.ajax.url(uacstableurl).load()
     	}
+    	@endif
 	});
 </script>
 @endsection

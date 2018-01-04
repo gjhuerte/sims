@@ -41,11 +41,10 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
 
-	/*
-	|
-	| Supply Inventory Modules
-	|
-	*/
+	/**
+	 * supply inventory modules
+	 */
+	Route::get('inventory/supply/advancesearch','SupplyInventoryController@advanceSearch');
 	Route::get('inventory/supply','SupplyInventoryController@index');
 	Route::get('inventory/supply/{id}','SupplyInventoryController@getSupplyInformation');
 	// return all supply stock number
@@ -124,6 +123,8 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('inventory/supply/{id}/stockcard/print','StockCardController@printStockCard');
 
 		Route::get('inventory/supply/stockcard/print','StockCardController@printAllStockCard');
+
+		Route::get('inventory/supply/{stocknumber}/compute/daystoconsume', 'StockCardController@estimateDaysToConsume');
 
 		Route::resource('inventory/supply.stockcard','StockCardController');
 
