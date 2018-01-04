@@ -45,6 +45,7 @@ class StockCardController extends Controller {
 		$supplier = App\Supplier::pluck('name','name');
 		return view('stockcard.accept')
 			->with('title','Accept')
+			->with('type', 'stock')
 			->with('supplier',$supplier);
 	}
 
@@ -165,7 +166,8 @@ class StockCardController extends Controller {
 	public function releaseForm()
 	{
 		return view('stockcard.release')
-			->with('title','Release');
+				->with('type', 'stock')
+				->with('title','Release');
 	}
 
 

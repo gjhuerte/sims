@@ -146,11 +146,9 @@ class RequestController extends Controller
     public function edit($id)
     {
         $request = App\Request::find($id);
-        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
 
         return view('request.edit')
                 ->with('request',$request)
-                ->with('supplyrequest',$supplyrequest)
                 ->with('title',$request->id);
 
     }
@@ -214,10 +212,7 @@ class RequestController extends Controller
 
       DB::beginTransaction();
 
-      $request = App\Request::find($id);
-
-      $request->supply()->detach();
-      $request->supply()->attach($array);
+      $request = App\Request::find($id)->supplies()->sync($array);
 
       DB::commit();
 
@@ -448,11 +443,9 @@ class RequestController extends Controller
     public function getCancelForm($id)
     {
         $request = App\Request::find($id);
-        $supplyrequest = App\RequestSupply::where('request_id','=',$id)->get();
 
         return view('request.cancel')
                 ->with('request',$request)
-                ->with('supplyrequest',$supplyrequest)
                 ->with('title',$request->id);
     }
 

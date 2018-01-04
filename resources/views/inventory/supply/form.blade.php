@@ -10,20 +10,27 @@
 		</div>
 	</div>
 	<div id="office-details"></div>
+
+	@if($title == 'Release')
 	<div class="form-group">
 		<div class="col-md-12">
 			{{ Form::label('Requisition Issuance Slip') }}
 		</div>
-		<div class="col-md-8">
+		<div class="@if($type == 'ledger' && $title == 'Release') col-md-12 @else col-md-8 @endif">
 			{{ Form::text('reference',Input::old('reference'),[
 				'id' => 'reference',
 				'class' => 'form-control'
 			]) }}
 		</div>
+
+		@if($type == 'stock')
 		<div class="col-md-3">
 			<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({ type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
 		</div>
+		@endif
 	</div>
+	@endif
+
 	@endif
 	@if($title == 'Accept')
 	<div class="col-md-12">
@@ -54,6 +61,18 @@
 			]) }}
 		</div>
 	</div>
+
+	@if($type == 'ledger')
+	<div class="col-md-12">
+		<div class="form-group">
+			{{ Form::label('Invoice Number') }}
+			{{ Form::text('invoice',Input::old('invoice'),[
+				'class' => 'form-control'
+			]) }}
+		</div>
+	</div>
+	@endif
+
 	@endif
 	<div class="col-md-12">
 		<div class="form-group">
@@ -67,6 +86,8 @@
 			]) }}
 		</div>
 	</div>
+
+	@if($title == 'Accept')
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Fund Clusters') }}
@@ -76,6 +97,8 @@
 			<p class="text-muted">Separate each cluster by comma</p>
 		</div>
 	</div>
+	@endif
+
 	<div class="form-group">
 		<div class="col-md-12">
 		{{ Form::label('stocknumber','Stock Number') }}
@@ -103,6 +126,45 @@
 		]) }}
 		</div>
 	</div>
+
+	@if($type == 'ledger')
+
+	@if($title == 'Release')
+	<div class="col-md-12">
+		<div class="form-group">
+		{{ Form::label('Computation Type:') }}
+		<input type="radio" id="fifo" name="computation_type" value="fifo" /> FIFO (First In First Out)
+		<input type="radio" id="averaging" name="computation_type" value="averaging" checked/> Averaging
+		</div>
+	</div>
+	@endif
+
+	<div class="form-group">
+		<div class="col-md-12">
+		{{ Form::label('Unit Price') }}
+		</div>
+		<div class="@if($type == 'ledger' && $title == 'Release') col-md-9 @else col-md-12 @endif">
+		{{ Form::text('unitcost','',[
+			'id' => 'unitcost',
+			'class' => 'form-control'
+		]) }}
+		</div>
+
+		@if($title == 'Release')
+		<div class="col-md-1">
+			<button type="button" id="compute" class="btn btn-sm btn-warning">Compute</button>
+		</div>
+		<div class="col-md-12">
+			<p style="font-size:12px;">
+				Click the button beside the field to generate price. 
+				<br /><span class="text-danger">Note:</span> The Stock Number and Quantity fields must have value before generating Unit Cost</p>
+		</div>
+		@endif
+
+	</div>
+
+	@endif
+
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Days to Consume') }}
@@ -112,6 +174,7 @@
 			]) }}
 		</div>
 	</div>
+
 	<div class="btn-group" style="margin-bottom: 20px;">
 		<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
 	</div>
@@ -124,6 +187,11 @@
 				<th>Stock Number</th>
 				<th>Information</th>
 				<th>Quantity</th>
+
+				@if($type == 'ledger')
+				<th>Unit Price</th>
+				@endif
+
 				<th>Days To Consume</th>
 				<th></th>
 			</tr>
@@ -202,7 +270,11 @@ $('document').ready(function(){
 	        },
 	        function(isConfirm){
 	          if (isConfirm) {
+	          	@if($type == 'ledger')
+	            $('#ledgerCardForm').submit();
+	          	@else
 	            $('#stockCardForm').submit();
+	            @endif
 	          } else {
 	            swal("Cancelled", "Operation Cancelled", "error");
 	          }
@@ -219,13 +291,18 @@ $('document').ready(function(){
 			success: function(response){
 				try{
 					details = response.data.details
+					@if($type == 'ledger')
+					balance = response.data.ledger_balance
+					@else
+					balance = response.data.stock_balance
+					@endif
 					$('#supply-item').val(details.toString())
 					$('#stocknumber-details').html(`
 						<div class="alert alert-info">
 							<ul class="list-unstyled">
 								<li><strong>Item:</strong> ` + details + ` </li>
 								<li><strong>Remaining Balance:</strong> `
-								+ response.data.stock_balance +
+								+ balance +
 								`</li>
 							</ul>
 						</div>
@@ -272,17 +349,25 @@ $('document').ready(function(){
 		stocknumber = $('#stocknumber').val()
 		quantity = $('#quantity').val()
 		details = $('#supply-item').val()
+
+		@if($type == 'ledger')
+		unitcost = $('#unitcost').val()
+		@endif
 		daystoconsume = $('#daystoconsume').val()
-		if(addForm(row,stocknumber,details,quantity,daystoconsume))
+		if(addForm(row,stocknumber,details,quantity,daystoconsume @if($type == 'ledger'), unitcost @endif))
 		{
 			$('#stocknumber').val("")
 			$('#quantity').val("")
 			$('#daystoconsume').val("")
+
+			@if($type == 'ledger')
+			$('#unitcost').val("")
+			@endif
 			$('#stocknumber-details').html("")
 		}
 	})
 
-	function addForm(row,_stocknumber = "",_info ="" ,_quantity = "", _daystoconsume = "")
+	function addForm(row,_stocknumber = "",_info ="" ,_quantity = "", _daystoconsume = "" @if($type == 'ledger'), _unitcost = '' @endif)
 	{
 		error = false
 		$('.stocknumber-list').each(function() {
@@ -306,6 +391,13 @@ $('document').ready(function(){
 				<td>
 					<input type="number" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;"  />
 				</td>
+
+				@if($type == 'ledger')
+				<td>
+					<input type="text" class="form-control text-center" value="` + _unitcost + `" name="unitcost[` + _stocknumber + `]" style="border:none;"  />
+				</td>
+				@endif
+
 				<td>
 					<input type="text" class="form-control text-center" value="` + _daystoconsume + `" name="daystoconsume[` + _stocknumber + `]" style="border:none;"  />
 				</td>
@@ -340,7 +432,7 @@ $('document').ready(function(){
 		  row = 1
 		} else row++
 
-		addForm(row,"{{ $stocknumber }}","{{ old("info.$stocknumber") }}", "{{ old("quantity.$stocknumber") }}", "{{ old("daystoconsume.$stocknumber") }}")
+		addForm(row,"{{ $stocknumber }}","{{ old("info.$stocknumber") }}", "{{ old("quantity.$stocknumber") }}", "{{ old("daystoconsume.$stocknumber") }}" @if($type == 'ledger') , "{{ old("unitcost.$stocknumber") }}" @endif)
 		@endforeach
 
 	}
@@ -370,6 +462,35 @@ $('document').ready(function(){
       $('#stocknumber').val($(this).data('id'))
       $('#addStockNumberModal').modal('hide')
       setStockNumberDetails()
+    })
+
+    $('#compute').on('click',function(){
+    	type = "undefined"
+    	stocknumber = $('#stocknumber').val()
+    	quantity = $('#quantity').val()
+
+    	if($('#fifo').is(':checked'))
+    	{
+    		type = "fifo"
+    	}
+
+    	if($('#averaging').is(":checked"))
+    	{
+    		type = "averaging"
+    	}
+
+		$.ajax({
+			type: 'get',
+			url: '{{ url('inventory/supply/ledgercard') }}' +  '/' + type  + '/computecost' ,
+			dataType: 'json',
+			data:{
+				'quantity' : quantity,
+				'stocknumber' : stocknumber
+			},
+			success: function(response){
+				$('#unitprice').val(response);
+			}
+		})
     })
 })
 </script>

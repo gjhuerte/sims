@@ -14,7 +14,6 @@ class CreateRequestsSuppliesTable extends Migration
     public function up()
     {
         Schema::create('requests_supplies', function (Blueprint $table) {
-            $table->increments('id');        
             $table->integer('supply_id')->unsigned();
             $table->foreign('supply_id')
                     ->references('id')
@@ -31,6 +30,7 @@ class CreateRequestsSuppliesTable extends Migration
             $table->integer('quantity_issued')->nullable();
             $table->integer('quantity_released')->nullable();
             $table->string('comments')->nullable();
+            $table->primary(['request_id', 'supply_id'], 'requests_supplies_primary');
             $table->timestamps();
         });
     }

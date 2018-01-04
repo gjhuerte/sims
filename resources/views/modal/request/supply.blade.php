@@ -1,5 +1,5 @@
 <div class="modal fade" id="addStockNumberModal" tabindex="-1" role="dialog" aria-labelledby="addStockNumberModal">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -36,7 +36,11 @@
             { data: "stocknumber" },
             { data: "details" },
             { data: "unit.name" },
+            @if(isset($type) && $type == 'ledger')
+            { data: "ledger_balance" },
+            @else
             { data: "stock_balance" },
+            @endif
             { data: function(callback){
               return `
                 <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>

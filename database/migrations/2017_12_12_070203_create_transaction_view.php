@@ -21,7 +21,9 @@ class CreateTransactionView extends Migration
                 stockcards.reference as reference ,
                 stockcards.organization as office,
                 supplies.id as supply_id,
+                supplies.stocknumber as stocknumber,
                 supplies.details as supply_details,
+                units.id as unit_id,
                 units.name as unit_name,
                 stockcards.issued_quantity as issued_quantity,
                 ledgercards.issued_unitcost as issued_unitcost

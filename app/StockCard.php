@@ -12,7 +12,6 @@ class StockCard extends Model{
 	public $fundcluster = null;
 	public $timestamps = true;
 	protected $fillable = [ 'date','stocknumber','reference','receipt', 'received','issued','organization','daystoconsume'];
-	public $stocknumber = null;
 
 	// set of rules when receiving an item
 	public static $receiptRules = array(
@@ -35,6 +34,13 @@ class StockCard extends Model{
 		'Days To Consume' => 'max:100'
 	);
 
+	/**
+	 * custom attributes
+	 * used by processes under stockcard
+	 */
+	public $stocknumber = null;
+	public $supplier_id = null;
+
 	protected $appends = [
 		'parsed_date'
 	];
@@ -55,35 +61,15 @@ class StockCard extends Model{
 		return Carbon\Carbon::parse($value)->toFormattedDateString();
 	}
 
-	public function scopeFilterByMonth($query, $date)
+	/**
+	 * transaction is a custom view
+	 * consists of combination of ledger card and stock card
+	 * this is for querying values not in transaction
+	 * checking if the record from stockcard is sync with ledger card
+	 */
+	public function transaction()
 	{
-
-		return $query->whereBetween('date',[
-					$date->startOfMonth()->toDateString(),
-					$date->endOfMonth()->toDateString()
-				]);
-	}
-
-	public function scopeFilterByIssued($query)
-	{
-		return $query->where('issued_quantity','>',0);
-	}
-
-	public function scopeFilterByReceived($query)
-	{
-		return $query->where('received_quantity','>',0);
-	}
-
-	public function scopeFindBySupplyId($query, $value)
-	{
-		return $query->where('supply_id', '=', $value);
-	}
-
-	public function scopeFindByStockNumber($query, $value)
-	{
-		return $query->whereHas('supply', function($query) use ($value){
-			$query->where('stocknumber', '=', $value);
-		});
+		return $this->belongsTo('App\Transaction','id','id');
 	}
 
 	/*
@@ -97,6 +83,78 @@ class StockCard extends Model{
 		return $this->belongsTo('App\Supply','supply_id','id');
 	}
 
+	/**
+	 * [scopeFilterByMonth description]
+	 * @param  [type] $query [description]
+	 * @param  [type] $date  [description]
+	 * @return [type]        [description]
+	 * query per month. receives a date
+	 * check if the date is between the start and end of month
+	 * in the database
+	 */
+	public function scopeFilterByMonth($query, $date)
+	{
+
+		return $query->whereBetween('date',[
+					$date->startOfMonth()->toDateString(),
+					$date->endOfMonth()->toDateString()
+				]);
+	}
+
+	/**
+	 * [scopeFilterByIssued description]
+	 * @param  [type] $query [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeFilterByIssued($query)
+	{
+		return $query->where('issued_quantity','>',0);
+	}
+
+	/**
+	 * [scopeFilterByReceived description]
+	 * @param  [type] $query [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeFilterByReceived($query)
+	{
+		return $query->where('received_quantity','>',0);
+	}
+
+	/**
+	 * [scopeFindBySupplyId description]
+	 * @param  [type] $query [description]
+	 * @param  [type] $value [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeFindBySupplyId($query, $value)
+	{
+		return $query->where('supply_id', '=', $value);
+	}
+
+	/**
+	 * [scopeFindByStockNumber description]
+	 * @param  [type] $query [description]
+	 * @param  [type] $value [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeFindByStockNumber($query, $value)
+	{
+		return $query->whereHas('supply', function($query) use ($value){
+			$query->where('stocknumber', '=', $value);
+		});
+	}
+
+	/**
+	 * [setBalance description]
+	 * set the balance column by
+	 * difference of previous plus
+	 * sum of difference of received and issued
+	 * (pb) + (cr - ci)
+	 * pb - previous balance
+	 * cr - current received
+	 * ci - current issued
+	 */
 	public function setBalance()
 	{
 		$received_quantity = isset($this->received_quantity) ? $this->received_quantity : 0;
@@ -127,11 +185,22 @@ class StockCard extends Model{
 
 		$supply = Supply::findByStockNumber($this->stocknumber);
 
+		/**
+		 * if organization column exists
+		 * find the supplier from the database
+		 * return the information
+		 * else
+		 * create new supplier
+		 */
 		if(isset($this->organization))
 		{
 			$supplier = Supplier::firstOrCreate([ 'name' => $this->organization ]);
 		}
 
+		/**
+		 * finds the receipt in the database
+		 * create new if not found
+		 */
 		if(isset($this->receipt) && $this->receipt != null)
 		{
 
@@ -150,6 +219,10 @@ class StockCard extends Model{
 			] ]);
 		}
 
+		/**
+		 * finds the purchase order in the database
+		 * create new if not found
+		 */
 		if(isset($this->reference) && $this->reference != null)
 		{
 			$purchaseorder = PurchaseOrder::firstOrCreate([
@@ -159,12 +232,18 @@ class StockCard extends Model{
 				'supplier_id' => $supplier->id
 			]);
 
+			/**
+			 * if fund cluster field exists
+			 * assign fund cluster to purchase order
+			 * else 
+			 * create new fund cluster record
+			 */
 			if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)
 			{
+				$purchaseorder->fundclusters()->detach();
 				foreach(explode(",",$this->fundcluster) as $fundcluster)
 				{
 					$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
-					$fundcluster->purchaseorders()->detach([]);
 					$fundcluster->purchaseorders()->attach($purchaseorder->id);
 				}
 			}
@@ -243,10 +322,5 @@ class StockCard extends Model{
 			});
 		}
 
-	}
-
-	public function transaction()
-	{
-		return $this->belongsTo('App\Transaction','id','id');
 	}
 }

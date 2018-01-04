@@ -126,8 +126,8 @@ class ImportController extends Controller
         {
             $separator = ' ';
             $reference = $row['reference'];
-            $issuedunitprice = floatVal(str_replace(",","",$row['issuedprice']));
-            $receiptunitprice = floatVal(str_replace(",","",$row['receiptprice']));
+            $issuedunitcost = floatVal(str_replace(",","",$row['issuedprice']));
+            $receiptunitcost = floatVal(str_replace(",","",$row['receiptprice']));
             $daystoconsume = "None";
             $purchaseorder = "";
             $date = $row['date'];
@@ -196,8 +196,8 @@ class ImportController extends Controller
             $transaction->stocknumber = $stocknumber;
             $transaction->reference = (is_array($reference)) ? implode(' ', $reference) : $reference;
             $transaction->receipt = $receipt;
-            $transaction->issued_unitprice = $issuedunitprice;
-            $transaction->received_unitprice = $receiptunitprice;
+            $transaction->issued_unitcost = $issuedunitcost;
+            $transaction->received_unitcost = $receiptunitcost;
             $transaction->daystoconsume = $daystoconsume;
             $transaction->created_by = Auth::user()->id;
 

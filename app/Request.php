@@ -64,7 +64,9 @@ class Request extends Model
 
     public function scopeFindByOffice($query,$value)
     {
-      return $query->where('office_id','=',$value);
+      return $query->whereHas('office',function($query) use ($value){
+        $query->where('code', '=', $value);
+      });
     }
 
     public function comments()

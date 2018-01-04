@@ -38,11 +38,11 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($supplyrequest as $supplyrequest)
+          @foreach($request->supplies as $supplyrequest)
           <tr>
             <td>{{ $supplyrequest->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}"</td>
-            <td>{{ $supplyrequest->supply->details }}</td>
-            <td>{{ $supplyrequest->supply->balance }}</td>
+            <td>{{ $supplyrequest->details }}</td>
+            <td>{{ $supplyrequest->stock_balance }}</td>
             <td>{{ $supplyrequest->quantity_requested }}</td>
           </tr>
           @endforeach
