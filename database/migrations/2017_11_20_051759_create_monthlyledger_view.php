@@ -16,12 +16,14 @@ class CreateMonthlyledgerView extends Migration
         DB::statement("
           CREATE VIEW monthlyledger_v AS
           SELECT
+                max(reference) as reference
                 max(date) as date,
                 supplies.stocknumber,
                 sum(received_quantity) AS received_quantity,
                 avg(received_unitcost) AS received_unitcost,
                 sum(issued_quantity) AS issued_quantity,
-            avg(issued_unitcost) AS issued_unitcost
+                avg(issued_unitcost) AS issued_unitcost,
+                avg(daystoconsume) as daystoconsume
             FROM
                 ledgercards
             LEFT JOIN 

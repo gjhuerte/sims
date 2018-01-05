@@ -34,8 +34,10 @@ class SupplyController extends Controller {
 	 */
 	public function create(Request $request)
 	{
+		$units = App\Unit::pluck('name','id');
+
 		return view('maintenance.supply.create')
-				->with('unit',App\Unit::pluck('name','name'))
+				->with('unit', $units)
                 ->with('title','Supply Maintenance');
 	}
 
@@ -71,7 +73,7 @@ class SupplyController extends Controller {
 		$supply = new App\Supply;
 		$supply->stocknumber = $stocknumber;
 		$supply->details = $details;
-		$supply->unit = $unit;
+		$supply->unit_id = $unit;
 		$supply->reorderpoint = $reorderpoint;
 		$supply->save();
 
@@ -106,10 +108,12 @@ class SupplyController extends Controller {
 	public function edit(Request $request, $id)
 	{
 		$supply = App\Supply::find($id);
+		$units = App\Unit::pluck('name','id');
+
 		return view('maintenance.supply.edit')
 				->with('supply',$supply)
-				->with('unit',App\Unit::pluck('name','name'))
-        ->with('title','Supply Maintenance');
+				->with('unit',$units)
+        		->with('title','Supply Maintenance');
 	}
 
 
@@ -143,7 +147,7 @@ class SupplyController extends Controller {
 		}
 		$supply->stocknumber = $stocknumber;
 		$supply->details = $details;
-		$supply->unit = $unit;
+		$supply->unit_id = $unit;
 		$supply->reorderpoint = $reorderpoint;
 		$supply->save();
 
@@ -176,7 +180,7 @@ class SupplyController extends Controller {
 		}
 
 		$supply->delete();
-		\Alert::success('Office Removed')->flash();
+		\Alert::success('Supply Removed')->flash();
 
 		return redirect('maintenance/supply');
 	}

@@ -32,13 +32,14 @@
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
-		                <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ $request->status }}</span> </th>
+		                <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ ($request->status == '') ? ucfirst(config('app.default_status')) : $request->status }}</span> </th>
 		            </tr>
 		            <tr>
 						<th>Stock Number</th>
 						<th>Details</th>
 						<th>Quantity Requested</th>
 						<th>Quantity Issued</th>
+						<th>Quantity Released</th>
 						<th>Notes</th>
 					</tr>
 				</thead>
@@ -69,6 +70,7 @@
 					{ data: "details" },
 					{ data: "pivot.quantity_requested" },
 					{ data: "pivot.quantity_issued" },
+					{ data: "pivot.quantity_released" },
 					{ data: "pivot.comments" }
 			],
     });

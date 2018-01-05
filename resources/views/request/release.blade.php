@@ -42,6 +42,7 @@
           <tr>
             <th class="col-sm-1">Stock Number</th>
             <th class="col-sm-1">Information</th>
+            <th class="col-sm-1">Remaining Quantity</th>
             <th class="col-sm-1">Issued Quantity</th>
             <th class="col-sm-1">Released Quantity</th>
             <th class="col-sm-1">Days to Consume</th>
@@ -53,9 +54,10 @@
           <tr>
             <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}"</td>
             <td>{{ $supply->details }}</td>
+            <td>{{ $supply->stock_balance }}</td>
             <td>{{ $supply->pivot->quantity_issued }}</td>
             <td><input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  /></td>
-            <td><input type="text" name="daystoconsume[{{ $supply->stocknumber }}]" class="form-control" /></td>
+            <td><input type="text" name="daystoconsume[{{ $supply->stocknumber }}]" value="{{ App\StockCard::computeDaysToConsume($supply->stocknumber) }}" class="form-control" /></td>
           </tr>
           @elseif($supply->stock_balance <= 0)
           <tr>

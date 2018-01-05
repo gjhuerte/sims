@@ -18,7 +18,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button id="copy" type="button" class="btn btn-primary">Copy</button>
+        <button id="copy-record" type="button" class="btn btn-primary">Copy</button>
       </div>
     </div>
   </div>

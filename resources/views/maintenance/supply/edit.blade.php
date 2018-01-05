@@ -15,7 +15,7 @@
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
-		{{ Form::open(['method'=>'put','route'=>array('supply.update',$supply->stocknumber),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal']) }}
+		{{ Form::open(['method'=>'put','route'=>array('supply.update',$supply->id),'class'=>'col-sm-offset-3 col-sm-6 form-horizontal']) }}
 		@include('errors.alert')
 		@include('maintenance.supply.form')
 		<div class="pull-right">

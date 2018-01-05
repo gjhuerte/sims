@@ -85,14 +85,12 @@
         ],
     });
 
-    $('#copy').on('click', function(){
+    $('#copy-record').on('click', function(){
         fundcluster = $('#fundcluster').val()
         unitcost = $('#unitcost').val()
 
         if (typeof unitcost === 'undefined' || unitcost == null || unitcost == "")
           $('#unitcost').closest('.form-group').removeClass('has-success').addClass('has-error');
-        else if (typeof fundcluster === 'undefined' || fundcluster == null || fundcluster == "")
-          $('#fundcluster').closest('.form-group').removeClass('has-success').addClass('has-error');
         else
         {
           $('#unitcost').closest('.form-group').removeClass('has-error')
@@ -128,12 +126,11 @@
 
     $('#recordsTable').on('click','.copy',function(){
       record = $(this).data()
-
       if( $(this).data('received') > 0 ) 
         $('#fundcluster-form').show()
       else
         $('#fundcluster-form').hide()
-      
+
       $('#recordFormModal').modal('show')
     })
   });

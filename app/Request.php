@@ -42,7 +42,7 @@ class Request extends Model
 
   	public function supplies()
   	{
-  		return $this->belongsToMany('App\Supply','requests_supplies','request_id','supply_id')
+  		return $this->belongsToMany('App\Supply','requests_supplies', 'request_id', 'supply_id')
             ->withPivot('quantity_requested', 'quantity_issued', 'quantity_released', 'comments')
             ->withTimestamps();
   	}

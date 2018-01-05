@@ -285,8 +285,8 @@
       }
     })
 
-    @foreach($request->supplies as $supplyrequest)
-      addForm("{{ $supplyrequest->stocknumber }}","{{ $supplyrequest->details }}", "{{ $supplyrequest->pivot->quantity_requested }}")
+    @foreach($request->supplies as $supply)
+      addForm("{{ $supply->stocknumber }}","{{ $supply->details }}", "{{ $supply->pivot->quantity_requested }}")
     @endforeach
 
     @if(null !== old('stocknumber'))

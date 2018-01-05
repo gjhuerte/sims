@@ -130,18 +130,20 @@ class Supply extends Model{
 	public function purchaseorders()
 	{
 		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies', 'supply_id','purchaseorder_id')
-          ->withPivot('unitcost', 'received_quantity', 'reference', 'date', 'supply_id', 'ordered_quantity', 'remaining_quantity')
+          ->withPivot('unitcost', 'received_quantity', 'ordered_quantity', 'remaining_quantity')
           ->withTimestamps();
 	}
 
 	public function receipts()
 	{
-		return $this->belongsToMany('App\Receipt','receipts_supplies','supply_id','id');
+		return $this->belongsToMany('App\Receipt','receipts_supplies','supply_id','receipt_id')
+          ->withPivot('unitcost', 'quantity', 'remaining_quantity')
+          ->withTimestamps();
 	}
 
 	public function requests()
 	{
-		return $this->belongsToMany('App\Request','requests_supplies','supply_id','id')
+		return $this->belongsToMany('App\Request','requests_supplies','supply_id','request_id')
             ->withPivot('quantity_requested', 'quantity_issued', 'quantity_released', 'comments')
             ->withTimestamps();
 	}

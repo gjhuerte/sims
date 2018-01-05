@@ -16,6 +16,8 @@ return [
 
     'main_agency' => env('MAIN_AGENCY','Not Set'),
 
+    'default_status' => env('DEFAULT_STATUS','pending'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

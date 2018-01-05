@@ -19,7 +19,7 @@
 <div class="col-md-12">
 	<div class="form-group">
 		{{ Form::label('Unit Of Measurement') }}
-		{{ Form::select('unit',$unit,isset($supply->unit) ? $supply->unit : Input::old('unit'),[
+		{{ Form::select('unit', $unit, isset($supply->unit) ? $supply->unit->id : Input::old('unit'), [
 			'id' => 'unit',
 			'class' => 'form-control'
 		]) }}

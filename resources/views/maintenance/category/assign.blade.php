@@ -69,7 +69,7 @@
           <button type="button" id="accept" class="btn btn-md btn-primary btn-block">Assign</button>
         </div>
         <div class="btn-group">
-          <button type="button" id="cancel" class="btn btn-md btn-default">Cancel</button>
+          <button type="button" id="cancel" class="btn btn-md btn-default" onclick='window.location.href="{{ url("maintenance/category") }}"''>Cancel</button>
         </div>
       </div>
     </div>
@@ -112,10 +112,6 @@
 
   })
 
-  $('#cancel').on('click',function(){
-    window.location.href = "{{ url("maintenance/category") }}"
-  })
-
   function setStockNumberDetails(){
     $.ajax({
       type: 'get',
@@ -124,13 +120,14 @@
       success: function(response){
         try{
           details = response.data.details
+          balance = response.data.stock_balance
           $('#supply-item').val(details.toString())
           $('#stocknumber-details').html(`
             <div class="alert alert-info">
               <ul class="list-unstyled">
                 <li><strong>Item:</strong> ` + details + ` </li>
                 <li><strong>Remaining Balance:</strong> `
-                + response.data.balance +
+                + balance +
                 `</li>
               </ul>
             </div>
@@ -163,7 +160,6 @@
     details = $('#supply-item').val()
     if(addForm(row,stocknumber,details))
     {
-      $('#stocknumber').text("")
       $('#stocknumber-details').html("")
       $('#stocknumber').val("")
     }
@@ -231,25 +227,7 @@
 
   }
 
-  init();
-
-  setReferenceLabel( $("#supplier option:selected").text() )
-
-  $('#supplier').on('change',function(){
-    setReferenceLabel($("#supplier option:selected").text())
-  })
-
-  function setReferenceLabel(supplier)
-  {
-      if( supplier == "{{ config('app.main_agency') }}")
-      {
-        $('#purchaseorder-label').text('Agency Purchase Request')
-      }
-      else
-      {
-        $('#purchaseorder-label').text('Purchase Order')
-      }
-  }
+  init()
 
   $('#stocknumber').on('change',function(){
     setStockNumberDetails()

@@ -199,28 +199,6 @@ class StockCard extends Model{
 		}
 
 		/**
-		 * finds the receipt in the database
-		 * create new if not found
-		 */
-		if(isset($this->receipt) && $this->receipt != null)
-		{
-
-			$receipt = Receipt::firstOrCreate([
-				'number' => $this->receipt
-			], [
-				'purchaseorder_id' => isset($this->purchaseorder_id) ? $this->purchaseorder_id : null,
-				'date_delivered' => Carbon\Carbon::parse($this->date),
-				'received_by' => $fullname,
-				'supplier_id' => isset($supplier->id) ? $supplier->id : null
-			]);
-
-			$receipt->supplies()->attach([ $supply->id => [
-				'remaining_quantity' =>  (isset($supply->remaining_quantity) ? $supply->remaining_quantity : 0) + $this->received_quantity,
-				'quantity' => (isset($supply->quantity) ? $supply->quantity : 0) + $this->received_quantity,
-			] ]);
-		}
-
-		/**
 		 * finds the purchase order in the database
 		 * create new if not found
 		 */
@@ -230,7 +208,7 @@ class StockCard extends Model{
 				'number' => $this->reference
 			], [
 				'date_received' => Carbon\Carbon::parse($this->date),
-				'supplier_id' => $supplier->id
+				'supplier_id' => isset($supplier->id) ? $supplier->id : null
 			]);
 
 			/**
@@ -257,6 +235,28 @@ class StockCard extends Model{
 				]
 			]);
 
+		}
+
+		/**
+		 * finds the receipt in the database
+		 * create new if not found
+		 */
+		if(isset($this->receipt) && $this->receipt != null)
+		{
+
+			$receipt = Receipt::firstOrCreate([
+				'number' => $this->receipt
+			], [
+				'purchaseorder_id' => isset($this->purchaseorder_id) ? $this->purchaseorder_id : null,
+				'date_delivered' => Carbon\Carbon::parse($this->date),
+				'received_by' => $fullname,
+				'supplier_id' => isset($supplier->id) ? $supplier->id : null
+			]);
+
+			$receipt->supplies()->attach([ $supply->id => [
+				'remaining_quantity' =>  (isset($supply->remaining_quantity) ? $supply->remaining_quantity : 0) + $this->received_quantity,
+				'quantity' => (isset($supply->quantity) ? $supply->quantity : 0) + $this->received_quantity,
+			] ]);
 		}
 
 		$this->setBalance();

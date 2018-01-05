@@ -12,7 +12,7 @@
         @foreach($supply->ledgerview as $supplyledger)
         <tr>
           <td>{{ Carbon\Carbon::parse($supplyledger->date)->toFormattedDateString() }}</td>
-          <td></td>
+          <td>{{ $supplyledger->reference }}</td>
           <td>{{ $supplyledger->receiptquantity }}</td>
           <td>{{ $supplyledger->receiptunitprice }}</td>
           <td>{{ $supplyledger->receiptunitprice * $supplyledger->receiptunitprice }}</td>
@@ -21,7 +21,9 @@
           <td>{{ $supplyledger->issuequantity * $supplytransaction->issueunitprice }}</td>
           <td>{{ ($supplyledger->issueunitprice * $supplyledger->receiptunitprice) / 2 }}</td>
           <td>{{ $supplyledger->balancequantity * (($supplyledger->issueunitprice * $supplyledger->receiptunitprice) / 2)  }}</td>
-          <td></td>
+          @if(!is_null($supply->first()->daystoconsume))
+          <th>{{ $supplyledger->daystoconsume }}</th>
+          @endif
         </tr>
         @endforeach
       @else

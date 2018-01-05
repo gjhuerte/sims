@@ -7,5 +7,5 @@
     </div>
   @endforeach
 @include('stockcard.print_content')
-@include('vendor.print_footer')
+@include('layouts.print.stockcard-footer')
 @endsection

@@ -3,7 +3,8 @@
   array (
     'name' => 'Supplies Inventory Management System',
     'main_agency' => 'Department of Budget and Management',
-    'env' => 'debug',
+    'default_status' => 'pending',
+    'env' => 'local',
     'debug' => true,
     'url' => 'http://localhost',
     'timezone' => 'UTC',
@@ -151,7 +152,7 @@
       'skin' => 'skin-black',
       'default_date_format' => 'j F Y',
       'default_datetime_format' => 'j F Y H:i',
-      'registration_open' => false,
+      'registration_open' => true,
       'route_prefix' => '',
       'setup_auth_routes' => false,
       'setup_dashboard_routes' => false,

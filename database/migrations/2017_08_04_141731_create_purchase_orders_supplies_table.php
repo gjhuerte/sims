@@ -20,8 +20,6 @@ class CreatePurchaseOrdersSuppliesTable extends Migration
                     ->on('purchaseorders')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->string('reference',100)->nullable();
-            $table->string('date',100)->nullable();
             $table->integer('supply_id')->unsigned();
             $table->foreign('supply_id')
                     ->references('id')

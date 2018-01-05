@@ -37,7 +37,7 @@
               </ul>
           </div>
       @endif
-      <legend><h3 class="text-muted">{{ $request->code }}</h3></legend>
+      <legend><h3 class="text-muted">Request Slip: {{ $request->code }}</h3></legend>
       <table class="table table-hover table-condensed table-bordered" id="supplyTable">
         <thead>
           <tr>
@@ -50,14 +50,14 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($request->supplies as $supplyrequest)
+          @foreach($request->supplies as $supply)
           <tr>
-            <td>{{ $supplyrequest->stocknumber }}<input type="hidden" class="stocknumber-list" name="stocknumber[]" value="{{ $supplyrequest->stocknumber }}" /></td>
-            <td>{{ $supplyrequest->details }}</td>
-            <td>{{ $supplyrequest->balance }}</td>
-            <td>{{ $supplyrequest->pivot->quantity_requested }}<input type="hidden" name="requested[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->pivot->quantity_requested }}"  /></td>
-            <td><input type="number" name="quantity[{{ $supplyrequest->stocknumber }}]" class="form-control" value="{{ $supplyrequest->pivot->quantity_requested }}"  /></td>
-            <td><input type="text" name="comment[{{ $supplyrequest->stocknumber }}]" class="form-control" /></td>
+            <td>{{ $supply->stocknumber }}<input type="hidden" class="stocknumber-list" name="stocknumber[]" value="{{ $supply->stocknumber }}" /></td>
+            <td>{{ $supply->details }}</td>
+            <td>{{ $supply->stock_balance }}</td>
+            <td>{{ $supply->pivot->quantity_requested }}<input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}"  /></td>
+            <td><input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ ($supply->stock_balance < $supply->pivot->quantity_requested) ? $supply->stock_balance : $supply->pivot->quantity_requested }}"  /></td>
+            <td><input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" /></td>
           </tr>
           @endforeach
         </tbody>
@@ -158,7 +158,7 @@
                 <tr>
                   <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`" /></td>
                   <td>`+response.data.details+`</td>
-                  <td>`+response.data.balance+`</td>
+                  <td>`+response.data.stock_balance+`</td>
                   <td>0<input type="hidden" name="requested[`+response.data.stocknumber+`]" class="form-control" value="0"  /></td>
                   <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value=""  /></td>
                   <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>

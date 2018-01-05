@@ -4,5 +4,5 @@
 <div id="content" class="col-sm-12">
 @include('stockcard.print_content')
 </div>
-@include('vendor.print_footer')
+@include('layouts.print.stockcard-footer')
 @endsection
