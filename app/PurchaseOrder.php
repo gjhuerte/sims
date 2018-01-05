@@ -13,29 +13,34 @@ class PurchaseOrder extends Model
 	public $timestamps = true;
 
 	public static $messages = [
-    'Quantity.integer' => 'Quantity must not be 0',
+    	'Quantity.integer' => 'Quantity must not be less than or equal to zero(0)',
 	];
 
 	public static $rules = array(
-		'Purchase Order' => 'required|unique:purchaseorders,number',
+		'Number' => 'required|unique:purchaseorders,number',
 		'Date' => 'required',
-		'Fund Cluster' => '',
-		'Details' => '',
 		'Quantity' => 'integer|min:0'
 	);
 
 
-	public static $updateRules = array(
-		'Purchase Order' => '',
-		'Date' => '',
-		'Fund Cluster' => '',
-		'Details' => '',
-		'Quantity' => ''
-	);
+	public function updateRules(){
+		$number = $this->number;
+		return array(
+			'Number' => 'required|unique:purchaseorders,number,' . $number . ',',
+			'Date' => 'required',
+			'Quantity' => 'integer|min:0'
+		);
+	}
 
-  protected $appends = [
+	public static $stockRules = [
+      'Stock Number' => 'required|exists:supplies,stocknumber',
+      'Quantity' => 'required|min:0',
+      'Unit Price' => 'required',
+    ];
+
+	protected $appends = [
 		'date_received_parsed',
-  ];
+	];
 
 	public function getDateReceivedParsedAttribute()
 	{

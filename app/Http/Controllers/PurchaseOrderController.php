@@ -55,22 +55,21 @@ class PurchaseOrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Request $request)
     {
         $stocknumbers = Input::get('stocknumber');
         $details = $this->sanitizeString(Input::get('details'));
         $fundcluster = $this->sanitizeString(Input::get('fundcluster'));
         $date = $this->sanitizeString(Input::get('date'));
-        $number = $this->sanitizeString(Input::get('po'));
+        $number = $this->sanitizeString(Input::get('number'));
         $quantity = Input::get('quantity');
         $unitprice = Input::get('unitprice');
         $supplier = $this->sanitizeString(Input::get('supplier'));
         $records = [];
 
         $validator = Validator::make([
-            'Purchase Order' => $number,
+            'Number' => $number,
             'Date' => $date,
-            'Fund Cluster' => $fundcluster,
             'Details' => $details
         ],App\PurchaseOrder::$rules);
 
@@ -88,6 +87,13 @@ class PurchaseOrderController extends Controller
 
         foreach($stocknumbers as $stocknumber)
         {
+
+            if(!isset($quantity["$stocknumber"]) || !isset($unitprice["$stocknumber"]))
+            {
+                \Alert::error("Invalid Data Submitted")->flash();
+                return back()->withInput()->withErrors($validator);
+            }
+
             $_quantity = $this->sanitizeString($quantity["$stocknumber"]);
             $_unitprice = $this->sanitizeString($unitprice["$stocknumber"]);
 
@@ -95,18 +101,18 @@ class PurchaseOrderController extends Controller
               'Stock Number' => $stocknumber,
               'Quantity' => $_quantity,
               'Unit Price' => $_unitprice,
-            ],App\PurchaseOrderSupply::$rules,App\PurchaseOrder::$messages);
-
-            if($validator->fails())
-            {
-                DB::rollback();
-                return redirect('purchaseorder/create')
-                        ->withInput()
-                        ->withErrors($validator);
-            }
-
+            ],App\PurchaseOrder::$stockRules,App\PurchaseOrder::$messages);
 
             $supply = App\Supply::findByStockNumber($stocknumber);
+
+            if($validator->fails() || count($supply) <= 0)
+            {
+                DB::rollback();
+
+                if(count($supply) < 0) \Alert::error("Stock Number with the following number $stocknumber does not exists")->flash();
+
+                return back()->withInput()->withErrors($validator);
+            }
 
             $records[$supply->id] = [
               'ordered_quantity' => $_quantity,
@@ -123,7 +129,7 @@ class PurchaseOrderController extends Controller
         $purchaseorder->created_by = Auth::user()->id;
         $purchaseorder->save();
 
-        $purchaseorder->supply()->attach( $records );
+        $purchaseorder->supplies()->attach( $records );
 
         DB::commit();
 

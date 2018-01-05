@@ -109,7 +109,7 @@
 					<td>
 						<input type="text" class="stocknumber-list form-control text-center" value="{{ $stocknumber }}" name="stocknumber[{{ $stocknumber }}]" style="border:none;" />
 					</td>
-					<td>{{ (count($supply = App\Supply::find($stocknumber)) >= 0) ? $supply->details : "N/A" }}</td>
+					<td>{{ (count($supply = App\Supply::find($stocknumber)) > 0) ? $supply->details : "N/A" }}</td>
 					<td>
 						<input type="number" class="form-control text-center" value="{{ (old("quantity.$stocknumber") != null) ? old("quantity.$stocknumber") : "" }}" name="quantity[{{ $stocknumber }}]" style="border:none;"  />
 					</td>
