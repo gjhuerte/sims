@@ -25,9 +25,6 @@ class PurchaseOrderController extends Controller
         if($request->ajax())
         {
             return datatables(App\PurchaseOrder::with('supplier')->get())->toJson();
-            // return json_encode([
-            //     'data'=> App\PurchaseOrder::with('supplier')->get()
-            // ]);
         }
 
 

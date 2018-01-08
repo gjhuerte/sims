@@ -136,7 +136,9 @@ class LedgerCardController extends Controller {
 
 		$supply = App\Supply::find($id);
 
-		$ledgercard = App\LedgerCard::filterByMonth($month)->findByStockNumber($id)->get();
+		if( count($supply) <= 0 ) return view('errors.404');
+
+		$ledgercard = App\LedgerCard::filterByMonth($month)->findByStockNumber($supply->stocknumber)->get();
 		return view('ledgercard.show')
 				->with('ledgercard',$ledgercard)
 				->with('month',Carbon\Carbon::parse($month)->format('F Y'))
@@ -288,9 +290,9 @@ class LedgerCardController extends Controller {
 	{
 
 		$supply = App\Supply::find($stocknumber);
-		$ledgercard = App\LedgerCard::findBySupplyId($supply->id)->get();
+		$ledgercards = App\LedgerCard::findBySupplyId($supply->id)->get();
 
-		$data = ['supply' => $supply, 'ledgercard' => $ledgercard ];
+		$data = ['supply' => $supply, 'ledgercards' => $ledgercards ];
 
 		$filename = "App\LedgerCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
 		$view = "ledgercard.print_show";
@@ -311,6 +313,13 @@ class LedgerCardController extends Controller {
 			$quantity = $this->sanitizeString(Input::get('quantity'));
 
 			/**
+			 * [$supplies description]
+			 * fetch the supplies from database that matches the stocknumber
+			 * @var [type]
+			 */
+			$supply = App\Supply::findByStockNumber($stocknumber);
+
+			/**
 			 * first in first out
 			 * returns the first cost it found
 			 * Note: quantity is not applied
@@ -318,30 +327,41 @@ class LedgerCardController extends Controller {
 			if($type == 'fifo')
 			{
 
-				$supply = App\Supply::findByStockNumber($stocknumber)->receipts()->each(function($item, $key) use($supply) {
-					if($item->pivot->remaining_quantity <= 0) $supply->receipts->forget($key);
-				})->orderBy('date_delivered','desc');
-									
-				$supply->pluck('cost');
+				$unitcost = App\ReceiptSupply::where('supply_id', '=', $supply->id)
+								->where('remaining_quantity', '>' ,0)
+								->where('unitcost', '>', 0)
+								->whereNotNull('unitcost')
+								->leftJoin('receipts', 'receipts.id', '=', 'receipts_supplies.receipt_id')
+								->orderBy('receipts.date_delivered', 'asc')
+								->pluck('unitcost')
+								->first();
 
 				if(count($supply) > 0)
 				{
-					return json_encode($supply);	
+
+					return json_encode(isset($unitcost) ? $unitcost : 0);	
 				}
 
 			}
+
+			/**
+			 * averages the receipts with remaining quantity
+			 * returns the average of receipts
+			 */
 			else
 			{
 
-				$supply = App\ReceiptSupply::findByStockNumber($stocknumber)
-										->where('remaining_quantity','>',0)
-										->select('cost')
-										->pluck('cost');
+				$receipt = App\ReceiptSupply::where('supply_id', '=', $supply->id)
+								->where('remaining_quantity', '>' ,0)
+								->where('unitcost', '>', 0)
+								->whereNotNull('unitcost')
+								->get();
 
 				if(count($supply) > 0)
 				{
-					$total = $supply->sum();
-					$count = count($supply);
+					$total = $receipt->sum('unitcost');
+
+					$count = count($receipt);
 
 					return json_encode($total/$count);
 				}
@@ -367,18 +387,37 @@ class LedgerCardController extends Controller {
 
 	public function copy(Request $request)
 	{
-		$unitcost = $request->get('unitcost');
-		$fundcluster = $request->get('fundcluster');
-		$record = $request->get('record');
-		$issued = $record['issued'];
-		$organization = $record['organization'];
-		$received = $record['received'];
-		$stocknumber = $record['stocknumber'];
-		$reference = $record['reference'];
-		$receipt = $record['receipt'];
-		$date = $record['date'];
-		$daystoconsume = "";
+		$unitcost = $this->sanitizeString( $request->get('unitcost') );
+		$fundcluster = $this->sanitizeString( $request->get('fundcluster') );
+		$id = $this->sanitizeString( $request->get('id') );
 
+		$stockcard = App\StockCard::find($id);
+
+		/**
+		 * check if the record exists in database
+		 */
+		if(count($stockcard) <= 0) return json_encode('not found');
+
+		/**
+		 * [$reference description]
+		 * if the field is found assign to variables
+		 * @var [type]
+		 */
+		$reference = $stockcard->reference;
+		$date = $stockcard->date;
+		$receipt = $stockcard->receipt;
+		$stocknumber = $stockcard->supply->stocknumber;
+		$daystoconsume = $stockcard->daystoconsume;
+		$issued = $stockcard->issued_quantity;
+		$received = $stockcard->received_quantity;
+
+		/**
+		 * [$transaction description]
+		 * check if the record exists in database
+		 * if the record exists the transaction will have an
+		 * object assigned
+		 * @var [type]
+		 */
 		$transaction = App\LedgerCard::where('date','=', $date)
 						->where('reference','=', $reference)
 						->where('receipt','=', $receipt)
@@ -387,6 +426,11 @@ class LedgerCardController extends Controller {
 						->findByStockNumber($stocknumber)
 						->get();
 
+		/**
+		 * if transaction exists
+		 * the record will return an error
+		 * saying the record has already been saved
+		 */
 		if(count($transaction) > 0) return json_encode('duplicate');
 
 		DB::beginTransaction();
@@ -397,8 +441,7 @@ class LedgerCardController extends Controller {
 		$transaction->reference = $reference;
 		$transaction->receipt = $receipt;
 		$transaction->fundcluster = $fundcluster;
-		$transaction->received_unitcost = $unitcost;
-		$transaction->issued_unitcost = $unitcost;
+		$transaction->received_unitcost = $transaction->issued_unitcost = $unitcost;
 		$transaction->daystoconsume = $daystoconsume;
 		$transaction->created_by = Auth::user()->id;
 
@@ -416,8 +459,7 @@ class LedgerCardController extends Controller {
 			if($validator->fails())
 			{
 				DB::rollback();
-
-				return json_encode('error');
+				return json_encode([ 'error', $validator ]);
 			}
 
 			$transaction->issued_quantity = $issued;
@@ -438,8 +480,7 @@ class LedgerCardController extends Controller {
 			if($validator->fails())
 			{
 				DB::rollback();
-
-				return json_encode('error');
+				return json_encode([ 'error', $validator ]);
 			}
 
 			$transaction->received_quantity = $received;

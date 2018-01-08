@@ -6,7 +6,7 @@ use Carbon;
 use Session;
 use DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 class SupplyInventoryController extends Controller {
 
@@ -15,9 +15,9 @@ class SupplyInventoryController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 
 			$supplies = App\Supply::with('unit')->get();
@@ -33,9 +33,9 @@ class SupplyInventoryController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function getSupplyInformation($id = null)
+	public function getSupplyInformation(Request $request, $id = null)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			if(Input::has('term'))
 			{
@@ -58,6 +58,20 @@ class SupplyInventoryController extends Controller {
 	public function advanceSearch()
 	{
 		return view('errors.404');
+	}
+
+	public function show(Request $request, $id = null)
+	{
+		if($request->ajax())
+		{
+			if($request->has('term'))
+			{
+				$stocknumber = $this->sanitizeString($request->get('term'));
+				$supply = App\Supply::where('stocknumber', 'like', '%'. $stocknumber . '%')->pluck('stocknumber');
+
+				return json_encode($supply);
+			}
+		}
 	}
 
 }

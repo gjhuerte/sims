@@ -133,7 +133,7 @@
 							return ""
 						} },
 						{ data: function(callback){
-							url = '{{ url("inventory/supply/$supply->stocknumber/ledgercard") }}' + '/' + callback.date
+							url = '{{ url("inventory/supply/$supply->id/ledgercard") }}' + '/' + callback.date
 							return "<a type='button' href='" + url + "' class='btn btn-default btn-sm'>View</a>"
 						} },
 				],

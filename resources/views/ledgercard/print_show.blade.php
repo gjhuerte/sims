@@ -12,27 +12,27 @@
             @include('ledgercard.print_table_header')
         </thead>
         <tbody>
-        @if(count($ledgercard) > 0)
-          @foreach($ledgercard as $ledgercard)
+        @if(count($ledgercards) > 0)
+          @foreach($ledgercards as $ledgercard)
             <tr>
               <td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M d Y') }}</td>
               <td>{{ $ledgercard->reference }}</td>
-              <td>{{ $ledgercard->receivedquantity }}</td>
-              <td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
-              <td>{{ number_format($ledgercard->receivedquantity * $ledgercard->receivedunitprice, 2) }}</td>
-              <td>{{ $ledgercard->issuedquantity }}</td>
-              <td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
-              <td>{{ number_format($ledgercard->issuedquantity * $ledgercard->issuedunitprice, 2) }}</td>
-              <td>{{ $ledgercard->balancequantity }}</td>
-              @if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
-              <td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
+              <td>{{ $ledgercard->received_quantity }}</td>
+              <td>{{ number_format($ledgercard->received_unitprice, 2) }}</td>
+              <td>{{ number_format($ledgercard->received_quantity * $ledgercard->received_unitprice, 2) }}</td>
+              <td>{{ $ledgercard->issued_quantity }}</td>
+              <td>{{ number_format($ledgercard->issued_unitprice, 2) }}</td>
+              <td>{{ number_format($ledgercard->issued_quantity * $ledgercard->issued_unitprice, 2) }}</td>
+              <td>{{ $ledgercard->balance_quantity }}</td>
+              @if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
+              <td>{{ number_format($ledgercard->received_unitprice, 2) }}</td>
               @else
-              <td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
+              <td>{{ number_format($ledgercard->issued_unitprice, 2) }}</td>
               @endif
-              @if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
-              <td>{{ number_format($ledgercard->receivedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+              @if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
+              <td>{{ number_format($ledgercard->received_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
               @else
-              <td>{{ number_format( $ledgercard->issuedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+              <td>{{ number_format( $ledgercard->issued_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
               @endif
               <td>{{ $ledgercard->daystoconsume }}</td>
             </tr>
@@ -45,5 +45,5 @@
         </tbody>
     </table>
   </div>
-@include('vendor.print_footer')
+@include('layouts.print.stockcard-footer')
 @endsection

@@ -46,6 +46,13 @@ Route::middleware(['auth'])->group(function(){
 	 */
 	Route::get('inventory/supply/advancesearch','SupplyInventoryController@advanceSearch');
 	Route::get('inventory/supply','SupplyInventoryController@index');
+
+	/**
+	 * computation for days to consume
+	 * returns days to consume as return value
+	 * add this first before other options
+	 */
+	Route::get('inventory/supply/{stocknumber}/compute/daystoconsume', 'StockCardController@estimateDaysToConsume');	
 	Route::get('inventory/supply/{id}','SupplyInventoryController@getSupplyInformation');
 	// return all supply stock number
 	Route::get('get/inventory/supply/stocknumber/all','StockCardController@getAllStockNumber');
@@ -123,8 +130,6 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('inventory/supply/{id}/stockcard/print','StockCardController@printStockCard');
 
 		Route::get('inventory/supply/stockcard/print','StockCardController@printAllStockCard');
-
-		Route::get('inventory/supply/{stocknumber}/compute/daystoconsume', 'StockCardController@estimateDaysToConsume');
 
 		Route::resource('inventory/supply.stockcard','StockCardController');
 

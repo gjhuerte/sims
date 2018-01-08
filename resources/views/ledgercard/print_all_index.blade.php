@@ -9,20 +9,20 @@
       </thead>
       <tbody>
       @if(count($supply->ledgerview) > 0)
-        @foreach($supply->ledgerview as $supplyledger)
+        @foreach($supply->ledgerview as $ledgercard)
         <tr>
-          <td>{{ Carbon\Carbon::parse($supplyledger->date)->toFormattedDateString() }}</td>
-          <td>{{ $supplyledger->reference }}</td>
-          <td>{{ $supplyledger->receiptquantity }}</td>
-          <td>{{ $supplyledger->receiptunitprice }}</td>
-          <td>{{ $supplyledger->receiptunitprice * $supplyledger->receiptunitprice }}</td>
-          <td>{{ $supplyledger->issuequantity }}</td>
-          <td>{{ $supplyledger->issueunitprice }}</td>
-          <td>{{ $supplyledger->issuequantity * $supplytransaction->issueunitprice }}</td>
-          <td>{{ ($supplyledger->issueunitprice * $supplyledger->receiptunitprice) / 2 }}</td>
-          <td>{{ $supplyledger->balancequantity * (($supplyledger->issueunitprice * $supplyledger->receiptunitprice) / 2)  }}</td>
+          <td>{{ Carbon\Carbon::parse($ledgercard->date)->toFormattedDateString() }}</td>
+          <td>{{ $ledgercard->reference }}</td>
+          <td>{{ $ledgercard->receipt_quantity }}</td>
+          <td>{{ $ledgercard->receipt_unitprice }}</td>
+          <td>{{ $ledgercard->receipt_unitprice * $ledgercard->receipt_unitprice }}</td>
+          <td>{{ $ledgercard->issuequantity }}</td>
+          <td>{{ $ledgercard->issue_unitprice }}</td>
+          <td>{{ $ledgercard->issue_quantity * $supplytransaction->issue_unitprice }}</td>
+          <td>{{ ($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2 }}</td>
+          <td>{{ $ledgercard->balance_quantity * (($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2)  }}</td>
           @if(!is_null($supply->first()->daystoconsume))
-          <th>{{ $supplyledger->daystoconsume }}</th>
+          <th>{{ $ledgercard->daystoconsume }}</th>
           @endif
         </tr>
         @endforeach
@@ -35,5 +35,5 @@
     </table>
   </div>
   @endforeach
-@include('vendor.print_footer')
+@include('layouts.print.stockcard-footer')
 @endsection

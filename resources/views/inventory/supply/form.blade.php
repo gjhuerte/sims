@@ -104,11 +104,7 @@
 		{{ Form::label('stocknumber','Stock Number') }}
 		</div>
 		<div class="col-md-9">
-		{{ Form::text('stocknumber',null,[
-			'id' => 'stocknumber',
-			'class' => 'form-control',
-			'onchange' => 'setStockNumberDetails()'
-		]) }}
+		<input type="text" value="" name="stocknumber" id="stocknumber" class="form-control" />
 		</div>
 		<div class="col-md-1">
 			<button type="button" data-toggle="modal" data-target="#addStockNumberModal" class="btn btn-sm btn-primary">Select</button>
@@ -189,7 +185,7 @@
 				<th>Quantity</th>
 
 				@if($type == 'ledger')
-				<th>Unit Price</th>
+				<th>Unit Cost</th>
 				@endif
 
 				<th>Days To Consume</th>
@@ -219,6 +215,10 @@ $('document').ready(function(){
 
 	$('#stocknumber').autocomplete({
 		source: "{{ url("get/inventory/supply/stocknumber") }}"
+	})
+
+	$('#stocknumber').on('click focus-in mousein keyup focus-out', function(){
+		setStockNumberDetails()
 	})
 
 	$('#office').autocomplete({
@@ -308,7 +308,9 @@ $('document').ready(function(){
 						</div>
 					`)
 
-					$.getJSON( "{{ url('inventory/supply')  }}" +  '/' + $('#stocknumber').val() + '/compute/daystoconsume', function( data ) {
+					url = "{{ url('inventory/supply')  }}" +  '/' + $('#stocknumber').val() + '/compute/daystoconsume'
+
+					$.getJSON( url, function( data ) {
 					  $('#daystoconsume').val(data)
 					});
 					    				
@@ -490,7 +492,7 @@ $('document').ready(function(){
 				'stocknumber' : stocknumber
 			},
 			success: function(response){
-				$('#unitprice').val(response);
+				$('#unitcost').val(response);
 			}
 		})
     })

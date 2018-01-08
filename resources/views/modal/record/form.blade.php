@@ -17,6 +17,9 @@
         </div>
       </div>
       <div class="modal-footer">
+        <input type="hidden" name="id" value="" id="record-id" />
+        <input type="hidden" name="id" value="" id="record-received" />
+        <input type="hidden" name="id" value="" id="record-issued" />
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button id="copy-record" type="button" class="btn btn-primary">Copy</button>
       </div>

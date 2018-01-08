@@ -196,6 +196,7 @@ class StockCard extends Model{
 		if(isset($this->organization))
 		{
 			$supplier = Supplier::firstOrCreate([ 'name' => $this->organization ]);
+			dd($supplier);
 		}
 
 		/**
@@ -277,6 +278,7 @@ class StockCard extends Model{
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
 		$username =  $firstname . " " . $middlename . " " . $lastname;
+		$issued = $this->issued_quantity;
 
 		$supply = Supply::findByStockNumber($this->stocknumber);
 
@@ -299,28 +301,50 @@ class StockCard extends Model{
 			 *	reduce the quantity of purchase order for each record
 			 *	
 			 */
-			$supply->purchaseorders->each(function($item, $value) use ($supply) {
+			$supply->purchaseorders->each(function($item, $value) use ($supply) 
+			{
+
+				/**
+				 * if the supply has issued quantity
+				 * perform the functions below
+				 */
 				if($this->issued_quantity > 0)
 				{
 
+					/**
+					 * if the remaining quantity of an item is greater than the issued quantity
+					 * reduce the remaining quantity and set the issued balance to zero(0)
+					 */
 					if($item->pivot->remaining_quantity >= $this->issued_quantity)
 					{
 						$item->pivot->remaining_quantity = $item->pivot->remaining_quantity - $this->issued_quantity;
-						$this->setBalance();
-						$this->save();
 						$this->issued_quantity = 0;
 					}
+
+					/**
+					 * if the remaining quantity is less than the issued quantity
+					 * set the remaining quantity as zero(0)
+					 * set the issued balance to zero(0)
+					 */
 					else
 					{
 						$this->issued_quantity = $this->issued_quantity - $item->pivot->remaining_quantity;
 						$item->pivot->remaining_quantity = 0;
-						$this->setBalance();
-						$this->save();
 					}
 
 					$item->pivot->save();
 				}
 			});
+
+
+			/**
+			 * [$this->issued_quantity description]
+			 * reassign the backup to issued quantity column
+			 * @var [type]
+			 */
+			$this->issued_quantity = $issued;
+			$this->setBalance();
+			$this->save();
 		}
 
 	}

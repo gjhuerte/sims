@@ -205,6 +205,12 @@ class LedgerCard extends Model{
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
+
+		/**
+		 * [$issued description]
+		 * backup of the issued quantity
+		 * @var [type]
+		 */
 		$issued = $this->issuedquantity;
 
 		$supply = Supply::findByStockNumber($this->stocknumber);
@@ -214,36 +220,43 @@ class LedgerCard extends Model{
 			if($item->pivot->remaining_quantity <= 0) $supply->receipts->forget($key);
 		});
 
-		if(count($supplies) <= 0)
-		{
-			$this->setBalance();
-			$this->save();
-		}
-		else
+		if(count($supplies) > 0)
 		{
 
 			/**
 			 *	loops through each record
-			 *	reduce the quantity of receipt for each record
+			 *	reduce the issued for each record
 			 *	
 			 */
-			$supply->receipts->each(function($item, $value) use ($supply) {
+			$supplies->each(function($item, $value) use ($supply) 
+			{
+
+				/**
+				 * if the supply has issued quantity
+				 * perform the functions below
+				 */
 				if($this->issued_quantity > 0)
 				{
 
+					/**
+					 * if the remaining quantity of an item is greater than the issued quantity
+					 * reduce the remaining quantity and set the issued balance to zero(0)
+					 */
 					if($item->pivot->remaining_quantity >= $this->issued_quantity)
 					{
 						$item->pivot->remaining_quantity = $item->pivot->remaining_quantity - $this->issued_quantity;
-						$this->setBalance();
-						$this->save();
 						$this->issued_quantity = 0;
 					}
+
+					/**
+					 * if the remaining quantity is less than the issued quantity
+					 * set the remaining quantity as zero(0)
+					 * set the issued balance to zero(0)
+					 */
 					else
 					{
 						$this->issued_quantity = $this->issued_quantity - $item->pivot->remaining_quantity;
 						$item->pivot->remaining_quantity = 0;
-						$this->setBalance();
-						$this->save();
 					}
 
 					$item->pivot->save();
@@ -251,6 +264,14 @@ class LedgerCard extends Model{
 			});
 		}
 
+
+		/**
+		 * [$this->issued_quantity description]
+		 * reassign the backup to issued quantity column
+		 * @var [type]
+		 */
+		$this->issued_quantity = $issued;
+		$this->setBalance();
 		$this->save();
 	}
 	

@@ -55,7 +55,6 @@
 @section('after_scripts')
 <script>
   jQuery(document).ready(function($) {
-    record = []
 
     var table = $('#recordsTable').DataTable({
         serverSide: true,
@@ -80,7 +79,7 @@
                 { data: "received_quantity" },
                 { data: "issued_quantity" },
                 { data: function(callback){
-                  return `<button type="button" data-id="`+callback.id+`" data-date="`+callback.date+`" data-reference="`+callback.reference+`" data-receipt="`+callback.receipt+`" data-organization="`+callback.organization+`" data-stocknumber="`+callback.supply.stocknumber+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Copy</button>`
+                  return `<button type="button" data-id="`+callback.id+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Copy</button>`
                 } }
         ],
     });
@@ -88,9 +87,14 @@
     $('#copy-record').on('click', function(){
         fundcluster = $('#fundcluster').val()
         unitcost = $('#unitcost').val()
+        id = $('#record-id').val()
+        received = $('#record-received').val()
+        issued = $('#record-issued').val()
 
         if (typeof unitcost === 'undefined' || unitcost == null || unitcost == "")
           $('#unitcost').closest('.form-group').removeClass('has-success').addClass('has-error');
+        if ((typeof fundcluster === 'undefined' || fundcluster == null || fundcluster == "") && received > 0)
+          $('#fundcluster').closest('.form-group').removeClass('has-success').addClass('has-error');
         else
         {
           $('#unitcost').closest('.form-group').removeClass('has-error')
@@ -105,7 +109,7 @@
             dataType: 'json',
             data: {
               'unitcost': unitcost,
-              'record' : record,
+              'id' : id,
               'fundcluster': fundcluster
             },
             success: function(response){
@@ -125,12 +129,18 @@
     })
 
     $('#recordsTable').on('click','.copy',function(){
-      record = $(this).data()
-      if( $(this).data('received') > 0 ) 
+      id = $(this).data('id')
+      received = $(this).data('received')
+      issued = $(this).data('issued')
+
+      if( received > 0 ) 
         $('#fundcluster-form').show()
       else
         $('#fundcluster-form').hide()
 
+      $('#record-id').val(id)
+      $('#record-received').val(received)
+      $('#record-issued').val(issued)
       $('#recordFormModal').modal('show')
     })
   });

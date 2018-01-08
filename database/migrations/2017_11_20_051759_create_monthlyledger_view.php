@@ -16,7 +16,7 @@ class CreateMonthlyledgerView extends Migration
         DB::statement("
           CREATE VIEW monthlyledger_v AS
           SELECT
-                max(reference) as reference
+                max(reference) as reference,
                 max(date) as date,
                 supplies.stocknumber,
                 sum(received_quantity) AS received_quantity,

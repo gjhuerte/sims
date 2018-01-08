@@ -50,7 +50,7 @@ class PurchaseOrder extends Model
 	public function supplies()
 	{
 		return $this->belongsToMany('App\Supply','purchaseorders_supplies','purchaseorder_id','supply_id')
-          ->withPivot('unitcost', 'received_quantity', 'reference', 'date', 'ordered_quantity', 'remaining_quantity')
+          ->withPivot('unitcost', 'received_quantity', 'ordered_quantity', 'remaining_quantity')
           ->withTimestamps();
 	}
 

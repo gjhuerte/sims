@@ -5,7 +5,7 @@
 			<legend><h3 class="text-muted">Supply Ledger as of {{ $month }}</h3></legend>
 			<ul class="breadcrumb">
 				<li><a href="{{ url('inventory/supply') }}">Supply Inventory</a></li>
-				<li><a href="{{ url("inventory/supply/$supply->stocknumber/ledgercard") }}">{{ $supply->stocknumber }}</a></li>
+				<li><a href="{{ url("inventory/supply/$supply->id/ledgercard") }}">{{ $supply->stocknumber }}</a></li>
 				<li class="active">{{ $month }}</li>
 			</ul>
 	</section>
