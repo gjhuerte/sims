@@ -17,7 +17,7 @@ class Receipt extends Model
     	'invoice',
     	'date_delivered',
     	'received_by',
-    	'supplier_name'
+    	'supplier_id'
     ];
 
     protected $appends = [
@@ -38,7 +38,7 @@ class Receipt extends Model
 
     public function supplier()
     {
-      return $this->belongsTo('App\Supplier','supplier_name','name');
+      return $this->belongsTo('App\Supplier','supplier_id','id');
     }
 
     public function setReceivedByAttribute($value)

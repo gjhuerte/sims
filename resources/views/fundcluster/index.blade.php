@@ -61,6 +61,8 @@
 						<a type='button' href='` + url + `/edit' class='btn btn-warning btn-sm'>
 		                	<span class="glyphicon glyphicon-pencil"></span> Update
 		             	</a>
+
+            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Fund Cluster" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 		            `
 					return html
 				} }
@@ -73,6 +75,28 @@
 				<span id="nav-text"> Create</span>
 			</button>
 		`);
+
+		$('#fundclusterTable').on('click','button.remove',function(){
+		  	var removeButton = $(this);
+			removeButton.button('loading');
+			$.ajax({
+				type: 'delete',
+				url: '{{ url("fundcluster") }}' + '/' + $(this).data('id'),
+				dataType: 'json',
+				success: function(response){
+					if(response == 'success')
+					swal("Operation Success",'A fund cluster has been removed.',"success")
+					else
+						swal("Error Occurred",'An error has occurred while processing your data.',"error")
+					table.ajax.reload()
+			  		removeButton.button('reset');
+				},
+				error: function(response){
+					swal("Error Occurred",'An error has occurred while processing your data.',"error")
+				}
+
+			})
+		})
 
 		$('#create').on('click',function(){
 			window.location.href = "{{ url('fundcluster/create') }}"

@@ -66,7 +66,7 @@
                 { data: "number" },
                 { data: "invoice" },
                 { data: function(callback){
-                  if(callback.supplier) return callback.supplier
+                  if(callback.supplier) return callback.supplier.name
                   return null
                 }, name: null },
                 { data: "parsed_date_delivered" },

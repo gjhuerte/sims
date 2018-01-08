@@ -247,12 +247,10 @@ class PurchaseOrderController extends Controller
                 /**
                  * check the best suited explode for fundcluster
                  */
-                if(count(explode(", " , $fundclusters) > 0)):
-                  $fundclusters = explode(", " , $fundclusters);
-                elseif(count(explode("," , $fundclusters) > 0)):
-                  $fundclusters = explode("," , $fundclusters);
-                else:
-                  $fundcluster = null;
+                $fundclusters = explode(", " , $fundclusters);
+
+                if(count($fundclusters) <= 1):
+                  $fundclusters = explode("," , implode($fundclusters, ', '));
                 endif;
 
                 foreach($fundclusters as $fundcluster):

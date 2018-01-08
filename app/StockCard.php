@@ -196,7 +196,6 @@ class StockCard extends Model{
 		if(isset($this->organization))
 		{
 			$supplier = Supplier::firstOrCreate([ 'name' => $this->organization ]);
-			dd($supplier);
 		}
 
 		/**
@@ -209,7 +208,7 @@ class StockCard extends Model{
 				'number' => $this->reference
 			], [
 				'date_received' => Carbon\Carbon::parse($this->date),
-				'supplier_id' => isset($supplier->id) ? $supplier->id : null
+				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null
 			]);
 
 			/**
@@ -251,7 +250,7 @@ class StockCard extends Model{
 				'purchaseorder_id' => isset($this->purchaseorder_id) ? $this->purchaseorder_id : null,
 				'date_delivered' => Carbon\Carbon::parse($this->date),
 				'received_by' => $fullname,
-				'supplier_id' => isset($supplier->id) ? $supplier->id : null
+				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null
 			]);
 
 			$receipt->supplies()->attach([ $supply->id => [

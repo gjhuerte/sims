@@ -147,4 +147,20 @@ class FundClusterController extends Controller
         \Alert::success('Operation Successful')->flash();
         return view('fundcluster.index');
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $id = $this->sanitizeString($id);
+        $fundcluster = App\FundCluster::find($id);
+        $fundcluster->delete();
+
+        if($request->ajax())
+        {
+            return json_encode('success');
+        }
+
+        \Alert::success('Fund Cluster removed')->flash();
+        return redirect('fundcluster');
+
+    }
 }

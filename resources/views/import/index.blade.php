@@ -67,7 +67,7 @@
     		</div>
     	</div>
 
-	    {{ Form::open([ 'method' => 'post' , 'url' => array('import'), 'enctype'=> "multipart/form-data" ]) }}
+	    {{ Form::open([ 'method' => 'post' , 'url' => array('import'), 'enctype'=> "multipart/form-data", 'id' => 'importForm' ]) }}
 	    <div class="col-md-6">
 	    	<div class="col-sm-12">
 	    		<div class="form-group">
@@ -99,7 +99,7 @@
 		    			@endif
 		    			</select>
 		    			<div class="input-group-btn">
-		    				<button type="submit" id="import" class="btn btn-md btn-primary">
+		    				<button type="button" id="import" class="btn btn-md btn-primary">
 		                        <span class="glyphicon glyphicon-check"></span>
 		    					Import
 		    				</button>
@@ -163,6 +163,27 @@
 		        reader.readAsDataURL(file);
 		    });  
 		});
+
+		$('#import').on('click',function(){
+        	swal({
+	          title: "Are you sure?",
+	          text: "This will no longer be editable once submitted. Do you want to continue?",
+	          type: "info",
+	          showCancelButton: true,
+	          confirmButtonText: "Yes, submit it!",
+	          cancelButtonText: "No, cancel it!",
+	          closeOnConfirm: false,
+	          closeOnCancel: false
+	        },
+	        function(isConfirm){
+	          if (isConfirm) {
+	          	$('#importForm').submit();
+	          } else {
+	            swal("Cancelled", "Operation Cancelled", "error");
+	          }
+	        })
+
+		})
 	})
 </script>	
 @endsection
