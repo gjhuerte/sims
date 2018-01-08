@@ -138,6 +138,10 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'RequestController@releaseView'
 		]);
 
+		Route::get('disposal/{id}/print', 'DisposalsController@print');
+
+		Route::resource('disposal', 'DisposalsController');
+
 	});
 
 	Route::middleware(['accounting'])->group(function(){

@@ -63,6 +63,8 @@
 
           @if(Auth::user()->access == 1)
 
+          <li><a href="{{ url('disposal') }}"><i class="fa fa-trash-o" aria-hidden="true"></i> <span> Disposal </span></a></li>
+
           <li class="header">Information System</li>
 
           <li><a href="{{ url('maintenance/supply') }}"><i class="fa fa-database" aria-hidden="true"></i> <span> Supply</span></a></li>

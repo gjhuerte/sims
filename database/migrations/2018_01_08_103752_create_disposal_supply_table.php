@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStockCardsTable extends Migration
+class CreateDisposalSupplyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,23 +13,23 @@ class CreateStockCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('stockcards', function (Blueprint $table) {
+        Schema::create('disposal_supply', function(Blueprint $table){
             $table->increments('id');
-            $table->date('date');                   
+            $table->integer('disposal_id')->unsigned();
+            $table->foreign('disposal_id')
+                    ->references('id')
+                    ->on('disposals')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');        
             $table->integer('supply_id')->unsigned();
             $table->foreign('supply_id')
                     ->references('id')
                     ->on('supplies')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->string('reference',100)->nullable();
-            $table->string('receipt',100)->nullable();
-            $table->string('organization',100)->nullable();
-            $table->integer('received_quantity')->default(0);
-            $table->integer('issued_quantity')->default(0);
-            $table->decimal('balance_quantity',8,0)->default(0); 
-            $table->string('daystoconsume',100)->default('N/A');
-            $table->string('user_id');
+            $table->integer('quantity');
+            $table->decimal('unitcost', 8, 2)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -41,6 +41,6 @@ class CreateStockCardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stockcards');
+        Schema::dropIfExists('disposal_supply');
     }
 }
