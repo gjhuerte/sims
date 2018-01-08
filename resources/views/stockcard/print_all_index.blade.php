@@ -6,6 +6,5 @@
           @include('stockcard.print_content')
     </div>
   @endforeach
-@include('stockcard.print_content')
 @include('layouts.print.stockcard-footer')
 @endsection
