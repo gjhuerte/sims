@@ -31,7 +31,7 @@ class Receipt extends Model
 
     public function supplies()
     {
-        return $this->belongsToMany('App\Supply', 'receipts_supplies', 'supply_id', 'receipt_id')
+        return $this->belongsToMany('App\Supply', 'receipts_supplies', 'receipt_id', 'supply_id')
             ->withPivot('quantity', 'remaining_quantity', 'unitcost')
             ->withTimestamps();
     } 

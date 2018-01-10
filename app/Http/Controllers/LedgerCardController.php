@@ -103,7 +103,7 @@ class LedgerCardController extends Controller {
 			$transaction->organization = $organization;
 			$transaction->receipt = $deliveryreceipt;
 			$transaction->invoice = $invoice;
-			$transaction->issued_quantity = null;
+			$transaction->issued_quantity = 0;
 			$transaction->received_quantity = $receiptquantity["$stocknumber"];
 			$transaction->received_unitcost = $receiptunitcost["$stocknumber"];
 			$transaction->issued_unitcost = $receiptunitcost["$stocknumber"];
@@ -230,7 +230,7 @@ class LedgerCardController extends Controller {
 		$transaction->date = Carbon\Carbon::parse($date);
 		$transaction->stocknumber = $stocknumber;
 		$transaction->reference = $reference;
-		$transaction->received_quantity = null;
+		$transaction->received_quantity = 0;
 		$transaction->issued_quantity = $issuequantity["$stocknumber"];
 		$transaction->received_unitcost = $issueunitcost["$stocknumber"];
 		$transaction->issued_unitcost = $issueunitcost["$stocknumber"];

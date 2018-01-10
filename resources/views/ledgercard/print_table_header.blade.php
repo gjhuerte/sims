@@ -32,7 +32,6 @@
     <th class="text-center" colspan="3">Receipt</th>
     <th class="text-center" colspan="3">Issue</th>
     <th class="text-center" colspan="3">Balance</th>
-    <th class="text-center" colspan="2"></th>
 </tr> 
 <tr>
   <th>Date</th>
@@ -46,5 +45,4 @@
   <th>Qty</th>
   <th>Unit Cost</th>
   <th>Total Cost</th>
-  <th>Days To Consume</th>
 </tr>

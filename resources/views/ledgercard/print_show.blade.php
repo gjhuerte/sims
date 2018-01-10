@@ -34,7 +34,6 @@
               @else
               <td>{{ number_format( $ledgercard->issued_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
               @endif
-              <td>{{ $ledgercard->daystoconsume }}</td>
             </tr>
           @endforeach
           @else

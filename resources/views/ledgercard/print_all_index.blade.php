@@ -21,9 +21,6 @@
           <td>{{ $ledgercard->issue_quantity * $supplytransaction->issue_unitprice }}</td>
           <td>{{ ($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2 }}</td>
           <td>{{ $ledgercard->balance_quantity * (($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2)  }}</td>
-          @if(!is_null($supply->first()->daystoconsume))
-          <th>{{ $ledgercard->daystoconsume }}</th>
-          @endif
         </tr>
         @endforeach
       @else

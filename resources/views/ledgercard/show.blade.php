@@ -53,7 +53,6 @@
 						<th>Qty</th>
 						<th>Unit Cost</th>
 						<th>Total Cost</th>
-						<th>Days To Consume</th>
 						<th class="no-sort"></th>
 					</tr>
 				</thead>
@@ -79,7 +78,6 @@
 						@else
 						<td>{{ number_format( $ledgercard->issued_unitcost *  $ledgercard->balance_quantity, 2) }}</td>
 						@endif
-						<td>{{ $ledgercard->daystoconsume }}</td>
 					</tr>
 				@endforeach
 				</tbody>

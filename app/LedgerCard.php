@@ -64,18 +64,12 @@ class LedgerCard extends Model{
 								->orderBy('id','desc')
 								->first();
 
-		if(!isset($this->received_quantity))
-		{
-			$this->received_quantity = 0;
-		}
-
-		if(!isset($this->issued_quantity))
-		{
-			$this->issued_quantity = 0;
-		}
+		$balance = isset($ledgercard->balance_quantity) ? $ledgercard->balance_quantity : 0;
+		$issued = isset($this->issued_quantity) ? $this->issued_quantity  : 0 ;
+		$received = isset($this->received_quantity) ? $this->received_quantity : 0;
 
 		$this->balance_quantity = 0;
-		$this->balance_quantity = ( isset($ledgercard->balance_quantity) ? $ledgercard->balance_quantity : 0 ) + $this->received_quantity - $this->issued_quantity;
+		$this->balance_quantity = $balance + ($received - $issued);
 	}
 
 	public function scopeReference($query, $reference)
@@ -211,7 +205,7 @@ class LedgerCard extends Model{
 		 * backup of the issued quantity
 		 * @var [type]
 		 */
-		$issued = $this->issuedquantity;
+		$issued = $this->issued_quantity;
 
 		$supply = Supply::findByStockNumber($this->stocknumber);
 		$this->supply_id = $supply->id;

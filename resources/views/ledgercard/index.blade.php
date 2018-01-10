@@ -49,7 +49,6 @@
 						<th>Qty</th>
 						<th>Unit Cost</th>
 						<th>Total Cost</th>
-						<th>Days To Consume</th>
 						<th class="no-sort"></th>
 					</tr>
 				</thead>
@@ -128,9 +127,6 @@
 							try{
 								return (quantity * unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 							} catch (e) { return null }
-						} },
-						{ data: function(){
-							return ""
 						} },
 						{ data: function(callback){
 							url = '{{ url("inventory/supply/$supply->id/ledgercard") }}' + '/' + callback.date
