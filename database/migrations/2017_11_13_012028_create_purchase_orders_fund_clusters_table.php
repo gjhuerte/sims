@@ -14,15 +14,19 @@ class CreatePurchaseOrdersFundClustersTable extends Migration
     public function up()
     {
         Schema::create('purchaseorders_fundclusters', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('purchaseorder_number',100);
-            $table->foreign('purchaseorder_number')
-                    ->references('number')
-                    ->on('purchaseorders');
-            $table->string('fundcluster_code');
-            $table->foreign('fundcluster_code')
-                    ->references('code')
-                    ->on('fundclusters');
+            $table->integer('purchaseorder_id')->unsigned();
+            $table->foreign('purchaseorder_id')
+                    ->references('id')
+                    ->on('purchaseorders')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->integer('fundcluster_id')->unsigned();
+            $table->foreign('fundcluster_id')
+                    ->references('id')
+                    ->on('fundclusters')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->primary(['purchaseorder_id', 'fundcluster_id'], 'purchaseorders_fundclusters_primary');
             $table->timestamps();
         });
     }

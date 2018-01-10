@@ -16,45 +16,10 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-        {{ Form::open(array('class' => 'col-md-offset-3 col-md-6  form-horizontal','method'=>'post','route'=>'unit.store','id'=>'unitForm')) }}
-            @if (count($errors) > 0)
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <ul style='margin-left: 10px;'>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-        <div class="" style="padding:10px;">
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('name','Name') }}
-              {{ Form::text('name',Input::old('name'),[
-                'class'=>'form-control',
-                'placeholder'=>'Name'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('abbreviation','Abbreviation') }}
-              {{ Form::text('abbreviation',Input::old('abbreviation'),[
-                'class'=>'form-control',
-                'placeholder'=>'abbreviation'
-              ]) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-12">
-              {{ Form::label('description','Description') }}
-              {{ Form::text('description',Input::old('description'),[
-                'class'=>'form-control',
-                'placeholder'=>'Description'
-              ]) }}
-            </div>
-          </div>
+        {{ Form::open(array('class' => 'form-horizontal','method'=>'post','route'=>'unit.store','id'=>'unitForm')) }}
+        <div class="col-md-offset-3 col-md-6" style="padding:10px;">
+          @include('errors.alert')
+          @include('maintenance.unit.form')
           <div class="pull-right">
             <div class="btn-group">
               <button id="submit" class="btn btn-md btn-primary" type="submit">

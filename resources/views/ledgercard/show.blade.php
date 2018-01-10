@@ -5,7 +5,7 @@
 			<legend><h3 class="text-muted">Supply Ledger as of {{ $month }}</h3></legend>
 			<ul class="breadcrumb">
 				<li><a href="{{ url('inventory/supply') }}">Supply Inventory</a></li>
-				<li><a href="{{ url("inventory/supply/$supply->stocknumber/ledgercard") }}">{{ $supply->stocknumber }}</a></li>
+				<li><a href="{{ url("inventory/supply/$supply->id/ledgercard") }}">{{ $supply->stocknumber }}</a></li>
 				<li class="active">{{ $month }}</li>
 			</ul>
 	</section>
@@ -24,15 +24,14 @@
 			<table class="table table-hover table-bordered" id="supplyLedgerTable">
 				<thead>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="7">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
-		                <th class="text-left" colspan="7">Fund Cluster: <span style="font-weight:normal"></span> </th>
+		                <th class="text-left" colspan="14">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
 		                <th class="text-left" colspan="7">Item:  <span style="font-weight:normal">{{ $supply->details }}</span> </th>
 		                <th class="text-left" colspan="7">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="7">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit }}</span>  </th>
+		                <th class="text-left" colspan="7">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit->name }}</span>  </th>
 		                <th class="text-left" colspan="7">Reorder Point: <span style="font-weight:normal">{{ $supply->reorderpoint }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
@@ -54,7 +53,6 @@
 						<th>Qty</th>
 						<th>Unit Cost</th>
 						<th>Total Cost</th>
-						<th>Days To Consume</th>
 						<th class="no-sort"></th>
 					</tr>
 				</thead>
@@ -63,24 +61,23 @@
 					<tr>
 						<td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M d Y') }}</td>
 						<td>{{ $ledgercard->reference }}</td>
-						<td>{{ $ledgercard->receivedquantity }}</td>
-						<td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
-						<td>{{ number_format($ledgercard->receivedquantity * $ledgercard->receivedunitprice, 2) }}</td>
-						<td>{{ $ledgercard->issuedquantity }}</td>
-						<td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
-						<td>{{ number_format($ledgercard->issuedquantity * $ledgercard->issuedunitprice, 2) }}</td>
-						<td>{{ $ledgercard->balancequantity }}</td>
-						@if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
-						<td>{{ number_format($ledgercard->receivedunitprice, 2) }}</td>
+						<td>{{ $ledgercard->received_quantity }}</td>
+						<td>{{ number_format($ledgercard->received_unitcost, 2) }}</td>
+						<td>{{ number_format($ledgercard->received_quantity * $ledgercard->received_unitcost, 2) }}</td>
+						<td>{{ $ledgercard->issued_quantity }}</td>
+						<td>{{ number_format($ledgercard->issued_unitcost, 2) }}</td>
+						<td>{{ number_format($ledgercard->issued_quantity * $ledgercard->issued_unitcost, 2) }}</td>
+						<td>{{ $ledgercard->balance_quantity }}</td>
+						@if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
+						<td>{{ number_format($ledgercard->received_unitcost, 2) }}</td>
 						@else
-						<td>{{ number_format($ledgercard->issuedunitprice, 2) }}</td>
+						<td>{{ number_format($ledgercard->issued_unitcost, 2) }}</td>
 						@endif
-						@if($ledgercard->receivedquantity != 0 && isset($ledgercard->receivedquantity))
-						<td>{{ number_format($ledgercard->receivedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+						@if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
+						<td>{{ number_format($ledgercard->received_unitcost *  $ledgercard->balance_quantity, 2) }}</td>
 						@else
-						<td>{{ number_format( $ledgercard->issuedunitprice *  $ledgercard->balancequantity, 2) }}</td>
+						<td>{{ number_format( $ledgercard->issued_unitcost *  $ledgercard->balance_quantity, 2) }}</td>
 						@endif
-						<td>{{ $ledgercard->daystoconsume }}</td>
 					</tr>
 				@endforeach
 				</tbody>
@@ -96,7 +93,6 @@
 
 <script>
 $('document').ready(function(){
-
     var table = $('#supplyLedgerTable').DataTable();
 })
 </script>

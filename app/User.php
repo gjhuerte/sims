@@ -4,12 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Contracts\UserResolver;
+use Auth;
 
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 
-class User extends \Eloquent implements Authenticatable
+class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 {
 	use AuthenticableTrait;
+    use \OwenIt\Auditing\Auditable;
 
 	//Database driver
 	/*
@@ -47,7 +51,8 @@ class User extends \Eloquent implements Authenticatable
 
 	public static $passwordRules = array(
 		'Current Password'=>'required|min:8|max:50',
-		'New Password'=>'required|min:8|max:50'
+		'New Password'=>'required|min:8|max:50',
+		'Confirm Password'=>'required|min:8|max:50|same:New Password',
 	);
 
 	public function updateRules(){
@@ -142,124 +147,9 @@ class User extends \Eloquent implements Authenticatable
 	}
 
 
-	public function office()
+	public function officeInfo()
 	{
-		return $this->belongsTo('App\Office','office','deptcode');
-	}
-
-	public function createAuditTrail()
-	{
-
-		$audit = new Audit;
-		$audit->table_affected = "User";
-		$audit->action = $this->action;
-		$array = [];
-		$old = [];
-		$details = "";
-		$column = "";
-
-		$user = User::find($this->id);
-
-
-		if( $this->action == 'create' )
-		{
-			$details = "User created with the following details: ";
-		}
-
-		if( $this->action == 'update' )
-		{
-			$details = "User $user->username's information updated with the following:";
-		}
-
-		if( $this->action == 'delete' )
-		{
-			$details = "User with the following information deleted:";
-		} 
-
-		if(!($this->action == 'update' && $this->username == $user->username ))
-		{
-			array_push($old,"username",$user->username);
-			array_push($array,"username",$this->username);
-			$details = $details . "$this->username as username,";
-			$column = $column . "username,";
-		}
-		
-		if(!($this->action == 'update' && $this->firstname == $user->firstname ))
-		{
-			array_push($old,"firstname",$user->firstname);
-			array_push($array,"firstname",$this->firstname);
-			$details = $details . "$this->firstname as firstname,";
-			$column = $column . "firstname,";
-		}
-
-		if(!($this->action == 'update' && $this->middlename == $user->middlename ))
-		{
-			array_push($old,"middlename",$user->middlename);
-			array_push($array,"middlename",$this->middlename);
-			$details = $details . "$this->middlename as middlename,";
-			$column = $column . "middlename,";
-		}
-
-		if(!($this->action == 'update' && $this->lastname == $user->lastname ))
-		{
-			array_push($old,"lastname",$user->lastname);
-			array_push($array,"lastname",$this->lastname);
-			$details = $details . "$this->lastname as lastname,";
-			$column = $column . "lastname,";
-		}
-
-		if(!($this->action == 'update' && $this->position == $user->position ))
-		{
-			array_push($old,"position",$user->position);
-			array_push($array,"position",$this->position);
-			$details = $details . "$this->position as position,";
-			$column = $column . "position,";
-		}
-
-		if(!($this->action == 'update' && $this->access == $user->access ))
-		{
-			array_push($old,"access",$user->access);
-			array_push($array,"access",$this->access);
-			$details = $details . "$this->accessName as access,";
-			$column = $column . "access,";
-		}
-
-		if(!($this->action == 'update' && $this->office == $user->office ))
-		{
-			array_push($old,"office",$user->office);
-			array_push($array,"office",$this->office);
-			$details = $details . "$this->office as office,";
-			$column = $column . "office,";
-		}
-
-		if(!($this->action == 'update' && $this->email == $user->email ))
-		{
-			array_push($old,"email",$user->email);
-			array_push($array,"email",$this->email);
-			$details = $details . "$this->email as email,";
-			$column = $column . "email,";
-		}
-
-		if($this->action == 'update' && $this->password != $user->password )
-		{
-			$column = "password,";
-			$details = "Password Update for User with an id of $user->id";
-		}
-
-		$audit->details = $details;
-		$audit->column = $column;
-
-		if( $this->action == 'update' )
-		{
-			$audit->initial = json_encode($old);
-			$audit->succeeding = json_encode($array);
-		}
-		else
-		{
-			$audit->initial = json_encode($array);
-		}
-
-		$audit->createRecord();
+		return $this->belongsTo('App\Office','office','code');
 	}
 
 	public function comments()

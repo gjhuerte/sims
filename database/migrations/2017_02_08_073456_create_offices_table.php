@@ -19,9 +19,11 @@ class CreateOfficesTable extends Migration {
 			$table->string('name');	
 			$table->string('description')->nullable();
 			$table->string('head')->nullable();
-			$table->string('status')->nullable()->default('In Service');
+			$table->string('status')
+				->nullable()
+				->default('In Service');
 			$table->timestamps();
-			$table->softDeletes();
+			$table->softDeletes();		
 		});
 	}
 

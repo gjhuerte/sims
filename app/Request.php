@@ -13,15 +13,20 @@ class Request extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $fillable = [ 
-      'requestor' , 
-      'office' ,
+      'requestor_id' , 
+      'office_id' ,
       'issued_by' , 
       'remarks'  , 
       'status' 
     ];
     
+    public static $issueRules = array(
+      'Stock Number' => 'required|exists:supplies,stocknumber',
+      'Quantity' => 'required|integer|min:1',
+    );
+    
     public $appends = [
-      'code'
+      'code', 'date_requested'
     ];
 
     public function getCodeAttribute($value)
@@ -30,10 +35,27 @@ class Request extends Model
       return $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
     }
 
-  	public function supply()
+    public function getDateRequestedAttribute($value)
+    {
+      return Carbon\Carbon::parse($this->created_at)->toFormattedDateString();
+    }
+
+  	public function supplies()
   	{
-  		return $this->belongsToMany('App\Supply','requests_supplies','request_id','stocknumber');
+  		return $this->belongsToMany('App\Supply','requests_supplies', 'request_id', 'supply_id')
+            ->withPivot('quantity_requested', 'quantity_issued', 'quantity_released', 'comments')
+            ->withTimestamps();
   	}
+
+    public function requestor()
+    {
+      return $this->belongsTo('App\User','requestor_id','id');
+    }
+
+    public function office()
+    {
+      return $this->belongsTo('App\Office','office_id','id');
+    }
 
     public function scopeMe($query)
     {
@@ -42,15 +64,13 @@ class Request extends Model
 
     public function scopeFindByOffice($query,$value)
     {
-      return $query->where('office','=',$value);
+      return $query->whereHas('office',function($query) use ($value){
+        $query->where('code', '=', $value);
+      });
     }
 
     public function comments()
     {
       return $this->hasMany('App\RequestComments');
     }
-  	public static $issueRules = array(
-  		'Stock Number' => 'required|exists:supplies,stocknumber',
-  		'Quantity' => 'required|integer|min:1',
-  	);
 }

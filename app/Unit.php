@@ -5,11 +5,11 @@ use Illuminate\Database\Eloquent\Model;
 class Unit extends Model{
 
 	protected $table = 'units';
+	protected $primaryKey = 'id';
 
 	public $timestamps = false;
 
 	protected $fillable = ['name','description'];
-	protected $primaryKey = 'id';
 	public static $rules = array(
 		'Name' => 'required|unique:units,name',
 		'Description' => '',

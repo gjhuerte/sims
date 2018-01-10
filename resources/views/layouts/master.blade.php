@@ -36,6 +36,7 @@
     {{ HTML::script(asset('js/sweetalert.min.js')) }}
     {{ HTML::script(asset('js/jquery.dataTables.min.js')) }}
     {{ HTML::script(asset('js/dataTables.bootstrap.min.js')) }}
+    <script src="{{ asset('js/script.js') }}"></script>
     @yield('script-include')
   </head>
   <body>

@@ -15,17 +15,21 @@ class CreateReceiptsSuppliesTable extends Migration
     {
         Schema::create('receipts_supplies', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('receipt_number');
-            $table->foreign('receipt_number')
-                    ->references('number')
-                    ->on('receipts');
-            $table->string('stocknumber');
-            $table->foreign('stocknumber')
-                    ->references('stocknumber')
-                    ->on('supplies');
+            $table->integer('receipt_id')->unsigned();
+            $table->foreign('receipt_id')
+                    ->references('id')
+                    ->on('receipts')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');        
+            $table->integer('supply_id')->unsigned();
+            $table->foreign('supply_id')
+                    ->references('id')
+                    ->on('supplies')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->integer('quantity');
             $table->integer('remaining_quantity');
-            $table->float('cost')->nullable();
+            $table->decimal('unitcost', 8, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

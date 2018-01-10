@@ -121,8 +121,8 @@
           <div class="row">
             <div class="col-sm-4 col-xs-4">
               <div class="description-block border-right">
-                <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> {{ $most_request->total }}</span>
-                <h5 class="description-header">{{ $most_request->stocknumber }} </h5>
+                <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> {{ isset($most_request->total) ? $most_request->total : "None" }}</span>
+                <h5 class="description-header">{{ isset($most_request->stocknumber) ? $most_request->stocknumber : "None" }} </h5>
                 <span class="description-text">Most Requested Item  </span>
               </div>
               <!-- /.description-block -->
@@ -130,8 +130,8 @@
             <!-- /.col -->
             <div class="col-sm-4 col-xs-4">
               <div class="description-block border-right">
-                <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> {{ $request_office->total }}</span>
-                <h5 class="description-header">{{ $request_office->organization }}</h5>
+                <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> {{ isset($request_office->total) ? $request_office->total : "None" }}</span>
+                <h5 class="description-header">{{ isset($request_office->organization) ? $request_office->organization :"None" }}</h5>
                 <span class="description-text">Most Request Office</span>
               </div>
               <!-- /.description-block -->

@@ -6,6 +6,8 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "acacha/admin-lte-template-laravel": "4.*",
+        "acacha/adminlte-laravel-installer": "~3.0",
         "backpack/backupmanager": "^1.2",
         "backpack/base": "^0.7.25",
         "backpack/crud": "^3.2",
@@ -22,6 +24,7 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
         "maatwebsite/excel": "~2.1.0",
+        "owen-it/laravel-auditing": "^5.0",
         "vsmoraes/laravel-pdf": "^2.0",
         "yajra/laravel-datatables-oracle": "~8.0"
     },

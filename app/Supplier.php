@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier extends Model
 {
   	protected $table = 'suppliers';
-	protected $fillable = ['name','address','contact','website','email'];
 	protected $primaryKey = 'id';
+	protected $fillable = ['name','address','contact','website','email'];
 	public $incrementing = true;
 	public $timestamps = true;
 

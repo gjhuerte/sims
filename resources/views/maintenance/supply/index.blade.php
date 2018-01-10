@@ -18,7 +18,6 @@
 		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyTable">
 			<thead>
 				<th class="col-sm-1">Stock No.</th>
-				<th class="col-sm-1">Entity Name</th>
 				<th class="col-sm-1">Details</th>
 				<th class="col-sm-1">Unit</th>
 				<th class="col-sm-1">Reorder Point</th>
@@ -55,14 +54,14 @@
 			ajax: "{{ url('maintenance/supply') }}",
 			columns: [
 				{ data: "stocknumber" },
-				{ data: "entityname" },
 				{ data: "details" },
-				{ data: "unit" },
+				{ data: "unit.name" },
 				{ data: "reorderpoint" }
 				@if(Auth::user()->access == 1)
 	           , { data: function(callback){
 	            	return `
-	            			<a href="{{ url("maintenance/supply") }}` + '/' + callback.stocknumber + '/edit' + `" class="btn btn-default btn-sm">Edit</a>
+	            			<a href="{{ url("maintenance/supply") }}` + '/' + callback.id + '/edit' + `" class="btn btn-default btn-sm">Edit</a>
+	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Supply" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	            @endif
@@ -77,6 +76,28 @@
 				</a>
 		`);
 		@endif
+
+		$('#supplyTable').on('click','button.remove',function(){
+		  	var removeButton = $(this);
+			removeButton.button('loading');
+			$.ajax({
+				type: 'delete',
+				url: '{{ url("maintenance/supply") }}' + '/' + $(this).data('id'),
+				dataType: 'json',
+				success: function(response){
+					if(response == 'success')
+					swal("Operation Success",'A supply has been removed.',"success")
+					else
+						swal("Error Occurred",'An error has occurred while processing your data.',"error")
+					table.ajax.reload()
+			  		removeButton.button('reset');
+				},
+				error: function(response){
+					swal("Error Occurred",'An error has occurred while processing your data.',"error")
+				}
+
+			})
+		})
 
 		$('#page-body').show();
 	} );

@@ -3,13 +3,14 @@
   array (
     'name' => 'Supplies Inventory Management System',
     'main_agency' => 'Department of Budget and Management',
+    'default_status' => 'pending',
     'env' => 'local',
     'debug' => true,
     'url' => 'http://localhost',
     'timezone' => 'UTC',
     'locale' => 'en',
     'fallback_locale' => 'en',
-    'key' => 'base64:HWQ4B8/2segWMHryuPRdcIBbjXoMH/sVX/UNtHa2eYY=',
+    'key' => 'base64:hsZ4HHIAsY3ubjVF8tcd1vNYU4gxCvYsEVrXreDUmlg=',
     'cipher' => 'AES-256-CBC',
     'log' => 'daily',
     'log_level' => 'debug',
@@ -55,6 +56,7 @@
       37 => 'Barryvdh\\Snappy\\ServiceProvider',
       38 => 'Yajra\\DataTables\\DataTablesServiceProvider',
       39 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+      40 => 'OwenIt\\Auditing\\AuditingServiceProvider',
     ),
     'aliases' => 
     array (
@@ -99,6 +101,37 @@
       'DataTables' => 'Yajra\\DataTables\\Facades\\DataTables',
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
+  ),
+  'audit' => 
+  array (
+    'implementation' => 'OwenIt\\Auditing\\Models\\Audit',
+    'user' => 
+    array (
+      'primary_key' => 'id',
+      'foreign_key' => 'user_id',
+      'model' => 'App\\User',
+      'resolver' => 'App\\User',
+    ),
+    'events' => 
+    array (
+      0 => 'created',
+      1 => 'updated',
+      2 => 'deleted',
+      3 => 'restored',
+    ),
+    'strict' => false,
+    'timestamps' => false,
+    'threshold' => 0,
+    'driver' => 'database',
+    'drivers' => 
+    array (
+      'database' => 
+      array (
+        'table' => 'audits',
+        'connection' => NULL,
+      ),
+    ),
+    'console' => false,
   ),
   'auth' => 
   array (
@@ -148,7 +181,7 @@
       'developer_name' => 'College Of Computer and Information Sciences - Server',
       'developer_link' => '#',
       'show_powered_by' => false,
-      'skin' => 'skin-black-light',
+      'skin' => 'skin-black',
       'default_date_format' => 'j F Y',
       'default_datetime_format' => 'j F Y H:i',
       'registration_open' => true,
@@ -176,6 +209,17 @@
         'fr' => 'French',
         'it' => 'Italian',
         'ro' => 'Romanian',
+      ),
+    ),
+    'langfilemanager' => 
+    array (
+      'language_ignore' => 
+      array (
+        0 => 'pagination',
+        1 => 'reminders',
+        2 => 'validation',
+        3 => 'log',
+        4 => 'crud',
       ),
     ),
     'pagemanager' => 
@@ -398,7 +442,7 @@
         'engine' => NULL,
         'dump' => 
         array (
-          'dump_binary_path' => 'C:\\xampp\\mysql\\bin',
+          'dump_binary_path' => 'C:\\xampp\\apache\\bin',
           0 => 'use_single_transaction',
           'timeout' => 300,
         ),
@@ -429,360 +473,6 @@
         'database' => 0,
       ),
     ),
-  ),
-  'elfinder' => 
-  array (
-    'dir' => 
-    array (
-      0 => 'uploads',
-    ),
-    'disks' => 
-    array (
-    ),
-    'route' => 
-    array (
-      'prefix' => '/elfinder',
-      'middleware' => 
-      array (
-        0 => 'web',
-        1 => 'admin',
-      ),
-    ),
-    'access' => 'Barryvdh\\Elfinder\\Elfinder::checkAccess',
-    'roots' => NULL,
-    'options' => 
-    array (
-    ),
-    'root_options' => 
-    array (
-    ),
-  ),
-  'filesystems' => 
-  array (
-    'default' => 'local',
-    'cloud' => 's3',
-    'disks' => 
-    array (
-      'local' => 
-      array (
-        'driver' => 'local',
-        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\app',
-      ),
-      'public' => 
-      array (
-        'driver' => 'local',
-        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\app/public',
-        'url' => 'http://localhost/storage',
-        'visibility' => 'public',
-      ),
-      's3' => 
-      array (
-        'driver' => 's3',
-        'key' => NULL,
-        'secret' => NULL,
-        'region' => NULL,
-        'bucket' => NULL,
-      ),
-      'uploads' => 
-      array (
-        'driver' => 'local',
-        'root' => 'C:\\xampp\\htdocs\\sims\\public\\uploads',
-      ),
-      'backups' => 
-      array (
-        'driver' => 'local',
-        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\backups',
-      ),
-      'storage' => 
-      array (
-        'driver' => 'local',
-        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\backup_logs',
-      ),
-    ),
-  ),
-  'laravel-backup' => 
-  array (
-    'backup' => 
-    array (
-      'name' => 'http://localhost',
-      'source' => 
-      array (
-        'files' => 
-        array (
-          'include' => 
-          array (
-            0 => 'C:\\xampp\\htdocs\\sims',
-          ),
-          'exclude' => 
-          array (
-            0 => 'C:\\xampp\\htdocs\\sims\\vendor',
-            1 => 'C:\\xampp\\htdocs\\sims\\storage',
-          ),
-        ),
-        'databases' => 
-        array (
-          0 => 'mysql',
-        ),
-      ),
-      'destination' => 
-      array (
-        'disks' => 
-        array (
-          0 => 'backups',
-        ),
-      ),
-    ),
-    'notifications' => 
-    array (
-      'handler' => 'Spatie\\Backup\\Notifications\\Notifier',
-      'events' => 
-      array (
-        'whenBackupWasSuccessful' => 
-        array (
-          0 => 'log',
-        ),
-        'whenCleanupWasSuccessful' => 
-        array (
-          0 => 'log',
-        ),
-        'whenHealthyBackupWasFound' => 
-        array (
-          0 => 'log',
-        ),
-        'whenBackupHasFailed' => 
-        array (
-          0 => 'log',
-          1 => 'mail',
-        ),
-        'whenCleanupHasFailed' => 
-        array (
-          0 => 'log',
-          1 => 'mail',
-        ),
-        'whenUnHealthyBackupWasFound' => 
-        array (
-          0 => 'log',
-          1 => 'mail',
-        ),
-      ),
-      'mail' => 
-      array (
-        'from' => 'your@email.com',
-        'to' => 'your@email.com',
-      ),
-      'slack' => 
-      array (
-        'channel' => '#backups',
-        'username' => 'Backup bot',
-        'icon' => ':robot:',
-      ),
-    ),
-    'monitorBackups' => 
-    array (
-      0 => 
-      array (
-        'name' => 'http://localhost',
-        'disks' => 
-        array (
-          0 => 'backups',
-        ),
-        'newestBackupsShouldNotBeOlderThanDays' => 1,
-        'storageUsedMayNotBeHigherThanMegabytes' => 5000,
-      ),
-    ),
-    'cleanup' => 
-    array (
-      'strategy' => 'Spatie\\Backup\\Tasks\\Cleanup\\Strategies\\DefaultStrategy',
-      'defaultStrategy' => 
-      array (
-        'keepAllBackupsForDays' => 7,
-        'keepDailyBackupsForDays' => 16,
-        'keepWeeklyBackupsForWeeks' => 8,
-        'keepMonthlyBackupsForMonths' => 4,
-        'keepYearlyBackupsForYears' => 2,
-        'deleteOldestBackupsWhenUsingMoreMegabytesThan' => 5000,
-      ),
-    ),
-  ),
-  'mail' => 
-  array (
-    'driver' => 'smtp',
-    'host' => 'smtp.mailtrap.io',
-    'port' => '2525',
-    'from' => 
-    array (
-      'address' => 'hello@example.com',
-      'name' => 'Example',
-    ),
-    'encryption' => NULL,
-    'username' => NULL,
-    'password' => NULL,
-    'sendmail' => '/usr/sbin/sendmail -bs',
-    'markdown' => 
-    array (
-      'theme' => 'default',
-      'paths' => 
-      array (
-        0 => 'C:\\xampp\\htdocs\\sims\\resources\\views/vendor/mail',
-      ),
-    ),
-  ),
-  'prologue' => 
-  array (
-    'alerts' => 
-    array (
-      'levels' => 
-      array (
-        0 => 'info',
-        1 => 'warning',
-        2 => 'error',
-        3 => 'success',
-      ),
-      'session_key' => 'alert_messages',
-    ),
-  ),
-  'queue' => 
-  array (
-    'default' => 'sync',
-    'connections' => 
-    array (
-      'sync' => 
-      array (
-        'driver' => 'sync',
-      ),
-      'database' => 
-      array (
-        'driver' => 'database',
-        'table' => 'jobs',
-        'queue' => 'default',
-        'retry_after' => 90,
-      ),
-      'beanstalkd' => 
-      array (
-        'driver' => 'beanstalkd',
-        'host' => 'localhost',
-        'queue' => 'default',
-        'retry_after' => 90,
-      ),
-      'sqs' => 
-      array (
-        'driver' => 'sqs',
-        'key' => 'your-public-key',
-        'secret' => 'your-secret-key',
-        'prefix' => 'https://sqs.us-east-1.amazonaws.com/your-account-id',
-        'queue' => 'your-queue-name',
-        'region' => 'us-east-1',
-      ),
-      'redis' => 
-      array (
-        'driver' => 'redis',
-        'connection' => 'default',
-        'queue' => 'default',
-        'retry_after' => 90,
-      ),
-    ),
-    'failed' => 
-    array (
-      'database' => 'mysql',
-      'table' => 'failed_jobs',
-    ),
-  ),
-  'services' => 
-  array (
-    'mailgun' => 
-    array (
-      'domain' => NULL,
-      'secret' => NULL,
-    ),
-    'ses' => 
-    array (
-      'key' => NULL,
-      'secret' => NULL,
-      'region' => 'us-east-1',
-    ),
-    'sparkpost' => 
-    array (
-      'secret' => NULL,
-    ),
-    'stripe' => 
-    array (
-      'model' => 'App\\User',
-      'key' => NULL,
-      'secret' => NULL,
-    ),
-  ),
-  'session' => 
-  array (
-    'driver' => 'file',
-    'lifetime' => 120,
-    'expire_on_close' => false,
-    'encrypt' => false,
-    'files' => 'C:\\xampp\\htdocs\\sims\\storage\\framework/sessions',
-    'connection' => NULL,
-    'table' => 'sessions',
-    'store' => NULL,
-    'lottery' => 
-    array (
-      0 => 2,
-      1 => 100,
-    ),
-    'cookie' => 'laravel_session',
-    'path' => '/',
-    'domain' => NULL,
-    'secure' => false,
-    'http_only' => true,
-  ),
-  'snappy' => 
-  array (
-    'pdf' => 
-    array (
-      'enabled' => true,
-      'binary' => 'C:\\xampp\\htdocs\\sims\\public/rendering-engine/wkhtmltopdf/bin/wkhtmltopdf.exe',
-      'timeout' => false,
-      'options' => 
-      array (
-      ),
-      'env' => 
-      array (
-      ),
-    ),
-    'image' => 
-    array (
-      'enabled' => true,
-      'binary' => 'C:\\xampp\\htdocs\\sims\\public/rendering-engine/wkhtmltopdf/bin/wkhtmltoimage.exe',
-      'timeout' => false,
-      'options' => 
-      array (
-      ),
-      'env' => 
-      array (
-      ),
-    ),
-  ),
-  'view' => 
-  array (
-    'paths' => 
-    array (
-      0 => 'C:\\xampp\\htdocs\\sims\\resources\\views',
-    ),
-    'compiled' => 'C:\\xampp\\htdocs\\sims\\storage\\framework\\views',
-  ),
-  'image' => 
-  array (
-    'driver' => 'gd',
-  ),
-  0 => 'config/laravel-backup.php',
-  'sluggable' => 
-  array (
-    'source' => NULL,
-    'maxLength' => NULL,
-    'method' => NULL,
-    'separator' => '-',
-    'unique' => true,
-    'uniqueSuffix' => NULL,
-    'includeTrashed' => false,
-    'reserved' => NULL,
-    'onUpdate' => false,
   ),
   'datatables' => 
   array (
@@ -832,15 +522,31 @@
       'options' => 0,
     ),
   ),
-  'langfilemanager' => 
+  'elfinder' => 
   array (
-    'language_ignore' => 
+    'dir' => 
     array (
-      0 => 'pagination',
-      1 => 'reminders',
-      2 => 'validation',
-      3 => 'log',
-      4 => 'crud',
+      0 => 'uploads',
+    ),
+    'disks' => 
+    array (
+    ),
+    'route' => 
+    array (
+      'prefix' => '/elfinder',
+      'middleware' => 
+      array (
+        0 => 'web',
+        1 => 'admin',
+      ),
+    ),
+    'access' => 'Barryvdh\\Elfinder\\Elfinder::checkAccess',
+    'roots' => NULL,
+    'options' => 
+    array (
+    ),
+    'root_options' => 
+    array (
     ),
   ),
   'excel' => 
@@ -1100,6 +806,344 @@
           ),
         ),
       ),
+    ),
+  ),
+  'filesystems' => 
+  array (
+    'default' => 'local',
+    'cloud' => 's3',
+    'disks' => 
+    array (
+      'local' => 
+      array (
+        'driver' => 'local',
+        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\app',
+      ),
+      'public' => 
+      array (
+        'driver' => 'local',
+        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\app/public',
+        'url' => 'http://localhost/storage',
+        'visibility' => 'public',
+      ),
+      's3' => 
+      array (
+        'driver' => 's3',
+        'key' => NULL,
+        'secret' => NULL,
+        'region' => NULL,
+        'bucket' => NULL,
+      ),
+      'uploads' => 
+      array (
+        'driver' => 'local',
+        'root' => 'C:\\xampp\\htdocs\\sims\\public\\uploads',
+      ),
+      'backups' => 
+      array (
+        'driver' => 'local',
+        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\backups',
+      ),
+      'storage' => 
+      array (
+        'driver' => 'local',
+        'root' => 'C:\\xampp\\htdocs\\sims\\storage\\backup_logs',
+      ),
+    ),
+  ),
+  'image' => 
+  array (
+    'driver' => 'gd',
+  ),
+  'laravel-backup' => 
+  array (
+    'backup' => 
+    array (
+      'name' => 'http://localhost',
+      'source' => 
+      array (
+        'files' => 
+        array (
+          'include' => 
+          array (
+            0 => 'C:\\xampp\\htdocs\\sims',
+          ),
+          'exclude' => 
+          array (
+            0 => 'C:\\xampp\\htdocs\\sims\\vendor',
+            1 => 'C:\\xampp\\htdocs\\sims\\storage',
+          ),
+        ),
+        'databases' => 
+        array (
+          0 => 'mysql',
+        ),
+      ),
+      'destination' => 
+      array (
+        'disks' => 
+        array (
+          0 => 'backups',
+        ),
+      ),
+    ),
+    'notifications' => 
+    array (
+      'handler' => 'Spatie\\Backup\\Notifications\\Notifier',
+      'events' => 
+      array (
+        'whenBackupWasSuccessful' => 
+        array (
+          0 => 'log',
+        ),
+        'whenCleanupWasSuccessful' => 
+        array (
+          0 => 'log',
+        ),
+        'whenHealthyBackupWasFound' => 
+        array (
+          0 => 'log',
+        ),
+        'whenBackupHasFailed' => 
+        array (
+          0 => 'log',
+          1 => 'mail',
+        ),
+        'whenCleanupHasFailed' => 
+        array (
+          0 => 'log',
+          1 => 'mail',
+        ),
+        'whenUnHealthyBackupWasFound' => 
+        array (
+          0 => 'log',
+          1 => 'mail',
+        ),
+      ),
+      'mail' => 
+      array (
+        'from' => 'your@email.com',
+        'to' => 'your@email.com',
+      ),
+      'slack' => 
+      array (
+        'channel' => '#backups',
+        'username' => 'Backup bot',
+        'icon' => ':robot:',
+      ),
+    ),
+    'monitorBackups' => 
+    array (
+      0 => 
+      array (
+        'name' => 'http://localhost',
+        'disks' => 
+        array (
+          0 => 'backups',
+        ),
+        'newestBackupsShouldNotBeOlderThanDays' => 1,
+        'storageUsedMayNotBeHigherThanMegabytes' => 5000,
+      ),
+    ),
+    'cleanup' => 
+    array (
+      'strategy' => 'Spatie\\Backup\\Tasks\\Cleanup\\Strategies\\DefaultStrategy',
+      'defaultStrategy' => 
+      array (
+        'keepAllBackupsForDays' => 7,
+        'keepDailyBackupsForDays' => 16,
+        'keepWeeklyBackupsForWeeks' => 8,
+        'keepMonthlyBackupsForMonths' => 4,
+        'keepYearlyBackupsForYears' => 2,
+        'deleteOldestBackupsWhenUsingMoreMegabytesThan' => 5000,
+      ),
+    ),
+  ),
+  'mail' => 
+  array (
+    'driver' => 'smtp',
+    'host' => 'smtp.mailtrap.io',
+    'port' => '2525',
+    'from' => 
+    array (
+      'address' => 'hello@example.com',
+      'name' => 'Example',
+    ),
+    'encryption' => NULL,
+    'username' => NULL,
+    'password' => NULL,
+    'sendmail' => '/usr/sbin/sendmail -bs',
+    'markdown' => 
+    array (
+      'theme' => 'default',
+      'paths' => 
+      array (
+        0 => 'C:\\xampp\\htdocs\\sims\\resources\\views/vendor/mail',
+      ),
+    ),
+  ),
+  'prologue' => 
+  array (
+    'alerts' => 
+    array (
+      'levels' => 
+      array (
+        0 => 'info',
+        1 => 'warning',
+        2 => 'error',
+        3 => 'success',
+      ),
+      'session_key' => 'alert_messages',
+    ),
+  ),
+  'queue' => 
+  array (
+    'default' => 'sync',
+    'connections' => 
+    array (
+      'sync' => 
+      array (
+        'driver' => 'sync',
+      ),
+      'database' => 
+      array (
+        'driver' => 'database',
+        'table' => 'jobs',
+        'queue' => 'default',
+        'retry_after' => 90,
+      ),
+      'beanstalkd' => 
+      array (
+        'driver' => 'beanstalkd',
+        'host' => 'localhost',
+        'queue' => 'default',
+        'retry_after' => 90,
+      ),
+      'sqs' => 
+      array (
+        'driver' => 'sqs',
+        'key' => 'your-public-key',
+        'secret' => 'your-secret-key',
+        'prefix' => 'https://sqs.us-east-1.amazonaws.com/your-account-id',
+        'queue' => 'your-queue-name',
+        'region' => 'us-east-1',
+      ),
+      'redis' => 
+      array (
+        'driver' => 'redis',
+        'connection' => 'default',
+        'queue' => 'default',
+        'retry_after' => 90,
+      ),
+    ),
+    'failed' => 
+    array (
+      'database' => 'mysql',
+      'table' => 'failed_jobs',
+    ),
+  ),
+  'services' => 
+  array (
+    'mailgun' => 
+    array (
+      'domain' => NULL,
+      'secret' => NULL,
+    ),
+    'ses' => 
+    array (
+      'key' => NULL,
+      'secret' => NULL,
+      'region' => 'us-east-1',
+    ),
+    'sparkpost' => 
+    array (
+      'secret' => NULL,
+    ),
+    'stripe' => 
+    array (
+      'model' => 'App\\User',
+      'key' => NULL,
+      'secret' => NULL,
+    ),
+  ),
+  'session' => 
+  array (
+    'driver' => 'file',
+    'lifetime' => 120,
+    'expire_on_close' => false,
+    'encrypt' => false,
+    'files' => 'C:\\xampp\\htdocs\\sims\\storage\\framework/sessions',
+    'connection' => NULL,
+    'table' => 'sessions',
+    'store' => NULL,
+    'lottery' => 
+    array (
+      0 => 2,
+      1 => 100,
+    ),
+    'cookie' => 'laravel_session',
+    'path' => '/',
+    'domain' => NULL,
+    'secure' => false,
+    'http_only' => true,
+  ),
+  'sluggable' => 
+  array (
+    'source' => NULL,
+    'maxLength' => NULL,
+    'method' => NULL,
+    'separator' => '-',
+    'unique' => true,
+    'uniqueSuffix' => NULL,
+    'includeTrashed' => false,
+    'reserved' => NULL,
+    'onUpdate' => false,
+  ),
+  'snappy' => 
+  array (
+    'pdf' => 
+    array (
+      'enabled' => true,
+      'binary' => 'C:\\xampp\\htdocs\\sims\\public\\rendering-engine\\wkhtmltopdf\\bin\\wkhtmltopdf.exe',
+      'timeout' => false,
+      'options' => 
+      array (
+      ),
+      'env' => 
+      array (
+      ),
+    ),
+    'image' => 
+    array (
+      'enabled' => true,
+      'binary' => 'C:\\xampp\\htdocs\\sims\\public\\rendering-engine\\wkhtmltopdf\\bin\\wkhtmltoimage.exe',
+      'timeout' => false,
+      'options' => 
+      array (
+      ),
+      'env' => 
+      array (
+      ),
+    ),
+  ),
+  'view' => 
+  array (
+    'paths' => 
+    array (
+      0 => 'C:\\xampp\\htdocs\\sims\\resources\\views',
+    ),
+    'compiled' => 'C:\\xampp\\htdocs\\sims\\storage\\framework\\views',
+  ),
+  0 => 'config/laravel-backup.php',
+  'langfilemanager' => 
+  array (
+    'language_ignore' => 
+    array (
+      0 => 'pagination',
+      1 => 'reminders',
+      2 => 'validation',
+      3 => 'log',
+      4 => 'crud',
     ),
   ),
 );

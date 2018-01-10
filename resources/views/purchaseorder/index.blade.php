@@ -19,7 +19,7 @@
 				<thead>
           			<th class="">ID</th>
 					<th class="">Number</th>
-					<th class="">Date</th>
+					<th class="date-field">Date</th>
          			<th class="">Supplier</th>
 					<th class="no-sort"></th>
 				</thead>
@@ -36,36 +36,36 @@
 <script>
 	$(document).ready(function() {
 
-    var table = $('#purchaseOrderTable').DataTable({
+	    var table = $('#purchaseOrderTable').DataTable({
+	    	serverSide: true,
 			language: {
 					searchPlaceholder: "Search..."
 			},
-    	columnDefs:[
-			     { targets: 'no-sort', orderable: false },
-    	],
+	    	columnDefs:[
+		     	{ targets: 'no-sort', orderable: false },
+		     	{ targets: '2', 'type': 'datetime-moment' }
+	    	],
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 							"<'row'<'col-sm-12'tr>>" +
 							"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 			"processing": true,
 			ajax: "{{ url('purchaseorder') }}",
 			columns: [
-          { data: "id" },
-					{ data: "number" },
-					{ data: function(callback){
-						return moment(callback.date_received).format("MMMM d, YYYY")
-					} },
-          { data: "supplier.name" },
-					{ data: function(callback){
-						url = '{{ url("purchaseorder") }}' + '/' + callback.id
-            html = `
-							<a type='button' href='` + url + `' class='btn btn-default btn-sm'>
-                <span class="glyphicon glyphicon-list"></span> View
-              </a>
-            `
-						return html
-					} }
+	          	{ data: "id" },
+				{ data: "number" },
+				{ data: 'date_received_parsed' },
+	          	{ data: "supplier.name" },
+				{ data: function(callback){
+					url = '{{ url("purchaseorder") }}' + '/' + callback.id
+		            html = `
+						<a type='button' href='` + url + `' class='btn btn-default btn-sm'>
+		                	<span class="glyphicon glyphicon-list"></span> View
+		             	</a>
+		            `
+					return html
+				} }
 			],
-    });
+	    });
 
 	 	$("div.toolbar").html(`
 			<button id="create" class="btn btn-md btn-primary">

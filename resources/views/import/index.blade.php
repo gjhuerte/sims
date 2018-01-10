@@ -67,7 +67,7 @@
     		</div>
     	</div>
 
-	    {{ Form::open([ 'method' => 'post' , 'url' => array('import'), 'enctype'=> "multipart/form-data" ]) }}
+	    {{ Form::open([ 'method' => 'post' , 'url' => array('import'), 'enctype'=> "multipart/form-data", 'id' => 'importForm' ]) }}
 	    <div class="col-md-6">
 	    	<div class="col-sm-12">
 	    		<div class="form-group">
@@ -92,14 +92,14 @@
 	    		<div class="col-sm-12">
 		    		<div class="input-group">
 		    			<select class="form-control" value="{{ old('type') ? old('type') : "" }}" id="type" name="type">
-		    				<option value="purchaseorder">Purchase Order</option>
-		    				<option value="stockcard">Stock Card</option>
-		    				<option value="ledgercard">Ledger Card</option>
-		    				<option value="Unit">Unit</option>
-		    				<option value="supplier">Supplier</option>
+		    			@if(count($options) > 0)
+		    				@foreach($options as $key => $value)
+		    				<option value="{{ $key }}">{{ $value }}</option>
+		    				@endforeach
+		    			@endif
 		    			</select>
 		    			<div class="input-group-btn">
-		    				<button type="submit" id="import" class="btn btn-md btn-primary">
+		    				<button type="button" id="import" class="btn btn-md btn-primary">
 		                        <span class="glyphicon glyphicon-check"></span>
 		    					Import
 		    				</button>
@@ -163,6 +163,27 @@
 		        reader.readAsDataURL(file);
 		    });  
 		});
+
+		$('#import').on('click',function(){
+        	swal({
+	          title: "Are you sure?",
+	          text: "This will no longer be editable once submitted. Do you want to continue?",
+	          type: "info",
+	          showCancelButton: true,
+	          confirmButtonText: "Yes, submit it!",
+	          cancelButtonText: "No, cancel it!",
+	          closeOnConfirm: false,
+	          closeOnCancel: false
+	        },
+	        function(isConfirm){
+	          if (isConfirm) {
+	          	$('#importForm').submit();
+	          } else {
+	            swal("Cancelled", "Operation Cancelled", "error");
+	          }
+	        })
+
+		})
 	})
 </script>	
 @endsection

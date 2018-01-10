@@ -9,12 +9,14 @@
     Purchase Order
     @endif
     </h3>
-  	<table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
-  		<thead>
+    <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+      <thead>
         <tr rowspan="2">
-            <th class="text-left" colspan="4">Number:  <span style="font-weight:normal">{{ $purchaseorder->number }}</span> </th>
+            <th class="text-left" colspan="4">Code:  <span style="font-weight:normal">{{ $purchaseorder->number }}</span> </th>
             <th class="text-left" colspan="4">Fund Cluster:  
-              <span style="font-weight:normal">{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([$purchaseorder->number])->pluck('fundcluster_code')->toArray()) }}</span> 
+              <span style="font-weight:normal">
+                <!-- {{ count($purchaseorder->fundclusters) > 0 ? implode( $purchaseorder->fundclusters->pluck('code')->toArray(), ",") : "None" }} -->
+              </span> 
             </th>
         </tr>
         <tr rowspan="2">
@@ -26,26 +28,28 @@
             <th class="text-left" colspan="4"></th>
         </tr>
         <tr>
-          <th>ID</th>
-          <th>Supply Item</th>
-          <th>Ordered Quantity</th>
-          <th>Received Quantity</th>
-          <th>Remaining Quantity</th>
-          <th>Unit Price</th>
-          <th>Amount</th>
+          <th class="col-sm-1">ID</th>
+          <th class="col-sm-1">Stock Number</th>
+          <th class="col-sm-1">Details</th>
+          <th class="col-sm-1">Ordered Quantity</th>
+          <th class="col-sm-1">Received Quantity</th>
+          <th class="col-sm-1">Remaining Quantity</th>
+          <th class="col-sm-1">Unit Cost</th>
+          <th class="col-sm-1">Amount</th>
         </tr>
-  		</thead>
+      </thead>
       <tbody>
-      @if(count($purchaseordersupply) > 0)
-        @foreach($purchaseordersupply as $supply)
+      @if(count($purchaseorder->supplies) > 0)
+        @foreach($purchaseorder->supplies as $supply)
         <tr>
           <td>{{ $supply->id }}</td>
           <td>{{ $supply->stocknumber }}</td>
-          <td>{{ $supply->orderedquantity }}</td>
-          <td>{{ $supply->receivedquantity }}</td>
-          <td>{{ $supply->remainingquantity }}</td>
-          <td>{{ number_format($supply->unitcost, 2) }}</td>
-          <td>{{ number_format($supply->receivedquantity * $supply->unitcost, 2) }}</td>
+          <td>{{ $supply->details }}</td>
+          <td>{{ $supply->pivot->ordered_quantity }}</td>
+          <td>{{ $supply->pivot->received_quantity }}</td>
+          <td>{{ $supply->pivot->remaining_quantity }}</td>
+          <td>{{ number_format($supply->pivot->unitcost, 2) }}</td>
+          <td>{{ number_format($supply->pivot->received_quantity * $supply->pivot->unitcost, 2) }}</td>
         </tr>
         @endforeach
       @else
@@ -54,30 +58,7 @@
       </tr>
       @endif
       </tbody>
-  	</table>
-  </div>
-  <div id="footer" class="col-sm-12">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th class="col-sm-1">  Prepared By: </th>
-          {{-- <th class="col-sm-1">   </th>
-          <th class="col-sm-1">   </th> --}}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-center">
-            <br />
-            <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
-            <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->office }}</span>
-          </td>
-          {{-- <td></td>
-          <td></td> --}}
-        </tr>
-      </tbody>
     </table>
   </div>
+@include('vendor.print_footer')
 @endsection

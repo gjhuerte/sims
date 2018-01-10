@@ -8,13 +8,13 @@ use DB;
 class Supply extends Model{
 
 	protected $table = 'supplies';
-	protected $fillable = ['stocknumber','entityname','details','unit','reorderpoint'];
-	protected $primaryKey = 'stocknumber';
+	protected $primaryKey = 'id';
+	protected $fillable = ['stocknumber','details','unit','reorderpoint'];
 	public $incrementing = false;
 	public $timestamps = true;
+
 	public static $rules = array(
 		'Stock Number' => 'required|unique:supplies,stocknumber',
-		'Entity Name' => 'required',
 		'Details' => 'required|unique:supplies,details',
 		'Unit' => 'required',
 		'Reorder Point' => 'required|integer'
@@ -25,32 +25,39 @@ class Supply extends Model{
 		$stocknumber = $this->stocknumber;
 		return array(
 				'Stock Number' => 'required|unique:supplies,stocknumber,'.$stocknumber.',stocknumber',
-				'Entity Name' => 'required',
 				'Details' => 'required',
 				'Unit' => 'required',
 				'Reorder Point' => 'integer'
 		);
-	} 
+	}
 
 	protected $appends = [
-		'balance',
+		'stock_balance',
 		'ledger_balance',
-		'fund_cluster'
+		'unitcost'
 	];
 
-	public function getBalanceAttribute($value)
+	public function getUnitCostAttribute($value)
 	{
-		$stocknumber = '';
-		if(isset($this->stocknumber))
-		{
-			$stocknumber = $this->stocknumber;
-		}
+		$cost = ReceiptSupply::findByStockNumber($this->stocknumber)
+								->where('remaining_quantity','>',0)
+								->whereNotNull('unitcost')
+								->select('unitcost')
+								->avg('unitcost');
+		if(count($cost) > 0)
+			return $cost;
+		else
+			return 0;
+	}
 
-		$balance = StockCard::where('stocknumber','=',$stocknumber)
+	public function getStockBalanceAttribute($value)
+	{
+
+		$balance = StockCard::findBySupplyId($this->id)
 						->orderBy('date','desc')
 						->orderBy('created_at','desc')
 						->orderBy('id','desc')
-						->pluck('balance')
+						->pluck('balance_quantity')
 						->first();
 
 		if(empty($balance) || $balance == null || $balance == '')
@@ -63,17 +70,11 @@ class Supply extends Model{
 
 	public function getLedgerBalanceAttribute($value)
 	{
-		$stocknumber = '';
-		if(isset($this->stocknumber))
-		{
-			$stocknumber = $this->stocknumber;
-		}
-
-		$balance = LedgerCard::where('stocknumber','=',$stocknumber)
+		$balance = LedgerCard::findBySupplyId($this->id)
 						->orderBy('date','desc')
 						->orderBy('created_at','desc')
 						->orderBy('id','desc')
-						->pluck('balancequantity')
+						->pluck('balance_quantity')
 						->first();
 
 		if(empty($balance) || $balance == null || $balance == '')
@@ -82,18 +83,6 @@ class Supply extends Model{
 		}
 
 		return $balance	;
-	}
-
-	public function getFundClusterAttribute($value)
-	{
-		$fundcluster = "";
-		if(isset($this->purchaseorder))
-		{
-			$purchaseorder = $this->purchaseorder->pluck('number');
-			$fundcluster = PurchaseOrderFundCluster::findByPurchaseOrderNumber($purchaseorder)
-								->pluck('fundcluster_code');
-		}
-		return $fundcluster;
 	}
 
 	public function scopeIssued($query)
@@ -106,6 +95,18 @@ class Supply extends Model{
 		return $query->where('stocknumber','=',$value)->first();
 	}
 
+	public function scopeFindByCategoryName($query, $value)
+	{
+		return $query->whereHas('category', function($query) use ($value){
+			$query->where('name', '=', $value);
+		} );
+	}
+
+	public function scopeFindByCategoryId($query, $value)
+	{
+		return $query->where('category_id', '=', $value);
+	}
+
 	public function scopeStockNumber($query,$value)
 	{
 		return $query->where('stocknumber','=',$value);
@@ -113,12 +114,12 @@ class Supply extends Model{
 
 	public function stockcards()
 	{
-		return $this->hasMany('App\StockCards','stocknumber','stocknumber');
+		return $this->hasMany('App\StockCard','supply_id');
 	}
 
 	public function ledgercards()
 	{
-		return $this->hasMany('App\LedgerCards','stocknumber','stocknumber');
+		return $this->hasMany('App\LedgerCard','supply_id');
 	}
 
 	public function getUnitPriceAttribute($value)
@@ -126,9 +127,35 @@ class Supply extends Model{
 		return number_format($value,2,'.',',');
 	}
 
-	public function purchaseorder()
+	public function purchaseorders()
 	{
-		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies','stocknumber','id');
+		return $this->belongsToMany('App\PurchaseOrder','purchaseorders_supplies', 'supply_id','purchaseorder_id')
+          ->withPivot('unitcost', 'received_quantity', 'ordered_quantity', 'remaining_quantity')
+          ->withTimestamps();
+	}
+
+	public function receipts()
+	{
+		return $this->belongsToMany('App\Receipt','receipts_supplies','supply_id','receipt_id')
+          ->withPivot('unitcost', 'quantity', 'remaining_quantity')
+          ->withTimestamps();
+	}
+
+	public function requests()
+	{
+		return $this->belongsToMany('App\Request','requests_supplies','supply_id','request_id')
+            ->withPivot('quantity_requested', 'quantity_issued', 'quantity_released', 'comments')
+            ->withTimestamps();
+	}
+
+	public function category()
+	{
+		return $this->belongsTo('App\Category', 'category_id', 'id');
+	}
+
+	public function unit()
+	{
+		return $this->belongsTo('App\Unit', 'unit_id', 'id');
 	}
 
 }

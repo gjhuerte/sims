@@ -28,58 +28,8 @@
   <div class="box" style="padding:10px;">
     <div class="box-body">
 		{{ Form::open(['method'=>'post','route'=>array('supply.store'),'class'=>' col-sm-offset-3 col-sm-6 form-horizontal']) }}
-        @if (count($errors) > 0)
-            <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <ul style='margin-left: 10px;'>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-		<div class="col-md-12">
-			<div class="form-group">
-				{{ Form::label('Stock Number') }}
-				{{ Form::text('stocknumber',Input::old('stocknumber'),[
-					'class' => 'form-control'
-				]) }}
-			</div>
-		</div>
-		<div class="col-md-12">
-			<div class="form-group">
-				{{ Form::label('Entity Name') }}
-				{{ Form::text('entityname',"Polytechnic University Of the Philippines",[
-					'class' => 'form-control',
-					'readonly'
-				]) }}
-			</div>
-		</div>
-		<div class="col-md-12">
-			<div class="form-group">
-				{{ Form::label('Details') }}
-				{{ Form::text('details',Input::old('details'),[
-					'id' => 'details',
-					'class' => 'form-control'
-				]) }}
-			</div>
-		</div>
-		<div class="col-md-12">
-			<div class="form-group">
-				{{ Form::label('Unit Of Measurement') }}
-				{{ Form::select('unit',$unit,Input::old('unit'),[
-					'class' => 'form-control'
-				]) }}
-			</div>
-		</div>
-		<div class="col-md-12">
-			<div class="form-group">
-				{{ Form::label('Reorder Point') }}
-				{{ Form::number('reorderpoint',Input::old('reorderpoint'),[
-					'class' => 'form-control'
-				]) }}
-			</div>
-		</div>
+		@include('errors.alert')
+		@include('maintenance.supply.form')
 		<div class="pull-right">
 			<div class="btn-group">
 				<button id="submit" class="btn btn-md btn-primary" type="submit">

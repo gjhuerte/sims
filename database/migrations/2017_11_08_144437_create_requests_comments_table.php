@@ -15,16 +15,20 @@ class CreateRequestsCommentsTable extends Migration
     {
         Schema::create('requests_comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('requests_id')->unsigned();
-            $table->foreign('requests_id')
+            $table->integer('request_id')->unsigned();
+            $table->foreign('request_id')
                     ->references('id')
-                    ->on('requests');
-            $table->text('details');
-            $table->integer('comment_by')->unsigned();
-            $table->foreign('comment_by')
+                    ->on('requests')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')
                     ->references('id')
-                    ->on('users');
+                    ->on('users')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->timestamps();
+            $table->longtext('details');
             $table->softDeletes();
         });
     }

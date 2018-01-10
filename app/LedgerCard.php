@@ -5,7 +5,31 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 use Auth;
 use DB;
-class LedgerCard extends Model{
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Contracts\UserResolver;
+
+class LedgerCard extends Model implements Auditable, UserResolver
+{
+    use \OwenIt\Auditing\Auditable;
+
+	protected $auditInclude = [
+		'date',
+		'stocknumber',
+		'reference',
+		'receipt_quantity',
+		'receipt_unitcost',
+		'issue_quantity',
+		'issue_unitcost',
+		'daystoconsume',
+	];
+
+	/**
+     * {@inheritdoc}
+     */
+    public static function resolveId()
+    {
+        return Auth::check() ? Auth::user()->getAuthIdentifier() : null;
+    }
 
 	protected $table = 'ledgercards';
 	protected $primaryKey = 'id';
@@ -15,10 +39,10 @@ class LedgerCard extends Model{
 		'date',
 		'stocknumber',
 		'reference',
-		'receiptquantity',
-		'receiptunitprice',
-		'issuequantity',
-		'issueunitprice',
+		'receipt_quantity',
+		'receipt_unitcost',
+		'issue_quantity',
+		'issue_unitcost',
 		'daystoconsume',
 	];
 
@@ -26,9 +50,8 @@ class LedgerCard extends Model{
 	public static $receiptRules = array(
 		'Date' => 'required',
 		'Stock Number' => 'required',
-		'Purchase Order' => 'nullable|exists:purchaseorders,number',
 		'Receipt Quantity' => 'required',
-		'Receipt Unit Price' => 'required',
+		'Receipt Unit Cost' => 'required',
 		'Days To Consume' => 'max:100'
 	);
 
@@ -37,49 +60,62 @@ class LedgerCard extends Model{
 		'Stock Number' => 'required',
 		'Requisition and Issue Slip' => 'required',
 		'Issue Quantity' => 'required',
-		'Issue Unit Price' => 'required',
+		'Issue Unit Cost' => 'required',
 		'Days To Consume' => 'max:100'
 	);
 
-	// public function getDateAttribute($value)
-	// {
-	// 	return Carbon\Carbon::parse($value)->format('jS \\of F Y');
-	// }
+	/**
+	 * custom columns
+	 * columns used by processes
+	 * do not touch!
+	 * may destroy system
+	 * @var null
+	 */
+	public $fundcluster = null;
+	public $stocknumber = null;
+	public $organization = null;
+	public $invoice = "";
 
+	/**
+	 * [setBalance description]
+	 * update the current records balance
+	 */
 	public function setBalance()
 	{
-		$ledgercard = LedgerCard::where('stocknumber','=',$this->stocknumber)
+		$ledgercard = LedgerCard::findByStockNumber($this->stocknumber)
 								->orderBy('date','desc')
 								->orderBy('created_at','desc')
 								->orderBy('id','desc')
 								->first();
 
-		if(!isset($this->receivedquantity))
-		{
-			$this->receivedquantity = 0;
-		}
+		$balance = isset($ledgercard->balance_quantity) ? $ledgercard->balance_quantity : 0;
+		$issued = isset($this->issued_quantity) ? $this->issued_quantity  : 0 ;
+		$received = isset($this->received_quantity) ? $this->received_quantity : 0;
 
-		if(!isset($this->issuedquantity))
-		{
-			$this->issuedquantity = 0;
-		}
-
-		$this->balancequantity = ( isset($ledgercard->balance) ? $ledgercard->balance : 0 ) + $this->receivedquantity - $this->issuedquantity;
+		$this->balance_quantity = 0;
+		$this->balance_quantity = $balance + ($received - $issued);
 	}
 
-	public function scopeQuantity($query,$quantity)
-	{
-		return $query->where('issuequantity','=',$quantity);
-	}
-
-	public function scopeReference($query,$reference)
+	public function scopeReference($query, $reference)
 	{
 		return $query->where('reference','=',$reference);
 	}
 
-	public function scopeFindByStockNumber($query,$stocknumber)
+	public function scopeFindByStockNumber($query, $stocknumber)
 	{
-		return $query->where('stocknumber','=',$stocknumber);
+		return $query->whereHas('supply', function($query) use($stocknumber) {
+			$query->where('stocknumber', '=', $stocknumber);
+		});
+	}
+
+	public function supply()
+	{
+		return $this->belongsTo('App\Supply', 'supply_id', 'id');
+	}
+
+	public function scopeFindBySupplyId($query,$stocknumber)
+	{
+		return $query->where('supply_id','=',$stocknumber);
 	}
 
 	public function scopeFilterByMonth($query,$month)
@@ -93,10 +129,21 @@ class LedgerCard extends Model{
 
 	public function scopeFilterByIssued($query)
 	{
-		return $query->where('issuedquantity','>',0);
+		return $query->where('issued_quantity','>',0);
 	}
 
-	public $invoice = "";
+	/**
+	 * is this safe to destroy??
+	 * warn me in the future
+	 * i think i didnt use it
+	 * @param  [type] $query    [description]
+	 * @param  [type] $quantity [description]
+	 * @return [type]           [description]
+	 */
+	public function scopeQuantity($query, $quantity)
+	{
+		return $query->where('issued_quantity','=',$quantity);
+	}
 
 	/*
 	*
@@ -109,23 +156,56 @@ class LedgerCard extends Model{
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
+		$purchaseorder = null;
+		$supplier = null;
+
+		$supply = Supply::findByStockNumber($this->stocknumber);
+		$this->supply_id = $supply->id;
+
+		if(isset($this->organization))
+		{
+			$supplier = Supplier::firstOrCreate([ 'name' => $this->organization ]);
+		}
+
+		if(isset($this->reference) && $this->reference != null)
+		{
+			$purchaseorder = PurchaseOrder::firstOrCreate([
+				'number' => $this->reference
+			], [
+				'date_received' => Carbon\Carbon::parse($this->date),
+				'supplier_id' => isset($supplier->id) ? $supplier->id : null
+			]);
+
+			if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)
+			{
+				$purchaseorder->fundclusters()->detach();
+				foreach(explode(",",$this->fundcluster) as $fundcluster)
+				{
+					$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
+					$fundcluster->purchaseorders()->attach($purchaseorder->id);
+				}
+			}
+
+		}
 
 		$receipt = Receipt::firstOrCreate([
-			'number' => $this->receipt,
-			'reference' => $this->reference
+			'number' => $this->receipt
 		],[
+			'purchaseorder_id' => isset($purchaseorder->id) ? $purchaseorder->id : null,
 			'date_delivered' => Carbon\Carbon::parse($this->date),
 			'received_by' => $fullname,
-			'supplier_name' => $this->organization,
+			'supplier_id' => isset($supplier->id) ? $supplier->id : null,
 			'invoice' => isset($this->invoice) ? $this->invoice : null
 		]);
 
-		$supply = ReceiptSupply::updateOrCreate([
-			'receipt_number' => $receipt->number,
-			'stocknumber' => $this->stocknumber,
-		],[
-			'cost' => $this->receivedunitprice
+		$receipt->supplies()->attach([
+			$supply->id => [
+				'quantity' => $this->received_quantity,
+				'remaining_quantity' => $this->received_quantity,
+				'unitcost' => $this->received_unitcost
+			]
 		]);
+
 
 		$this->created_by = $fullname;
 		$this->setBalance();
@@ -143,40 +223,74 @@ class LedgerCard extends Model{
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
 		$fullname =  $firstname . " " . $middlename . " " . $lastname;
-		$issued = $this->issuedquantity;
 
-		$receipt = ReceiptSupply::where('stocknumber','=',$this->stocknumber)
-								->where('remaining_quantity','>',0)
-								->get();
+		/**
+		 * [$issued description]
+		 * backup of the issued quantity
+		 * @var [type]
+		 */
+		$issued = $this->issued_quantity;
 
+		$supply = Supply::findByStockNumber($this->stocknumber);
+		$this->supply_id = $supply->id;
 
-		foreach($receipt as $receipt)
+		$supplies = $supply->receipts->each(function($item, $key) use($supply) {
+			if($item->pivot->remaining_quantity <= 0) $supply->receipts->forget($key);
+		});
+
+		if(count($supplies) > 0)
 		{
-			if($this->issuedquantity > 0)
-			{
-				if($receipt->remaining_quantity >= $this->issuedquantity)
-				{
-					$receipt->remaining_quantity = $receipt->remaining_quantity - $this->issuedquantity;
-					$this->issuedquantity = 0;
-				}
-				else
-				{
-					$this->issuedquantity = $this->issuedquantity - $receipt->remaining_quantity;
-					$receipt->remaining_quantity = 0;
-				}
 
-				$receipt->save();
-			}
-			else
+			/**
+			 *	loops through each record
+			 *	reduce the issued for each record
+			 *	
+			 */
+			$supplies->each(function($item, $value) use ($supply) 
 			{
-				break;
-			}
+
+				/**
+				 * if the supply has issued quantity
+				 * perform the functions below
+				 */
+				if($this->issued_quantity > 0)
+				{
+
+					/**
+					 * if the remaining quantity of an item is greater than the issued quantity
+					 * reduce the remaining quantity and set the issued balance to zero(0)
+					 */
+					if($item->pivot->remaining_quantity >= $this->issued_quantity)
+					{
+						$item->pivot->remaining_quantity = $item->pivot->remaining_quantity - $this->issued_quantity;
+						$this->issued_quantity = 0;
+					}
+
+					/**
+					 * if the remaining quantity is less than the issued quantity
+					 * set the remaining quantity as zero(0)
+					 * set the issued balance to zero(0)
+					 */
+					else
+					{
+						$this->issued_quantity = $this->issued_quantity - $item->pivot->remaining_quantity;
+						$item->pivot->remaining_quantity = 0;
+					}
+
+					$item->pivot->save();
+				}
+			});
 		}
 
-		$this->issuedquantity = $issued;
-		$this->created_by = $fullname;
+
+		/**
+		 * [$this->issued_quantity description]
+		 * reassign the backup to issued quantity column
+		 * @var [type]
+		 */
+		$this->issued_quantity = $issued;
 		$this->setBalance();
 		$this->save();
 	}
-
+	
 }

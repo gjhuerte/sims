@@ -32,6 +32,7 @@
 			          </tr>
 			          <tr>
 						<th class="col-sm-1">Stock Number</th>
+						<th class="col-sm-1">Item</th>
 						<th class="col-sm-1">Delivered Quantity</th>
 						<th class="col-sm-1">Remaining Quantity</th>
 						<th class="col-sm-1">Unit Cost</th>
@@ -53,6 +54,7 @@
 	$(document).ready(function() {
 
 	    var table = $('#receiptTable').DataTable({
+	    	serverSide: true,
 				language: {
 						searchPlaceholder: "Search..."
 				},
@@ -66,18 +68,13 @@
 				ajax: "{{ url("receipt/$receipt->number") }}",
 				columns: [
 					{ data: "stocknumber" },
-					{ data: "quantity" },
-					{ data: "remaining_quantity" },
+					{ data: "details" },
+					{ data: "pivot.quantity" },
+					{ data: "pivot.remaining_quantity" },
+					{ data: "pivot.unitcost"},
 					{ data: function(callback){
-						if(callback.cost == "" || callback.cost == null)
-							return 0
-						return (callback.cost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-					} },
-					{ data: function(callback){
-						if(callback.cost == "" || callback.cost == null)
-							return 0
-						return (callback.quantity * callback.cost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-					} },
+						return parseFloat(callback.pivot.quantity * callback.pivot.unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+					}, orderable: false},
 					{ data: function(callback){
 						return `
 					         <button data-id="{{ $receipt->number }}" data-stocknumber="`+callback.stocknumber+`" class="edit btn btn-sm btn-primary ladda-button" data-style="zoom-in">

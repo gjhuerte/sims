@@ -15,10 +15,12 @@ class CreateOfficesPositionsTable extends Migration
     {
         Schema::create('offices_positions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('office_code',20)->nullable();
-            $table->foreign('office_code')
-                    ->references('code')
-                    ->on('offices');
+            $table->integer('office_id')->unsigned()->nullable();
+            $table->foreign('office_id')
+                    ->references('id')
+                    ->on('offices')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->string('title',50)->unique();
             $table->string('description')->nullable();
             $table->timestamps();

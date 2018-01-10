@@ -5,6 +5,7 @@ use App\User;
 use Carbon;
 use Session;
 use Validator;
+use Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Input;
@@ -96,11 +97,12 @@ use AuthenticatesUsers;
 		}
 
 		if(!($password == "" && $newpassword == "")){
-
+			$confirm = $this->sanitizeString(Input::get('newpassword_confirmation'));
 
 			$validator = Validator::make([
 				'Current Password'=>$password,
-				'New Password'=>$newpassword
+				'New Password'=>$newpassword,
+				'Confirm Password' => $confirm
 			],User::$passwordRules);
 
 			if( $validator->fails() )

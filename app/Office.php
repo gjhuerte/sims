@@ -10,17 +10,22 @@ class Office extends Model{
 	protected $fillable = ['code','name','description', 'head'];
 	public $timestamps = false;
 
-	public static $rules = array(
-		'Code' => 'required|max:20',
-		'Name' => 'required|max:200',
-		'Description' => 'max:200'
-	);
+	public function rules(){
+		return array(
+			'Code' => 'required|max:20|unique:Offices,code',
+			'Name' => 'required|max:200',
+			'Description' => 'max:200'
+		);
+	}
 
-	public static $updateRules = array(
-		'Code' => 'required|max:20',
-		'Name' => 'required|max:200',
-		'Description' => 'max:200'
-	);
+	public function updateRules(){
+		$code = $this->code;
+		return array(
+			'Code' => 'required|max:20|unique:Offices,code,'.$code.',code',
+			'Name' => 'required|max:200',
+			'Description' => 'max:200'
+		);
+	}
 
 	public function scopeFindByCode($query,$value)
 	{

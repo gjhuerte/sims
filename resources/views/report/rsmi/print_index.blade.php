@@ -4,7 +4,7 @@
   <div id="content" class="col-sm-12">
     <h3 class="text-center text-muted">
       Reports on Supplies and Materials Issued
-    </h3>
+    </h3> 
             
     <table class="table table-bordered" id="rsmiTable" cellspacing="0" width="100%">
       <thead>
@@ -26,10 +26,10 @@
           <td>{{ $report->office }}</td>
           <td style="white-space: nowrap;">{{ $report->stocknumber }}</td>
           <td>{{ $report->details }}</td>
-          <td>{{ $report->unit }}</td>
-          <td>{{ $report->issued }}</td>
+          <td>{{ $report->name }}</td>
+          <td>{{ $report->issued_quantity }}</td>
           <td>{{ number_format($report->cost,2) }}</td>
-          <td>{{ number_format($report->issued * $report->cost, 2) }}</td>
+          <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
         </tr>
         @endforeach
       </tbody>
@@ -54,37 +54,14 @@
         <tr>
           <td>{{ $report->stocknumber }}</td>
           <td>{{ $report->details }}</td>
-          <td>{{ $report->issued }}</td>
+          <td>{{ $report->issued_quantity }}</td>
           <td>{{ number_format($report->cost,2) }}</td>
-          <td>{{ number_format($report->issued * $report->cost, 2) }}</td>
+          <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
           <td></td>
         </tr>
         @endforeach
       </tbody>
     </table>
   </div>
-  <div id="footer" class="col-sm-12">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th class="col-sm-1">  Prepared By: </th>
-          {{-- <th class="col-sm-1">   </th>
-          <th class="col-sm-1">   </th> --}}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-center">
-            <br />
-            <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
-            <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->office }}</span>
-          </td>
-          {{-- <td></td>
-          <td></td> --}}
-        </tr>
-      </tbody>
-    </table>
-  </div>
+include('vendor.print_footer')
 @endsection

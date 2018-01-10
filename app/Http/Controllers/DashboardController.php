@@ -13,12 +13,18 @@ class DashboardController extends Controller
     	$purchaseorder_count = App\PurchaseOrder::count();
     	$receipt_count = App\Receipt::count();
     	$supply_count = App\Supply::count();
-    	$ris_count = App\StockCard::filterByIssued()->count();
     	$recent_supplies = App\StockCard::filterByReceived()->take(5)->orderBy('created_at','desc')->get();
-    	$released_count = App\RSMI::select(DB::raw('sum(issued) as issued'),'date')->groupBy(DB::raw('YEAR(date)'),DB::raw('MONTH(date)'))->get();
-    	$total = App\StockCard::filterByIssued()->select(DB::raw('sum(issued) as total'))->pluck('total')->first();
-    	$most_request = App\StockCard::filterByIssued()->select(DB::raw('sum(issued) as total'),'stocknumber')->groupBy('stocknumber')->first();
-    	$request_office = App\StockCard::filterByIssued()->select(DB::raw('sum(issued) as total'),'organization')->groupBy('organization')->orderBy('total','desc')->first();
+    	$released_count = App\RSMI::select(DB::raw('sum(issued_quantity) as issued'),'date')->groupBy('date',DB::raw('YEAR(date)'),DB::raw('MONTH(date)'))->get();
+
+        /**
+         * fetch from stockcard
+         * @var [stockcard]
+         */
+        $ris_count = App\StockCard::filterByIssued()->count();
+    	$total = App\StockCard::filterByIssued()->select(DB::raw('sum(issued_quantity) as total'))->pluck('total')->first();
+    	$most_request = App\StockCard::filterByIssued()->select(DB::raw('sum(issued_quantity) as total'),'supply_id')->groupBy('supply_id')->first();
+    	$request_office = App\StockCard::filterByIssued()->select(DB::raw('sum(issued_quantity) as total'),'organization')->groupBy('organization')
+                            ->orderBy('total','desc')->first();
     	$received = App\StockCard::filterByReceived()->take(5)->orderBy('date','desc')->orderBy('created_at','desc')->get();
 
     	return view('dashboard.index')

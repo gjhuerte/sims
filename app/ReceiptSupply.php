@@ -23,16 +23,23 @@ class ReceiptSupply extends Model
 
     public function supply()
     {
-    	return $this->belongsTo('App\Supply','stocknumber','stocknumber');
+    	return $this->belongsTo('App\Supply','supply_id','id');
     }
 
     public function scopeFindByStockNumber($query,$value)
     {
-    	return $query->where('stocknumber','=',$value);
+    	return $query->whereHas('supply', function($query) use ($value){
+        $query->where('stocknumber', '=', $value);
+      });
     }
 
-	public function getTotalCostAttribute($value)
-	{
-		return $this->cost * $this->remaining_quantity;
-	}
+    public function scopeFindBySupplyId($query,$value)
+    {
+    	return $query->where('supply_id','=',$value);
+    }
+
+  	public function getTotalCostAttribute($value)
+  	{
+  		return $this->cost * $this->remaining_quantity;
+  	}
 }

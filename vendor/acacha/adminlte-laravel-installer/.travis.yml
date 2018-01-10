@@ -1,0 +1,18 @@
+language: php
+
+php:
+  - 5.6
+  - 7.0
+  - hhvm
+
+before_script:
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - ./sandbox_setup.sh
+
+after_script:
+  - ./sandbox_destroy.sh
+
+script:
+  - cd sandbox
+  - phpunit --configuration ../phpunit.xml ../tests/InstallCommandTest.php

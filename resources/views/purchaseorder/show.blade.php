@@ -4,7 +4,7 @@
 	<section class="content-header">
 		<legend>
 			<h3 class="text-muted">
-			    @if( $purchaseorder->supplier->name == config('app.main_agency') )
+			    @if( $purchaseorder->supplier->name == config('app.main_agency') && isset($purchaseorder->supplier) )
 			    Agency Procurement Request
 			    @else
 			    Purchase Order
@@ -27,19 +27,20 @@
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 				<span id="nav-text"> Print</span>
 			</a>
+            <button type="button" id="updateFundCluster" class="copy btn btn-primary btn-sm">Update Fund Cluster</button>
 			<hr />
 			<table class="table table-hover table-striped table-bordered table-condensed" id="purchaseOrderTable" cellspacing="0" width="100%"	>
 				<thead>
 
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="4">Purchase Order Number:  <span style="font-weight:normal">{{ $purchaseorder->number }}</span> </th>
-		                <th class="text-left" colspan="4">Fund Cluster:  
-	                		<span style="font-weight:normal">{{ implode(", ", App\PurchaseOrderFundCluster::findByPurchaseOrderNumber([$purchaseorder->number])->pluck('fundcluster_code')->toArray()) }}</span> 
+		                <th class="text-left" colspan="4">Code:  <span style="font-weight:normal">{{ isset($purchaseorder->number) ? $purchaseorder->number : "" }}</span> </th>
+		                <th class="text-left" colspan="4">Fund Cluster:
+	                		<span style="font-weight:normal">{{ count($purchaseorder->fundclusters) > 0 ? implode( $purchaseorder->fundclusters->pluck('code')->toArray(), ",") : "None" }}</span>
 	                	</th>
 		            </tr>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="4">Details:  <span style="font-weight:normal">{{ $purchaseorder->details }}</span> </th>
-		                <th class="text-left" colspan="4">Date:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($purchaseorder->date_received)->toFormattedDateString() }}</span> </th>
+		                <th class="text-left" colspan="4">Details:  <span style="font-weight:normal">{{ isset($purchaseorder->details) ? $purchaseorder->details : "" }}</span> </th>
+		                <th class="text-left" colspan="4">Date:  <span style="font-weight:normal">{{ isset($purchaseorder->date_received) ? Carbon\Carbon::parse($purchaseorder->date_received)->toFormattedDateString() : "" }}</span> </th>
 		            </tr>
 		            <tr>
 						<th>ID</th>
@@ -66,6 +67,7 @@
 	$(document).ready(function() {
 
     var table = $('#purchaseOrderTable').DataTable({
+    	serverSide: true,
 		select: {
 			style: 'single'
 		},
@@ -79,54 +81,29 @@
 		ajax: "{{ url("purchaseorder/$purchaseorder->id") }}",
 		columns: [
 			{ data: "id" },
-			{ data: "supply.stocknumber" },
+			{ data: "stocknumber" },
+			{ data: "details" },
+			{ data: "pivot.ordered_quantity" },
+			{ data: "pivot.received_quantity" },
+			{ data: "pivot.remaining_quantity" },
+			{ data: "pivot.unitcost" },
 			{ data: function(callback){
-				html = `<p style="font-size:`;
-				length = callback.supply.details.length
-				supply = callback.supply.details
-				if(length > 60)
-				html += "11"
-				else if(length > 40)
-				html += "12"
-				else if(length > 20)
-				html += "13"
-				html += `px;">`+ supply +"</p>"
-				return html;
-
-	    	} },
-			{ data: "orderedquantity" },
-			{ data: function(callback){
-			  if(callback.receivedquantity != 0 && callback.receivedquantity != null)
-			  {
-			    return callback.receivedquantity
-			  }
-
-			  return `0`;
-			} },
-			{ data: "remainingquantity" },
-			{ data: function(callback){
-				if(callback.unitcost == "" || callback.unitcost == null)
-					return 0
-				return (callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-			} },
-			{ data: function(callback){
-				if(callback.unitcost == "" || callback.unitcost == null)
-					return 0
-				return (callback.receivedquantity * callback.unitcost).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-			} }
+				return parseFloat(callback.pivot.ordered_quantity * callback.pivot.unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+			} , orderable: false}
 		],
 	 });
 
-    $('#purchaseOrderTable').on('click','.setprice',function(){
-    	id = $(this).data('id')
+    $('#updateFundCluster').on('click',function(){
+    	id = "{{ isset($purchaseorder->id) ? $purchaseorder->id : null }}"
     	swal({
 			  title: "Purchase Order",
-			  text: "Input Purchase Order Price (Php):",
+			  text: "Input Fund Clusters:",
 			  type: "input",
 			  showCancelButton: true,
 			  closeOnConfirm: false,
 			  animation: "slide-from-top",
-			  inputPlaceholder: "Php XX.XX"
+			  inputPlaceholder: "Comma separate each fund cluster",
+				inputValue: "{{ count($purchaseorder->fundclusters()) > 0 ? implode( $purchaseorder->fundclusters()->pluck('code')->toArray(), ",") : '' }}"
 			},
 			function(inputValue){
 			  if (inputValue === false) return false;
@@ -141,17 +118,19 @@
 			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			    },
 			  	type: 'put',
-			  	url: '{{ url("purchaseorder/supply") }}' + '/' + id,
+			  	url: '{{ url("purchaseorder") }}' + '/' + id,
 			  	dataType: 'json',
 			  	data: {
-			  		'unitprice': inputValue
+			  		'fundcluster': inputValue
 			  	},
 			  	success: function(response){
 			  		if(response == 'success')
-			  		swal('Success','Operation Successful','success')
+						{
+				  		swal('Success','Operation Successful','success')
+				  		location.reload()
+						}
 			  		else
-			  		swal('Error','Problem Occurred while processing your data','error')
-			  		table.ajax.reload();
+			  		swal('Error',response,'error')
 			  	},
 			  	error: function(){
 			  		swal('Error','Problem Occurred while processing your data','error')

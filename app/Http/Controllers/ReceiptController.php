@@ -22,12 +22,11 @@ class ReceiptController extends Controller
     {
         if($request->ajax())
         {
-            return json_encode([
-                'data' => App\Receipt::all()
-            ]);
+            $receipts = App\Receipt::with('supplier')->get();
+            return datatables($receipts)->toJson();
         }
 
-        return view('receipt.index')
+        return view('receipt.index') 
                 ->with('title','Receipt');
     }
 
@@ -62,24 +61,31 @@ class ReceiptController extends Controller
     public function show(Request $request, $id = null)
     {
         $id = $this->sanitizeString($id);
+        $receipt = App\Receipt::findByNumber($id);
 
         if($request->ajax())
         {
+
+            /**
+             * used when checking if a certain receipt exists
+             * @var [receipt number]
+             */
             if($id == 'checkifexists')
             {
 
               $number = $this->sanitizeString(Input::get("number"));
               $receipt = App\Receipt::with('supplier')->findByNumber($number)->first();
 
-              if(count($receipt) > 0)
-              {
-                return json_encode($receipt);
-              }
+              if(count($receipt) > 0) return json_encode($receipt);
 
               return json_encode(null);
 
             }
 
+            /**
+             * found in autosuggest in jquery
+             * returns list of receipt associated with that number
+             */
             if(Input::has('term'))
             {
                 $number = $this->sanitizeString(Input::get('term'));
@@ -89,17 +95,26 @@ class ReceiptController extends Controller
                 );
             }
 
-            return json_encode([
-                'data' => App\ReceiptSupply::with('supply')->where('receipt_number','=',$id)->get()
-            ]);
+            /**
+             * returns list of supplies under the receipt
+             * @var [supplies]
+             */
+            return datatables($receipt->supplies)->toJson();
         }
 
+        /**
+         * only exists in ajax
+         * must not occur outside of ajax
+         * @var [id]
+         */
         if($id == 'checkifexists')
         {
           return view('errors.404');
         }
 
-        $receipt = App\Receipt::findByNumber($id);
+        /**
+         * returns show form
+         */
         return view('receipt.show')
                 ->with('receipt',$receipt);
     }
@@ -128,16 +143,32 @@ class ReceiptController extends Controller
 
         if($request->ajax())
         {
-            if(Input::has('stocknumber'))
-            {
-                $cost = $this->sanitizeString(Input::get('unitprice'));
-                $stocknumber = $this->sanitizeString(Input::get('stocknumber'));
-                $receipt = App\ReceiptSupply::where('receipt_number','=',$id)
-                                                ->where('stocknumber','=',$stocknumber)
-                                                ->first();
 
-                $receipt->cost = $cost;
-                $receipt->save();
+            /**
+             * if data sent has a stocknumber with it
+             */
+            if($request->has('stocknumber'))
+            {
+                /**
+                 * init all values sent through ajax
+                 * @var [unitcost]
+                 * @var [stocknumber]
+                 */
+                $unitcost = $this->sanitizeString($request->get('unitprice'));
+                $stocknumber = $this->sanitizeString($request->get('stocknumber'));
+
+                /**
+                 * fetch record of supply
+                 * assign record to supply
+                 * @var [supply]
+                 */
+                $supply = App\Supply::findByStockNumber($stocknumber)->first();
+
+                /**
+                 * update receipt information
+                 * @var [receipt]
+                 */
+                $receipt = App\Receipt::findByNumber($id)->supplies()->updateExistingPivot($supply->id, [ 'unitcost' => $unitcost ]);
             }
 
             return json_encode('success');
@@ -161,7 +192,7 @@ class ReceiptController extends Controller
 
     public function printReceipt($receipt)
     {
-        $receiptsupplies = App\ReceiptSupply::with('supply')->where('receipt_number','=',$receipt)->get();
+        $receiptsupplies = App\ReceiptSupply::with('supply')->where('receipt_id','=',$receipt)->get();
         $receipt = App\Receipt::findByNumber($receipt);
 
         $data = ['receipt' => $receipt, 'receiptsupplies' => $receiptsupplies ];

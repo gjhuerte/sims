@@ -19,15 +19,27 @@ class CreateRsmiView extends Migration
                     stockcards.date,
                     stockcards.reference ,
                     stockcards.organization as office,
-                    stockcards.stocknumber,
+                    supplies.stocknumber,
                     supplies.details,
-                    supplies.unit ,
-                    stockcards.issued,
-                    ledgercards.issuedunitprice as cost
+                    units.name ,
+                    stockcards.issued_quantity,
+                    ledgercards.issued_unitcost as cost
             FROM stockcards
-            LEFT JOIN supplies ON supplies.stocknumber = stockcards.stocknumber 
-            LEFT JOIN ledgercards on ledgercards.stocknumber = stockcards.stocknumber and ledgercards.reference = stockcards.reference
-                    WHERE stockcards.issued > 0 
+            LEFT JOIN 
+                supplies
+            ON 
+                supplies.id = stockcards.supply_id 
+            LEFT JOIN 
+                units
+            ON 
+                units.id = supplies.unit_id 
+            LEFT JOIN 
+                ledgercards 
+            on 
+                ledgercards.supply_id = stockcards.supply_id 
+                and 
+                    ledgercards.reference = stockcards.reference
+            WHERE stockcards.issued_quantity > 0 
         ");
     }
 

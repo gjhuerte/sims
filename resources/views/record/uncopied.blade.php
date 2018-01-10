@@ -25,6 +25,7 @@
 @endsection
 
 @section('content')
+@include('modal.record.form')
 <!-- Default box -->
   <div class="box" style="padding:10px">
     <div class="box-body">
@@ -37,8 +38,6 @@
             <th class="col-sm-1">Receipt</th>
             <th class="col-sm-1">Office/Supplier</th>
             <th class="col-sm-1">Stock Number</th>
-            <th class="col-sm-1">Details</th>
-            <th class="col-sm-1">Unit</th>
             <th class="col-sm-1">Received Quantity</th>
             <th class="col-sm-1">Issued Quantity</th>
             <th class="col-sm-1 no-sort"></th>
@@ -58,6 +57,7 @@
   jQuery(document).ready(function($) {
 
     var table = $('#recordsTable').DataTable({
+        serverSide: true,
         language: {
                 searchPlaceholder: "Search..."
         },
@@ -76,59 +76,72 @@
                 { data: "receipt" },
                 { data: "organization" },
                 { data: "supply.stocknumber" },
-                { data: "supply.details" },
-                { data: "supply.unit" },
-                { data: "received" },
-                { data: "issued" },
+                { data: "received_quantity" },
+                { data: "issued_quantity" },
                 { data: function(callback){
-                  return `<button type="button" data-id="`+callback.id+`" data-date="`+callback.date+`" data-reference="`+callback.reference+`" data-receipt="`+callback.receipt+`" data-organization="`+callback.organization+`" data-stocknumber="`+callback.supply.stocknumber+`" data-details="`+callback.supply.details+`" data-unit="`+callback.supply.unit+`" data-received="`+callback.received+`" data-issued="`+callback.issued+`" class="copy btn btn-primary btn-sm">Copy</button>`
+                  return `<button type="button" data-id="`+callback.id+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Copy</button>`
                 } }
         ],
     });
 
-    $('#recordsTable').on('click','.copy',function(){
-      record = $(this).data()
+    $('#copy-record').on('click', function(){
+        fundcluster = $('#fundcluster').val()
+        unitcost = $('#unitcost').val()
+        id = $('#record-id').val()
+        received = $('#record-received').val()
+        issued = $('#record-issued').val()
 
-      swal({
-        title: "Purchase Order",
-        text: "Input Price (Php):",
-        type: "input",
-        showCancelButton: true,
-        closeOnConfirm: false,
-        animation: "slide-from-top",
-        inputPlaceholder: "Php XX.XX"
-      },
-      function(inputValue){
-        if (inputValue === false) return false;
-
-        if (inputValue === "") {
-          swal.showInputError("You need to write something!");
-          return false
+        if (typeof unitcost === 'undefined' || unitcost == null || unitcost == "")
+          $('#unitcost').closest('.form-group').removeClass('has-success').addClass('has-error');
+        if ((typeof fundcluster === 'undefined' || fundcluster == null || fundcluster == "") && received > 0)
+          $('#fundcluster').closest('.form-group').removeClass('has-success').addClass('has-error');
+        else
+        {
+          $('#unitcost').closest('.form-group').removeClass('has-error')
+          $('#fundcluster').closest('.form-group').removeClass('has-error')
+          $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            async: false, 
+            type: 'post',
+            url: '{{ url("records/copy") }}',
+            dataType: 'json',
+            data: {
+              'unitcost': unitcost,
+              'id' : id,
+              'fundcluster': fundcluster
+            },
+            success: function(response){
+              console.log(response)
+              $('#recordFormModal').modal('hide')
+              if(response == 'success')
+                swal('Success','Operation Successful','success')
+              else
+                swal('Error','Problem Occurred while processing your data','error')
+              table.ajax.reload();
+            },
+            error: function(){
+              swal('Error','Problem Occurred while processing your data','error')
+            }
+          })
         }
+    })
 
-        $.ajax({
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          },
-          type: 'post',
-          url: '{{ url("records/copy") }}',
-          dataType: 'json',
-          data: {
-            'unitprice': inputValue,
-            'record' : record
-          },
-          success: function(response){
-            if(response == 'success')
-            swal('Success','Operation Successful','success')
-            else
-            swal('Error','Problem Occurred while processing your data','error')
-            table.ajax.reload();
-          },
-          error: function(){
-            swal('Error','Problem Occurred while processing your data','error')
-          }
-        })
-      });
+    $('#recordsTable').on('click','.copy',function(){
+      id = $(this).data('id')
+      received = $(this).data('received')
+      issued = $(this).data('issued')
+
+      if( received > 0 ) 
+        $('#fundcluster-form').show()
+      else
+        $('#fundcluster-form').hide()
+
+      $('#record-id').val(id)
+      $('#record-received').val(received)
+      $('#record-issued').val(issued)
+      $('#recordFormModal').modal('show')
     })
   });
 </script>

@@ -53,10 +53,12 @@ class OfficeController extends Controller {
 		$head = $this->sanitizeString(Input::get('head'));
 		$description = $this->sanitizeString(Input::get('description'));
 
+		$office = new App\Office;
+
 		$validator = Validator::make([
 			'Name' => $name,
 			'Code' => $code
-		],App\Office::$rules);
+		],$office->rules());
 
 		if($validator->fails())
 		{
@@ -64,8 +66,6 @@ class OfficeController extends Controller {
 				->withInput()
 				->withErrors($validator);
 		}
-
-		$office = new App\Office;
 		$office->code = $code;
 		$office->name = $name;
 		$office->description = $description;
@@ -133,10 +133,12 @@ class OfficeController extends Controller {
 		$head = $this->sanitizeString(Input::get('head'));
 		$description = $this->sanitizeString(Input::get('description'));
 
+		$office = App\Office::find($id);
+
 		$validator = Validator::make([
 			'Name' => $name,
 			'Code' => $code
-		],App\Office::$rules);
+		],$office->updateRules());
 
 		if($validator->fails())
 		{
@@ -144,8 +146,6 @@ class OfficeController extends Controller {
 				->withInput()
 				->withErrors($validator);
 		}
-
-		$office = App\Office::find($id);
 		$office->code = $code;
 		$office->name = $name;
 		$office->description = $description;

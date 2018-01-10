@@ -16,6 +16,8 @@ return [
 
     'main_agency' => env('MAIN_AGENCY','Not Set'),
 
+    'default_status' => env('DEFAULT_STATUS','pending'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -195,17 +197,15 @@ return [
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         Backpack\PageManager\PageManagerServiceProvider::class,
 
-        // ...
-        // OwenIt\Auditing\AuditingServiceProvider::class,
-        // ...
-
-        // Vsmoraes\Pdf\PdfServiceProvider::class,
-
-        // Barryvdh\DomPDF\ServiceProvider::class,
-
         Barryvdh\Snappy\ServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+
+        // ...
+
+        OwenIt\Auditing\AuditingServiceProvider::class,
+
+        // ...
     ],
 
     /*
@@ -257,8 +257,6 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
-        // 'PDF' => 'Vsmoraes\Pdf\PdfFacade',
-        // 'PDF' => Barryvdh\DomPDF\Facade::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,

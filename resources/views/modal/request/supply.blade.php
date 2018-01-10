@@ -1,5 +1,5 @@
 <div class="modal fade" id="addStockNumberModal" tabindex="-1" role="dialog" aria-labelledby="addStockNumberModal">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -9,9 +9,11 @@
           <p class="text-primary">* Click the select button of your desired supply</p>
       		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyInventoryTable" width=100%>
       			<thead>
+      				<th class="col-sm-1">ID</th>
       				<th class="col-sm-1">Stock No.</th>
       				<th class="col-sm-1">Details</th>
               <th class="col-sm-1">Unit</th>
+              <th class="col-sm-1">Balance</th>
       				<th class="col-sm-1 no-sort"></th>
       			</thead>
       		</table>
@@ -23,15 +25,22 @@
   $(document).ready(function(){
 
       var table = $('#supplyInventoryTable').DataTable({
+        serverSide: true,
         language: {
             searchPlaceholder: "Search..."
         },
         "processing": true,
         ajax: "{{ url('inventory/supply') }}",
         columns: [
+            { data: "id" },
             { data: "stocknumber" },
             { data: "details" },
-            { data: "unit" },
+            { data: "unit.name" },
+            @if(isset($type) && $type == 'ledger')
+            { data: "ledger_balance" },
+            @else
+            { data: "stock_balance" },
+            @endif
             { data: function(callback){
               return `
                 <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>
@@ -39,6 +48,6 @@
             } }
         ],
       });
-      
+
   })
 </script>

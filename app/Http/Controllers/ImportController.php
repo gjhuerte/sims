@@ -9,6 +9,10 @@ use DB;
 use Carbon;
 use Session;
 use Validator;
+
+// use App\Fileentry;
+// use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -17,15 +21,24 @@ use Illuminate\Http\File;
 class ImportController extends Controller
 {
     /**
+     * importing options
+     * @var [type]
+     */
+    public $options = [
+        'stockcard' => 'Stock Card',
+        'ledgercard' => 'Ledger Card'
+    ];
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-
         return view('import.index')
-            ->with('title','Import');
+            ->with('title','Import')
+            ->with('options', $this->options);
     }
 
     /**
@@ -36,42 +49,47 @@ class ImportController extends Controller
      */
     public function store(Request $request)
     {
-        $type = $request->get('type');
-        $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
-        $file = $request->file('input-file-preview');
-
-        $validator = Validator::make($request->all(),[
-            'input-file-preview' => 'required|file'
-        ]);
-
-        if($validator->fails())
+        if($request->file('input-file-preview'))
         {
-            return back()->withErrors()->withInput();
+            $type = $request->get('type');
+            $filename = $type.'-'.Carbon\Carbon::now()->format('mydhms');
+            $file = $request->file('input-file-preview');
+
+            $validator = Validator::make($request->all(),[
+                'input-file-preview' => 'required|file'
+            ]);
+
+            if($validator->fails())
+            {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $records = Excel::load($file)->get()->toArray();
+
+            $keys = $this->getRecordColumns($records[0]);
+            $rows = $this->clean($records, $keys);
+
+            DB::beginTransaction();
+
+            if($type == 'stockcard'):
+                $this->importStockCard($rows);
+            elseif($type == 'ledgercard'):
+                $this->importLedgerCard($rows);
+            else:
+                DB::rollback();
+                \Alert::error('Incorrect data for importing')->flash();
+                return redirect('import')->withInput();
+            endif;
+
+            DB::commit();
+
+            \Alert::success('Data Imported')->flash();
+
+            return redirect('import');
         }
 
-        $records = Excel::load($file)->toArray();
-
-        $keys = $this->getRecordColumns($records[0]);
-        $rows = $this->clean($records, $keys);
-
-        DB::beginTransaction();
-
-        if($type == 'stockcard'):
-            $this->importStockCard($rows);
-        else:
-            DB::rollback();
-            \Alert::error('Incorrect data for importing')->flash();
-            return redirect('import')->with('records',$rows)->withInput();
-        endif;
-
-        DB::commit();
-
-        \Alert::success('Data Imported')->flash();
-
-        return view('import.index')
-            ->with('title','Import')
-            ->with('records', $records)
-            ->with('keys',$keys);
+        \Alert::error('No Data Found')->flash();
+        return redirect('import');
     }
 
     public function clean($records , $keys)
@@ -108,6 +126,109 @@ class ImportController extends Controller
         return $keys;
     }
 
+    public function importLedgerCard($rows)
+    {
+
+        foreach($rows as $row)
+        {
+            $separator = ' ';
+            $reference = $row['reference'];
+            $issuedunitcost = floatVal(str_replace(",","",$row['issuedprice']));
+            $receiptunitcost = floatVal(str_replace(",","",$row['receiptprice']));
+            $daystoconsume = "None";
+            $purchaseorder = "";
+            $date = $row['date'];
+            $receipt = null;
+            $fundcluster = '';
+            $stocknumber = $row['stockno'];
+            $issued =  floatVal(str_replace(",","",$row['issue']));
+            $received = floatVal(str_replace(",","",$row['receipt']));
+
+            // return json_encode(count(explode(' ', 'APR PS17-02764/CSE17-4692')));
+
+            /*
+            *
+            *   check if the reference is
+            *   December Balance
+            *   returns true if has word 'alance'
+            *
+            */
+            if(strpos($reference,'alance') != false)
+            {
+                $receipt = $reference;
+            }
+
+            else
+            {
+                /*
+                *
+                *  separates the values of reference field
+                *   if APR: APR Reference/Receipt
+                *   if PO P.O #Number date
+                *
+                */
+
+                $reference = explode($separator, $reference);
+
+                if(count($reference) > 1)
+                {
+                    $index = 0;
+
+                    //  apr
+                    if($reference[0] == 'APR')
+                    {
+                        $separator = '/';
+                        $reference = explode('/', $reference[1]);
+                        $receipt = $reference[1];
+                        $reference = ltrim($reference[0], '#');
+                    }
+                    else
+                    {
+
+                        $receipt = $reference[2];
+                        $reference = ltrim($reference[1], '#');
+
+                    }
+
+                }
+            }
+
+            /*
+            *
+            *   store to database
+            *
+            */
+            $transaction = new App\LedgerCard;
+            $transaction->date = Carbon\Carbon::parse($date);
+            $transaction->stocknumber = $stocknumber;
+            $transaction->reference = (is_array($reference)) ? implode(' ', $reference) : $reference;
+            $transaction->receipt = $receipt;
+            $transaction->issued_unitcost = $issuedunitcost;
+            $transaction->received_unitcost = $receiptunitcost;
+            $transaction->daystoconsume = $daystoconsume;
+            $transaction->created_by = Auth::user()->id;
+
+            /*
+            *
+            *   check whether the received has value
+            *   if the received has value
+            *   add to receipt
+            *   if issued has value
+            *   ass to issue
+            */
+            if($received > 0)
+            {
+                $transaction->received_quantity = $received;
+                $transaction->receipt();
+            }
+            else
+            {
+                $transaction->issued_quantity = $issued;
+                $transaction->issue();
+            }
+        }
+    }
+
     public function importStockCard($rows)
     {
 
@@ -129,7 +250,7 @@ class ImportController extends Controller
 
             /*
             *
-            *   check if the reference is 
+            *   check if the reference is
             *   December Balance
             *   returns true if has word 'alance'
             *
@@ -146,10 +267,10 @@ class ImportController extends Controller
                 *
                 *  separates the values of reference field
                 *   if APR: APR Reference/Receipt
-                *   if PO P.O #Number date 
+                *   if PO P.O #Number date
                 *
                 */
-                    
+
                 $reference = explode($separator, $reference);
 
                 if(count($reference) > 1)
@@ -201,12 +322,13 @@ class ImportController extends Controller
             */
             if($received > 0)
             {
-                $transaction->received = $received;
+                $transaction->received_quantity = $received;
                 $transaction->receipt();
             }
             else
             {
-                $transaction->issued = $issued; 
+                $transaction->issued_quantity = $issued;
+                $transaction->daystoconsume = App\StockCard::computeDaysToConsume($stocknumber);
                 $transaction->issue();
             }
         }

@@ -17,15 +17,17 @@
   </head>
   <body>
     <div id="header">
+        <div class="col-sm-12">
+        </div>
         <div class="col-sm-12" style="color: #800000;">
             <div class="clearfix"></div>
             <div>
                 <img src="{{ asset('images/logo.png') }}" class="img img-responsive img-circle pull-left" style="height: 64px;width:auto;" />
             </div>
-            <div style="margin-left: 5px;">
-          		<div style="font-size:10pt;">Republic of the Philippines	</div>
+            <div style="margin-left: 5em;">
+          		<div style="font-size:13pt;">Republic of the Philippines	</div>
           		<div style="font-size:12pt;">POLYTECHNIC UNIVERSITY OF THE PHILIPPINES </div>
-          		<div style="font-size:10pt;">Sta. Mesa, Manila  </div>
+          		<div style="font-size:10pt;">Sta. Mesa, Manila   <span class="pull-right"> {{ Carbon\Carbon::now()->toDayDateTimeString() }} </span></div>
             </div>
         </div>
         <div class="col-sm-12">

@@ -11,32 +11,33 @@
       <thead>
           <tr rowspan="2">
               <th class="text-left" colspan="3">Request Slip:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
-              <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ $request->office }}</span> </th>
-          </tr>
-          <tr rowspan="2">
-              <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
-              <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ $request->status }}</span> </th>
+              <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> </th>
           </tr>
           <tr rowspan="2">
               <th class="text-left" colspan="3">Date Requested:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($request->created_at)->toFormattedDateString() }}</span> </th>
-              <th class="text-left" colspan="3"> <span style="font-weight:normal"></span> </th>
+              <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ isset($request->status) ? $request->status : ucfirst(config('app.default_status')) }}</span> </th>
+          </tr>
+          <tr rowspan="2">
+              <th class="text-left" colspan="6">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
           </tr>
           <tr>
           <th class="col-sm-1">Stock Number</th>
           <th class="col-sm-1">Details</th>
           <th class="col-sm-1">Quantity Requested</th>
           <th class="col-sm-1">Quantity Issued</th>
+          <th class="col-sm-1">Quantity Released</th>
           <th class="col-sm-1">Comments</th>
         </tr>
       </thead>
       <tbody>
-        @foreach($supplyrequests as $supplyrequest)
+        @foreach($request->supplies as $supply)
         <tr>
-          <td>{{ $supplyrequest->stocknumber }}</td>
-          <td>{{ $supplyrequest->supply->details }}</td>
-          <td>{{ $supplyrequest->quantity_requested }}</td>
-          <td>{{ $supplyrequest->quantity_issued }}</td>
-          <td>{{ $supplyrequest->comments }}</td>
+          <td>{{ $supply->stocknumber }}</td>
+          <td>{{ $supply->details }}</td>
+          <td>{{ $supply->pivot->quantity_requested }}</td>
+          <td>{{ $supply->pivot->quantity_issued }}</td>
+          <td>{{ $supply->pivot->quantity_released }}</td>
+          <td>{{ $supply->pivot->comments }}</td>
         </tr>
         @endforeach
       </tbody>
@@ -59,16 +60,16 @@
           <td class="text-center">
             <br />
             <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ App\User::where('username','=',$request->requestor)->first()->firstname }} {{ App\User::where('username','=',$request->requestor)->first()->lastname }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ (count($request->requestor) > 0) ? $request->requestor->firstname . " " . $request->requestor->lastname : "" }}</span>
             <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ App\User::where('username','=',$request->requestor)->first()->office }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">{{ isset($request->office) ? $request->office->name : "" }}</span>
           </td>
           <td class="text-center">
             <br />
             <br />
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ $approvedby->head }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ isset($approvedby->head) ? $approvedby->head : "" }}</span>
             <br />
-            <span id="office" class="text-center" style="font-size:10px;">{{ $approvedby->name }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">{{ isset($approvedby->name) ? $approvedby->name : "" }}</span>
           </td>
           <td class="text-center">
             <br />

@@ -6,7 +6,7 @@ use Carbon;
 use Session;
 use DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 class SupplyInventoryController extends Controller {
 
@@ -15,75 +15,17 @@ class SupplyInventoryController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
-			// return json_encode([
-			// 	'data' => App\Supply::all()
-			// ]);
-			return datatables(App\Supply::all())->toJson();
+
+			$supplies = App\Supply::with('unit')->get();
+			return datatables($supplies)->toJson();
 		}
 		return view('inventory.supply.index')
                 ->with('title','Supply Inventory');
 	}
-
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		return view('inventory.supply.create')
-                ->with('title','Supply Inventory');
-	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		$stocknumber = $this->sanitizeString(Input::get('stocknumber'));
-		$entityname = $this->sanitizeString(Input::get('entityname'));
-		$description = $this->sanitizeString(Input::get('description'));
-		$unit = $this->sanitizeString(Input::get('unit'));
-		$reorderpoint = $this->sanitizeString(Input::get("reorderpoint"));
-		$supplytype = $this->sanitizeString(Input::get('supplytype'));
-
-		$validator = Validator::make([
-			'Stock Number' => $stocknumber,
-			'Entity Name' => $entityname,
-			'Fund Cluster' => '0',
-			'Supply Type' => $supplytype,
-			'Unit' => $unit,
-			'Unit Price' => 0,
-			'Reorder Point' => $reorderpoint
-		],Supply::$rules);
-
-		if($validator->fails())
-		{
-			return redirect('inventory/supply/add')
-					->withInput()
-					->withErrors($validator);
-		}
-
-		$supply = new Supply;
-		$supply->stocknumber = $stocknumber;
-		$supply->entityname = $entityname;
-		$supply->supplytype = $supplytype;
-		$supply->unit = $unit;
-		$supply->reorderpoint = $reorderpoint;
-		$supply->save();
-
-		Session::flash('success-message','Supplies added to Supply Inventory');
-		return redirect('inventory.supply');
-	}
-
 
 	/**
 	 * Display the specified resource.
@@ -91,9 +33,9 @@ class SupplyInventoryController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id = null)
+	public function getSupplyInformation(Request $request, $id = null)
 	{
-		if(Request::ajax())
+		if($request->ajax())
 		{
 			if(Input::has('term'))
 			{
@@ -104,45 +46,32 @@ class SupplyInventoryController extends Controller {
 								->toJson();
 			}
 
-			return json_encode([ 'data' => App\Supply::where('stocknumber','=',$id)->first() ]);
+			if($id)
+			{
+				return json_encode([ 'data' => App\Supply::where('stocknumber','=',$id)->first() ]);
+			}
+
+			return view('errors.404');
 		}
 	}
 
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
+	public function advanceSearch()
 	{
-
+		return view('errors.404');
 	}
 
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
+	public function show(Request $request, $id = null)
 	{
-		return redirect('inventory.supply');
+		if($request->ajax())
+		{
+			if($request->has('term'))
+			{
+				$stocknumber = $this->sanitizeString($request->get('term'));
+				$supply = App\Supply::where('stocknumber', 'like', '%'. $stocknumber . '%')->pluck('stocknumber');
+
+				return json_encode($supply);
+			}
+		}
 	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		return redirect('inventory.supply');
-	}
-
 
 }

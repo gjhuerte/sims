@@ -41,12 +41,19 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
 
-	/*
-	|
-	| Supply Inventory Modules
-	|
-	*/
-	Route::resource('inventory/supply','SupplyInventoryController');
+	/**
+	 * supply inventory modules
+	 */
+	Route::get('inventory/supply/advancesearch','SupplyInventoryController@advanceSearch');
+	Route::get('inventory/supply','SupplyInventoryController@index');
+
+	/**
+	 * computation for days to consume
+	 * returns days to consume as return value
+	 * add this first before other options
+	 */
+	Route::get('inventory/supply/{stocknumber}/compute/daystoconsume', 'StockCardController@estimateDaysToConsume');	
+	Route::get('inventory/supply/{id}','SupplyInventoryController@getSupplyInformation');
 	// return all supply stock number
 	Route::get('get/inventory/supply/stocknumber/all','StockCardController@getAllStockNumber');
 	// return stock number for autocomplete
@@ -73,6 +80,15 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::resource('maintenance/supplier','SuppliersController');
 
+	Route::get('maintenance/category/assign/{id}', 'CategoriesController@showAssign');
+	Route::put('maintenance/category/assign/{id}', 'CategoriesController@assign');
+
+	Route::resource('maintenance/category','CategoriesController');
+
+	Route::get('uacs/months', 'UACSController@getAllMonths');
+	Route::get('uacs', 'UACSController@getIndex');
+	Route::get('uacs/{month}', 'UACSController@getUACS');
+
 	Route::post('get/ledgercard/checkifexisting',[
 		'as' => 'ledgercard.checkifexisting',
 		'uses' => 'LedgerCardController@checkIfLedgerCardExists'
@@ -91,27 +107,25 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['amo'])->group(function(){
 
-		Route::get('inventory/supply/stockcard/batch/form/accept',[
-			'as' => 'supply.stockcard.batch.accept.form',
-			'uses' => 'StockCardController@batchAcceptForm'
+		Route::get('inventory/supply/stockcard/accept',[
+			'as' => 'supply.stockcard.accept.form',
+			'uses' => 'StockCardController@create'
 		]);
 
-		Route::get('inventory/supply/stockcard/batch/form/release',[
-			'as' => 'supply.stockcard.batch.release.form',
-			'uses' => 'StockCardController@batchReleaseForm'
+		Route::get('inventory/supply/stockcard/release',[
+			'as' => 'supply.stockcard.release.form',
+			'uses' => 'StockCardController@releaseForm'
 		]);
 
-		Route::post('inventory/supply/stockcard/batch/accept',[
-			'as' => 'supply.stockcard.batch.accept',
-			'uses' => 'StockCardController@batchAccept'
+		Route::post('inventory/supply/stockcard/create',[
+			'as' => 'supply.stockcard.accept',
+			'uses' => 'StockCardController@store'
 		]);
 
-		Route::post('inventory/supply/stockcard/batch/release',[
-			'as' => 'supply.stockcard.batch.release',
-			'uses' => 'StockCardController@batchRelease'
+		Route::post('inventory/supply/stockcard/release',[
+			'as' => 'supply.stockcard.release',
+			'uses' => 'StockCardController@release'
 		]);
-
-		Route::get('inventory/supply/{id}/stockcard/release','StockCardController@releaseForm');
 
 		Route::get('inventory/supply/{id}/stockcard/print','StockCardController@printStockCard');
 
@@ -124,6 +138,10 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'RequestController@releaseView'
 		]);
 
+		Route::get('disposal/{id}/print', 'DisposalsController@print');
+
+		Route::resource('disposal', 'DisposalsController');
+
 	});
 
 	Route::middleware(['accounting'])->group(function(){
@@ -131,27 +149,26 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('records/uncopied','LedgerCardController@showUncopiedRecords');
 		Route::post('records/copy','LedgerCardController@copy');
 
-		Route::get('inventory/supply/ledgercard/batch/form/accept',[
-			'as' => 'supply.ledgercard.batch.accept.form',
-			'uses' => 'LedgerCardController@batchAcceptForm'
+		Route::get('inventory/supply/ledgercard/accept',[
+			'as' => 'supply.ledgercard.accept.form',
+			'uses' => 'LedgerCardController@create'
 		]);
 
-		Route::get('inventory/supply/ledgercard/batch/form/release',[
-			'as' => 'supply.ledgercard.batch.release.form',
-			'uses' => 'LedgerCardController@batchReleaseForm'
+		Route::get('inventory/supply/ledgercard/release',[
+			'as' => 'supply.ledgercard.release.form',
+			'uses' => 'LedgerCardController@releaseForm'
 		]);
 
-		Route::post('inventory/supply/ledgercard/batch/accept',[
-			'as' => 'supply.ledgercard.batch.accept',
-			'uses' => 'LedgerCardController@batchAccept'
+		Route::post('inventory/supply/ledgercard/accept',[
+			'as' => 'supply.ledgercard.accept',
+			'uses' => 'LedgerCardController@store'
 		]);
 
-		Route::post('inventory/supply/ledgercard/batch/release',[
-			'as' => 'supply.ledgercard.batch.release',
-			'uses' => 'LedgerCardController@batchRelease'
+		Route::post('inventory/supply/ledgercard/release',[
+			'as' => 'supply.ledgercard.release',
+			'uses' => 'LedgerCardController@release'
 		]);
 
-		Route::get('inventory/supply/{id}/ledgercard/release','LedgerCardController@releaseForm');
 
 		Route::get('inventory/supply/{id}/ledgercard/print','LedgerCardController@printLedgerCard');
 
@@ -161,7 +178,7 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('inventory/supply.ledgercard','LedgerCardController');
 
-
+		Route::resource('fundcluster','FundClusterController');
 	});
 
 	Route::middleware(['admin'])->group(function(){
@@ -195,6 +212,7 @@ Route::middleware(['auth'])->group(function(){
 	});
 
 	Route::get('get/supply/stocknumber','SupplyInventoryController@show');
+
 
 });
 

@@ -1,0 +1,18 @@
+php artisan key:generate
+
+app_env=production
+app_debug=false
+
+db_database=
+db_username=
+db_password=
+
+composer dump-autoload
+php artisan optimize
+
+php artisan migrate or php artisan migrate:refresh 
+php artisan db:seed
+composer install --optimize-autoloader
+php artisan view:clear
+php artisan config:cache
+php artisan route:cache

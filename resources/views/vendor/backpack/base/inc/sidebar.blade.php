@@ -63,6 +63,8 @@
 
           @if(Auth::user()->access == 1)
 
+          <li><a href="{{ url('disposal') }}"><i class="fa fa-trash-o" aria-hidden="true"></i> <span> Disposal </span></a></li>
+
           <li class="header">Information System</li>
 
           <li><a href="{{ url('maintenance/supply') }}"><i class="fa fa-database" aria-hidden="true"></i> <span> Supply</span></a></li>
@@ -73,11 +75,19 @@
 
           <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
 
+          <li><a href="{{ url('maintenance/category') }}"><i class="fa fa-tags" aria-hidden="true"></i> <span> Categories </span></a></li>
+
           @endif
 
           @if(Auth::user()->access == 2)
 
           <li><a href="{{ url('records/uncopied') }}"><i class="fa fa-clock-o" aria-hidden="true"></i> <span> Pending AMO Records </span></a></li>
+
+          <li><a href="{{ url('uacs') }}"><i class="fa fa-code" aria-hidden="true"></i> <span> UACS </span></a></li>
+
+          <li><a href="{{ url('fundcluster') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Fund Cluster </span></a></li>
+
+          <li><a href="{{ url('maintenance/category') }}"><i class="fa fa-tags" aria-hidden="true"></i> <span> Categories </span></a></li>
 
           @endif
 
@@ -90,6 +100,7 @@
           <li><a href="{{ url('account') }}"><i class="fa fa-users" aria-hidden="true"></i> Accounts</span></a></li>
 
           <li><a href="{{ url('audittrail') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>Audit Trail</span></a></li>
+          
           <li><a href="{{ url('import') }}"><i class="fa fa-upload" aria-hidden="true"></i> <span>Import</span></a></li>
           @endif
 
