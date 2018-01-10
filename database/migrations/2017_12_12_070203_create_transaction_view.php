@@ -41,6 +41,9 @@ class CreateTransactionView extends Migration
                 ledgercards 
             on ledgercards.supply_id = stockcards.supply_id 
                 and ledgercards.reference = stockcards.reference
+                and ledgercards.reference = stockcards.reference 
+                and stockcards.received_quantity = ledgercards.received_quantity
+                and stockcards.issued_quantity = ledgercards.issued_quantity 
         ");
     }
 

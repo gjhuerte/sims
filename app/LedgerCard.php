@@ -5,7 +5,31 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon;
 use Auth;
 use DB;
-class LedgerCard extends Model{
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Contracts\UserResolver;
+
+class LedgerCard extends Model implements Auditable, UserResolver
+{
+    use \OwenIt\Auditing\Auditable;
+
+	protected $auditInclude = [
+		'date',
+		'stocknumber',
+		'reference',
+		'receipt_quantity',
+		'receipt_unitcost',
+		'issue_quantity',
+		'issue_unitcost',
+		'daystoconsume',
+	];
+
+	/**
+     * {@inheritdoc}
+     */
+    public static function resolveId()
+    {
+        return Auth::check() ? Auth::user()->getAuthIdentifier() : null;
+    }
 
 	protected $table = 'ledgercards';
 	protected $primaryKey = 'id';

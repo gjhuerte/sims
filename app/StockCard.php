@@ -1,18 +1,34 @@
 <?php
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
 use Auth;
 use DB;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Contracts\UserResolver;
 
-class StockCard extends Model{
+class StockCard extends Model implements Auditable, UserResolver
+{
+    use \OwenIt\Auditing\Auditable;
+    
+	protected $auditInclude = [ 'date','stocknumber','reference','receipt', 'received','issued','organization','daystoconsume']; 
+	
+	/**
+     * {@inheritdoc}
+     */
+    public static function resolveId()
+    {
+        return Auth::check() ? Auth::user()->getAuthIdentifier() : null;
+    }
 
 	protected $table = 'stockcards';
 	protected $primaryKey = 'id';
 	public $fundcluster = null;
 	public $timestamps = true;
-	protected $fillable = [ 'date','stocknumber','reference','receipt', 'received','issued','organization','daystoconsume'];
+
+	protected $fillable = [ 'date','stocknumber','reference','receipt', 'received','issued','organization','daystoconsume']; 
 
 	// set of rules when receiving an item
 	public static $receiptRules = array(

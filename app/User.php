@@ -4,12 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Contracts\UserResolver;
+use Auth;
 
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 
-class User extends \Eloquent implements Authenticatable
+class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 {
 	use AuthenticableTrait;
+    use \OwenIt\Auditing\Auditable;
 
 	//Database driver
 	/*

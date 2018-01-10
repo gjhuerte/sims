@@ -24,6 +24,7 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
         "maatwebsite/excel": "~2.1.0",
+        "owen-it/laravel-auditing": "^5.0",
         "vsmoraes/laravel-pdf": "^2.0",
         "yajra/laravel-datatables-oracle": "~8.0"
     },

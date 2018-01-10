@@ -56,6 +56,7 @@
       37 => 'Barryvdh\\Snappy\\ServiceProvider',
       38 => 'Yajra\\DataTables\\DataTablesServiceProvider',
       39 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+      40 => 'OwenIt\\Auditing\\AuditingServiceProvider',
     ),
     'aliases' => 
     array (
@@ -100,6 +101,37 @@
       'DataTables' => 'Yajra\\DataTables\\Facades\\DataTables',
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
+  ),
+  'audit' => 
+  array (
+    'implementation' => 'OwenIt\\Auditing\\Models\\Audit',
+    'user' => 
+    array (
+      'primary_key' => 'id',
+      'foreign_key' => 'user_id',
+      'model' => 'App\\User',
+      'resolver' => 'App\\User',
+    ),
+    'events' => 
+    array (
+      0 => 'created',
+      1 => 'updated',
+      2 => 'deleted',
+      3 => 'restored',
+    ),
+    'strict' => false,
+    'timestamps' => false,
+    'threshold' => 0,
+    'driver' => 'database',
+    'drivers' => 
+    array (
+      'database' => 
+      array (
+        'table' => 'audits',
+        'connection' => NULL,
+      ),
+    ),
+    'console' => false,
   ),
   'auth' => 
   array (
