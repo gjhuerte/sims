@@ -1,5 +1,0 @@
-/vendor
-.DS_Store
-.idea
-/sandbox
-composer.lock
