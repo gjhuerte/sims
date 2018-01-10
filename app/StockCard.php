@@ -243,11 +243,11 @@ class StockCard extends Model implements Auditable, UserResolver
 				}
 			}
 
-			$purchaseorder->supplies()->sync([
+			$purchaseorder->supplies()->attach([
 				$supply->id => [
-					'ordered_quantity' => ( isset($this->orderedquantity) ? $this->orderedquantity : 0 ) + $this->received_quantity,
-					'remaining_quantity' => ( isset($this->remainingquantity) ? $this->remainingquantity : 0 ) + $this->received_quantity,
-					'received_quantity' => ( isset($this->receivedquantity) ? $this->receivedquantity : 0 ) + $this->received_quantity,
+					'ordered_quantity' => ( isset($this->ordered_quantity) ? $this->ordered_quantity : 0 ) + $this->received_quantity,
+					'remaining_quantity' => ( isset($this->remaining_quantity) ? $this->remaining_quantity : 0 ) + $this->received_quantity,
+					'received_quantity' => ( isset($this->received_quantity) ? $this->received_quantity : 0 ) + $this->received_quantity,
 				]
 			]);
 

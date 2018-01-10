@@ -95,8 +95,6 @@ class AccountsController extends Controller {
 		$user->access = $access;
 		$user->position = $position;
 		$user->save();
-		$user->action = 'create';
-		$user->createAuditTrail();
 
 		DB::commit();
 
@@ -179,8 +177,6 @@ class AccountsController extends Controller {
 		$user->office = $office;
 		$user->email = $email;
 		$user->position = $position;
-		$user->action = 'update';
-		$user->createAuditTrail();
 		$user->save();
 
 		\Alert::success('Account information updated')->flash();
@@ -225,8 +221,6 @@ class AccountsController extends Controller {
 			return Redirect::back();
 		}
 
-		$user->action = 'delete';
-		$user->createAuditTrail();
 		$user->delete();
 
 		\Alert::success('Account removed!')->flash();
@@ -246,8 +240,6 @@ class AccountsController extends Controller {
 			$id = $this->sanitizeString(Input::get('id'));
 		 	$user = App\User::find($id);
 		 	$user->password = Hash::make('12345678');
-			$user->action = 'update';
-			$user->createAuditTrail();
 		 	$user->save();
 
 		 	return json_encode('success');
@@ -268,8 +260,6 @@ class AccountsController extends Controller {
 
 		$user = App\User::find($id);
 		$user->access = $access;
-		$user->action = 'update';
-		$user->createAuditTrail();
 		$user->save();
 
 		\Alert::success('Access updated')->flash();
