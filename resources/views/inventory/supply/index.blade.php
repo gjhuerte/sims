@@ -25,13 +25,23 @@
 					<th class="col-sm-1">Stock No.</th>
 					<th class="col-sm-1">Supply Item</th>
 					<th class="col-sm-1">Unit</th>
+
 					@if(Auth::user()->access == 1)
 					<th class="col-sm-1">Reorder Point</th>
-					@else
+					@endif
+
+					@if(Auth::user()->access == 2)
 					<th class="col-sm-1">Cost (Ave)</th>
 					@endif
+
+					@if(Auth::user()->access == 2)
 					<th class="col-sm-1">Ledger Card</th>
+					@endif
+
+					@if(Auth::user()->access == 1)
 					<th class="col-sm-1">Stock Card</th>
+					@endif
+
 					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 					<th class="col-sm-1 no-sort"></th>
 					@endif
@@ -69,15 +79,25 @@
 					{ data: "stocknumber" },
 					{ data: "details" },
 					{ data: "unit.name" },
+
 					@if(Auth::user()->access == 1)
 					{ data: "reorderpoint" },
-					@else
+					@endif
+
+					@if(Auth::user()->access == 2)
 					{ data: function(callback){
 						return parseFloat(callback.unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 					} },
 					@endif
+
+					@if(Auth::user()->access == 2)
 					{ data: "ledger_balance" },
+					@endif
+
+					@if(Auth::user()->access == 1)
 					{ data: "stock_balance" },
+					@endif
+
 					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 		            { data: function(callback){
 		            	return `

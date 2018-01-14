@@ -62,6 +62,23 @@ class StockCard extends Model implements Auditable, UserResolver
 		'parsed_date'
 	];
 
+	public function setDaystoconsumeAttribute($value)
+	{
+		$daystoconsume = $this->attribute['daystoconsume'];
+
+		if($daystoconsume == '' || $daystoconsume == null):
+
+			if($this->attribute['received_quantity'] > 0):
+				$daystoconsume = 'Not Applicable';
+			else:
+				$daystoconsume = 30;
+			endif;
+
+		endif;
+
+		$this->attributes['daystoconsume'] = $daystoconsume;
+	}
+
 	public function getParsedDateAttribute()
 	{
 		return Carbon\Carbon::parse($this->date)->toFormattedDateString();
@@ -239,17 +256,34 @@ class StockCard extends Model implements Auditable, UserResolver
 				foreach(explode(",",$this->fundcluster) as $fundcluster)
 				{
 					$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
-					$fundcluster->purchaseorders()->attach($purchaseorder->id);
+					$fundcluster->purchaseorders()->syncWithoutDetaching($purchaseorder->id);
 				}
 			}
 
-			$purchaseorder->supplies()->attach([
-				$supply->id => [
-					'ordered_quantity' => ( isset($this->ordered_quantity) ? $this->ordered_quantity : 0 ) + $this->received_quantity,
-					'remaining_quantity' => ( isset($this->remaining_quantity) ? $this->remaining_quantity : 0 ) + $this->received_quantity,
-					'received_quantity' => ( isset($this->received_quantity) ? $this->received_quantity : 0 ) + $this->received_quantity,
-				]
-			]);
+			$supply_info = $purchaseorder->supplies()->find($supply->id);
+
+			if(count($supply_info) > 0)
+			{
+
+				$supply_info->pivot->ordered_quantity = (isset($supply_info->pivot->ordered_quantity) ? $supply_info->pivot->ordered_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->save();
+
+			} else {
+
+				$purchaseorder->supplies()->attach([
+					$supply->id => [
+						'ordered_quantity' =>  $this->received_quantity,
+						'remaining_quantity' => $this->received_quantity,
+						'received_quantity' =>  $this->received_quantity,
+					]
+				]);
+
+			}
 
 		}
 
@@ -269,10 +303,28 @@ class StockCard extends Model implements Auditable, UserResolver
 				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null
 			]);
 
-			$receipt->supplies()->attach([ $supply->id => [
-				'remaining_quantity' =>  (isset($supply->remaining_quantity) ? $supply->remaining_quantity : 0) + $this->received_quantity,
-				'quantity' => (isset($supply->quantity) ? $supply->quantity : 0) + $this->received_quantity,
-			] ]);
+			$supply_info = $receipt->supplies()->find($supply->id);
+
+			if(count($supply_info) > 0)
+			{
+
+				$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->quantity = (isset($supply_info->pivot->quantity) ? $supply_info->pivot->quantity : 0 ) + $this->quantity;
+
+				$supply_info->pivot->save();
+
+			} else {
+
+				$purchaseorder->supplies()->attach([
+					$supply->id => [
+						'remaining_quantity' => $this->received_quantity,
+						'quantity' =>  $this->quantity,
+					]
+				]);
+
+			}
+
 		}
 
 		$this->setBalance();

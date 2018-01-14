@@ -176,6 +176,31 @@ class LedgerCard extends Model implements Auditable, UserResolver
 				'supplier_id' => isset($supplier->id) ? $supplier->id : null
 			]);
 
+			$supply_info = $purchaseorder->supplies()->find($supply->id);
+
+			if(count($supply_info) > 0)
+			{
+
+				$supply_info->pivot->ordered_quantity = (isset($supply_info->pivot->ordered_quantity) ? $supply_info->pivot->ordered_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->save();
+
+			} else {
+
+				$purchaseorder->supplies()->attach([
+					$supply->id => [
+						'ordered_quantity' =>  $this->received_quantity,
+						'remaining_quantity' => $this->received_quantity,
+						'received_quantity' =>  $this->received_quantity,
+					]
+				]);
+
+			}
+
 			if(isset($this->fundcluster) &&  count(explode(",",$this->fundcluster)) > 0)
 			{
 				$purchaseorder->fundclusters()->detach();
@@ -198,13 +223,30 @@ class LedgerCard extends Model implements Auditable, UserResolver
 			'invoice' => isset($this->invoice) ? $this->invoice : null
 		]);
 
-		$receipt->supplies()->attach([
-			$supply->id => [
-				'quantity' => $this->received_quantity,
-				'remaining_quantity' => $this->received_quantity,
-				'unitcost' => $this->received_unitcost
-			]
-		]);
+		$supply_info = $receipt->supplies()->find($supply->id);
+
+		if(count($supply_info) > 0)
+		{
+
+			$supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+
+			$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+
+			$supply_info->pivot->unitcost = (isset($supply_info->pivot->unitcost) ? $supply_info->pivot->unitcost : 0 ) + $this->unitcost;
+
+			$supply_info->pivot->save();
+
+		} else {
+
+			$purchaseorder->supplies()->attach([
+				$supply->id => [
+					'quantity' =>  $this->received_quantity,
+					'remaining_quantity' => $this->received_quantity,
+					'unitcost' => $this->received_unitcost
+				]
+			]);
+
+		}
 
 
 		$this->created_by = $fullname;
