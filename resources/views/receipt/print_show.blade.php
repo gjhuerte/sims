@@ -6,7 +6,7 @@
       <thead>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Receipt:  <span style="font-weight:normal">{{ $receipt->number }}</span> </th>
-            <th class="text-left" colspan="4">Supplier:  <span style="font-weight:normal">{{ isset($receipt->supplier) ? $receipt->supplier->name : 'Not Set' }}</span> </th>
+            <th class="text-left" colspan="4">Supplier:  <span style="font-weight:normal">{{ isset($receipt->supplier) ? $receipt->supplier->name : 'None' }}</span> </th>
         </tr>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Invoice:  <span style="font-weight:normal">{{ $receipt->invoice }}</span> </th>

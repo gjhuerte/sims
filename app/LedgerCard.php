@@ -176,28 +176,34 @@ class LedgerCard extends Model implements Auditable, UserResolver
 				'supplier_id' => isset($supplier->id) ? $supplier->id : null
 			]);
 
+			/**
+			 * uncomment this part
+			 * if the ledger card can increment the supply content
+			 */
 			$supply_info = $purchaseorder->supplies()->find($supply->id);
 
 			if(count($supply_info) > 0)
 			{
 
-				$supply_info->pivot->ordered_quantity = (isset($supply_info->pivot->ordered_quantity) ? $supply_info->pivot->ordered_quantity : 0 ) + $this->received_quantity;
+				// $supply_info->pivot->ordered_quantity = (isset($supply_info->pivot->ordered_quantity) ? $supply_info->pivot->ordered_quantity : 0 ) + $this->received_quantity;
 
-				$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+				// $supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
 
-				$supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+				// $supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+
+				$supply_info->pivot->unitcost = $this->received_unitcost;
 
 				$supply_info->pivot->save();
 
 			} else {
 
-				$purchaseorder->supplies()->attach([
-					$supply->id => [
-						'ordered_quantity' =>  $this->received_quantity,
-						'remaining_quantity' => $this->received_quantity,
-						'received_quantity' =>  $this->received_quantity,
-					]
-				]);
+				// $purchaseorder->supplies()->attach([
+				// 	$supply->id => [
+				// 		'ordered_quantity' =>  $this->received_quantity,
+				// 		'remaining_quantity' => $this->received_quantity,
+				// 		'received_quantity' =>  $this->received_quantity,
+				// 	]
+				// ]);
 
 			}
 
@@ -212,6 +218,8 @@ class LedgerCard extends Model implements Auditable, UserResolver
 			}
 
 		}
+
+		unset($supply_info);
 
 		$receipt = Receipt::firstOrCreate([
 			'number' => $this->receipt
@@ -228,23 +236,25 @@ class LedgerCard extends Model implements Auditable, UserResolver
 		if(count($supply_info) > 0)
 		{
 
-			$supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+			// $supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
 
-			$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+			// $supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
 
-			$supply_info->pivot->unitcost = (isset($supply_info->pivot->unitcost) ? $supply_info->pivot->unitcost : 0 ) + $this->unitcost;
+			// $supply_info->pivot->unitcost = (isset($supply_info->pivot->unitcost) ? $supply_info->pivot->unitcost : 0 ) + $this->unitcost;
+
+			$supply_info->pivot->unitcost = $this->received_unitcost;
 
 			$supply_info->pivot->save();
 
 		} else {
 
-			$purchaseorder->supplies()->attach([
-				$supply->id => [
-					'quantity' =>  $this->received_quantity,
-					'remaining_quantity' => $this->received_quantity,
-					'unitcost' => $this->received_unitcost
-				]
-			]);
+			// $supply_info->supplies()->attach([
+			// 	$supply->id => [
+			// 		'quantity' =>  $this->received_quantity,
+			// 		'remaining_quantity' => $this->received_quantity,
+			// 		'unitcost' => $this->received_unitcost
+			// 	]
+			// ]);
 
 		}
 

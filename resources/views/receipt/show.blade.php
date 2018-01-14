@@ -23,12 +23,12 @@
 			<table class="table table-hover table-striped table-bordered table-condensed" id="receiptTable" cellspacing="0" width="100%"	>
 				<thead>
 			          <tr rowspan="2">
-			              <th class="text-left" colspan="3">Receipt:  <span style="font-weight:normal">{{ $receipt->number }}</span> </th>
-			              <th class="text-left" colspan="3">Supplier:  <span style="font-weight:normal">{{ $receipt->supplier_name }}</span> </th>
+			              <th class="text-left" colspan="4">Receipt:  <span style="font-weight:normal">{{ $receipt->number }}</span> </th>
+			              <th class="text-left" colspan="4">Supplier:  <span style="font-weight:normal">{{ isset($receipt->supplier) ? $receipt->supplier->name : "None" }}</span> </th>
 			          </tr>
 			          <tr rowspan="2">
-			              <th class="text-left" colspan="3">Invoice:  <span style="font-weight:normal">{{ $receipt->invoice }}</span> </th>
-			              <th class="text-left" colspan="3">Date Delivered:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($receipt->date_delivered)->toFormattedDateString() }}</span> </th>
+			              <th class="text-left" colspan="4">Invoice:  <span style="font-weight:normal">{{ $receipt->invoice }}</span> </th>
+			              <th class="text-left" colspan="4">Date Delivered:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($receipt->date_delivered)->toFormattedDateString() }}</span> </th>
 			          </tr>
 			          <tr>
 						<th class="col-sm-1">Stock Number</th>

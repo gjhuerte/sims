@@ -161,6 +161,7 @@
 
 	@endif
 
+	@if($title == 'Release')
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Days to Consume') }}
@@ -170,6 +171,7 @@
 			]) }}
 		</div>
 	</div>
+	@endif
 
 	<div class="btn-group" style="margin-bottom: 20px;">
 		<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
@@ -188,7 +190,9 @@
 				<th>Unit Cost</th>
 				@endif
 
+				@if($title == 'Release')
 				<th>Days To Consume</th>
+				@endif
 				<th></th>
 			</tr>
 		</thead>
@@ -362,11 +366,15 @@ $('document').ready(function(){
 		{
 			$('#stocknumber').val("")
 			$('#quantity').val("")
+
+			@if($title == 'Release')
 			$('#daystoconsume').val("")
+			@endif
 
 			@if($type == 'ledger')
 			$('#unitcost').val("")
 			@endif
+
 			$('#stocknumber-details').html("")
 		}
 	})
@@ -402,9 +410,12 @@ $('document').ready(function(){
 				</td>
 				@endif
 
+				@if($title == 'Release')
 				<td>
 					<input type="text" class="form-control text-center" value="` + _daystoconsume + `" name="daystoconsume[` + _stocknumber + `]" style="border:none;"  />
 				</td>
+				@endif
+
 				<td>
 					<button type="button" class="remove btn btn-md btn-danger text-center"><span class="glyphicon glyphicon-remove"></span></button>
 				</td>

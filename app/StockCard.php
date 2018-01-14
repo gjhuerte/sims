@@ -287,6 +287,8 @@ class StockCard extends Model implements Auditable, UserResolver
 
 		}
 
+		unset($supply_info);
+
 		/**
 		 * finds the receipt in the database
 		 * create new if not found
@@ -316,10 +318,10 @@ class StockCard extends Model implements Auditable, UserResolver
 
 			} else {
 
-				$purchaseorder->supplies()->attach([
+				$receipt->supplies()->attach([
 					$supply->id => [
 						'remaining_quantity' => $this->received_quantity,
-						'quantity' =>  $this->quantity,
+						'quantity' =>  $this->received_quantity,
 					]
 				]);
 
@@ -419,8 +421,23 @@ class StockCard extends Model implements Auditable, UserResolver
 	public static function computeDaysToConsume($stocknumber)
 	{
 
+		/**
+		 * [$range description]
+		 * this will contain all the range 
+		 * for each days to consume
+		 * @var array
+		 */
 		$range = [];
 		$prev = null;
+
+		/**
+		 * [$constant description]
+		 * default value for days to consume
+		 * if no days to consume found
+		 * return this value
+		 * @var integer
+		 */
+		$constant = 90;
 
 		/**
 		 * [$stockcard description]
@@ -429,9 +446,19 @@ class StockCard extends Model implements Auditable, UserResolver
 		 */
 		$stockcard = StockCard::findByStockNumber($stocknumber)->filterByIssued()->orderBy('date', 'desc')->get();
 
+		/**
+		 * loops each record and returns the 
+		 * range in each record
+		 */
 		foreach($stockcard as $stock):
 			if($prev):
 				array_push($range, Carbon\Carbon::parse($stock->date)->diffInDays($prev) );
+
+			/**
+			 * returns the parsed date 
+			 * this applies to only one record
+			 * the very  first record in the list
+			 */
 			else:
 				$prev = Carbon\Carbon::parse($stock->date);
 			endif;
@@ -441,8 +468,18 @@ class StockCard extends Model implements Auditable, UserResolver
 		 * using frequency and averaging
 		 * @var [type]
 		 */
-		
-		if(count($range) <= 1 ) return 30;
-		else return	intval(collect($range)->avg());
+		if(count($range) <= 1 ):
+			/**
+			 * return the constant value 
+			 * if the record is less than or equal to one(1)
+			 */
+			return $constant;
+		else:
+			/**
+			 * return the average of all the values
+			 * if the record has more than one(1) content
+			 */
+			 return	intval(collect($range)->avg());
+		endif;
 	}
 }
