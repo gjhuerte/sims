@@ -36,7 +36,7 @@ class Controller extends BaseController
 	    $footer = view('layouts.footer-numbering');
 	    return $pdf
 	        ->setOption('footer-center', 'Page [page] / [toPage]')
-	        ->setOption('header-spacing', 4)
+	        ->setOption('header-spacing', 5)
 	        ->setOption('header-html',$header)
 	        ->setOption('footer-spacing', 4)
 	        // ->setOption('footer-html', $footer)
