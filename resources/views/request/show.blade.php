@@ -80,7 +80,7 @@
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
           <span id="nav-text"> Print</span>
         </a>
-        @if($request->status == 'approved')
+        @if($request->status == 'approved' && Auth::user()->access == 1)
         <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
           <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
         </a>
