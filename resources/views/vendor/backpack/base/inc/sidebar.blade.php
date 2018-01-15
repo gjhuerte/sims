@@ -82,12 +82,16 @@
           @if(Auth::user()->access == 2)
 
           <li><a href="{{ url('records/uncopied') }}"><i class="fa fa-clock-o" aria-hidden="true"></i> <span> Pending AMO Records </span></a></li>
+          
+          @if(false)
 
           <li><a href="{{ url('uacs') }}"><i class="fa fa-code" aria-hidden="true"></i> <span> UACS </span></a></li>
 
           <li><a href="{{ url('fundcluster') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Fund Cluster </span></a></li>
 
           <li><a href="{{ url('maintenance/category') }}"><i class="fa fa-tags" aria-hidden="true"></i> <span> Categories </span></a></li>
+
+          @endif
 
           @endif
 
