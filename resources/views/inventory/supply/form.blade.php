@@ -53,20 +53,25 @@
 			]) }}
 		</div>
 	</div>
+	<div id="purchaseorder-details"></div>
+
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Delivery Receipt') }}
 			{{ Form::text('receipt', old('receipt'),[
+				'id' => 'receipt',
 				'class' => 'form-control'
 			]) }}
 		</div>
 	</div>
+	<div id="receipt-details"></div>
 
 	@if($type == 'ledger')
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Invoice Number') }}
 			{{ Form::text('invoice',Input::old('invoice'),[
+				'id' => 'invoice',
 				'class' => 'form-control'
 			]) }}
 		</div>
@@ -92,6 +97,7 @@
 		<div class="form-group">
 			{{ Form::label('Fund Clusters') }}
 			{{ Form::text('fundcluster',Input::old('fundcluster'),[
+				'id' => 'fundcluster',
 				'class' => 'form-control'
 			]) }}
 			<p class="text-muted">Separate each cluster by comma</p>
@@ -217,6 +223,10 @@ $('document').ready(function(){
 		source: "{{ url('get/purchaseorder/all') }}"
 	})
 
+	$('#receipt').autocomplete({
+		source: "{{ url('get/receipt/all') }}"
+	})
+
 	$('#stocknumber').autocomplete({
 		source: "{{ url("get/inventory/supply/stocknumber") }}"
 	})
@@ -227,6 +237,49 @@ $('document').ready(function(){
 
 	$('#office').autocomplete({
 		source: "{{ url('get/office/code') }}"
+	})
+
+	$('#purchaseorder').on('change focusin mousein keyup focusout', function(){
+		$.ajax({
+			type: 'get',
+			url: '{{ url('purchaseorder') }}' +  '/' + $('#purchaseorder').val() ,
+			dataType: 'json',
+			success: function(response){
+				console.log(response)
+				if(response.number)
+				{
+					$('#purchaseorder-details').html(`
+						<p class="text-success"><strong>Exists! </strong> Purchase Order Found </p>
+					`)
+					$('#fundcluster').val(response.fundcluster)
+				}else{
+					$('#purchaseorder-details').html(`
+						<p class="text-danger"><strong>Error! </strong> Purchase Order Details not found! Creating new Purchase Order </p>
+					`)
+				}
+			}
+		})
+	})
+
+	$('#receipt').on('change focusin mousein keyup focusout', function(){
+		$.ajax({
+			type: 'get',
+			url: '{{ url('receipt') }}' +  '/' + $('#receipt').val() ,
+			dataType: 'json',
+			success: function(response){
+				if(response.number)
+				{
+					$('#receipt-details').html(`
+						<p class="text-success"><strong>Exists! </strong> Receipt Found </p>
+					`)
+					$('#invoice').val(response.invoice)
+				}else{
+					$('#receipt-details').html(`
+						<p class="text-danger"><strong>Error! </strong> Receipt Details not found! Creating new receipt </p>
+					`)
+				}
+			}
+		})
 	})
 
 	$('#office').on('change',function(){

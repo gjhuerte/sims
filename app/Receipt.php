@@ -48,6 +48,6 @@ class Receipt extends Model
 
     public function scopeFindByNumber($query, $value)
     {
-        return $query->where('number','=',$value)->first();
+        return $query->where('number', '=', $value)->first();
     }
 }

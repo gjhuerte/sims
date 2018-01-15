@@ -181,6 +181,16 @@ class PurchaseOrderController extends Controller
                 );
             }
 
+            if(count($purchaseorder) <= 0)
+            {
+                $purchaseorder = App\PurchaseOrder::findByNumber($id)->first();
+                $fundcluster = (count($purchaseorder->fundclusters) > 0) ? implode( $purchaseorder->fundclusters->pluck('code')->toArray(), ",") : "None";
+                return json_encode([
+                    'number' => $purchaseorder->number,
+                    'fundcluster' => $fundcluster
+                ]);
+            }
+
             /**
             * returns view of the purchase order supply
             * finds the supply information then return the values
@@ -239,7 +249,7 @@ class PurchaseOrderController extends Controller
             /**
              * update information for fundcluster
              */
-            if(Input::has('fundcluster'))
+            if($request->has('fundcluster'))
             {
                 $fundclusters = $this->sanitizeString($request->get('fundcluster'));
                 $_fundclusters = [];
@@ -287,7 +297,35 @@ class PurchaseOrderController extends Controller
                 $purchaseorder->fundclusters()->sync($_fundclusters);
             }
 
-            if(Input::has('status'))
+            /**
+             * if data sent has a stocknumber with it
+             */
+            if($request->has('stocknumber') && $request->has('unitprice'))
+            {
+                /**
+                 * init all values sent through ajax
+                 * @var [unitcost]
+                 * @var [stocknumber]
+                 */
+                $unitcost = $this->sanitizeString($request->get('unitprice'));
+                $stocknumber = $this->sanitizeString($request->get('stocknumber'));
+
+                /**
+                 * fetch record of supply
+                 * assign record to supply
+                 * @var [supply]
+                 */
+                $supply = App\Supply::findByStockNumber($stocknumber);
+
+                /**
+                 * update receipt information
+                 * @var [receipt]
+                 */
+                $purchaseorder->supplies()->updateExistingPivot($supply->id, [ 'unitcost' => $unitcost ]);
+            }
+
+
+            if($request->has('status'))
             {
               $purchaseorder->status = 'paid';
               $purchaseorder->save();

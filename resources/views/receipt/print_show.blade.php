@@ -13,13 +13,13 @@
             <th class="text-left" colspan="4">Date Delivered:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($receipt->date_delivered)->toFormattedDateString() }}</span> </th>
         </tr>
         <tr>
-        <th class="col-sm-1">Stock Number</th>
-        <th class="col-sm-1">Details</th>
-        <th class="col-sm-1">Unit</th>
-        <th class="col-sm-1">Delivered Quantity</th>
-        <th class="col-sm-1">Remaining Quantity</th>
-        <th class="col-sm-1">Unit Cost</th>
-        <th class="col-sm-1">Amount</th>
+        <th>Stock Number</th>
+        <th>Details</th>
+        <th>Unit</th>
+        <th>Delivered Quantity</th>
+        <th>Remaining Quantity</th>
+        <th>Unit Cost</th>
+        <th>Amount</th>
       </tr>
     </thead>
     <tbody>
@@ -43,5 +43,5 @@
     </tbody>
   </table>
 </div>
-@include('vendor.print_footer')
+@include('layouts.print.footer')
 @endsection

@@ -76,6 +76,23 @@ class LedgerCard extends Model implements Auditable, UserResolver
 	public $organization = null;
 	public $invoice = "";
 
+	public function setDaystoconsumeAttribute($value)
+	{
+		$daystoconsume = $this->attribute['daystoconsume'];
+
+		if($daystoconsume == '' || $daystoconsume == null):
+
+			if($this->attribute['received_quantity'] > 0):
+				$daystoconsume = 'Not Applicable';
+			else:
+				$daystoconsume = 30;
+			endif;
+
+		endif;
+
+		$this->attributes['daystoconsume'] = $daystoconsume;
+	}
+
 	/**
 	 * [setBalance description]
 	 * update the current records balance
@@ -176,6 +193,7 @@ class LedgerCard extends Model implements Auditable, UserResolver
 				'supplier_id' => isset($supplier->id) ? $supplier->id : null
 			]);
 
+
 			/**
 			 * uncomment this part
 			 * if the ledger card can increment the supply content
@@ -214,6 +232,7 @@ class LedgerCard extends Model implements Auditable, UserResolver
 				{
 					$fundcluster = FundCluster::firstOrCreate( [ 'code' => $fundcluster ] );
 					$fundcluster->purchaseorders()->attach($purchaseorder->id);
+
 				}
 			}
 
@@ -221,15 +240,19 @@ class LedgerCard extends Model implements Auditable, UserResolver
 
 		unset($supply_info);
 
-		$receipt = Receipt::firstOrCreate([
-			'number' => $this->receipt
-		],[
-			'purchaseorder_id' => isset($purchaseorder->id) ? $purchaseorder->id : null,
-			'date_delivered' => Carbon\Carbon::parse($this->date),
-			'received_by' => $fullname,
-			'supplier_id' => isset($supplier->id) ? $supplier->id : null,
-			'invoice' => isset($this->invoice) ? $this->invoice : null
-		]);
+		$receipt = Receipt::findByNumber($this->receipt);
+
+		if(count($receipt) <= 0 )
+		{
+			$receipt = new Receipt;
+			$receipt->purchaseorder_id = isset($purchaseorder->id) ? $purchaseorder->id : null;
+			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
+			$receipt->received_by = $fullname;
+			$receipt->supplier_id = isset($supplier->id) ? $supplier->id : null;
+		}
+
+		$receipt->invoice = isset($this->invoice) ? $this->invoice : null;
+		$receipt->save();
 
 		$supply_info = $receipt->supplies()->find($supply->id);
 

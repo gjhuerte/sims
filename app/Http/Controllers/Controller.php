@@ -33,9 +33,13 @@ class Controller extends BaseController
 		$pdf = PDF::loadView($view,$data);
 		
 	    $header = view('layouts.header-report');
-	    return $pdf->setOption('header-html',$header)
-	        ->setOption('header-spacing',5)
-	        ->setOption('footer-center', 'Page [page]')
+	    $footer = view('layouts.footer-numbering');
+	    return $pdf
+	        ->setOption('footer-center', 'Page [page] / [toPage]')
+	        ->setOption('header-spacing', 4)
+	        ->setOption('header-html',$header)
+	        ->setOption('footer-spacing', 4)
+	        // ->setOption('footer-html', $footer)
     		->stream( $filename , array('Attachment'=>0) );
 
 	}

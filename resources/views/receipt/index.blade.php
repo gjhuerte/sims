@@ -74,7 +74,7 @@
                   ret_val = "";
 
                   ret_val +=  `
-                    <a href="{{ url('receipt') }}/`+ callback.number +`" class="btn btn-default btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
+                    <a href="{{ url('receipt') }}/`+ callback.id +`" class="btn btn-default btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
                   `
 
                     return ret_val;

@@ -60,13 +60,14 @@ class LedgerCardController extends Controller {
 
 		$purchaseorder = $this->sanitizeString($request->get('purchaseorder'));
 		$organization = $this->sanitizeString($request->get('supplier'));
-		$deliveryreceipt = $this->sanitizeString($request->get('dr'));
+		$receipt = $this->sanitizeString($request->get('receipt'));
 		$date = $this->sanitizeString($request->get('date'));
 		$daystoconsume = $request->get("daystoconsume");
 		$stocknumbers = $request->get("stocknumber");
 		$receiptquantity = $request->get("quantity");
 		$receiptunitcost = $request->get("unitcost");
 		$invoice = $this->sanitizeString($request->get('invoice'));
+		$fundcluster = $this->sanitizeString($request->get('fundcluster'));
 
 		DB::beginTransaction();
 
@@ -101,7 +102,8 @@ class LedgerCardController extends Controller {
 			$transaction->stocknumber = $stocknumber;
 			$transaction->reference = $purchaseorder;
 			$transaction->organization = $organization;
-			$transaction->receipt = $deliveryreceipt;
+			$transaction->fundcluster = $fundcluster;
+			$transaction->receipt = $receipt;
 			$transaction->invoice = $invoice;
 			$transaction->issued_quantity = 0;
 			$transaction->received_quantity = $receiptquantity["$stocknumber"];

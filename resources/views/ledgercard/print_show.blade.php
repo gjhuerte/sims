@@ -44,5 +44,5 @@
         </tbody>
     </table>
   </div>
-@include('layouts.print.stockcard-footer')
+@include('layouts.print.ledgercard-footer')
 @endsection

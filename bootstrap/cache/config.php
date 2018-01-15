@@ -1108,6 +1108,8 @@
       'timeout' => false,
       'options' => 
       array (
+        'footer-center' => 'Page [page] of [toPage]',
+        'footer-font-size' => 3,
       ),
       'env' => 
       array (

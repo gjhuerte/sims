@@ -61,7 +61,7 @@ class ReceiptController extends Controller
     public function show(Request $request, $id = null)
     {
         $id = $this->sanitizeString($id);
-        $receipt = App\Receipt::findByNumber($id);
+        $receipt = App\Receipt::find($id);
 
         if($request->ajax())
         {
@@ -74,7 +74,7 @@ class ReceiptController extends Controller
             {
 
               $number = $this->sanitizeString(Input::get("number"));
-              $receipt = App\Receipt::with('supplier')->findByNumber($number)->first();
+              $receipt = App\Receipt::with('supplier')->find($number)->first();
 
               if(count($receipt) > 0) return json_encode($receipt);
 
@@ -93,6 +93,12 @@ class ReceiptController extends Controller
                     App\Receipt::where('number','like',"%".$number."%")
                     ->pluck('number')
                 );
+            }
+
+            if( (count($receipt) <= 0 ) )
+            {
+                $receipt = App\Receipt::findByNumber($id);
+                return json_encode($receipt);
             }
 
             /**
@@ -162,13 +168,13 @@ class ReceiptController extends Controller
                  * assign record to supply
                  * @var [supply]
                  */
-                $supply = App\Supply::findByStockNumber($stocknumber)->first();
+                $supply = App\Supply::findByStockNumber($stocknumber);
 
                 /**
                  * update receipt information
                  * @var [receipt]
                  */
-                $receipt = App\Receipt::findByNumber($id)->supplies()->updateExistingPivot($supply->id, [ 'unitcost' => $unitcost ]);
+                $receipt = App\Receipt::find($id)->supplies()->updateExistingPivot($supply->id, [ 'unitcost' => $unitcost ]);
             }
 
             return json_encode('success');
@@ -190,10 +196,16 @@ class ReceiptController extends Controller
         return redirect('receipt');
     }
 
+    /**
+     * [printReceipt description]
+     * Create a printable form using the receipt details given
+     * @param  [type] $receipt [description]
+     * @return [type]          [description]
+     */
     public function printReceipt($receipt)
     {
         $receiptsupplies = App\ReceiptSupply::with('supply')->where('receipt_id','=',$receipt)->get();
-        $receipt = App\Receipt::findByNumber($receipt);
+        $receipt = App\Receipt::find($receipt);
 
         $data = ['receipt' => $receipt, 'receiptsupplies' => $receiptsupplies ];
 

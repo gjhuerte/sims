@@ -32,6 +32,16 @@ class CreateLedgerCardsTable extends Migration
             $table->string('daystoconsume',100)->default('N/A');
             $table->string('created_by');
             $table->timestamps();
+
+            /**
+             * added index in the migration
+             * if problems persists
+             * remove the files below the comment
+             * added on 01/15/2018
+             */
+            $table->index('date');
+            $table->index('received_quantity');
+            $table->index('issued_quantity');
         });
     }
 

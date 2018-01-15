@@ -2,20 +2,22 @@
 @section('title',"Purchase Order $purchaseorder->number")
 @section('content')
   <div id="content" class="col-sm-12">
-    <h3 class="text-center">
-    @if( $purchaseorder->supplier->name == config('app.main_agency') )
-    Agency Procurement Request
-    @else
-    Purchase Order
-    @endif
-    </h3>
     <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
+        <tr rowspan="2">
+          <th class="text-center" colspan="8">
+          @if( $purchaseorder->supplier->name == config('app.main_agency') )
+          Agency Procurement Request
+          @else
+          Purchase Order
+          @endif 
+          </th>
+        </tr>
         <tr rowspan="2">
             <th class="text-left" colspan="4">Code:  <span style="font-weight:normal">{{ $purchaseorder->number }}</span> </th>
             <th class="text-left" colspan="4">Fund Cluster:  
               <span style="font-weight:normal">
-                <!-- {{ count($purchaseorder->fundclusters) > 0 ? implode( $purchaseorder->fundclusters->pluck('code')->toArray(), ",") : "None" }} -->
+                {{ count($purchaseorder->fundclusters) > 0 ? implode( $purchaseorder->fundclusters()->pluck('code')->toArray(), ",") : "None" }}
               </span> 
             </th>
         </tr>
@@ -60,5 +62,5 @@
       </tbody>
     </table>
   </div>
-@include('vendor.print_footer')
+@include('layouts.print.footer')
 @endsection
