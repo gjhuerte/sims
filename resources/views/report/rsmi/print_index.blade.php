@@ -63,5 +63,5 @@
       </tbody>
     </table>
   </div>
-include('vendor.print_footer')
+@include('layouts.print.footer')
 @endsection

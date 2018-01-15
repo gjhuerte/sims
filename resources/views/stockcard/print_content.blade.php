@@ -22,11 +22,11 @@
     <tr>
       <th class="col-sm-1">Date</th>
       <th class="col-sm-1">Reference</th>
-      <th class="col-sm-1">Receipt Qty</th>
-      <th class="col-sm-1">Issue Qty</th>
+      <th class="col-sm-1">Receipt<br>Qty</th>
+      <th class="col-sm-1">Issue<br>Qty</th>
       <th class="col-sm-1">Office</th>
       <th class="col-sm-1">Balance Qty</th>
-      <th class="col-sm-1">Days To Consume</th>
+      <th class="col-sm-1">Days To <br> Consume</th>
     </tr>
   </thead>
   <tbody>
@@ -37,7 +37,15 @@
       <td>{{ $stockcard->reference }}</td>
       <td>{{ $stockcard->received_quantity }}</td>
       <td>{{ $stockcard->issued_quantity }}</td>
-      <td>{{ $stockcard->organization }}</td>
+      <td>
+      <span style="font-weight:normal; 
+        @if(strlen($stockcard->organization) > 0)
+          @if(strlen($stockcard->organization) > 60) font-size: 12px; 
+          @elseif(strlen($stockcard->organization) > 40) font-size: 13px; 
+          @elseif(strlen($stockcard->organization) > 20) font-size: 14px; 
+          @endif 
+        @endif">{{ $stockcard->organization }}
+      </span> </td>
       <td>{{ $stockcard->balance_quantity }}</td>
       <td class="col-sm-1">{{ $stockcard->daystoconsume }}</td>
     </tr>
