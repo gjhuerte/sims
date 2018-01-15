@@ -24,6 +24,7 @@
 	        </a>
 	        <hr />
 	        @endif
+
 			<table class="table table-hover table-striped table-bordered table-condensed" id="requestTable" cellspacing="0" width="100%"	>
 				<thead>
 		            <tr rowspan="2">
@@ -88,7 +89,63 @@
         <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
           <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Commentary</span>
         </a>
+
+        @if(Auth::user()->access == 1 && $request->status == null)
+          <a type="button" href="{{ url("request/$request->id/approve") }}" data-id="{{ $request->id }}" class="approve btn btn-success btn-sm">
+              <i class="fa fa-thumbs-up" aria-hidden="true"> Approve</i>
+          </a>
+          <button id="disapprove" type="button" data-id="{{ $request->id }}" class="btn btn-danger btn-sm">
+            <i class="fa fa-thumbs-down" aria-hidden="true"> Disapprove</i>
+          </button>
+        @endif
     `)
+    @if(Auth::user()->access == 1 && $request->status == null)
+
+    $('#disapprove').on('click',function(){
+        swal({
+              title: "Remarks!",
+              text: "Input reason for disapproving the request",
+              type: "input",
+              showCancelButton: true,
+              closeOnConfirm: false,
+              animation: "slide-from-top",
+              inputPlaceholder: "Write something"
+        },
+        function(inputValue){
+            if (inputValue === false) return false;
+
+            if (inputValue === "") {
+                swal.showInputError("You need to write something!");
+                return false
+            }
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'put',
+                url: '{{ url("request/$request->id/disapprove") }}',
+                data: {
+                    'reason': inputValue
+                },
+                dataType: 'json',
+                success: function(response){
+                    if(response == 'success'){
+                        swal('Operation Successful','Operation Complete','success')
+                        table.ajax.reload();
+                    }else{
+                        swal('Operation Unsuccessful','Error occurred while processing your request','error')
+                    }
+
+                },
+                error: function(){
+                    swal('Operation Unsuccessful','Error occurred while processing your request','error')
+                }
+            })
+        })
+    });
+
+    @endif
 
 	} );
 </script>
