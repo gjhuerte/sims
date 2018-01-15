@@ -57,7 +57,6 @@
   jQuery(document).ready(function($) {
 
     var table = $('#recordsTable').DataTable({
-        serverSide: true,
         language: {
                 searchPlaceholder: "Search..."
         },
