@@ -4,16 +4,12 @@
 	<section class="content-header">
 		<legend>
 			<h3 class="text-muted">
-			    @if( $purchaseorder->supplier->name == config('app.main_agency') && isset($purchaseorder->supplier) )
-			    Agency Procurement Request
-			    @else
-			    Purchase Order
-			    @endif
+			    References
 			</h3>
 		</legend>
 		<ul class="breadcrumb">
-			<li><a href="{{ url('purchaseorder') }}">Purchase Order</a></li>
-			<li class="active"> {{ $purchaseorder->id }} </li>
+			<li><a href="{{ url('purchaseorder') }}">References</a></li>
+			<li class="active"> {{ $purchaseorder->number }} </li>
 		</ul>
 	</section>
 @endsection

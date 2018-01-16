@@ -2,9 +2,9 @@
 
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Purchase Orders</h3></legend>
+		<legend><h3 class="text-muted">References</h3></legend>
 	  <ol class="breadcrumb">
-	    <li>Puchase Order</li>
+	    <li>References</li>
 	    <li class="active">Home</li>
 	  </ol>
 	</section>
@@ -67,16 +67,14 @@
 			],
 	    });
 
+	    @if(false)
 	 	$("div.toolbar").html(`
-			<button id="create" class="btn btn-md btn-primary">
+			<a id="create" href="{{ url('purchaseorder/create') }}" class="btn btn-md btn-primary">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				<span id="nav-text"> Create</span>
-			</button>
+			</a>
 		`);
-
-		$('#create').on('click',function(){
-			window.location.href = "{{ url('purchaseorder/create') }}"
-		})
+		@endif
 
 	} );
 </script>

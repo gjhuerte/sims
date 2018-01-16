@@ -23,7 +23,6 @@
             <th class="col-sm-1">Details</th>
             <th class="col-sm-1">Date Created</th>
             <th class="col-sm-1">Created By</th>
-            <th class="col-sm-1">Status</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
         </thead>
@@ -57,13 +56,10 @@
                 { data: 'details' },
                 { data: 'date_created' },
                 { data: "created_by" },
-                { data: "status" },
                 { data: function(callback){
 
                   ret_val =  `
                     <a href="{{ url('adjustment') }}/`+ callback.id +`" class="btn btn-default btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
-                    <a href="{{ url('adjustment') }}/`+ callback.id +`/edit" class="btn btn-warning btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</a>
-                    <button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Category" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
                   `
 
                     return ret_val;
@@ -83,7 +79,7 @@
           swal("Operation Success",'Disposal Report has been removed.',"success")
           else
             swal("Error Occurred",'An error has occurred while processing your data.',"error")
-          table.ajax.reload()
+            table.ajax.reload()
             removeButton.button('reset');
         },
         error: function(response){

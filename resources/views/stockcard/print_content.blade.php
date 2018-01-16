@@ -1,3 +1,4 @@
+
 <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0"> 
   <thead>
     <tr>

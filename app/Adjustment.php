@@ -20,17 +20,14 @@ class Adjustment extends Model
       'code', 'date_created'
     ];
 
-    public function setDetailsAttribute($value)
-    {
-      if($this->attributes['details'])
-        $this->attributes['details'] = $this->attributes['details'];
-      else
-        $this->attributes['details'] = 'None';
-    }
-
     public function getDetailsAttribute($value)
     {
-      return $this->attributes['details'];
+      if($this->attributes['details'])
+        $details = $this->attributes['details'];
+      else
+        $details = 'Not Specified';
+
+      return $details;
     }
 
     public function getCodeAttribute($value)

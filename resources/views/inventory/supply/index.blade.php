@@ -74,6 +74,7 @@
 							"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 			@endif
 			"processing": true,
+			stateSave: true,
 			ajax: "{{ url('inventory/supply') }}",
 			columns: [
 					{ data: "stocknumber" },

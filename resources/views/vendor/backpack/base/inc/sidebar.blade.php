@@ -183,11 +183,6 @@
           <li><a href="{{ url('import') }}"><i class="fa fa-upload" aria-hidden="true"></i> <span>Import</span></a></li>
           @endif
 
-          <!-- ======================================= -->
-          <li class="header">{{ trans('backpack::base.user') }}</li>
-
-          <li><a href="{{ url('settings') }}"><i class="fa fa-user-o" aria-hidden="true"></i> <span> Settings</span></a></li>
-
           @if(Auth::user()->access == 3)
 
           <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Request</span></a></li>
@@ -198,7 +193,17 @@
           <li class="header">Reports</li>
 
           <li><a href="{{ url('rsmi') }}"><i class="fa fa-ticket" aria-hidden="true"></i> <span> R. S. M. I. </span></a></li>
+
+          <li class="header">Queries</li>
+
+          <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span> References </span></a></li>
+          <li><a href="{{ url('receipt') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Receipts </span></a></li>
           @endif
+
+          <!-- ======================================= -->
+          <li class="header">{{ trans('backpack::base.user') }}</li>
+
+          <li><a href="{{ url('settings') }}"><i class="fa fa-user-o" aria-hidden="true"></i> <span> Settings</span></a></li>
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/logout') }}"><i class="fa fa-sign-out"></i> <span>{{ trans('backpack::base.logout') }}</span></a></li>
         </ul>
