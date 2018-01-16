@@ -36,7 +36,7 @@ class HomeController extends Controller
 
         if(Auth::user()->access == 2)
         {
-            return redirect('purchaseorder');
+            return redirect('inventory/supply');
         }
 
         if(Auth::user()->access == 3)

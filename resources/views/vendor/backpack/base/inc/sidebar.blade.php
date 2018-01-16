@@ -66,7 +66,7 @@
 
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
 
-          <li><a href="{{ url('inventory/supply/stockcard/accept') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
+          <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
 
           <li class="treeview">
             <a href="#">
@@ -82,7 +82,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="{{ url('inventory/supply/stockcard/release') }}">
+                  <a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/release') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/release') }}  @endif">
                         <li><i class="fa fa-pencil" aria-hidden="true"></i>
                         Allocate
                   </a>
