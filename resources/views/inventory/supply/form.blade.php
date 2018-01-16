@@ -371,9 +371,9 @@ $('document').ready(function(){
 
 					url = "{{ url('inventory/supply')  }}" +  '/' + $('#stocknumber').val() + '/compute/daystoconsume'
 
-					$.getJSON( url, function( data ) {
-					  $('#daystoconsume').val(data)
-					});
+					// $.getJSON( url, function( data ) {
+					//   $('#daystoconsume').val(data)
+					// });
 					    				
 				} catch (e) {
 					$('#stocknumber-details').html(`
