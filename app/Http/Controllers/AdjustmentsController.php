@@ -61,6 +61,12 @@ class AdjustmentsController extends Controller
 
 		DB::beginTransaction();
 
+		$adjustment = App\Adjustment::create([
+			'created_by' => $created_by,
+			'details' => $details,
+			'status' => $status
+		]);
+
 		foreach(array_flatten($stocknumbers) as $stocknumber)
 		{
 			if($stocknumber == '' || $stocknumber == null || !isset($stocknumber))
@@ -96,7 +102,7 @@ class AdjustmentsController extends Controller
 			$transaction = new App\StockCard;
 			$transaction->date = Carbon\Carbon::now();
 			$transaction->stocknumber = $supply->stocknumber;
-			$transaction->reference = null;
+			$transaction->reference = "Adjustment#$adjustment->id";
 			$transaction->receipt = null;
 			$transaction->organization = null;
 			$transaction->received_quantity = $quantity["$stocknumber"];
@@ -104,12 +110,6 @@ class AdjustmentsController extends Controller
 			$transaction->user_id = Auth::user()->id;
 			$transaction->receipt();
 		}
-
-		$adjustment = App\Adjustment::create([
-			'created_by' => $created_by,
-			'details' => $details,
-			'status' => $status
-		]);
 
 		$adjustment->supplies()->sync($array);
 
@@ -230,6 +230,12 @@ class AdjustmentsController extends Controller
 
 		DB::beginTransaction();
 
+		$adjustment = App\Adjustment::create([
+			'created_by' => $created_by,
+			'details' => $details,
+			'status' => $status
+		]);
+
 		foreach(array_flatten($stocknumbers) as $stocknumber)
 		{
 			if($stocknumber == '' || $stocknumber == null || !isset($stocknumber))
@@ -265,7 +271,7 @@ class AdjustmentsController extends Controller
 			$transaction = new App\StockCard;
 			$transaction->date = Carbon\Carbon::now();
 			$transaction->stocknumber = $supply->stocknumber;
-			$transaction->reference = null;
+			$transaction->reference = "Adjustment#$adjustment->code";
 			$transaction->receipt = null;
 			$transaction->organization = null;
 			$transaction->issued_quantity = $quantity["$stocknumber"];
@@ -273,12 +279,6 @@ class AdjustmentsController extends Controller
 			$transaction->user_id = Auth::user()->id;
 			$transaction->issue();
 		}
-
-		$adjustment = App\Adjustment::create([
-			'created_by' => $created_by,
-			'details' => $details,
-			'status' => $status
-		]);
 
 		$adjustment->supplies()->sync($array);
 

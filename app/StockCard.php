@@ -85,7 +85,7 @@ class StockCard extends Model implements Auditable, UserResolver
 
 		if($this->reference != '' && $this->reference != null) $details = $details . $this->reference;
 
-		if($this->receipt != '' && $this->receipt != null) $details = $details . $this->receipt;
+		if($this->receipt != '' && $this->receipt != null) $details = $details . ' - ' . $this->receipt;
 
 		return $details;
 	}
