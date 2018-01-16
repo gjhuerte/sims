@@ -93,6 +93,8 @@
 	</div>
 
 	@if($title == 'Accept')
+
+	@if($type == 'ledger')
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Fund Clusters') }}
@@ -103,6 +105,8 @@
 			<p class="text-muted">Separate each cluster by comma</p>
 		</div>
 	</div>
+	@endif
+
 	@endif
 
 	<div class="form-group">
