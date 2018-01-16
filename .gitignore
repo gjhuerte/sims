@@ -13,4 +13,4 @@ yarn-error.log
 .env
 .env.*.php
 .env.php
-bootstrap/cache/
+/bootstrap/cache/
