@@ -75,6 +75,7 @@
 			@endif
 			"processing": true,
 			stateSave: true,
+			responsive: false,
 			ajax: "{{ url('inventory/supply') }}",
 			columns: [
 					{ data: "stocknumber" },

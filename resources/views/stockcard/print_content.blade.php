@@ -5,9 +5,9 @@
       <th class="text-left" colspan="4">Item:
         <span style="font-weight:normal; 
         @if(strlen($supply->details) > 0)
-          @if(strlen($supply->details) > 60) font-size: 10px; 
-          @elseif(strlen($supply->details) > 40) font-size: 11px; 
-          @elseif(strlen($supply->details) > 20) font-size: 12px; 
+          @if(strlen($supply->details) > 60) font-size: 9px; 
+          @elseif(strlen($supply->details) > 40) font-size: 10px; 
+          @elseif(strlen($supply->details) > 20) font-size: 11px; 
           @endif 
         @endif">{{ $supply->details }}
       </span> </th>
