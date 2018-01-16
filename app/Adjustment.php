@@ -13,7 +13,7 @@ class Adjustment extends Model
     public $incrementing = true;
     public $timestamps = true;
     public $fillable = [
-      'created_by', 'status'
+      'created_by', 'status', 'details'
     ];
 
     protected $appends = [

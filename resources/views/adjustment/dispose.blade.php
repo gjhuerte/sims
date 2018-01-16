@@ -17,7 +17,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-    {{ Form::open(['method'=>'post','route'=>array('adjustment.store'),'class'=>'form-horizontal','id'=>'adjustmentForm']) }}
+    {{ Form::open(['method'=>'put','route'=>array('adjustment.dispose'),'class'=>'form-horizontal','id'=>'adjustmentForm']) }}
         @include('errors.alert')
         @include('adjustment.form')
       {{ Form::close() }}

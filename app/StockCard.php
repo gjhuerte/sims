@@ -59,7 +59,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	public $supplier_id = null;
 
 	protected $appends = [
-		'parsed_date'
+		'parsed_date', 'reference_information'
 	];
 
 	public function setDaystoconsumeAttribute($value)
@@ -77,6 +77,17 @@ class StockCard extends Model implements Auditable, UserResolver
 		endif;
 
 		$this->attributes['daystoconsume'] = $daystoconsume;
+	}
+
+	public function getReferenceInformationAttribute()
+	{
+		$details = '';
+
+		if($this->reference != '' && $this->reference != null) $details = $details . $this->reference;
+
+		if($this->receipt != '' && $this->receipt != null) $details = $details . $this->receipt;
+
+		return $details;
 	}
 
 	public function getParsedDateAttribute()

@@ -140,6 +140,10 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::get('adjustment/{id}/print', 'AdjustmentsController@print');
 		Route::get('adjustment/dispose', 'AdjustmentsController@dispose');
+		Route::put('adjustment/return', [
+			'as' => 'adjustment.dispose',
+			'uses' => 'AdjustmentsController@destroy'
+		]);
 		Route::get('adjustment/return', 'AdjustmentsController@create');
 
 		Route::resource('adjustment', 'AdjustmentsController');

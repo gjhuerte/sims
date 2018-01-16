@@ -77,7 +77,7 @@
 			ajax: '{{ url("inventory/supply/$supply->id/stockcard/") }}',
 			columns: [
 					{ data: "parsed_date"},
-					{ data: "reference" },
+					{ data: "reference_information" },
 					{ data: "received_quantity"},
 					{ data: "issued_quantity" },
 					{ data: "organization" },
