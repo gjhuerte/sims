@@ -245,7 +245,7 @@ class LedgerCard extends Model implements Auditable, UserResolver
 		if(count($receipt) <= 0 )
 		{
 			$receipt = new Receipt;
-			$receipt->purchaseorder_id = isset($purchaseorder->id) ? $purchaseorder->id : null;
+			$receipt->purchaseorder_id = (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null;
 			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
 			$receipt->received_by = $fullname;
 			$receipt->supplier_id = isset($supplier->id) ? $supplier->id : null;

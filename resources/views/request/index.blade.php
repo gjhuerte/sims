@@ -93,9 +93,11 @@
         ],
     });
 
+    @if(Auth::user()->access == 3)
     $('div.toolbar').html(`
       <a id="create" href="{{ url('request/create') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> Create a Request</span></a>
     `)
+    @endif
 
     @if(Auth::user()->access == 1)
 

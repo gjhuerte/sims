@@ -27,7 +27,7 @@
     {{ Form::number('quantity','',[
       'id' => 'quantity',
       'class' => 'form-control',
-      'placeholder' => 'Quantity Requested'
+      'placeholder' => 'Quantity'
     ]) }}
     </div>
   </div>
@@ -67,7 +67,7 @@
 <div class="col-sm-12">
   <hr />
   <label>Details</label>
-  <textarea name="details" id="details" class="form-control" placeholder="Enter Disposal Details..."></textarea>
+  <textarea name="details" id="details" class="form-control" placeholder="Enter Details..."></textarea>
 </div>
 <div class="col-sm-12">
   <div class="pull-right" style="margin-top: 20px;">
@@ -75,9 +75,9 @@
       <button type="button" id="request" class="btn btn-md btn-primary btn-block">
       @if(isset($action))
         @if($action == 'create')
-        <span>Create</span>
-        @elseif($action == 'update')
-        <span>Create</span>
+        <span>Submit</span>
+        @elseif($action == 'dispose')
+        <span>Dispose</span>
         @else
         <span>No Action</span>
         @endif
@@ -133,7 +133,7 @@
             },
             function(isConfirm){
               if (isConfirm) {
-                $('#disposalForm').submit();
+                $('#adjustmentForm').submit();
               } else {
                 swal("Cancelled", "Operation Cancelled", "error");
               }
@@ -185,17 +185,8 @@
       quantity = $('#quantity').val()
       details = $('#supply-item').val()
       unitcost = $('#unitcost').val()
-
-      row = parseInt($('#supplyTable > tbody > tr:last').text())
-      if(isNaN(row))
-      {
-        row = 1
-      } else
-      {
-        row++
-      }
       
-      if(addForm(row,stocknumber,details,quantity))
+      if(addForm(stocknumber,details,quantity, unitcost))
       {
         $('#stocknumber-details').html("")
         $('#stocknumber').val("")
@@ -204,8 +195,9 @@
       }
     })
 
-    function addForm(row,_stocknumber = "",_info ="" ,_quantity = "", _unitcost)
+    function addForm(_stocknumber = "",_info = "" ,_quantity = "", _unitcost = 0)
     {
+
       error = false
       $('.stocknumber-list').each(function() {
           if (_stocknumber == $(this).val())
@@ -231,7 +223,7 @@
           </td>
           <td><input type="hidden" class="form-control text-center" value="` + _info + `" name="info[` + _stocknumber + `]" style="border:none;" />` + _info + `</td>
           <td><input type="number" class="form-control text-center" value="` + _quantity + `" name="quantity[` + _stocknumber + `]" style="border:none;"  /></td>
-          <td><input type="text" class="form-control text-center" value="` + unitcost + `" name="unitcost[` + _stocknumber + `]" style="border:none;"  /></td>
+          <td><input type="text" class="form-control text-center" value="` + _unitcost + `" name="unitcost[` + _stocknumber + `]" style="border:none;"  /></td>
           <td><button type="button" class="remove btn btn-md btn-danger text-center"><span class="glyphicon glyphicon-remove"></span></button></td>
         </tr>
       `)

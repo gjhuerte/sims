@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
-class DisposalsController extends Controller
+class AdjustmentsController extends Controller
 {
 	/**
 	 * Display a listing of the resource.
@@ -23,11 +23,11 @@ class DisposalsController extends Controller
 	{
 		if($request->ajax())
 		{
-			$disposals = App\Disposal::all();
-			return datatables($disposals)->toJson();
+			$adjustments = App\Adjustment::all();
+			return datatables($adjustments)->toJson();
 		}
-		return view('disposal.index')
-					->with('title','Disposal');
+		return view('adjustment.index')
+					->with('title','Adjustment');
 	}
 
 
@@ -38,8 +38,8 @@ class DisposalsController extends Controller
 	 */
 	public function create()
 	{
-		return view('disposal.create')
-					->with('title','Disposal')
+		return view('adjustment.create')
+					->with('title','Adjustment')
 					->with('action', 'create');
 	}
 
@@ -56,24 +56,27 @@ class DisposalsController extends Controller
 		$unitcost = $request->get("unitcost");
 		$array = [];
 		$status = null;
+		$details = $request->get('details');
 		$created_by = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname ;
+
+		DB::beginTransaction();
 
 		foreach(array_flatten($stocknumbers) as $stocknumber)
 		{
 			if($stocknumber == '' || $stocknumber == null || !isset($stocknumber))
 			{
 			  \Alert::error('Encountered an invalid stock! Resetting table')->flash();
-			   return redirect("disposal/create");
+			   return redirect("adjustment/create");
 			}
 
 			$validator = Validator::make([
 			    'Stock Number' => $stocknumber,
 			    'Quantity' => $quantity["$stocknumber"]
-			],App\Disposal::$rules);
+			],App\Adjustment::$rules);
 
 			if($validator->fails())
 			{
-			    return redirect("disposal/create")
+			    return redirect("adjustment/create")
 			            ->with('total',count($stocknumbers))
 			            ->with('stocknumber',$stocknumbers)
 			            ->with('quantity',$quantity)
@@ -82,26 +85,38 @@ class DisposalsController extends Controller
 			            ->withErrors($validator);
 			}
 
+			$supply = App\Supply::findByStockNumber($stocknumber);
+
 			array_push($array,[
 			    'quantity' => $quantity["$stocknumber"],
-			    'supply_id' => App\Supply::findByStockNumber($stocknumber)->id,
+			    'supply_id' => $supply->id,
 			    'unitcost' => $unitcost["$stocknumber"]
 			]);
+
+			$transaction = new App\StockCard;
+			$transaction->date = Carbon\Carbon::now();
+			$transaction->stocknumber = $supply->stocknumber;
+			$transaction->reference = null;
+			$transaction->receipt = null;
+			$transaction->organization = null;
+			$transaction->received_quantity = $quantity["$stocknumber"];
+			$transaction->daystoconsume = null;
+			$transaction->user_id = Auth::user()->id;
+			$transaction->receipt();
 		}
 
-		DB::beginTransaction();
-
-		$disposal = App\Disposal::create([
+		$adjustment = App\Adjustment::create([
 			'created_by' => $created_by,
+			'details' => $details,
 			'status' => $status
 		]);
 
-		$disposal->supplies()->sync($array);
+		$adjustment->supplies()->sync($array);
 
 		DB::commit();
 
-		\Alert::success('Disposal Report Created')->flash();
-		return redirect('disposal');
+		\Alert::success('Adjustment Report Created')->flash();
+		return redirect('adjustment');
 	}
 
 
@@ -113,16 +128,19 @@ class DisposalsController extends Controller
 	 */
 	public function show(Request $request, $id = null)
 	{
-		$disposal = App\Disposal::find($id);
+		$adjustment = App\Adjustment::find($id);
+
+		if(count($adjustment) <= 0) return view('errors.404');
+
 		if($request->ajax())
 		{
 			return json_encode([
-				'data' => $disposal->supplies
+				'data' => $adjustment->supplies
 			]);
 		}
 
-		return view('disposal.show')
-				->with('disposal', $disposal);
+		return view('adjustment.show')
+				->with('adjustment', $adjustment);
 	}
 
 
@@ -142,7 +160,7 @@ class DisposalsController extends Controller
 		{
 			return view('errors.404');
 		}
-		return view("disposal.edit")
+		return view("adjustment.edit")
 				->with('category',$category)
 				->with('title','Category');
 	}
@@ -183,6 +201,16 @@ class DisposalsController extends Controller
 		return redirect('maintenance/category');
 	}
 
+	/**
+	 * dispose items
+	 */
+	public function dispose(Request $request)
+	{
+		return view('adjustment.dispose')
+				->with('title', 'Adjustment')
+				->with('action', 'dispose');
+	}
+
 
 	/**
 	 * Remove the specified resource from storage.
@@ -215,14 +243,14 @@ class DisposalsController extends Controller
 	{
 
       $id = $this->sanitizeString($id);
-      $disposal = App\Disposal::find($id);
+      $adjustment = App\Adjustment::find($id);
 
       $data = [
-        'disposal' => $disposal
+        'adjustment' => $adjustment
       ];
 
-      $filename = "DisposalReport-".Carbon\Carbon::now()->format('mdYHm')."-$disposal->code".".pdf";
-      $view = "disposal.print_show";
+      $filename = "AdjustmentReport-".Carbon\Carbon::now()->format('mdYHm')."-$adjustment->code".".pdf";
+      $view = "adjustment.print_show";
 
       return $this->printPreview($view,$data,$filename);
 	}

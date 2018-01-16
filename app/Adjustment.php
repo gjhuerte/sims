@@ -6,7 +6,7 @@ use Auth;
 use Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Disposal extends Model
+class Adjustment extends Model
 {
     protected $table = 'disposals';
     protected $primaryKey = 'id';
@@ -19,6 +19,19 @@ class Disposal extends Model
     protected $appends = [
       'code', 'date_created'
     ];
+
+    public function setDetailsAttribute($value)
+    {
+      if($this->attributes['details'])
+        $this->attributes['details'] = $this->attributes['details'];
+      else
+        $this->attributes['details'] = 'None';
+    }
+
+    public function getDetailsAttribute($value)
+    {
+      return $this->attributes['details'];
+    }
 
     public function getCodeAttribute($value)
     {

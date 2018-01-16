@@ -102,18 +102,22 @@
 		            { data: function(callback){
 		            	return `
 		            			@if(Auth::user()->access == 1)
-		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Stockcard</a>
-                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
-              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-              	        <span id="nav-text"> Print</span>
-              	      </a>
+		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard' +`" class="btn btn-sm btn-primary">
+		            				<span class="glyphicon glyphicon-list"></span> Stockcard
+		            			</a>
+								<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-default ladda-button" data-style="zoom-in">
+									<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+									<span id="nav-text"> Print</span>
+								</a>
 		            			@endif
 		            			@if(Auth::user()->access == 2)
-		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard' +`" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-list"></span> Supply Ledger</a>
-                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
-              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-              	        <span id="nav-text"> Print</span>
-              	      </a>
+		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard' +`" class="btn btn-sm btn-primary">
+		            				<span class="glyphicon glyphicon-list"></span> Supply Ledger
+		            			</a>
+			                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+			              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+			              	        <span id="nav-text"> Print</span>
+			              	      </a>
 		            			@endif
 		            	`;
 		            } }

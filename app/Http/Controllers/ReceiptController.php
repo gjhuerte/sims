@@ -22,7 +22,7 @@ class ReceiptController extends Controller
     {
         if($request->ajax())
         {
-            $receipts = App\Receipt::with('supplier')->get();
+            $receipts = App\Receipt::with('supplier', 'purchaseorder')->get();
             return datatables($receipts)->toJson();
         }
 

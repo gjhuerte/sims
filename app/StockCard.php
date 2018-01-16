@@ -299,7 +299,7 @@ class StockCard extends Model implements Auditable, UserResolver
 			$receipt = Receipt::firstOrCreate([
 				'number' => $this->receipt
 			], [
-				'purchaseorder_id' => isset($this->purchaseorder_id) ? $this->purchaseorder_id : null,
+				'purchaseorder_id' => (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null,
 				'date_delivered' => Carbon\Carbon::parse($this->date),
 				'received_by' => $fullname,
 				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null

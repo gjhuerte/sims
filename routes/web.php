@@ -138,9 +138,11 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'RequestController@releaseView'
 		]);
 
-		Route::get('disposal/{id}/print', 'DisposalsController@print');
+		Route::get('adjustment/{id}/print', 'AdjustmentsController@print');
+		Route::get('adjustment/dispose', 'AdjustmentsController@dispose');
+		Route::get('adjustment/return', 'AdjustmentsController@create');
 
-		Route::resource('disposal', 'DisposalsController');
+		Route::resource('adjustment', 'AdjustmentsController');
 
 	});
 

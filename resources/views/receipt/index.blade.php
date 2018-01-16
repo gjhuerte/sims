@@ -28,6 +28,7 @@
         <thead>
           <tr>
             <th class="col-sm-1">ID</th>
+            <th class="col-sm-1">P.O. Number</th>
             <th class="col-sm-1">Receipt Number</th>
             <th class="col-sm-1">Invoice</th>
             <th class="col-sm-1">Supplier</th>
@@ -63,18 +64,16 @@
         ajax: "{{ url('receipt') }}",
         columns: [
                 { data: "id"},
+                { data: "purchaseorder_number" },
                 { data: "number" },
                 { data: "invoice" },
-                { data: function(callback){
-                  if(callback.supplier) return callback.supplier.name
-                  return null
-                }, name: null },
+                { data: 'supplier_name' },
                 { data: "parsed_date_delivered" },
                 { data: function(callback){
                   ret_val = "";
 
                   ret_val +=  `
-                    <a href="{{ url('receipt') }}/`+ callback.id +`" class="btn btn-default btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
+                    <a href="{{ url('receipt') }}/`+ callback.id +`" class="btn-block btn btn-primary btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
                   `
 
                     return ret_val;

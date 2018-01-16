@@ -3,11 +3,11 @@
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    Disposal Report
+	    Adjustment Report
 	  </h1>
 	  <ol class="breadcrumb">
-	    <li><a href="{{ url('disposal') }}">Disposal</a></li>
-	    <li class="active">Create</li>
+	    <li><a href="{{ url('adjustment') }}">Adjustment</a></li>
+	    <li class="active">Dispose</li>
 	  </ol>
 	</section>
 @endsection
@@ -17,9 +17,9 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-    {{ Form::open(['method'=>'post','route'=>array('disposal.store'),'class'=>'form-horizontal','id'=>'disposalForm']) }}
+    {{ Form::open(['method'=>'post','route'=>array('adjustment.store'),'class'=>'form-horizontal','id'=>'adjustmentForm']) }}
         @include('errors.alert')
-        @include('disposal.form')
+        @include('adjustment.form')
       {{ Form::close() }}
     </div><!-- /.box-body -->
   </div><!-- /.box -->

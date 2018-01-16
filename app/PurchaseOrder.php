@@ -39,7 +39,7 @@ class PurchaseOrder extends Model
     ];
 
 	protected $appends = [
-		'date_received_parsed',
+		'date_received_parsed'
 	];
 
 	public function getDateReceivedParsedAttribute()
@@ -74,5 +74,10 @@ class PurchaseOrder extends Model
 	{
 		return $query->where('id','=',$id);
 	}
+
+    public function receipt()
+    {
+        return $this->hasMany('App\Receipt', 'purchaseorder_id', 'id');
+    }
 
 }

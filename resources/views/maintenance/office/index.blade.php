@@ -5,6 +5,7 @@
 		<legend><h3 class="text-muted">Offices</h3></legend>
 		<ol class="breadcrumb">
 			<li>Office</li>
+			<li class="active">Home</li>
 		</ol>
 	</section>
 @endsection

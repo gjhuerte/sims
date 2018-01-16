@@ -1,9 +1,6 @@
 <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0"> 
   <thead>
     <tr>
-      <th class="text-left" colspan="8">Entity Name:  <span style="font-weight:normal">{{ $supply->entity_name }}</span> </th>
-    </tr>
-    <tr>
       <th class="text-left" colspan="4">Item:
         <span style="font-weight:normal; 
         @if(strlen($supply->details) > 0)

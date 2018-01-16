@@ -17,16 +17,37 @@ class Receipt extends Model
     	'invoice',
     	'date_delivered',
     	'received_by',
-    	'supplier_id'
+    	'supplier_id',
+        'purchaseorder_id'
     ];
 
     protected $appends = [
-        'parsed_date_delivered'
+        'parsed_date_delivered', 'purchaseorder_number', 'supplier_name'
     ];
 
     public function getParsedDateDeliveredAttribute($value)
     {
         return Carbon\Carbon::parse($this->date_delivered)->toFormattedDateString();
+    }
+
+    public function getPurchaseorderNumberAttribute()
+    {
+        if(isset($this->purchaseorder) && count($this->purchaseorder) > 0):
+            if($this->purchaseorder->number)
+                return $this->purchaseorder->number;
+        endif;
+
+        return 'None';
+    }
+
+    public function getSupplierNameAttribute()
+    {
+        if(isset($this->supplier) && count($this->supplier) > 0):
+            if($this->supplier->name)
+                return $this->supplier->name;
+        endif;
+
+        return 'None';
     }
 
     public function supplies()
@@ -39,6 +60,11 @@ class Receipt extends Model
     public function supplier()
     {
       return $this->belongsTo('App\Supplier','supplier_id','id');
+    }
+
+    public function purchaseorder()
+    {
+        return $this->belongsto('App\PurchaseOrder', 'purchaseorder_id', 'id');
     }
 
     public function setReceivedByAttribute($value)

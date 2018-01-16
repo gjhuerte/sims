@@ -31,8 +31,7 @@
 			<table class="table table-hover table-striped table-bordered table-condensed" id="inventoryTable" cellspacing="0" width="100%">
 				<thead>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="4">Entity Name:  <span style="font-weight:normal">{{ $supply->entityname }}</span> </th>
-		                <th class="text-left" colspan="4">Fund Cluster:  
+		                <th class="text-left" colspan="8">Fund Cluster:
 		                	<span style="font-weight:normal"> </span>
 		                </th>
 		            </tr>

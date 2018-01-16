@@ -24,11 +24,14 @@
         </div>
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-          <li class="header">Navigation</li>
+          <li class="header">Supplies Inventory</li>
           <!-- ================================================ -->
           <!-- ==== Recommended place for admin menu items ==== -->
           <!-- ================================================ -->
+
+          @if(Auth::user()->access == 1)
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}"><i class="fa fa-dashboard"></i> <span>{{ trans('backpack::base.dashboard') }}</span></a></li>
+          @endif
 
           @if(false)
 
@@ -51,19 +54,89 @@
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/backup') }}"><i class="fa fa-hdd-o"></i> <span>Backups</span></a></li>
 
-          @else
+          @endif
+
+          @if(false)
 
           <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i> <span> Purchase Order</span></a></li>
 
           <li><a href="{{ url('receipt') }}"><i class="fa fa-files-o" aria-hidden="true"></i> <span> Receipt </span></a></li>
 
+          @endif
+
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
 
-          @endif
+          <li><a href="{{ url('inventory/supply/stockcard/accept') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
+
+          <li class="treeview">
+            <a href="#">
+                  <i class="fa fa-share" aria-hidden="true"></i>
+                  <span>R. I. S.</span>
+              <i class="fa fa-angle-left pull-right"></i>
+            </a>
+              <ul class="treeview-menu">
+                <li>
+                  <a href="{{ url('request') }}">
+                        <li><i class="fa fa-list" aria-hidden="true"></i>
+                    View
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url('inventory/supply/stockcard/release') }}">
+                        <li><i class="fa fa-pencil" aria-hidden="true"></i>
+                        Allocate
+                  </a>
+                </li>
+              </ul>
+          </li>
+
+          <script>
+            $(document).ready(function(){
+              /** add active class and stay opened when selected */
+              var url = window.location;
+
+              // for sidebar menu entirely but not cover treeview
+              $('ul.sidebar-menu a').filter(function() {
+                 return this.href == url;
+              }).parent().addClass('active');
+
+              // for treeview
+              $('ul.treeview-menu a').filter(function() {
+                 return this.href == url;
+              }).parentsUntil( $( "ul.level-1" ) ).addClass('active');
+            })
+          </script>
+
 
           @if(Auth::user()->access == 1)
 
-          <li><a href="{{ url('disposal') }}"><i class="fa fa-trash-o" aria-hidden="true"></i> <span> Disposal </span></a></li>
+          <li class="treeview">
+            <a href="#">
+                  <i class="fa fa-sliders" aria-hidden="true"></i>
+                  <span>Adjustment</span>
+              <i class="fa fa-angle-left pull-right"></i>
+            </a>
+              <ul class="treeview-menu">
+                <li>
+                  <a href="{{ url('adjustment') }}">
+                    <li><i class="fa fa-eye" aria-hidden="true"></i>
+                    View
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url('adjustment/dispose') }}">
+                    <li><i class="fa fa-trash-o" aria-hidden="true"></i>
+                    Disposal
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url('adjustment/return') }}">
+                    <li><i class="fa fa-pencil" aria-hidden="true"></i>
+                    Return
+                  </a>
+                </li>
+              </ul>
+          </li>
 
           <li class="header">Information System</li>
 
@@ -71,11 +144,13 @@
 
           <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
 
-          <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
-
           <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
 
-          <li><a href="{{ url('maintenance/category') }}"><i class="fa fa-tags" aria-hidden="true"></i> <span> Categories </span></a></li>
+          @endif
+
+          @if(Auth::user()->access == 0)
+
+          <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
 
           @endif
 
@@ -111,11 +186,13 @@
           <!-- ======================================= -->
           <li class="header">{{ trans('backpack::base.user') }}</li>
 
-          @if(Auth::user()->access != 0)
-          <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Requests</span></a></li>
-          @endif
-
           <li><a href="{{ url('settings') }}"><i class="fa fa-user-o" aria-hidden="true"></i> <span> Settings</span></a></li>
+
+          @if(Auth::user()->access == 3)
+
+          <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Request</span></a></li>
+
+          @endif
 
           @if(Auth::user()->access == 1 || Auth::user()->access == 2)
           <li class="header">Reports</li>
