@@ -24,7 +24,7 @@
             <div style="margin-left: 5em;">
           		<div style="font-size:13pt;">Republic of the Philippines	</div>
           		<div style="font-size:12pt;">POLYTECHNIC UNIVERSITY OF THE PHILIPPINES </div>
-          		<div style="font-size:10pt;">Sta. Mesa, Manila   <span class="pull-right"> {{ Carbon\Carbon::now()->setTimezone('Asia/Singapore')->toDayDateTimeString() }} </span></div>
+          		<div style="font-size:10pt;">Sta. Mesa, Manila   <span class="pull-right"> {{ Carbon\Carbon::now()->toDayDateTimeString() }} </span></div>
             </div>
         </div>
         <div class="col-sm-12">
