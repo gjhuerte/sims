@@ -50,6 +50,11 @@ class Receipt extends Model
         return 'None';
     }
 
+    public function getInvoiceAttribute()
+    {
+        if(!$this->attributes['invoice']) return 'Not Set';
+    }
+
     public function supplies()
     {
         return $this->belongsToMany('App\Supply', 'receipts_supplies', 'receipt_id', 'supply_id')

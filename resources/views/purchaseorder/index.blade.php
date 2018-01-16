@@ -54,7 +54,7 @@
 	          	{ data: "id" },
 				{ data: "number" },
 				{ data: 'date_received_parsed' },
-	          	{ data: "supplier.name" },
+	          	{ data: "supplier_name" },
 				{ data: function(callback){
 					url = '{{ url("purchaseorder") }}' + '/' + callback.id
 		            html = `

@@ -15,10 +15,6 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
-	        <a href="{{ url("adjustment/$adjustment->id/edit") }}" class="btn btn-default btn-sm">
-	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-	    	</a>
-	        <hr />
 			<table class="table table-hover table-striped table-bordered table-condensed" id="adjustmentTable" cellspacing="0" width="100%"	>
 				<thead>
 		            <tr rowspan="2">
@@ -26,8 +22,7 @@
 		                <th class="text-left" colspan="3">Created By:  <span style="font-weight:normal">{{ $adjustment->created_by }}</span> </th>
 		            </tr>
 		            <tr rowspan="2">
-		                <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $adjustment->remarks }}</span> </th>
-		                <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ ($adjustment->status == '') ? ucfirst(config('app.default_status')) : $adjustment->status }}</span> </th>
+		                <th class="text-left" colspan="6">Details:  <span style="font-weight:normal">{{ $adjustment->details }}</span> </th>
 		            </tr>
 		            <tr>
 						<th>Stock Number</th>

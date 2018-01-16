@@ -39,7 +39,7 @@ class PurchaseOrder extends Model
     ];
 
 	protected $appends = [
-		'date_received_parsed'
+		'date_received_parsed', 'supplier_name'
 	];
 
 	public function getDateReceivedParsedAttribute()
@@ -53,6 +53,16 @@ class PurchaseOrder extends Model
           ->withPivot('unitcost', 'received_quantity', 'ordered_quantity', 'remaining_quantity')
           ->withTimestamps();
 	}
+
+    public function getSupplierNameAttribute()
+    {
+        if(isset($this->supplier) && count($this->supplier) > 0):
+            if($this->supplier->name)
+                return $this->supplier->name;
+        endif;
+
+        return 'Not Set';
+    }
 
 	public function fundclusters()
 	{
