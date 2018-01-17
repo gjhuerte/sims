@@ -2,6 +2,18 @@
 	@if($title == 'Release')
 	<div class="col-md-12">
 		<div class="form-group">
+			{{ Form::label('Date') }}
+			{{ Form::text('date', old('date'),[
+				'id' => 'date',
+				'class' => 'form-control',
+				'readonly',
+				'style' => 'background-color: white;',
+				'onchange' => 'setDate("#date");'
+			]) }}
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="form-group">
 			{{ Form::label('Office') }}
 			{{ Form::text('office',Input::old('office'),[
 				'id' => 'office',
@@ -33,6 +45,18 @@
 
 	@endif
 	@if($title == 'Accept')
+	<div class="col-md-12">
+		<div class="form-group">
+			{{ Form::label('Date') }}
+			{{ Form::text('date', old('date'),[
+				'id' => 'date',
+				'class' => 'form-control',
+				'readonly',
+				'style' => 'background-color: white;',
+				'onchange' => 'setDate("#date");'
+			]) }}
+		</div>
+	</div>
 	<div class="col-md-12">
 		<div class="form-group">
 			{{ Form::label('Supplier') }}
@@ -79,18 +103,6 @@
 	@endif
 
 	@endif
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Date') }}
-			{{ Form::text('date', old('date'),[
-				'id' => 'date',
-				'class' => 'form-control',
-				'readonly',
-				'style' => 'background-color: white;',
-				'onchange' => 'setDate("#date");'
-			]) }}
-		</div>
-	</div>
 
 	@if($title == 'Accept')
 

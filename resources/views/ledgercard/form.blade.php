@@ -1,6 +1,17 @@
 <div class="col-md-4">
 	<div class="col-md-12">
 		<div class="form-group">
+			{{ Form::label('Date') }}
+			{{ Form::text('date',Input::old('date'),[
+				'id' => 'date',
+				'class' => 'form-control',
+				'readonly',
+				'style' => 'background-color: white;'
+			]) }}
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="form-group">
 			{{ Form::label('Supplier') }}
 			{{ Form::select('supplier',$supplier,Input::old('supplier'),[
 				'id' => 'supplier',
@@ -25,17 +36,6 @@
 			{{ Form::text('dr',Input::old('dr'),[
 				'id' => 'dr',
 				'class' => 'form-control'
-			]) }}
-		</div>
-	</div>
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Date') }}
-			{{ Form::text('date',Input::old('date'),[
-				'id' => 'date',
-				'class' => 'form-control',
-				'readonly',
-				'style' => 'background-color: white;'
 			]) }}
 		</div>
 	</div>
