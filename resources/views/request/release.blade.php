@@ -31,17 +31,14 @@
 
       <legend><h3 class="text-muted">Requisition and Issue Slip {{ $request->code }}</h3></legend>
 
-      <div class="pull-right" style="padding: 10px;">
-        <div class="col-sm-offset-9 col-sm-3">
-          <h4>Legend:</h4>
-          <ul class="list-unstyled">
-            <li>Rows in <span class="text-warning">Yellow</span> have issued quantity <em>greater than</em> requested quantity</li>
-            <li>Rows in <span class="text-danger">Red</span> have no more items to release</li>
-          </ul>
-        </div>
+      <div class="col-sm-12">
+          Rows in <span class="text-warning">Yellow</span> have issued quantity <em>greater than</em> requested quantity <br />
+          Rows in <span class="text-danger">Red</span> have no more items to release
       </div>
 
-      <table class="table table-hover table-condensed table-bordered" id="supplyTable">
+      <br />
+
+      <table class="col-sm-12 table table-hover table-condensed table-bordered" id="supplyTable">
         <thead>
           <tr>
             <th class="col-sm-1">Stock Number</th>
