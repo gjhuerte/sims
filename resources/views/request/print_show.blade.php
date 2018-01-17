@@ -42,6 +42,9 @@
           <td>{{ $supply->pivot->comments }}</td>
         </tr>
         @endforeach
+        <tr>
+          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -76,6 +79,7 @@
         </tr>
       </thead>
       <tbody>
+
         <tr>
           <td class="text-center">
             Signature:
@@ -89,6 +93,7 @@
           <td class="text-center">
           </td>
         </tr>
+
         <tr>
           <td class="text-center">
             Printed Name:
@@ -113,6 +118,7 @@
           {{-- <td></td>
           <td></td> --}}
         </tr>
+
         <tr>
           <td class="text-center">
             Designation:
@@ -121,7 +127,25 @@
             <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ isset($request->office) ? $request->office->code : "" }}</span>
           </td>
           <td class="text-center">
-            <span id="office" class="text-center" style="font-size:10px;">{{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
+          </td>
+          <td class="text-center">
+            <span id="office" class="text-center" style="font-size:10px;"></span>
+          </td>
+          <td class="text-center">
+            <span id="office" class="text-center" style="font-size:10px;"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="text-center">
+            Date:
+          </td>
+          <td class="text-center">
+            <span id="office" class="text-center" style="font-size:10px;"></span>
+          </td>
+          <td class="text-center">
+            <span id="office" class="text-center" style="font-size:10px;"></span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;"></span>

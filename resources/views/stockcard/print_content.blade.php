@@ -48,6 +48,7 @@
       <td class="col-sm-1">{{ $stockcard->daystoconsume }}</td>
     </tr>
     @endforeach
+
     @else
     <tr>
       <td colspan=7 class="col-sm-12"><p class="text-center">  No record </p></td>
