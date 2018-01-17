@@ -71,7 +71,8 @@
 	$(document).ready(function() {
 
     var table = $('#purchaseOrderTable').DataTable({
-    	serverSide: true,
+    	// serverSide: true,
+		"processing": true,
 		// select: {
 		// 	style: 'single'
 		// },
@@ -81,8 +82,11 @@
 		columnDefs:[
 			 { targets: 'no-sort', orderable: false },
 		],
-		"processing": true,
-		ajax: "{{ url("purchaseorder/$purchaseorder->id") }}",
+		ajax: {
+			type: "get",
+			url: "{{ url("purchaseorder/$purchaseorder->id") }}",
+			contentType: "application/json; charset=utf-8",
+		},
 		columns: [
 			{ data: "id" },
 			{ data: "stocknumber" },
