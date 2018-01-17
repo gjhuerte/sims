@@ -25,6 +25,7 @@
             <th class="col-sm-1">Requestor</th>
             @endif
             <th class="col-sm-1">Remarks</th>
+            <th class="col-sm-1">Purpose</th>
             <th class="col-sm-1">Status</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
@@ -66,6 +67,7 @@
                 } },
                 @endif
                 { data: "remarks" },
+                { data: "purpose" },
                 { data: "status" },
                 { data: function(callback){
                   ret_val = "";

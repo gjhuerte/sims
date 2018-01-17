@@ -59,6 +59,9 @@
         <td colspan=7 class="col-sm-12"><p class="text-center">  No record </p></td>
       </tr>
       @endif
+      <tr>
+        <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+      </tr>
       </tbody>
     </table>
   </div>

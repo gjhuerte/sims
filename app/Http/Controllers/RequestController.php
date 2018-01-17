@@ -68,6 +68,7 @@ class RequestController extends Controller
       $array = [];
       $office = App\Office::findByCode(Auth::user()->office)->id;
       $status = null;
+      $purpose = $request->get("purpose");;
       $requestor = Auth::user()->id;
 
       foreach(array_flatten($stocknumbers) as $stocknumber)
@@ -79,6 +80,7 @@ class RequestController extends Controller
         }
 
         $validator = Validator::make([
+            'Purpose' => $purpose,
             'Stock Number' => $stocknumber,
             'Quantity' => $quantity["$stocknumber"]
         ],App\Request::$issueRules);
@@ -107,6 +109,7 @@ class RequestController extends Controller
         'issued_by' => null,
         'office_id' => $office,
         'remarks' => null,
+        'purpose' => $purpose,
         'status' => $status
       ]);
 

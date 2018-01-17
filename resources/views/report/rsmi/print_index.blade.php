@@ -32,6 +32,9 @@
           <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
         </tr>
         @endforeach
+        <tr>
+          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+        </tr>
       </tbody>
     </table>
 
@@ -60,6 +63,9 @@
           <td></td>
         </tr>
         @endforeach
+        <tr>
+          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+        </tr>
       </tbody>
     </table>
   </div>

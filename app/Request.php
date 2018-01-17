@@ -17,12 +17,14 @@ class Request extends Model
       'office_id' ,
       'issued_by' , 
       'remarks'  , 
+      'purpose'  , 
       'status' 
     ];
     
     public static $issueRules = array(
       'Stock Number' => 'required|exists:supplies,stocknumber',
       'Quantity' => 'required|integer|min:1',
+      'Purpose' => 'required',
     );
     
     public $appends = [
