@@ -27,15 +27,18 @@
 
 			<table class="table table-hover table-striped table-bordered table-condensed" id="requestTable" cellspacing="0" width="100%"	>
 				<thead>
-		            <tr rowspan="2">
-		                <th class="text-left" colspan="3">Request Slip:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
-		                <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ isset($request->office) ? $request->office->code : 'None' }}</span> </th>
-		            </tr>
-		            <tr rowspan="2">
-		                <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
-		                <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ ($request->status == '') ? ucfirst(config('app.default_status')) : $request->status }}</span> </th>
-		            </tr>
-		            <tr>
+          <tr rowspan="2">
+              <th class="text-left" colspan="3">Request Slip:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
+              <th class="text-left" colspan="3">Requestor:  <span style="font-weight:normal">{{ isset($request->office) ? $request->office->code : 'None' }}</span> </th>
+          </tr>
+          <tr rowspan="2">
+              <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $request->remarks }}</span> </th>
+              <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ ($request->status == '') ? ucfirst(config('app.default_status')) : $request->status }}</span> </th>
+          </tr>
+          <tr rowspan="2">
+              <th class="text-left" colspan="6">Purpose:  <span style="font-weight:normal">{{ $request->purpose }}</span> </th>
+          </tr>
+          <tr>
 						<th>Stock Number</th>
 						<th>Details</th>
 						<th>Quantity Requested</th>

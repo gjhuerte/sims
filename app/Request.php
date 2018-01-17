@@ -20,6 +20,21 @@ class Request extends Model
       'purpose'  , 
       'status' 
     ];
+
+    public function updateRules(){
+      return [
+        'Stock Number' => 'required|exists:supplies,stocknumber',
+        'Quantity' => 'required|integer|min:1',
+        'Purpose' => 'required',
+      ];
+    }
+
+    public function approveRules(){
+      return [
+        'Stock Number' => 'required|exists:supplies,stocknumber',
+        'Quantity' => 'required|integer|min:1',
+      ];
+    }
     
     public static $issueRules = array(
       'Stock Number' => 'required|exists:supplies,stocknumber',

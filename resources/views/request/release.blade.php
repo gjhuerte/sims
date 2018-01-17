@@ -26,17 +26,21 @@
   <div class="box">
     <div class="box-body">
     {{ Form::open(['method'=>'delete','route'=>array('request.destroy',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
-      @if (count($errors) > 0)
-          <div class="alert alert-danger alert-dismissible" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <ul style='margin-left: 10px;'>
-                  @foreach ($errors->all() as $error)
-                      <li>{{ $error }}</li>
-                  @endforeach
-              </ul>
-          </div>
-      @endif
-      <legend><h3 class="text-muted">{{ $request->code }}</h3></legend>
+     
+      @include('errors.alert')
+
+      <legend><h3 class="text-muted">Requisition and Issue Slip {{ $request->code }}</h3></legend>
+
+      <div class="pull-right" style="padding: 10px;">
+        <div class="col-sm-offset-9 col-sm-3">
+          <h4>Legend:</h4>
+          <ul class="list-unstyled">
+            <li>Rows in <span class="text-warning">Yellow</span> have issued quantity <em>greater than</em> requested quantity</li>
+            <li>Rows in <span class="text-danger">Red</span> have no more items to release</li>
+          </ul>
+        </div>
+      </div>
+
       <table class="table table-hover table-condensed table-bordered" id="supplyTable">
         <thead>
           <tr>
@@ -49,9 +53,17 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($request->supplies as $supply)
-          @if($supply->pivot->quantity_issued > 0)
-          <tr>
+        @foreach($request->supplies as $supply)
+
+          @if($supply->stock_balance <= 0)
+
+          <tr class="danger">
+            <td colspan="7" class="text-center text-danger">Supply with stocknumber of {{ $supply->stocknumber }} is not available for release and has {{ $supply->stock_balance }} balance.</td>
+          </tr>
+
+          @elseif($supply->pivot->quantity_issued > 0)
+
+          <tr @if($supply->pivot->quantity_issued > $supply->stock_balance) class="warning" @endif>
             <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}"</td>
             <td>{{ $supply->details }}</td>
             <td>{{ $supply->stock_balance }}</td>
@@ -59,12 +71,11 @@
             <td><input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  /></td>
             <td><input type="text" name="daystoconsume[{{ $supply->stocknumber }}]" value="{{ App\StockCard::computeDaysToConsume($supply->stocknumber) }}" class="form-control" /></td>
           </tr>
-          @elseif($supply->stock_balance <= 0)
-          <tr>
-            <td colspan=5 class="text-center">Supply with stocknumber of {{ $supply->stocknumber }} is not available for release and has {{ $supply->stock_balance }} balance.</td>
-          </tr>
+
           @endif
-          @endforeach
+
+        @endforeach
+
         </tbody>
       </table>
       <div class="pull-right">

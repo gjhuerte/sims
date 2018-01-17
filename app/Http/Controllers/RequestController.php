@@ -176,6 +176,7 @@ class RequestController extends Controller
       $issued_by = Auth::user()->username;
       $office = Auth::user()->id;
       $id = $this->sanitizeString($id);
+      $purpose = $this->sanitizeString($request->get('purpose'));
 
       /**
        * [$array description]
@@ -184,13 +185,15 @@ class RequestController extends Controller
        * @var array
        */
       $array = [];
+      $requests = App\Request::find($id);
 
       foreach(array_flatten($stocknumbers) as $stocknumber)
       {
         $validator = Validator::make([
             'Stock Number' => $stocknumber,
-            'Quantity' => $quantity["$stocknumber"]
-        ],App\Request::$issueRules);
+            'Quantity' => $quantity["$stocknumber"],
+            'Purpose' => $purpose
+        ], $requests->updateRules());
 
         /**
          * [$supply description]
@@ -220,13 +223,12 @@ class RequestController extends Controller
         ];
       }
 
-      // $array = $array[0];
-      // return $array;
-      // return $id;
-      // return array_flatten($array);
-
       DB::beginTransaction();
-      App\Request::find($id)->supplies()->sync($array);
+
+      $requests->purpose = $purpose;
+      $requests->save();
+      $requests->supplies()->sync($array);
+
       DB::commit();
 
       \Alert::success('Request Updated')->flash();
@@ -307,14 +309,15 @@ class RequestController extends Controller
         ],App\StockCard::$issueRules);
 
         $supply = App\Supply::findByStockNumber($stocknumber);
-        if($validator->fails() || $_quantity > $supply->stock_balance)
+        $stock_balance = $supply->stock_balance;
+        if($validator->fails() || $_quantity > $stock_balance)
         {
 
           DB::rollback();
 
-          if($quantity > $balance)
+          if($quantity > $stock_balance)
           {
-            $validator = [ "You cannot release quantity of $stocknumber which is greater than the remaining balance ($supply->stock_balance)" ];
+            $validator = [ "The remaining balance ($supply->stock_balance) from $stocknumber is less than the quantity to be released ($_quantity)" ];
           }
 
           return back()
@@ -357,26 +360,12 @@ class RequestController extends Controller
 
         return view('request.approval')
                 ->with('request',$requests)
-                ->with('title',$request->code);
+                ->with('title',$request->code)
+                ->with('action', 'approval');
     }
 
     public function approve(Request $request, $id)
     {
-
-        if($request->ajax())
-        {
-            $id = $this->sanitizeString($id);
-            $status = $this->sanitizeString($request->get('status'));
-            $remarks = $this->sanitizeString($request->get('reason'));
-
-            $request = App\Request::find($id);
-            $request->status = $status;
-            $request->approved_at = Carbon\Carbon::now();
-            $request->remarks = $remarks;
-            $request->save();
-
-            return json_encode('success');
-        }
 
         $id = $this->sanitizeString($id);
         $quantity = $request->get('quantity');
@@ -387,6 +376,10 @@ class RequestController extends Controller
         $remarks = $this->sanitizeString( $request->get('remarks') );
         $issued_by = Auth::user()->id;
 
+        DB::beginTransaction();
+
+        $requests = App\Request::find($id);
+
         foreach($stocknumbers as $stocknumber)
         {
 
@@ -395,11 +388,11 @@ class RequestController extends Controller
           $validator = Validator::make([
               'Stock Number' => $stocknumber,
               'Quantity' => $quantity["$stocknumber"]
-          ],App\Request::$issueRules);
+          ],$requests->approveRules());
 
           if($validator->fails())
           {
-              return redirect("request/$id/edit")
+              return redirect("request/$id/approve")
                       ->with('total',count($stocknumbers))
                       ->with('stocknumber',$stocknumbers)
                       ->with('quantity',$quantity)
@@ -414,16 +407,13 @@ class RequestController extends Controller
           ];
         }
 
-        DB::beginTransaction();
+        $requests->remarks = $remarks;
+        $requests->issued_by = $issued_by;
+        $requests->status = 'approved';
+        $requests->approved_at = Carbon\Carbon::now();
+        $requests->save();
 
-        $request = App\Request::find($id);
-        $request->remarks = $remarks;
-        $request->issued_by = $issued_by;
-        $request->status = 'approved';
-        $request->approved_at = Carbon\Carbon::now();
-        $request->save();
-
-        $request->supplies()->sync($array);
+        $requests->supplies()->sync($array);
 
         DB::commit();
 
