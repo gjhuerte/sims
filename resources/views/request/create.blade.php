@@ -35,6 +35,16 @@
         </div>
         <div class="form-group">
           <div class="col-sm-12">
+          {{ Form::label('purpose','Purpose') }}
+          </div>
+          <div class="col-sm-10">
+          {{ Form::text('purpose','',[
+            'id' => 'purpose',
+            'class' => 'form-control',
+            'placeholder' => 'Enter Details here.... '
+          ]) }}
+          </div>
+          <div class="col-sm-12">
           {{ Form::label('stocknumber','Stock Number') }}
           </div>
           <div class="col-sm-10">

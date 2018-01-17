@@ -58,7 +58,7 @@
       <tbody>
         <tr>
           <td>
-            <hr class="col-sm-12" />
+            <p class="text-left">{{ $request->purpose }}<p>
             <hr class="col-sm-12" />
           </td>
         </tr>
