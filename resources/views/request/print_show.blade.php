@@ -6,9 +6,17 @@
         text-align: center;
       }
 
+      #content{
+        font-family: "Times New Roman";
+      }
+
+      @media print {
+          tr.page-break  { display: block; page-break-after: always; }
+      }   
+
   </style>
   <div id="content" class="col-sm-12">
-    <h3 class="text-center text-muted">REQUISITION AND ISSUE SLIP</h3>
+    <h4 class="text-center">REQUISITION AND ISSUE SLIP <small class="pull-right">Appendix 63</small></h4>
     <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
           <tr rowspan="2">
@@ -32,16 +40,30 @@
         </tr>
       </thead>
       <tbody>
-        @foreach($request->supplies as $supply)
-        <tr>
+        @foreach($request->supplies as $key=>$supply)
+        <tr style="font-size: 12px;" class="{{ ((($key+1) % $row_count) == 0) ? "page-break" : "" }}">
           <td>{{ $supply->stocknumber }}</td>
-          <td>{{ $supply->details }}</td>
+          <td>
+            <span style="font-size:@if(strlen($supply->details) > 50) 7px @elseif(strlen($supply->details) > 40) 9px @elseif(strlen($supply->details) > 20) 10px @else 11px @endif">
+              {{ $supply->details }}
+            </span>
+          </td>
           <td>{{ $supply->pivot->quantity_requested }}</td>
           <td>{{ ($supply->stock_balance > 0) ? 'Yes ' . '( ' . ($supply->stock_balance) . ' )' : 'No' }}</td>
           <td>{{ $supply->pivot->quantity_released }}</td>
           <td>{{ $supply->pivot->comments }}</td>
         </tr>
         @endforeach
+        @for($ctr = 0 ; $ctr < $end; $ctr++)
+        <tr>
+          <td style="padding: 15px;"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        @endfor
         <tr>
           <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
         </tr>

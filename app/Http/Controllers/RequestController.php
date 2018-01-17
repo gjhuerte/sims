@@ -536,10 +536,32 @@ class RequestController extends Controller
     {
       $id = $this->sanitizeString($id);
       $request = App\Request::find($id);
+      $row_count = 21;
+      $adjustment = 4;
+
+      if(isset($request->supplies)):
+        $data_count = count($request->supplies) % $row_count;
+        if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
+
+          if((count($request->supplies) > $row_count) && ($data_count < 7)):
+            $remaining_rows = $data_count + $row_count + $adjustment;
+          else:
+            $remaining_rows = 0;
+          endif;
+        else:
+          $remaining_rows = $row_count - $data_count;
+        endif;
+      endif;
+
+      // return count($request->supplies);
+      // return $data_count;
+      // return $remaining_rows;
 
       $data = [
         'request' => $request, 
-        'approvedby' => App\Office::where('code','=','OVPAA')->first()
+        'approvedby' => App\Office::where('code','=','OVPAA')->first(),
+        'row_count' => $row_count,
+        'end' => $remaining_rows
       ];
 
       $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
