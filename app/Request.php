@@ -76,7 +76,7 @@ class Request extends Model
 
     public function scopeMe($query)
     {
-      return $query->where('requestor','=',Auth::user()->username);
+      return $query->where('requestor_id','=',Auth::user()->id);
     }
 
     public function scopeFindByOffice($query,$value)

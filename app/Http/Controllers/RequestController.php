@@ -27,8 +27,10 @@ class RequestController extends Controller
 
           if(Auth::user()->access != 1)
           {
-            if(Auth::user()->position == 'head') $ret_val->findByOffice( Auth::user()->office );
-            else $ret_val->me();
+            if(Auth::user()->position == 'head') 
+              $ret_val->findByOffice( Auth::user()->office );
+            else 
+              $ret_val->me();
           }
 
           return json_encode([
