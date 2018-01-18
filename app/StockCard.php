@@ -64,11 +64,11 @@ class StockCard extends Model implements Auditable, UserResolver
 
 	public function setDaystoconsumeAttribute($value)
 	{
-		$daystoconsume = $this->attribute['daystoconsume'];
+		$daystoconsume = $this->attributes['daystoconsume'];
 
 		if($daystoconsume == '' || $daystoconsume == null):
 
-			if($this->attribute['received_quantity'] > 0):
+			if($this->attributes['received_quantity'] > 0):
 				$daystoconsume = 'Not Applicable';
 			else:
 				$daystoconsume = 90;
