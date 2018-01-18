@@ -71,7 +71,7 @@ class StockCard extends Model implements Auditable, UserResolver
 			if($this->attribute['received_quantity'] > 0):
 				$daystoconsume = 'Not Applicable';
 			else:
-				$daystoconsume = 30;
+				$daystoconsume = 90;
 			endif;
 
 		endif;
