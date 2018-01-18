@@ -87,7 +87,7 @@
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" id="cancel" class="btn btn-md btn-default" onclick="window.location.href = "{{ url('inventory/supply') }}"">Cancel</button>
+      <a type="button" id="cancel" class="btn btn-md btn-default" href="{{ url('inventory/supply') }}">Cancel</a>
     </div>
   </div>
 </div>
