@@ -58,7 +58,7 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 	public function updateRules(){
 		$username = $this->username;
 		return array(
-			'Username' => 'min:4|max:20|unique:Users,username,'.$username.',username',
+			'Username' => 'min:3|max:20|unique:Users,username,'.$username.',username',
 			'First name' => 'min:2|max:100|string',
 			'Middle name' => 'min:2|max:50|string',
 			'Last name' => 'min:2|max:50|string',
