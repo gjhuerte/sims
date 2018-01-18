@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration {
 			$table->string('contact')->nullable();
 			$table->integer('access');
 			$table->string('office')->nullable();
+			$table->string('department')->nullable();
 			$table->string('position')->nullable();
 			$table->boolean('status');
 			$table->timestamps();

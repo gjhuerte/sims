@@ -23,6 +23,7 @@ class CreateReceiptsTable extends Migration
                     ->onDelete('cascade');
             $table->string('number')->unique();
             $table->string('invoice')->nullable();
+            $table->string('invoice_date')->nullable();
             $table->datetime('date_delivered')->nullable();
             $table->string('received_by')->nullable();
             $table->integer('supplier_id')->unsigned()->nullable();

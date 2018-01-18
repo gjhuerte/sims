@@ -18,6 +18,7 @@ class CreateOfficesTable extends Migration {
 			$table->string('code',20)->unique();
 			$table->string('name');	
 			$table->string('description')->nullable();
+			$table->char('abbreviation', 6)->nullable();
 			$table->string('head')->nullable();
 			$table->string('status')
 				->nullable()
