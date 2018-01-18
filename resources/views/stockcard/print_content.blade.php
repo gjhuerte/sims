@@ -32,7 +32,7 @@
     @foreach($supply->stockcards as $stockcard)
     <tr>
       <td>{{ Carbon\Carbon::parse($stockcard->date)->toFormattedDateString() }}</td>
-      <td>{{ $stockcard->reference }}</td>
+      <td>{{ $stockcard->reference_information }}</td>
       <td>{{ $stockcard->received_quantity }}</td>
       <td>{{ $stockcard->issued_quantity }}</td>
       <td>

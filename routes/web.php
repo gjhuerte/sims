@@ -72,6 +72,8 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('get/receipt/all','ReceiptController@show');
 
+	Route::get('maintenance/supply/print','SupplyController@print');
+
 	Route::resource('maintenance/supply','SupplyController');
 
 	Route::resource('maintenance/office','OfficeController');

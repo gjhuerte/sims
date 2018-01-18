@@ -90,6 +90,7 @@ class SupplyController extends Controller {
 	 */
 	public function show(Request $request, $id)
 	{
+
 		if($request->ajax())
 		{
 
@@ -183,6 +184,20 @@ class SupplyController extends Controller {
 		\Alert::success('Supply Removed')->flash();
 
 		return redirect('maintenance/supply');
+	}
+
+	public function print()
+	{
+		
+		$supplies = App\Supply::all();
+
+		$data = [
+			'supplies' => $supplies
+		];
+
+		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+		$view = "maintenance.supply.print_index";
+		return $this->printPreview($view,$data,$filename);
 	}
 
 

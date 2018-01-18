@@ -15,6 +15,10 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
+		<a target="_blank" id="create" href="{{ url('maintenance/supply/print') }}" class="btn btn-default btn-sm ladda-button" data-style="zoom-in">
+			<span class="ladda-label"><i class="fa fa-print"></i> Print</span>
+		</a>
+		<hr />
 		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyTable">
 			<thead>
 				<th class="col-sm-1">Stock No.</th>

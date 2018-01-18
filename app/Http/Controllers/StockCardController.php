@@ -23,7 +23,7 @@ class StockCardController extends Controller {
 		if($request->ajax())
 		{
 			$stockcard = App\StockCard::findBySupplyId($id)
-											->orderBy('date','asc')
+											->orderBy('date','desc')
 											->get();
 			return datatables($stockcard)->toJson();
 		}
@@ -124,9 +124,12 @@ class StockCardController extends Controller {
 	 */
 	public function show($id)
 	{
+		$id = $this->sanitizeString($id);
 		if(Request::ajax())
 		{
-			$transaction = App\StockCard::with('supply')->where('stocknumber','=',$this->sanitizeString($id))->get();
+			$transaction = App\StockCard::with('supply')
+							->findByStockNumber($id)
+							->get();
 			return json_encode([ 'data' => $transaction ]);
 		}
 	}

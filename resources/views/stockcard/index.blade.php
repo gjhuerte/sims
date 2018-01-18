@@ -73,6 +73,9 @@
 			"columnDefs":[
 				{ "type": "date", "targets": 0 },
 			],
+			"order": [
+				[0, 'desc']
+			],
 			"processing": true,
 			ajax: '{{ url("inventory/supply/$supply->id/stockcard/") }}',
 			columns: [
