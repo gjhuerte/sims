@@ -56,13 +56,7 @@
 
           @endif
 
-          @if(false)
-
-          <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i> <span> Purchase Order</span></a></li>
-
-          <li><a href="{{ url('receipt') }}"><i class="fa fa-files-o" aria-hidden="true"></i> <span> Receipt </span></a></li>
-
-          @endif
+          @if(Auth::user()->access == 1 || Auth::user()->access == 2 )
 
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
 
@@ -137,6 +131,8 @@
                 </li>
               </ul>
           </li>
+
+          @endif
 
           <li class="header">Information System</li>
 

@@ -21,9 +21,8 @@ class AuditTrailController extends Controller
     {
         if(Request::ajax())
         {
-            return json_encode([
-                'data' => App\Audit::all()
-            ]);
+            $audits = App\Audit::all();
+            return datatables($audits)->toJson();
         }
 
         return view('audittrail.index')

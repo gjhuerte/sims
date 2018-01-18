@@ -55,6 +55,8 @@
 	$(document).ready(function() {
 
 	    var table = $('#auditTrailTable').DataTable({
+	    	serverSide: true,
+	    	processing: true,
 			select: {
 				style: 'single'
 			},
@@ -64,16 +66,11 @@
 			"processing": true,
 			ajax: "{{ url('audittrail') }}",
 			columns: [
-				{ data: function(callback){
-					return moment(callback.created_at).format('LLLL')
-				}},
-				{ data: "table_affected" },
-				{ data: "action" },
-				{ data: "user" },
-				{ data: function(callback){
-
-					return `<div class="more">` + callback.details + `</div>`
-				} }
+				{ data: "parsed_date"},
+				{ data: "auditable_type" },
+				{ data: "event" },
+				{ data: "user_fullname" },
+				{ data: "new_values" }
 			],
 	    });
 	} );
