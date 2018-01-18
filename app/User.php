@@ -34,7 +34,7 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 	protected $hidden = ['password','remember_token'];
 	//Validation rules!
 	public static $rules = array(
-		'Username' => 'required_with:password|min:4|max:20|unique:Users,username',
+		'Username' => 'required_with:password|min:3|max:20|unique:Users,username',
 		'Password' => 'required|min:8|max:50',
 		'Firstname' => 'required|between:2,100|string',
 		'Middlename' => 'min:2|max:50|string',
