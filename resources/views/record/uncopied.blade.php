@@ -78,7 +78,7 @@
                 { data: "received_quantity" },
                 { data: "issued_quantity" },
                 { data: function(callback){
-                  return `<button type="button" data-id="`+callback.id+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Copy</button>`
+                  return `<button type="button" data-id="`+callback.id+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Commit</button>`
                 } }
         ],
     });
