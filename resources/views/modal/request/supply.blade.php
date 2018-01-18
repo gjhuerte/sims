@@ -13,7 +13,9 @@
       				<th class="col-sm-1">Stock No.</th>
       				<th class="col-sm-1">Details</th>
               <th class="col-sm-1">Unit</th>
+              @if(isset($action) && $action != 'request')
               <th class="col-sm-1">Balance</th>
+              @endif
       				<th class="col-sm-1 no-sort"></th>
       			</thead>
       		</table>
@@ -36,10 +38,12 @@
             { data: "stocknumber" },
             { data: "details" },
             { data: "unit.name" },
+            @if(isset($action) && $action != 'request')
             @if(isset($type) && $type == 'ledger')
             { data: "ledger_balance" },
             @else
             { data: "stock_balance" },
+            @endif
             @endif
             { data: function(callback){
               return `
