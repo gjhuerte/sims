@@ -13,7 +13,7 @@ class CreateDepartmentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('departments', function(Blueprint $table){
+        Schema::create('departments', function(Blueprint $table){
             $table->increments('id');
             $table->string('name')->unique();
             $table->integer('office_id')->unsigned();
