@@ -1,3 +1,116 @@
+
+@if($title == 'Accept')
+
+<!-- supplier form -->
+<div class="col-md-12">
+	<div class="col-md-12">
+		<div class="form-group">
+			{{ Form::label('Supplier') }}
+			{{ Form::select('supplier', (isset($supplier) && count($supplier) > 0) ? $supplier : [], old('supplier'),[
+				'id' => 'supplier',
+				'class' => 'form-control'
+			]) }}
+		</div>
+	</div>
+</div> <!-- end of supplier form -->
+
+<!-- purchase order form -->
+<div class="col-sm-6">
+	<div class="panel panel-primary" style="border-radius: 0px;">
+		<div class="panel-heading" style="border-radius: 0px;"><h5>Purchase Order / Agency Purchase Request </h5></div>
+		<div class="panel-body">
+
+			<!-- purchase order number -->
+			<div class="col-md-12">
+				<div class="form-group">
+					{{ Form::label('purchaseorder','P.O. No.:',[
+							'id' => 'purchaseorder-label'
+					]) }}
+					{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
+						'id' => 'purchaseorder',
+						'class' => 'form-control'
+					]) }}
+				</div>
+			</div> <!-- end of purchase order number -->
+			<div id="purchaseorder-details"></div>
+
+			<!-- purchase order date -->
+			<div class="col-md-12">
+				<div class="form-group">
+					{{ Form::label('Date') }}
+					{{ Form::text('date', old('date'),[
+						'id' => 'date',
+						'class' => 'form-control',
+						'readonly',
+						'style' => 'background-color: white;',
+						'onchange' => 'setDate("#date");'
+					]) }}
+				</div>
+			</div> <!-- end of purchase order date -->
+
+		</div>
+	</div>
+</div> <!-- end of purchase order form -->
+
+<!-- receipt form -->
+<div class="col-sm-6">
+	<div class="panel panel-success" style="border-radius: 0px;">
+		<div class="panel-heading" style="border-radius: 0px;"><h5> Delivery Receipt / Invoice </h5></div>
+		<div class="panel-body">
+			
+			<!-- top -->
+			<div class="form-group">
+				<div class="col-sm-6">
+					{{ Form::label('D.R. No.: ') }}
+					{{ Form::text('receipt', old('receipt'),[
+						'id' => 'receipt',
+						'class' => 'form-control'
+					]) }}
+					<div id="receipt-details"></div>
+				</div>
+
+				<div class="col-sm-6">
+					{{ Form::label('Invoice No.: ') }}
+					{{ Form::text('invoice', old('invoice'),[
+						'id' => 'invoice',
+						'class' => 'form-control'
+					]) }}
+				</div>
+			</div> <!-- top -->
+
+			<!-- bottom -->
+			<div class="form-group">
+				<!-- receipt date -->
+				<div class="col-sm-6">
+					{{ Form::label('D.R. Date') }}
+					{{ Form::text('receipt-date', old('receipt-date'),[
+						'id' => 'receipt-date',
+						'class' => 'form-control',
+						'readonly',
+						'style' => 'background-color: white;',
+						'onchange' => 'setDate("#receipt-date");'
+					]) }}
+				</div> <!-- end of receipt date -->
+
+				<!-- invoice date -->
+				<div class="col-sm-6">
+					{{ Form::label('Invoice Date') }}
+					{{ Form::text('invoice-date', old('invoice-date'),[
+						'id' => 'invoice-date',
+						'class' => 'form-control',
+						'readonly',
+						'style' => 'background-color: white;',
+						'onchange' => 'setDate("#invoice-date");'
+					]) }}
+				</div> <!-- end of invoice date -->
+			</div> <!-- bottom -->
+
+		</div>
+	</div>
+</div> <!-- end of receipt form -->
+
+@endif
+
 <div class="col-sm-4">
 	@if($title == 'Release')
 	<div class="col-md-12">
@@ -40,65 +153,6 @@
 			<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({ type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
 		</div>
 		@endif
-	</div>
-	@endif
-
-	@endif
-	@if($title == 'Accept')
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Date') }}
-			{{ Form::text('date', old('date'),[
-				'id' => 'date',
-				'class' => 'form-control',
-				'readonly',
-				'style' => 'background-color: white;',
-				'onchange' => 'setDate("#date");'
-			]) }}
-		</div>
-	</div>
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Supplier') }}
-			{{ Form::select('supplier', (isset($supplier) && count($supplier) > 0) ? $supplier : [], old('supplier'),[
-				'id' => 'supplier',
-				'class' => 'form-control'
-			]) }}
-		</div>
-	</div>
-	<div class="col-md-12" style="margin-top:10px;">
-		<div class="form-group">
-			{{ Form::label('purchaseorder','Purchase Order',[
-					'id' => 'purchaseorder-label'
-			]) }}
-			{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
-				'id' => 'purchaseorder',
-				'class' => 'form-control'
-			]) }}
-		</div>
-	</div>
-	<div id="purchaseorder-details"></div>
-
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Delivery Receipt') }}
-			{{ Form::text('receipt', old('receipt'),[
-				'id' => 'receipt',
-				'class' => 'form-control'
-			]) }}
-		</div>
-	</div>
-	<div id="receipt-details"></div>
-
-	@if($type == 'ledger')
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Invoice Number') }}
-			{{ Form::text('invoice',Input::old('invoice'),[
-				'id' => 'invoice',
-				'class' => 'form-control'
-			]) }}
-		</div>
 	</div>
 	@endif
 
@@ -408,12 +462,42 @@ $('document').ready(function(){
 		  minAge: 15,
 	});
 
+	$( "#invoice-date" ).datepicker({
+		  changeMonth: true,
+		  changeYear: true,
+		  maxAge: 59,
+		  minAge: 15,
+	});
+
+	$( "#receipt-date" ).datepicker({
+		  changeMonth: true,
+		  changeYear: true,
+		  maxAge: 59,
+		  minAge: 15,
+	});
+
 	@if(Input::old('date'))
 		$('#date').val('{{ Input::old('date') }}');
 		setDate("#date");
 	@else
 		$('#date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
 		setDate("#date");
+	@endif
+
+	@if(Input::old('invoice-date'))
+		$('#invoice-date').val('{{ Input::old('invoice-date') }}');
+		setDate("#invoice-date");
+	@else
+		$('#invoice-date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
+		setDate("#invoice-date");
+	@endif
+
+	@if(Input::old('receipt-date'))
+		$('#receipt-date').val('{{ Input::old('receipt-date') }}');
+		setDate("#receipt-date");
+	@else
+		$('#receipt-date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
+		setDate("#receipt-date");
 	@endif
 
 	$('#add').on('click',function(){
@@ -534,11 +618,11 @@ $('document').ready(function(){
     {
       	if( supplier == "{{ config('app.main_agency') }}")
       	{
-      		$('#purchaseorder-label').text('Agency Purchase Request')
+      		$('#purchaseorder-label').text('A.P.R. No.:')
       	}
       	else
       	{
-      		$('#purchaseorder-label').text('Purchase Order')
+      		$('#purchaseorder-label').text('P.O. No.:')
       	}
     }
 
