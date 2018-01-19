@@ -173,7 +173,7 @@
             lastname: "required",
             username: {
               required: true,
-              minlength: 4
+              minlength: 3
             },
             password: {
               required: true,
@@ -199,7 +199,7 @@
             lastname: "Please enter your lastname",
             username: {
               required: "Please enter a username",
-              minlength: "Your username must consist of at least 4 characters"
+              minlength: "Your username must consist of at least 3 characters"
             },
             password: {
               required: "Please provide a password",
