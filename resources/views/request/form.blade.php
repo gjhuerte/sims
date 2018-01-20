@@ -147,7 +147,6 @@
           try{
             data = response.data
             details = response.data.details
-            console.log(data)
             unit = data.unit.name
             $('#supply-item').val(details.toString())
             $('#stocknumber-details').html(`
@@ -155,7 +154,9 @@
                 <ul class="list-unstyled">
                   <li><strong>Item:</strong> ` + details + ` </li>
                   <li><strong>Unit:</strong> ` + unit + ` </li>
+                  @if(Auth::user()->access == 1)
                   <li><strong>Remaining Balance:</strong> ` + response.data.stock_balance + ` </li>
+                  @endif
                 </ul>
               </div>
             `)

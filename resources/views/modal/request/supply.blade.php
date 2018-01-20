@@ -38,7 +38,7 @@
             { data: "stocknumber" },
             { data: "details" },
             { data: "unit.name" },
-            @if(isset($action) && $action != 'request')
+            @if(Auth::user()->access == 1 || Auth::user()->access == 2)
             @if(isset($type) && $type == 'ledger')
             { data: "ledger_balance" },
             @else
