@@ -169,6 +169,7 @@ class LedgerCard extends Model implements Auditable, UserResolver
 	*/
 	public function receipt()
 	{
+
 		$firstname = Auth::user()->firstname;
 		$middlename =  Auth::user()->middlename;
 		$lastname = Auth::user()->lastname;
@@ -240,18 +241,18 @@ class LedgerCard extends Model implements Auditable, UserResolver
 
 		unset($supply_info);
 
-		$receipt = Receipt::findByNumber($this->receipt);
+		$receipt = Receipt::firstOrCreate([
+			'number' => $this->receipt
+		],[
+			'purchaseorder_id' => (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null,
+			'date_delivered' => Carbon\Carbon::parse($this->date),
+			'received_by' => $fullname,
+			'supplier_id' => isset($supplier->id) ? $supplier->id : null 
 
-		if(count($receipt) <= 0 )
-		{
-			$receipt = new Receipt;
-			$receipt->purchaseorder_id = (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null;
-			$receipt->date_delivered = Carbon\Carbon::parse($this->date);
-			$receipt->received_by = $fullname;
-			$receipt->supplier_id = isset($supplier->id) ? $supplier->id : null;
-		}
+		]);
 
 		$receipt->invoice = isset($this->invoice) ? $this->invoice : null;
+
 		$receipt->save();
 
 		$supply_info = $receipt->supplies()->find($supply->id);

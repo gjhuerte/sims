@@ -13,6 +13,11 @@
 @endsection
 
 @section('content')
+<style>
+	.wordwrap{
+		wordwrap: break-word;
+	}
+</style>
 <!-- Default box -->
   <div class="box" style="padding:10px;">
     <div class="box-body">
@@ -38,17 +43,17 @@
 		                <th class="text-center" colspan="2"></th>
 		            </tr>
 					<tr>
-						<th>Date</th>
-						<th>Reference</th>
-						<th>Qty</th>
-						<th>Unit Cost</th>
-						<th>Total Cost</th>
-						<th>Qty</th>
-						<th>Unit Cost</th>
-						<th>Total Cost</th>
-						<th>Qty</th>
-						<th>Unit Cost</th>
-						<th>Total Cost</th>
+						<th class="col-sm-1">Date</th>
+						<th class="wordwrap">Reference</th>
+						<th class="col-sm-1">Qty</th>
+						<th class="col-sm-1">Unit Cost</th>
+						<th class="col-sm-1">Total Cost</th>
+						<th class="col-sm-1">Qty</th>
+						<th class="col-sm-1">Unit Cost</th>
+						<th class="col-sm-1">Total Cost</th>
+						<th class="col-sm-1">Qty</th>
+						<th class="col-sm-1">Unit Cost</th>
+						<th class="col-sm-1">Total Cost</th>
 						<th class="no-sort"></th>
 					</tr>
 				</thead>
@@ -86,48 +91,18 @@
 						{ data: function(callback){
 							return moment(callback.date).format('MMMM Y')
 						} },
-						{ data: function(callback){
-							return ""
-						} },
+						{ data: "reference_list" },
+
 						{ data: "received_quantity"},
-						{ data: function(callback){
-							try{
-								return parseFloat(callback.received_unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-							} catch(e) { quantity = 0; return null }
-						} },
-						{ data: function(callback){
-							try {
-								return (callback.received_quantity * callback.received_unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-							} catch (e) { return null }
-						} },
+						{ data: "parsed_received_unitcost" },
+						{ data: "parsed_received_total_cost"},
+
 						{ data: "issued_quantity" },
-						{ data: function(callback){
-							try{
-								return parseFloat(callback.issued_unitcost).toFixed(2)
-							} catch(e) { quantity = 0; return null }
-						} },
-						{ data: function(callback){
-							try {
-								return (callback.issued_quantity * callback.issued_unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-							} catch (e) { return null }
-						} },
-						{ data: function(callback){
-							try{
-								quantity = callback.monthlybalancequantity.toFixed(2)
-								return quantity;
-							} catch(e) { quantity = 0; return null }
-						} },
-						{ data: function(callback){
-							try{
-								unitcost = (parseFloat(callback.issued_unitcost) + parseFloat(callback.received_unitcost)) / 2
-								return unitcost.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-							} catch(e) { unitcost = 0; return null }
-						} },
-						{ data: function(callback){
-							try{
-								return (quantity * unitcost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-							} catch (e) { return null }
-						} },
+						{ data: "parsed_issued_unitcost"},
+						{ data: "parsed_issued_total_cost" },
+						{ data: "parsed_monthlybalancequantity" },
+						{ data: "parsed_monthlyunitcost" },
+						{ data: "parsed_monthlytotalcost" },
 						{ data: function(callback){
 							url = '{{ url("inventory/supply/$supply->id/ledgercard") }}' + '/' + callback.date
 							return "<a type='button' href='" + url + "' class='btn btn-default btn-sm'>View</a>"
