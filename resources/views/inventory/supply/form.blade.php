@@ -1,282 +1,321 @@
 
 @if($title == 'Accept')
 
-<!-- supplier form -->
-<div class="col-md-12">
+<!-- suppliers -->
+<div class="row">
+	<!-- supplier form -->
 	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Supplier') }}
-			{{ Form::select('supplier', (isset($supplier) && count($supplier) > 0) ? $supplier : [], old('supplier'),[
-				'id' => 'supplier',
-				'class' => 'form-control'
-			]) }}
-		</div>
-	</div>
-</div> <!-- end of supplier form -->
-
-<!-- purchase order form -->
-<div class="col-sm-6">
-	<div class="panel panel-primary" style="border-radius: 0px;">
-		<div class="panel-heading" style="border-radius: 0px;"><h5>Purchase Order / Agency Purchase Request </h5></div>
-		<div class="panel-body">
-
-			<!-- purchase order number -->
-			<div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('purchaseorder','P.O. No.:',[
-							'id' => 'purchaseorder-label'
-					]) }}
-					{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
-						'id' => 'purchaseorder',
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div> <!-- end of purchase order number -->
-			<div id="purchaseorder-details"></div>
-
-			<!-- purchase order date -->
-			<div class="col-md-12">
-				<div class="form-group">
-					{{ Form::label('Date') }}
-					{{ Form::text('date', old('date'),[
-						'id' => 'date',
-						'class' => 'form-control',
-						'readonly',
-						'style' => 'background-color: white;',
-						'onchange' => 'setDate("#date");'
-					]) }}
-				</div>
-			</div> <!-- end of purchase order date -->
-
-		</div>
-	</div>
-</div> <!-- end of purchase order form -->
-
-<!-- receipt form -->
-<div class="col-sm-6">
-	<div class="panel panel-success" style="border-radius: 0px;">
-		<div class="panel-heading" style="border-radius: 0px;"><h5> Delivery Receipt / Invoice </h5></div>
-		<div class="panel-body">
-			
-			<!-- top -->
+		<div class="col-md-12">
 			<div class="form-group">
-				<div class="col-sm-6">
-					{{ Form::label('D.R. No.: ') }}
-					{{ Form::text('receipt', old('receipt'),[
-						'id' => 'receipt',
-						'class' => 'form-control'
-					]) }}
-					<div id="receipt-details"></div>
-				</div>
-
-				<div class="col-sm-6">
-					{{ Form::label('Invoice No.: ') }}
-					{{ Form::text('invoice', old('invoice'),[
-						'id' => 'invoice',
-						'class' => 'form-control'
-					]) }}
-				</div>
-			</div> <!-- top -->
-
-			<!-- bottom -->
-			<div class="form-group">
-				<!-- receipt date -->
-				<div class="col-sm-6">
-					{{ Form::label('D.R. Date') }}
-					{{ Form::text('receipt-date', old('receipt-date'),[
-						'id' => 'receipt-date',
-						'class' => 'form-control',
-						'readonly',
-						'style' => 'background-color: white;',
-						'onchange' => 'setDate("#receipt-date");'
-					]) }}
-				</div> <!-- end of receipt date -->
-
-				<!-- invoice date -->
-				<div class="col-sm-6">
-					{{ Form::label('Invoice Date') }}
-					{{ Form::text('invoice-date', old('invoice-date'),[
-						'id' => 'invoice-date',
-						'class' => 'form-control',
-						'readonly',
-						'style' => 'background-color: white;',
-						'onchange' => 'setDate("#invoice-date");'
-					]) }}
-				</div> <!-- end of invoice date -->
-			</div> <!-- bottom -->
-
+				{{ Form::label('Supplier') }}
+				{{ Form::select('supplier', (isset($supplier) && count($supplier) > 0) ? $supplier : [], old('supplier'),[
+					'id' => 'supplier',
+					'class' => 'form-control'
+				]) }}
+			</div>
 		</div>
-	</div>
-</div> <!-- end of receipt form -->
+	</div> <!-- end of supplier form -->
+</div> <!-- suppliers -->
+
+<!-- references and receipts -->
+<div class="row">
+
+	<!-- purchase order form -->
+	<div class="col-sm-6">
+		<div class="panel panel-primary" style="border-radius: 0px;">
+			<div class="panel-heading" style="border-radius: 0px;"><h5>Purchase Order / Agency Purchase Request </h5></div>
+			<div class="panel-body">
+
+				<!-- purchase order number -->
+				<div class="col-md-12">
+					<div class="form-group">
+						{{ Form::label('purchaseorder','P.O. No.:',[
+								'id' => 'purchaseorder-label'
+						]) }}
+						{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
+							'id' => 'purchaseorder',
+							'class' => 'form-control',
+							'placeholder' => 'P.O. Number'
+						]) }}
+					</div>
+					<div id="purchaseorder-details"></div>
+					<div class="clearfix"></div>
+				</div> <!-- end of purchase order number -->
+
+				<!-- purchase order date -->
+				<div class="col-md-12">
+					<div class="form-group">
+						{{ Form::label('Date') }}
+						{{ Form::text('date', old('date'),[
+							'id' => 'date',
+							'class' => 'form-control',
+							'readonly',
+							'style' => 'background-color: white;',
+							'placeholder' => 'P.O. Date'
+						]) }}
+					</div>
+				</div> <!-- end of purchase order date -->
+
+			</div>
+		</div>
+	</div> <!-- end of purchase order form -->
+
+	<!-- receipt form -->
+	<div class="col-sm-6">
+		<div class="panel panel-success" style="border-radius: 0px;">
+			<div class="panel-heading" style="border-radius: 0px;"><h5> Delivery Receipt / Invoice </h5></div>
+			<div class="panel-body">
+				
+				<!-- top -->
+				<div class="form-group">
+					<div class="col-sm-6">
+						{{ Form::label('D.R. No.: ') }}
+						{{ Form::text('receipt', old('receipt'),[
+							'id' => 'receipt',
+							'class' => 'form-control',
+							'placeholder' => 'D.R. Number'
+						]) }}
+						<div id="receipt-details"></div>
+					</div>
+
+					<div class="col-sm-6">
+						{{ Form::label('Invoice No.: ') }}
+						{{ Form::text('invoice', old('invoice'),[
+							'id' => 'invoice',
+							'class' => 'form-control',
+							'placeholder' => 'Invoice Number'
+						]) }}
+					</div>
+				</div> <!-- top -->
+
+				<!-- bottom -->
+				<div class="form-group">
+					<!-- receipt date -->
+					<div class="col-sm-6">
+						{{ Form::label('D.R. Date') }}
+						{{ Form::text('receipt-date', old('receipt-date'),[
+							'id' => 'receipt-date',
+							'class' => 'form-control',
+							'readonly',
+							'style' => 'background-color: white;',
+							'placeholder' => 'D.R.  Date'
+						]) }}
+					</div> <!-- end of receipt date -->
+
+					<!-- invoice date -->
+					<div class="col-sm-6">
+						{{ Form::label('Invoice Date') }}
+						{{ Form::text('invoice-date', old('invoice-date'),[
+							'id' => 'invoice-date',
+							'class' => 'form-control',
+							'readonly',
+							'style' => 'background-color: white;',
+							'placeholder' => 'Invoice Date'
+						]) }}
+					</div> <!-- end of invoice date -->
+				</div> <!-- bottom -->
+
+			</div>
+		</div>
+	</div> <!-- end of receipt form -->
+
+</div> <!-- references and receipts -->
 
 @endif
 
-<div class="col-sm-4">
-	@if($title == 'Release')
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Date') }}
-			{{ Form::text('date', old('date'),[
-				'id' => 'date',
-				'class' => 'form-control',
-				'readonly',
-				'style' => 'background-color: white;',
-				'onchange' => 'setDate("#date");'
-			]) }}
-		</div>
-	</div>
-	<div class="col-md-12">
-		<div class="form-group">
-			{{ Form::label('Office') }}
-			{{ Form::text('office',Input::old('office'),[
-				'id' => 'office',
-				'class' => 'form-control'
-			]) }}
-		</div>
-	</div>
-	<div id="office-details"></div>
+<!-- supplies list -->
+<div class="row">
+	<div class="col-sm-4">
+		{{-- released form --}}
+		@if($title == 'Release')
 
-	@if($title == 'Release')
-	<div class="form-group">
+		<!-- date released -->
 		<div class="col-md-12">
-			{{ Form::label('Requisition Issuance Slip') }}
-		</div>
-		<div class="@if($type == 'ledger' && $title == 'Release') col-md-12 @else col-md-8 @endif">
-			{{ Form::text('reference',Input::old('reference'),[
-				'id' => 'reference',
-				'class' => 'form-control'
-			]) }}
-		</div>
+			<div class="form-group">
+				{{ Form::label('Date') }}
+				{{ Form::text('date', old('date'),[
+					'id' => 'date',
+					'class' => 'form-control',
+					'readonly',
+					'style' => 'background-color: white;',
+				]) }}
+			</div>
+		</div> <!-- date released-->
 
-		@if($type == 'stock')
-		<div class="col-md-3">
-			<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({ type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
+		<!-- office -->
+		<div class="col-md-12">
+			<div class="form-group">
+				{{ Form::label('Office') }}
+				{{ Form::text('office',Input::old('office'),[
+					'id' => 'office',
+					'class' => 'form-control'
+				]) }}
+			</div>
+		</div> <!-- office -->
+
+		<!-- office details -->
+		<div id="office-details"></div> 
+		<!-- office details -->
+
+		{{-- inner released --}}
+		@if($title == 'Release')
+
+		<!-- ris form -->
+		<div class="form-group">
+			<div class="col-md-12">
+				{{ Form::label('Requisition Issuance Slip') }}
+			</div>
+			<div class="@if($type == 'ledger' && $title == 'Release') col-md-12 @else col-md-8 @endif">
+				{{ Form::text('reference',Input::old('reference'),[
+					'id' => 'reference',
+					'class' => 'form-control'
+				]) }}
+			</div>
+
+			@if($type == 'stock')
+			<div class="col-md-3">
+				<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({ type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
+			</div>
+			@endif
+		</div> <!-- ris form -->
+
+		@endif
+		{{-- inner released --}}
+
+		@endif 
+		{{-- end of released form --}}
+
+		@if($title == 'Accept')
+
+		@if($type == 'ledger')
+		<div class="col-md-12">
+			<div class="form-group">
+				{{ Form::label('Fund Clusters') }}
+				{{ Form::text('fundcluster',Input::old('fundcluster'),[
+					'id' => 'fundcluster',
+					'class' => 'form-control',
+					'placeholder' => 'Input the list of Fund Code here and separate it by comma'
+				]) }}
+				<p class="text-muted">Separate each cluster by comma</p>
+			</div>
 		</div>
 		@endif
-	</div>
-	@endif
 
-	@endif
+		@endif
 
-	@if($title == 'Accept')
-
-	@if($type == 'ledger')
-	<div class="col-md-12">
 		<div class="form-group">
-			{{ Form::label('Fund Clusters') }}
-			{{ Form::text('fundcluster',Input::old('fundcluster'),[
-				'id' => 'fundcluster',
+			<div class="col-md-12">
+			{{ Form::label('stocknumber','Stock Number') }}
+			</div>
+			<div class="col-md-9">
+			<input type="text" value="" name="stocknumber" id="stocknumber" class="form-control" />
+			</div>
+			<div class="col-md-1">
+				<button type="button" data-toggle="modal" data-target="#addStockNumberModal" class="btn btn-sm btn-primary">Select</button>
+			</div>
+		</div>
+
+		<!-- supply details -->
+		<input type="hidden" id="supply-item" />
+		<div id="stocknumber-details"></div>
+		<!-- supply details -->
+
+		<!-- quantity -->
+		<div class="col-md-12">
+			<div class="form-group">
+			{{ Form::label('Quantity') }}
+			{{ Form::text('quantity','',[
+				'id' => 'quantity',
 				'class' => 'form-control'
 			]) }}
-			<p class="text-muted">Separate each cluster by comma</p>
-		</div>
-	</div>
-	@endif
+			</div>
+		</div> <!-- quantity -->
 
-	@endif
-
-	<div class="form-group">
-		<div class="col-md-12">
-		{{ Form::label('stocknumber','Stock Number') }}
-		</div>
-		<div class="col-md-9">
-		<input type="text" value="" name="stocknumber" id="stocknumber" class="form-control" />
-		</div>
-		<div class="col-md-1">
-			<button type="button" data-toggle="modal" data-target="#addStockNumberModal" class="btn btn-sm btn-primary">Select</button>
-		</div>
-	</div>
-	<input type="hidden" id="supply-item" />
-	<div id="stocknumber-details">
-	</div>
-	<div class="col-md-12">
-		<div class="form-group">
-		{{ Form::label('Quantity') }}
-		{{ Form::text('quantity','',[
-			'id' => 'quantity',
-			'class' => 'form-control'
-		]) }}
-		</div>
-	</div>
-
-	@if($type == 'ledger')
-
-	@if($title == 'Release')
-	<div class="col-md-12">
-		<div class="form-group">
-		{{ Form::label('Computation Type:') }}
-		<input type="radio" id="fifo" name="computation_type" value="fifo" /> FIFO (First In First Out)
-		<input type="radio" id="averaging" name="computation_type" value="averaging" checked/> Averaging
-		</div>
-	</div>
-	@endif
-
-	<div class="form-group">
-		<div class="col-md-12">
-		{{ Form::label('Unit Price') }}
-		</div>
-		<div class="@if($type == 'ledger' && $title == 'Release') col-md-9 @else col-md-12 @endif">
-		{{ Form::text('unitcost','',[
-			'id' => 'unitcost',
-			'class' => 'form-control'
-		]) }}
-		</div>
+		@if($type == 'ledger')
 
 		@if($title == 'Release')
-		<div class="col-md-1">
-			<button type="button" id="compute" class="btn btn-sm btn-warning">Compute</button>
-		</div>
 		<div class="col-md-12">
-			<p style="font-size:12px;">
-				Click the button beside the field to generate price. 
-				<br /><span class="text-danger">Note:</span> The Stock Number and Quantity fields must have value before generating Unit Cost</p>
+			<div class="form-group">
+			{{ Form::label('Computation Type:') }}
+			<input type="radio" id="fifo" name="computation_type" value="fifo" /> FIFO (First In First Out)
+			<input type="radio" id="averaging" name="computation_type" value="averaging" checked/> Averaging
+			</div>
 		</div>
 		@endif
 
-	</div>
-
-	@endif
-
-	@if($title == 'Release')
-	<div class="col-md-12">
 		<div class="form-group">
-			{{ Form::label('Days to Consume') }}
-			{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
-				'id' => 'daystoconsume',
-				'class' => 'form-control',
+			<div class="col-md-12">
+			{{ Form::label('Unit Price') }}
+			</div>
+			<div class="@if($type == 'ledger' && $title == 'Release') col-md-9 @else col-md-12 @endif">
+			{{ Form::text('unitcost','',[
+				'id' => 'unitcost',
+				'class' => 'form-control'
 			]) }}
+			</div>
+
+			@if($title == 'Release')
+			<div class="col-md-1">
+				<button type="button" id="compute" class="btn btn-sm btn-warning">Compute</button>
+			</div>
+			<div class="col-md-12">
+				<p style="font-size:12px;">
+					Click the button beside the field to generate price. 
+					<br /><span class="text-danger">Note:</span> The Stock Number and Quantity fields must have value before generating Unit Cost</p>
+			</div>
+			@endif
+
+		</div>
+
+		@endif
+
+		@if($title == 'Release')
+		<div class="col-md-12">
+			<div class="form-group">
+				{{ Form::label('Days to Consume') }}
+				{{ Form::text('daystoconsume',Input::old('daystoconsume'),[
+					'id' => 'daystoconsume',
+					'class' => 'form-control',
+				]) }}
+			</div>
+		</div>
+		@endif
+
+		<div class="btn-group" style="margin-bottom: 20px;">
+			<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
 		</div>
 	</div>
-	@endif
+	<div class="col-sm-8">
+		<legend class="text-muted"><h3>Supplies List</h3></legend>
+		<table class="table table-hover table-condensed table-bordered" id="supplyTable">
+			<thead>
+				<tr>
+					<th>Stock Number</th>
+					<th>Information</th>
+					<th>Quantity</th>
 
-	<div class="btn-group" style="margin-bottom: 20px;">
-		<button type="button" id="add" class="btn btn-md btn-success"><span class="glyphicon glyphicon-plus"></span> Add</button>
+					@if($type == 'ledger')
+					<th>Unit Cost</th>
+					@endif
+
+					@if($title == 'Release')
+					<th>Days To Consume</th>
+					@endif
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="text-center text-muted" colspan="@if($type == 'ledger') 5 @if($title == 'Release') 6 @else 5 @endif  @else 4 @endif">*** Nothing Follows ***</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
-</div>
-<div class="col-sm-8">
-	<legend class="text-muted"><h3>Supplies List</h3></legend>
-	<table class="table table-hover table-condensed table-bordered" id="supplyTable">
-		<thead>
-			<tr>
-				<th>Stock Number</th>
-				<th>Information</th>
-				<th>Quantity</th>
+</div> <!-- supplies list -->
 
-				@if($type == 'ledger')
-				<th>Unit Cost</th>
-				@endif
-
-				@if($title == 'Release')
-				<th>Days To Consume</th>
-				@endif
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-</div>
-<div class="col-sm-12">
+<!-- buttons -->
+<div class="row">
+	<div class="col-sm-12">
 	<div class="pull-right">
 		<div class="btn-group">
 			<button type="button" id="accept" class="btn btn-md btn-primary btn-block">{{ $title }}</button>
@@ -285,7 +324,9 @@
 			<button type="button" id="cancel" class="btn btn-md btn-default" onclick='window.location.href = "{{ url('inventory/supply') }}"'>Cancel</button>
 		</div>
 	</div>
-</div>
+	</div>
+</div> <!-- buttons -->
+
 <script>
 $('document').ready(function(){
 
@@ -309,13 +350,12 @@ $('document').ready(function(){
 		source: "{{ url('get/office/code') }}"
 	})
 
-	$('#purchaseorder').on('change focusin mousein keyup focusout', function(){
+	$('#purchaseorder').on('change focus-in mousein keyup focus-out', function(){
 		$.ajax({
 			type: 'get',
 			url: '{{ url('purchaseorder') }}' +  '/' + $('#purchaseorder').val() ,
 			dataType: 'json',
 			success: function(response){
-				console.log(response)
 				if(response.number)
 				{
 					$('#purchaseorder-details').html(`
@@ -500,6 +540,10 @@ $('document').ready(function(){
 		setDate("#receipt-date");
 	@endif
 
+	$('#invoice-date, #date, #receipt-date').on('change', function(){
+		setDate($(this))
+	})
+
 	$('#add').on('click',function(){
 		row = parseInt($('#supplyTable > tbody > tr:last').text())
 		if(isNaN(row))
@@ -549,7 +593,7 @@ $('document').ready(function(){
 			return false;
 		}
 
-		$('#supplyTable > tbody').append(`
+		$('#supplyTable > tbody').prepend(`
 			<tr>
 				<td><input type="text" class="stocknumber-list form-control text-center" value="` + _stocknumber + `" name="stocknumber[` + _stocknumber + `]" style="border:none;" /></td>
 				<td><input type="hidden" class="form-control text-center" value="` + _info + `" name="info[` + _stocknumber + `]" style="border:none;" />` + _info + `</td>
