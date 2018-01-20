@@ -145,12 +145,16 @@
         dataType: 'json',
         success: function(response){
           try{
+            data = response.data
             details = response.data.details
+            console.log(data)
+            unit = data.unit.name
             $('#supply-item').val(details.toString())
             $('#stocknumber-details').html(`
               <div class="alert alert-info">
                 <ul class="list-unstyled">
                   <li><strong>Item:</strong> ` + details + ` </li>
+                  <li><strong>Unit:</strong> ` + unit + ` </li>
                   <li><strong>Remaining Balance:</strong> ` + response.data.stock_balance + ` </li>
                 </ul>
               </div>
@@ -158,6 +162,7 @@
 
             $('#add').prop("disabled", false)
           } catch (e) {
+            console.log(e)
             $('#stocknumber-details').html(`
               <div class="alert alert-danger">
                 <ul class="list-unstyled">

@@ -524,6 +524,35 @@ class RequestController extends Controller
       return back();
     }
 
+    public function resetStatus(Request $request, $id)
+    {
+
+      if($request->ajax())
+      {
+        $id = $this->sanitizeString($id);
+        $requests = App\Request::find($id);
+
+        if(count($requests) <= 0) return json_encode('error');
+
+        $requests->remarks = null;
+        $requests->issued_by = null;
+        $requests->status = null;
+        $requests->approved_at = null;
+        
+        foreach($requests->supplies as $supply):
+          $supply->pivot->quantity_issued = null;
+          $supply->pivot->quantity_released = null;
+          $supply->pivot->comments = null;
+          $supply->pivot->save();
+        endforeach;
+
+        $requests->save();
+
+        return json_encode('success');
+      }
+
+    }
+
     public function print($id)
     {
       $id = $this->sanitizeString($id);

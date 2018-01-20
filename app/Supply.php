@@ -34,8 +34,14 @@ class Supply extends Model{
 	protected $appends = [
 		'stock_balance',
 		'ledger_balance',
-		'unitcost'
+		'unitcost',
+		'unit_name'
 	];
+
+	public function getUnitNameAttribute($value)
+	{
+		return $this->unit->name;
+	}
 
 	public function getUnitCostAttribute($value)
 	{

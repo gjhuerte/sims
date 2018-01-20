@@ -16,14 +16,14 @@
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
 			@if(isset($request->requestor_id) && Auth::user()->id == $request->requestor_id && $request->status == null)
-	        <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
+        <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
 	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 	    	</a>
-	        <a href="{{ url("request/$request->id/cancel") }}" class="btn btn-danger btn-sm">
-	        	<i class="fa fa-hand-stop-o" aria-hidden="true"></i> Cancel
-	        </a>
-	        <hr />
-	        @endif
+        <a href="{{ url("request/$request->id/cancel") }}" class="btn btn-danger btn-sm">
+        	<i class="fa fa-hand-stop-o" aria-hidden="true"></i> Cancel
+        </a>
+        <hr />
+      @endif
 
 			<table class="table table-hover table-striped table-bordered table-condensed" id="requestTable" cellspacing="0" width="100%"	>
 				<thead>
@@ -93,17 +93,29 @@
           <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Commentary</span>
         </a>
 
-        @if(Auth::user()->access == 1 && $request->status == null)
+        @if(Auth::user()->access == 1)
+
+          @if($request->status == null)
           <a type="button" href="{{ url("request/$request->id/approve") }}" data-id="{{ $request->id }}" class="approve btn btn-success btn-sm">
               <i class="fa fa-thumbs-up" aria-hidden="true"> Approve</i>
           </a>
           <button id="disapprove" type="button" data-id="{{ $request->id }}" class="btn btn-danger btn-sm">
             <i class="fa fa-thumbs-down" aria-hidden="true"> Disapprove</i>
           </button>
+          @endif
+
+          @if($request->status != null && $request->status != 'released')
+          <button id="reset" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm">
+            <i class="fa fa-refresh" aria-hidden="true"> Reset Status</i>
+          </button>
+
+          @endif
+
         @endif
     `)
-    @if(Auth::user()->access == 1 && $request->status == null)
+    @if(Auth::user()->access == 1 )
 
+    @if($request->status == null)
     $('#disapprove').on('click',function(){
         swal({
               title: "Remarks!",
@@ -147,6 +159,47 @@
             })
         })
     });
+    @endif
+
+    @if($request->status != null && $request->status != 'released')
+
+    $('#reset').on('click',function(){
+      id = $(this).data('id');
+      swal({
+        title: 'Reset Status of Request {{ $request->code }}',
+        text: 'This will set the status of the current request to pending. Any modification to request will be reset. Do you want to continue?',
+        type: 'warning',
+        showLoaderOnConfirm: true,
+        showCancelButton: true,
+        closeOnConfirm: false,
+        disableButtonsOnConfirm: true,
+        confirmLoadingButtonColor: '#DD6B55'
+      }, function(){
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'put',
+            url: '{{ url("request/$request->id/reset") }}',
+            data: {
+                'id': id
+            },
+            dataType: 'json',
+            success: function(response){
+                if(response == 'success'){
+                    swal('Operation Successful','Operation Complete please reload the page!','success')
+                }else{
+                    swal('Operation Unsuccessful','Error occurred while processing your request','error')
+                }
+            },
+            error: function(){
+                swal('Operation Unsuccessful','Error occurred while processing your request','error')
+            }
+        })
+      });
+    });
+
+    @endif
 
     @endif
 
