@@ -38,6 +38,7 @@
             <th class="col-sm-1">Receipt</th>
             <th class="col-sm-1">Office/Supplier</th>
             <th class="col-sm-1">Stock Number</th>
+            <th class="col-sm-1">Details</th>
             <th class="col-sm-1">Received Quantity</th>
             <th class="col-sm-1">Issued Quantity</th>
             <th class="col-sm-1 no-sort"></th>
@@ -75,10 +76,11 @@
                 { data: "receipt" },
                 { data: "organization" },
                 { data: "supply.stocknumber" },
+                { data: "supply.details" },
                 { data: "received_quantity" },
                 { data: "issued_quantity" },
                 { data: function(callback){
-                  return `<button type="button" data-id="`+callback.id+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" class="copy btn btn-primary btn-sm">Commit</button>`
+                  return `<button type="button" data-id="`+callback.id+`" data-received="`+callback.received_quantity+`" data-issued="`+callback.issued_quantity+`" data-reference="`+callback.reference+`" data-receipt="`+callback.receipt+`" data-date="`+callback.date+`" data-organization="`+callback.organization+`" data-stocknumber="`+callback.supply.stocknumber+`" data-details="`+callback.supply.details+`" class="copy btn btn-primary btn-sm">Mirror to Ledger Card</button>`
                 } }
         ],
     });
@@ -131,6 +133,12 @@
       id = $(this).data('id')
       received = $(this).data('received')
       issued = $(this).data('issued')
+      reference = $(this).data('reference')
+      receipt = $(this).data('receipt')
+      stocknumber = $(this).data('stocknumber')
+      organization = $(this).data('organization')
+      date = $(this).data('date')
+      details = $(this).data('details')
 
       if( received > 0 ) 
         $('#fundcluster-form').show()
@@ -140,6 +148,14 @@
       $('#record-id').val(id)
       $('#record-received').val(received)
       $('#record-issued').val(issued)
+      $('#modal-reference').text(reference)
+      $('#modal-date').text(date)
+      $('#modal-receipt').text(receipt)
+      $('#modal-received-quantity').text(received)
+      $('#modal-issued-quantity').text(issued)
+      $('#modal-stocknumber').text(stocknumber)
+      $('#modal-organization').text(organization)
+      $('#modal-details').text(details)
       $('#recordFormModal').modal('show')
     })
   });
