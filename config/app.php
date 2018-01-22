@@ -206,6 +206,8 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
 
         // ...
+        // 
+        App\Providers\DashboardService::class,
     ],
 
     /*

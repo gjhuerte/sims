@@ -25,6 +25,14 @@
             <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/register') }}">{{ trans('backpack::base.register') }}</a></li>
             @endif
         @else
+
+            @if(Auth::user()->access == 1)
+            <li>
+              <a id="notification-count" role="button">
+                Notifications <span class="label label-danger">{{ $request_count }}</span>
+              </a>
+            </li>
+            @endif
             <li><a href="#">
               @if(isset(Auth::user()->office))
               {{  App\Office::findByCode(Auth::user()->office)->name }} 

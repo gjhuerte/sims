@@ -29,9 +29,7 @@
           <!-- ==== Recommended place for admin menu items ==== -->
           <!-- ================================================ -->
 
-          @if(Auth::user()->access == 1)
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/dashboard') }}"><i class="fa fa-dashboard"></i> <span>{{ trans('backpack::base.dashboard') }}</span></a></li>
-          @endif
 
           @if(false)
 
@@ -136,6 +134,12 @@
 
           <li class="header">Information System</li>
 
+          @if(Auth::user()->access == 1)
+
+          <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
+
+          @endif
+
           <li><a href="{{ url('maintenance/supply') }}"><i class="fa fa-database" aria-hidden="true"></i> <span> Supply</span></a></li>
 
           <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
@@ -181,7 +185,9 @@
 
           @if(Auth::user()->access == 3)
 
-          <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Request</span></a></li>
+          <li>
+            <a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Request</span></a>
+          </li>
 
           @endif
 

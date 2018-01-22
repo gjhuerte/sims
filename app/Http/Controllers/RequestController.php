@@ -117,6 +117,14 @@ class RequestController extends Controller
 
       $request->supplies()->sync($array);
 
+      $office = App\Office::find($office);
+      $requestor = App\User::find($requestor);
+      $title = 'New Supply Request';
+      $details = "A new request from $office->name by $requestor->firstname $requestor->lastname has been created.";
+      $url = url("request/$request->id");
+
+      App\Announcement::notify($title, $details, $access = 2, $url);
+
       DB::commit();
 
       \Alert::success('Request Sent')->flash();

@@ -160,6 +160,8 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('adjustment', 'AdjustmentsController');
 
+		Route::resource('announcement', 'AnnouncementsController');
+
 	});
 
 	Route::middleware(['accounting'])->group(function(){

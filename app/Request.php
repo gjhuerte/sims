@@ -46,6 +46,11 @@ class Request extends Model
       'code', 'date_requested'
     ];
 
+    public function scopePending($query)
+    {
+      return $query->whereNull('status');
+    }
+
     public function getCodeAttribute($value)
     {
       $date = Carbon\Carbon::parse($this->created_at);
