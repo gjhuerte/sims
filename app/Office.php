@@ -7,7 +7,7 @@ class Office extends Model{
 
 	protected $table = 'offices';
 	protected $primaryKey = 'id';
-	protected $fillable = ['code','name','description', 'head'];
+	protected $fillable = ['code','name','description', 'head', 'department_id'];
 	public $timestamps = false;
 
 	public function rules(){

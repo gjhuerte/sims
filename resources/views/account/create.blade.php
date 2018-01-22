@@ -109,7 +109,7 @@
             '0' => 'Administrator',
             '1' => 'AMO',
             '2' => 'Accounting',
-            '3' => 'Colleges',
+            '3' => 'Offices',
           ],Input::old('access'),[
             'class'=>'form-control'
           ]) }}

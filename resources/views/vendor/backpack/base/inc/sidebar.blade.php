@@ -140,6 +140,8 @@
 
           <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
 
+          <li><a href="{{ url('maintenance/department') }}"><i class="fa fa-building-o" aria-hidden="true"></i> <span> Department </span></a></li>
+
           <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
 
           @endif
