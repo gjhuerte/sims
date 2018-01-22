@@ -57,6 +57,9 @@ class StockCard extends Model implements Auditable, UserResolver
 	 */
 	public $stocknumber = null;
 	public $supplier_id = null;
+	public $invoice_date = null;
+	public $invoice = null;
+	public $dr_date = null;
 
 	protected $appends = [
 		'parsed_date', 'reference_information'
@@ -277,9 +280,7 @@ class StockCard extends Model implements Auditable, UserResolver
 			{
 
 				$supply_info->pivot->ordered_quantity = (isset($supply_info->pivot->ordered_quantity) ? $supply_info->pivot->ordered_quantity : 0 ) + $this->received_quantity;
-
 				$supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
-
 				$supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
 
 				$supply_info->pivot->save();
@@ -311,9 +312,11 @@ class StockCard extends Model implements Auditable, UserResolver
 				'number' => $this->receipt
 			], [
 				'purchaseorder_id' => (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null,
-				'date_delivered' => Carbon\Carbon::parse($this->date),
+				'date_delivered' => isset($this->dr_date) ? Carbon\Carbon::parse($this->dr_date) : Carbon\Carbon::parse($this->date),
 				'received_by' => $fullname,
-				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null
+				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null,
+				'invoice' => (isset($this->invoice)) ? $this->invoice : null,
+				'invoice_date' => (isset($this->invoice_date)) ? Carbon\Carbon::parse($this->invoice_date) : null
 			]);
 
 			$supply_info = $receipt->supplies()->find($supply->id);

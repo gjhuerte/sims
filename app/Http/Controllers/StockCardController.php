@@ -57,6 +57,7 @@ class StockCardController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+		return $request->all();
 		$purchaseorder = $this->sanitizeString($request->get('purchaseorder'));
 		$deliveryreceipt = $this->sanitizeString($request->get('receipt'));
 		$date = $this->sanitizeString($request->get('date'));
@@ -65,6 +66,9 @@ class StockCardController extends Controller {
 		$daystoconsume = $request->get("daystoconsume");
 		$stocknumbers = $request->get("stocknumber");
 		$quantity = $request->get("quantity");
+		$dr_date = $this->sanitizeString($request->get('dr-date'));
+		$invoice = $this->sanitizeString($request->get('invoice'));
+		$invoice_date = $this->sanitizeString($request->get('invoice-date'));
 		$fundcluster = $this->sanitizeString($request->get("fundcluster"));
 
 		$username = Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname;
@@ -98,9 +102,12 @@ class StockCardController extends Controller {
 
 			$transaction = new App\StockCard;
 			$transaction->date = Carbon\Carbon::parse($date);
+			$transaction->invoice_date = Carbon\Carbon::parse($invoice_date);
+			$transaction->dr_date = Carbon\Carbon::parse($dr_date);
 			$transaction->stocknumber = $stocknumber;
 			$transaction->reference = $purchaseorder;
 			$transaction->receipt = $deliveryreceipt;
+			$transaction->invoice = $invoice;
 			$transaction->organization = $supplier;
 			$transaction->fundcluster = $fundcluster;
 			$transaction->received_quantity = $quantity["$stocknumber"];
