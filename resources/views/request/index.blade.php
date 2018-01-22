@@ -40,10 +40,12 @@
 @endsection
 
 @section('after_scripts')
+<script src="{{ asset('js/socket.io.js') }}"></script>
 <script>
   jQuery(document).ready(function($) {
 
     var table = $('#requestTable').DataTable({
+        serverSide: true,
         language: {
                 searchPlaceholder: "Search..."
         },
@@ -149,6 +151,13 @@
     });
 
     @endif
+
+    var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
+
+    socket.on("trigger-notification:App\\Events\\TriggerNotification", function(){
+        console.log('running...')
+        table.ajax.reload()
+    });
   });
 </script>
 @endsection

@@ -117,7 +117,7 @@
 	    		@if(isset($announcement->url) && !is_null($announcement->url))
 	    		<!-- notification footer -->
 	    		<div class="panel-footer">
-	    			You can view the link to the announcement by clicking <strong><a href="{{ $announcement->url }}">Me</a></strong>
+	    			You can view the link to the announcement by clicking <strong><a target="_blank" href="{{ $announcement->url }}">Me</a></strong>
 	    		</div>
 	    		<!-- notification footer -->
 	    		@endif

@@ -10,6 +10,7 @@ use Session;
 use PDF;
 use Validator;
 use Illuminate\Http\Request;
+use Event;
 
 class RequestController extends Controller
 {
@@ -33,9 +34,7 @@ class RequestController extends Controller
               $ret_val->me();
           }
 
-          return json_encode([
-              'data' => $ret_val->get()
-          ]);
+          return datatables($ret_val->get())->toJson();
         }
 
         return view('request.index')
@@ -124,6 +123,8 @@ class RequestController extends Controller
       $url = url("request/$request->id");
 
       App\Announcement::notify($title, $details, $access = 2, $url);
+
+      event(new App\Events\TriggerNotification($office));
 
       DB::commit();
 
