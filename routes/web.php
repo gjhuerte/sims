@@ -78,6 +78,8 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::resource('maintenance/office','OfficeController');
 
+	Route::resource('maintenance/department','DepartmentController');
+
 	Route::resource('maintenance/unit','UnitsController');
 
 	Route::resource('maintenance/supplier','SuppliersController');
