@@ -59,7 +59,7 @@ class Request extends Model
 
     public function getDateRequestedAttribute($value)
     {
-      return Carbon\Carbon::parse($this->created_at)->toFormattedDateString();
+      return Carbon\Carbon::parse($this->created_at)->format("F d Y h:m A");
     }
 
   	public function supplies()

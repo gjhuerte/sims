@@ -70,7 +70,7 @@
                 <li>
                   <a href="{{ url('request') }}">
                         <li><i class="fa fa-list" aria-hidden="true"></i>
-                    View
+                    View <span class="label label-info">{{ $request_count }} Pending</span>
                   </a>
                 </li>
                 <li>

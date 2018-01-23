@@ -13,8 +13,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        'App\Events\RequestDisapproved' => [
+            'App\Listeners\UpdateNotificationList',
+        ],    
 
-        'App\Events\TriggerNotification' => [
+        'App\Events\TriggerRequest' => [
             'App\Listeners\UpdateNotificationList',
         ],    
     ];

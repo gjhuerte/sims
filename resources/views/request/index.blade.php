@@ -44,57 +44,74 @@
 <script>
   jQuery(document).ready(function($) {
 
-    var table = $('#requestTable').DataTable({
-        serverSide: true,
-        language: {
-                searchPlaceholder: "Search..."
-        },
-        columnDefs:[
-            { targets: 'no-sort', orderable: false },
-        ],
-        "dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
-                        "<'row'<'col-sm-12'tr>>" +
-                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        "processing": true,
-        ajax: "{{ url('request') }}",
-        columns: [
-                { data: "code" },
-                { data: 'date_requested' },
-                @if(Auth::user()->access == 1)
-                { data: function(callback){
-                  if(callback.office) return callback.office.code
+    table = $('#requestTable').DataTable({
+      pageLength: 25,
+      serverSide: true,
+      "processing": true,
+      language: {
+              searchPlaceholder: "Search..."
+      },
+      columnDefs:[
+          { targets: 'no-sort', orderable: false },
+      ],
+      "order": [
+        [0, 'desc']
+      ],
+      "dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
+                      "<'row'<'col-sm-12'tr>>" +
+                      "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+      ajax: "{{ url('request') }}",
+      columns: [
+        { data: "code" },
+        { data: 'date_requested' },
+        @if(Auth::user()->access == 1)
+        { data: function(callback){
+          if(callback.office) return callback.office.code
 
-                  if(callback.requestor) callback.requestor.username
-                  return null
-                } },
-                @endif
-                { data: "remarks" },
-                { data: "purpose" },
-                { data: "status" },
-                { data: function(callback){
-                  ret_val = "";
+          if(callback.requestor) callback.requestor.username
+          return null
+        } },
+        @endif
+        { data: "remarks" },
+        { data: "purpose" },
+        { data: "status" },
+        { data: function(callback){
+          ret_val = "";
 
-                  @if(Auth::user()->access == 1)
-                  if(!callback.status)
-                  {
-                    ret_val += `
-                      <a type="button" href="{{ url('request') }}/`+callback.id+`/approve" data-id="`+callback.id+`" class="approve btn btn-success btn-sm">
-                          <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                      </a>
-                      <button type="button" data-id="`+callback.id+`" class="disapprove btn btn-danger btn-sm">
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                      </button>
-                    `
-                  }
-                  @endif
+          @if(Auth::user()->access == 1)
+          if(!callback.status)
+          {
+            ret_val += `
+              <a type="button" href="{{ url('request') }}/`+callback.id+`/approve" data-id="`+callback.id+`" class="approve btn btn-success btn-sm">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+              </a>
+              <button type="button" data-id="`+callback.id+`" class="disapprove btn btn-danger btn-sm">
+                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+              </button>
+            `
+          }
+          @endif
 
-                  ret_val +=  `
-                    <a href="{{ url('request') }}/`+ callback.id +`" class="btn btn-default btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
-                  `
+          ret_val +=  `
+            <a href="{{ url('request') }}/`+ callback.id +`" class="btn btn-default btn-sm"><i class="fa fa-list-ul" aria-hidden="true"></i> View</a>
+          `
 
-                    return ret_val;
-                } }
-        ],
+            return ret_val;
+        } }
+      ],
+    });
+
+
+    var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
+
+    socket.on("request:App\\Events\\TriggerRequest", function(message){
+
+        table.ajax.reload()
+    });
+
+    socket.on("disapproved:App\\Events\\RequestDisapproved", function(message){
+
+        table.ajax.reload()
     });
 
     @if(Auth::user()->access == 3)
@@ -151,13 +168,6 @@
     });
 
     @endif
-
-    var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
-
-    socket.on("trigger-notification:App\\Events\\TriggerNotification", function(){
-        console.log('running...')
-        table.ajax.reload()
-    });
   });
-</script>
+</script> 
 @endsection

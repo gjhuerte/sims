@@ -18,6 +18,8 @@ return [
 
     'default_status' => env('DEFAULT_STATUS','pending'),
 
+    'socket_port' => env('SOCKET_PORT', 3000),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

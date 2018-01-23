@@ -146,17 +146,17 @@
       })
     }
 
-@if(null !== old('stocknumber'))
-  @foreach(old('stocknumber') as $stocknumber)
-    insertRow("{{ $stocknumber }}", "{{ old("requested.$stocknumber") }}",  "{{ old("quantity.$stocknumber") }}")
-  @endforeach
-@endif
-
-@if(isset($request->supplies))
-    @foreach($request->supplies as $supply)
-    insertRow("{{ $supply->stocknumber }}", "{{ $supply->pivot->quantity_requested }}", "{{ $supply->pivot->quantity_requested }}")
-  @endforeach
-@endif
+  @if(isset($request->supplies))
+      @foreach($request->supplies as $supply)
+      insertRow("{{ $supply->stocknumber }}", "{{ $supply->pivot->quantity_requested }}", "{{ $supply->pivot->quantity_requested }}")
+    @endforeach
+  @else
+    @if(null !== old('stocknumber'))
+      @foreach(old('stocknumber') as $stocknumber)
+        insertRow("{{ $stocknumber }}", "{{ old("requested.$stocknumber") }}",  "{{ old("quantity.$stocknumber") }}")
+      @endforeach
+    @endif
+  @endif
 
   });
 </script>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App;
 use Auth;
 use DB;
@@ -9,8 +11,8 @@ use Carbon;
 use Session;
 use PDF;
 use Validator;
-use Illuminate\Http\Request;
 use Event;
+use LRedis;
 
 class RequestController extends Controller
 {
@@ -24,7 +26,7 @@ class RequestController extends Controller
         if($request->ajax())
         {
 
-          $ret_val = App\Request::with('office')->with('requestor');
+          $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'desc');
 
           if(Auth::user()->access != 1)
           {
@@ -69,8 +71,10 @@ class RequestController extends Controller
       $array = [];
       $office = App\Office::findByCode(Auth::user()->office)->id;
       $status = null;
-      $purpose = $request->get("purpose");;
+      $purpose = $request->get("purpose");
       $requestor = Auth::user()->id;
+
+      if(count($stocknumbers) <= 0 ) return back()->withInput()->withErrors(['Invalid Stock List Requested']);
 
       foreach(array_flatten($stocknumbers) as $stocknumber)
       {
@@ -124,7 +128,7 @@ class RequestController extends Controller
 
       App\Announcement::notify($title, $details, $access = 2, $url);
 
-      event(new App\Events\TriggerNotification($office));
+      event(new App\Events\TriggerRequest("Request"));
 
       DB::commit();
 
@@ -239,6 +243,8 @@ class RequestController extends Controller
       $requests->purpose = $purpose;
       $requests->save();
       $requests->supplies()->sync($array);
+
+      event(new App\Events\TriggerRequest("Request"));
 
       DB::commit();
 
@@ -355,6 +361,8 @@ class RequestController extends Controller
         ]);
       }
 
+      event(new App\Events\TriggerRequest("Request"));
+
       DB::commit();
 
 
@@ -426,6 +434,8 @@ class RequestController extends Controller
 
         $requests->supplies()->sync($array);
 
+        event(new App\Events\TriggerRequest("Request"));
+
         DB::commit();
 
         \Alert::success('Request Approved')->flash();
@@ -445,6 +455,8 @@ class RequestController extends Controller
             $request->approved_at = Carbon\Carbon::now();
             $request->remarks = $remarks;
             $request->save();
+
+            event(new App\Events\RequestDisapproved("Request Disapproved"));
 
             return json_encode('success');
         }
@@ -488,6 +500,8 @@ class RequestController extends Controller
       $requests->save();
 
       DB::commit();
+
+      event(new App\Events\TriggerRequest("Request"));
 
       \Alert::success("$requests->code Cancelled")->flash();
       return redirect('request');
@@ -556,6 +570,8 @@ class RequestController extends Controller
         endforeach;
 
         $requests->save();
+
+        event(new App\Events\TriggerRequest("Request"));
 
         return json_encode('success');
       }

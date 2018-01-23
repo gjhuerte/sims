@@ -147,7 +147,7 @@
                 success: function(response){
                     if(response == 'success'){
                         swal('Operation Successful','Operation Complete','success')
-                        table.ajax.reload();
+                        location.reload();
                     }else{
                         swal('Operation Unsuccessful','Error occurred while processing your request','error')
                     }
@@ -188,6 +188,7 @@
             success: function(response){
                 if(response == 'success'){
                     swal('Operation Successful','Operation Complete please reload the page!','success')
+                    location.reload();
                 }else{
                     swal('Operation Unsuccessful','Error occurred while processing your request','error')
                 }
