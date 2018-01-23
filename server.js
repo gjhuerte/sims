@@ -6,11 +6,11 @@ var Redis = require('ioredis');
 var redis = new Redis(process.env.REDIS_PORT, process.env.REDIS_HOST);
 var dotenv = require('dotenv').config()
 
-redis.subscribe('disapproved', function(err, count) { 
-});
+redis.subscribe('approval', function(err, count) {  });
 
-redis.subscribe('request', function(err, count) { 
-});
+redis.subscribe('generate-request', function(err, count){  });
+
+redis.subscribe('request', function(err, count) {  });
 
 redis.on('message', function(channel, message) {
     message = JSON.parse(message);

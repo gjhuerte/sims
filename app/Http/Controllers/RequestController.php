@@ -128,7 +128,7 @@ class RequestController extends Controller
 
       App\Announcement::notify($title, $details, $access = 2, $url);
 
-      event(new App\Events\TriggerRequest("Request"));
+      event(new App\Events\GenerateRequest($details));
 
       DB::commit();
 
@@ -244,7 +244,10 @@ class RequestController extends Controller
       $requests->save();
       $requests->supplies()->sync($array);
 
-      event(new App\Events\TriggerRequest("Request"));
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "Request $requests->code information has been updated by the user";
+
+      event(new App\Events\RequestApproval($data));
 
       DB::commit();
 
@@ -361,11 +364,12 @@ class RequestController extends Controller
         ]);
       }
 
-      event(new App\Events\TriggerRequest("Request"));
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "Items from request $requests->code status has been released";
+
+      event(new App\Events\RequestApproval($data));
 
       DB::commit();
-
-
 
       \Alert::success('Items Released')->flash();
       return redirect('request');
@@ -434,7 +438,10 @@ class RequestController extends Controller
 
         $requests->supplies()->sync($array);
 
-        event(new App\Events\TriggerRequest("Request"));
+        $data['id'] = $requests->requestor_id;
+            $data['message'] = "Request $request->code has been approved";
+
+        event(new App\Events\RequestApproval($data));
 
         DB::commit();
 
@@ -456,7 +463,10 @@ class RequestController extends Controller
             $request->remarks = $remarks;
             $request->save();
 
-            event(new App\Events\RequestDisapproved("Request Disapproved"));
+            $data['id'] = $request->requestor_id;
+            $data['message'] = "Request $request->code has been disapproved";
+
+            event(new App\Events\RequestApproval($data));
 
             return json_encode('success');
         }
@@ -501,7 +511,10 @@ class RequestController extends Controller
 
       DB::commit();
 
-      event(new App\Events\TriggerRequest("Request"));
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "Request $requests->code has been cancelled";
+
+      event(new App\Events\RequestApproval($data));
 
       \Alert::success("$requests->code Cancelled")->flash();
       return redirect('request');
@@ -544,6 +557,13 @@ class RequestController extends Controller
       $comments->user_id = Auth::user()->id;
       $comments->save();
 
+      $requests = App\Request::find($id);
+
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "A comment for request $requests->code has been posted";
+
+      event(new App\Events\RequestApproval($data));
+
       return back();
     }
 
@@ -571,7 +591,10 @@ class RequestController extends Controller
 
         $requests->save();
 
-        event(new App\Events\TriggerRequest("Request"));
+        $data['id'] = $requests->requestor_id;
+        $data['message'] = "Request $requests->code status has been changed back to pending";
+
+        event(new App\Events\RequestApproval($data));
 
         return json_encode('success');
       }

@@ -10,18 +10,21 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class RequestDisapproved implements ShouldBroadcast
+class RequestApproval implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    public $id;
+    public $message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($data)
     {
-        //
+        $this->id = $data['id'];
+        $this->message = $data['message'];
     }
 
     /**
@@ -31,6 +34,6 @@ class RequestDisapproved implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['disapproved'];
+        return ['approval'];
     }
 }

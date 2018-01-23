@@ -213,6 +213,46 @@
             var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
 
             socket.on("request:App\\Events\\TriggerRequest", function(message){
+                refreshRequestCount()
+            });
+
+            @if(Auth::user()->access == 1)
+
+            socket.on("generate-request:App\\Events\\GenerateRequest", function(data){
+
+                new PNotify({
+                    title: "Alert!",
+                    text: data.message,
+                    type: "info"
+                });
+
+                if(typeof table != 'undefined') table.ajax.reload()
+                refreshRequestCount()
+            });
+
+            @endif
+
+            socket.on("approval:App\\Events\\RequestApproval", function(data){
+              user_id = {{ Auth::user()->id }}
+              _user = data.id
+              _message = data.message
+
+              if(_user == user_id || {{ Auth::user()->access }} == 1) 
+              {
+                new PNotify({
+                  title: "Alert!",
+                  text: _message,
+                  type: "info"
+                });
+
+
+                if(typeof table != 'undefined') table.ajax.reload()
+                refreshRequestCount()
+              }
+            });
+
+            function refreshRequestCount()
+            {
                 $.ajax({
                     type: 'get',
                     url: '{{ url('request/pending/count') }}' ,
@@ -221,7 +261,7 @@
                         $('#sidebar-request-count').text(response)
                     }
                 })
-            });
+            }
         })
     </script>
     <!-- script for realtime update on request count -->

@@ -46,6 +46,7 @@
     table = $('#requestTable').DataTable({
       pageLength: 25,
       serverSide: true,
+      stateSave: true,
       "processing": true,
       language: {
               searchPlaceholder: "Search..."
@@ -98,19 +99,6 @@
             return ret_val;
         } }
       ],
-    });
-
-
-    var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
-
-    socket.on("request:App\\Events\\TriggerRequest", function(message){
-
-        table.ajax.reload()
-    });
-
-    socket.on("disapproved:App\\Events\\RequestDisapproved", function(message){
-
-        table.ajax.reload()
     });
 
     @if(Auth::user()->access == 3)
