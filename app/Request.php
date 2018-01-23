@@ -41,6 +41,12 @@ class Request extends Model
       'Quantity' => 'required|integer|min:1',
       'Purpose' => 'required',
     );
+
+    public function commentsRules(){
+      return [
+        'Details' => 'required|max:100'
+      ];
+    }
     
     public $appends = [
       'code', 'date_requested'

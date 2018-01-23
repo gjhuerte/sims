@@ -552,12 +552,22 @@ class RequestController extends Controller
     {
       
       $comments = new App\RequestComments;
+      $requests = App\Request::find($id);
+      $details = $request->get('details');
+
+      $validator = Validator::make([
+          'Details' => $details
+      ], $requests->commentsRules());
+
+      if($validator->fails())
+      {
+          return back()->withInput()->withErrors($validator);
+      }
+
       $comments->request_id = $id;
-      $comments->details = $request->get('details');
+      $comments->details = $details;
       $comments->user_id = Auth::user()->id;
       $comments->save();
-
-      $requests = App\Request::find($id);
 
       $data['id'] = $requests->requestor_id;
       $data['message'] = "A comment for request $requests->code has been posted";

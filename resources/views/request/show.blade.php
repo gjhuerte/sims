@@ -90,7 +90,7 @@
         </a>
         @endif
         <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
-          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Commentary</span>
+          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Messages  <span class="label label-danger"> {{ App\RequestComments::where('request_id', '=', $request->id)->count() }} </span> </span>
         </a>
 
         @if(Auth::user()->access == 1)
