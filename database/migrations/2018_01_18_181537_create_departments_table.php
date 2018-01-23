@@ -16,7 +16,14 @@ class CreateDepartmentsTable extends Migration
         Schema::create('departments', function(Blueprint $table){
             $table->increments('id');
             $table->string('name')->unique();
+            $table->integer('office_id')->unsigned(); 
+            $table->foreign('office_id') 
+                    ->references('id') 
+                    ->on('offices') 
+                    ->onUpdate('cascade') 
+                    ->onDelete('cascade'); 
             $table->char('abbreviation', 10)->nullable();
+            $table->timestamps(); 
         });
     }
 

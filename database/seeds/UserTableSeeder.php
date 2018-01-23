@@ -38,7 +38,7 @@ class UserTableSeeder extends Seeder {
 				'lastname' => '',
 				'email' => 'lerma@yahoo.com',
 				'status' =>'1',
-				'office' => 'AMO',
+				'office' => 'AMS',
 				'position' => 'head',
 				'created_at' => date('Y-m-d H:i:s'),
 				'updated_at' => date('Y-m-d H:i:s')
@@ -53,7 +53,7 @@ class UserTableSeeder extends Seeder {
 				'lastname' => '',
 				'email' => 'lemy@yahoo.com',
 				'status' =>'1',
-				'office' => 'ACC',
+				'office' => 'AD',
 				'position' => 'head',
 				'created_at' => date('Y-m-d H:i:s'),
 				'updated_at' => date('Y-m-d H:i:s')
