@@ -191,6 +191,12 @@
 		<div class="col-md-12">
 			<div class="form-group">
 				{{ Form::label('Fund Clusters') }}
+				<br /> Suggestions:
+				@foreach(App\FundCluster::take('5')->pluck('code') as $fundcluster)
+				<button type="button" value="{{ $fundcluster }}" class="btn btn-default fundcluster-item" style="margin-bottom: 10px;"> 
+					{{ $fundcluster }} 
+				</button>
+				@endforeach
 				{{ Form::text('fundcluster',Input::old('fundcluster'),[
 					'id' => 'fundcluster',
 					'class' => 'form-control',
@@ -703,6 +709,22 @@ $('document').ready(function(){
 				$('#unitcost').val(response);
 			}
 		})
+    })
+
+    $('#fundcluster').on('change', function(){
+    	e.preventDefault()
+    })
+
+    $('.fundcluster-item').on('click', function(){
+    	text =  $(this).val()
+    	f_text = $('#fundcluster').val()
+
+
+    	if(f_text.length <= 1 )
+    		text = text
+    	else
+    		text = f_text.toString() + "," + text.toString()
+    	$('#fundcluster').val(text) 
     })
 })
 </script>
