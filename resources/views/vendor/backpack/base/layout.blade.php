@@ -68,6 +68,10 @@
     <script src="{{ asset('js/initial.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
 
+    <!-- socket io dependencies -->
+    <script src="{{ asset('js/socket.io.js') }}"></script>
+    <!-- socket io dependencies -->
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -200,5 +204,26 @@
 
     <!-- JavaScripts -->
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+
+
+    <!-- script for realtime update on request count -->
+    <script>
+        $(document).ready(function(){
+
+            var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
+
+            socket.on("request:App\\Events\\TriggerRequest", function(message){
+                $.ajax({
+                    type: 'get',
+                    url: '{{ url('request/pending/count') }}' ,
+                    dataType: 'json',
+                    success: function(response){
+                        $('#sidebar-request-count').text(response)
+                    }
+                })
+            });
+        })
+    </script>
+    <!-- script for realtime update on request count -->
 </body>
 </html>

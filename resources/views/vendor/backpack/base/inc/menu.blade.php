@@ -37,7 +37,7 @@
 
         <li class="dropdown">
           <a id="notification-count" role="button" class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              Notifications 
+              Pending RIS  <span class="label label-danger" id="sidebar-request-count">{{ $request_count }}</span> 
           </a>
 
           <!-- scrollbar styles -->

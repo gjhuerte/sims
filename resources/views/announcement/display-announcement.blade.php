@@ -1,15 +1,15 @@
-
+{{-- 
 <style>
 	.panel:hover {
 		-webkit-box-shadow: -1px 6px 52px -9px rgba(87,81,87,1);
 		-moz-box-shadow: -1px 6px 52px -9px rgba(87,81,87,1);
 		box-shadow: -1px 6px 52px -9px rgba(87,81,87,1);
 	}
-</style>
+</style> --}}
 <!-- Default box -->
   <div class="box">
     <div class="box-body" style="padding: 20px;">
-    	<div class="col-sm-offset-1 col-sm-10">
+    	<div class="col-sm-12">
 
 			@if(Auth::user()->access == 1)
 	    	<!-- add button -->
@@ -27,7 +27,7 @@
 
 	     	<!-- notification list -->
 			@foreach($announcements as $announcement)
-		    <div class="panel panel-default panel-shadow" style="margin: 10px; border-radius: 0px; "> 
+		    <div class="panel panel-default" style="margin: 10px; border-radius: 0px; "> 
 
 		    	<!-- notification header -->
 		    	<div class="panel-heading" style="background-color: white;">

@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function(){
 	// return stock number for autocomplete
 	Route::get('get/inventory/supply/stocknumber','SupplyInventoryController@show');
 
+	Route::get('request/{type}/count', 'RequestController@count');
+
 	Route::middleware(['except-offices'])->group(function(){
 
 		Route::get('inventory/supply/rsmi','RSMIController@rsmi');

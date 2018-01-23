@@ -51,6 +51,18 @@ class Request extends Model
       return $query->whereNull('status');
     }
 
+    public function scopefilterByOfficeId($query, $value)
+    {
+      $query->where('office_id', '=', $value);
+    }
+
+    public function scopefilterByOfficeCode($query, $value)
+    {
+      $query->whereHas('office', function($query) use ($value){
+        $query->where('code', '=', $value);
+      });
+    }
+
     public function getCodeAttribute($value)
     {
       $date = Carbon\Carbon::parse($this->created_at);

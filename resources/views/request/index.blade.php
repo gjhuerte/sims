@@ -40,7 +40,6 @@
 @endsection
 
 @section('after_scripts')
-<script src="{{ asset('js/socket.io.js') }}"></script>
 <script>
   jQuery(document).ready(function($) {
 

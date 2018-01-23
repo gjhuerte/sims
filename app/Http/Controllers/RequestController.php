@@ -641,4 +641,33 @@ class RequestController extends Controller
       return $const . '-' . $id;
 
     }
+
+    /**
+     * [count description]
+     * returns the amount of request based on the 
+     * type given by the user
+     * @param  Request $request [description]
+     * @param  [type]  $type    [description]
+     * @return [type]           [description]
+     */
+    public function count(Request $request, $type)
+    {
+      if($request->ajax())
+      {
+        $count = 0;
+        $request = new App\Request;
+
+        if($type == 'pending'):
+          $request = $request->pending();
+        endif;
+
+        if(Auth::user()->access == 3):
+          $request = $request->filterByOfficeCode(Auth::user()->office);
+        endif;
+
+        $count = $request->count();
+
+        return json_encode($count);
+      }
+    }
 }

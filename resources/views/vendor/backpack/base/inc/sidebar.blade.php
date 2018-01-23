@@ -69,8 +69,8 @@
               <ul class="treeview-menu">
                 <li>
                   <a href="{{ url('request') }}">
-                        <li><i class="fa fa-list" aria-hidden="true"></i>
-                    View <span class="label label-info">{{ $request_count }} Pending</span>
+                    <li><i class="fa fa-list" aria-hidden="true"></i>
+                    View
                   </a>
                 </li>
                 <li>
