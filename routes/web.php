@@ -18,25 +18,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('settings',['as'=>'settings.update','uses'=>'SessionsController@update']);
 	Route::get('logout', 'Auth\LoginController@logout');
 
-	Route::get('inventory/supply/rsmi','RSMIController@rsmi');
-	Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
-	Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
-
-	Route::get('rsmi/months','RSMIController@getAllMonths');
-
-	Route::get('rsmi/{date}/print','RSMIController@print');
-
-	Route::get('rsmi','RSMIController@index');
-
-	Route::get('rsmi/{date}','RSMIController@getIssued');
-
-	Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
-
-	Route::get('report/fundcluster','ReportsController@getFundClusterView');
-
-	Route::get('report/ris/{college}','ReportsController@getRISPerCollege');
-	Route::get('report/fundcluster','ReportsController@fundcluster');
-
 	Route::get('dashboard','DashboardController@index');
 
 	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
@@ -59,53 +40,70 @@ Route::middleware(['auth'])->group(function(){
 	// return stock number for autocomplete
 	Route::get('get/inventory/supply/stocknumber','SupplyInventoryController@show');
 
-	/*
-	|
-	| Office Modules
-	|
-	*/
-	Route::get('get/office/code/all','OfficeController@getAllCodes');
+	Route::middleware(['except-offices'])->group(function(){
 
-	Route::get('get/office/code','OfficeController@show');
+		Route::get('inventory/supply/rsmi','RSMIController@rsmi');
+		Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
+		Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
 
-	Route::get('get/purchaseorder/all','PurchaseOrderController@show');
+		Route::get('rsmi/months','RSMIController@getAllMonths');
 
-	Route::get('get/receipt/all','ReceiptController@show');
+		Route::get('rsmi/{date}/print','RSMIController@print');
 
-	Route::get('maintenance/supply/print','SupplyController@print');
+		Route::get('rsmi','RSMIController@index');
 
-	Route::resource('maintenance/supply','SupplyController');
+		Route::get('rsmi/{date}','RSMIController@getIssued');
 
-	Route::resource('maintenance/office','OfficeController');
+		Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
 
-	Route::resource('maintenance/unit','UnitsController');
+		Route::get('report/fundcluster','ReportsController@getFundClusterView');
 
-	Route::resource('maintenance/supplier','SuppliersController');
+		Route::get('report/ris/{college}','ReportsController@getRISPerCollege');
+		Route::get('report/fundcluster','ReportsController@fundcluster');
 
-	Route::get('maintenance/category/assign/{id}', 'CategoriesController@showAssign');
-	Route::put('maintenance/category/assign/{id}', 'CategoriesController@assign');
+		Route::get('get/office/code/all','OfficeController@getAllCodes');
 
-	Route::resource('maintenance/category','CategoriesController');
+		Route::get('get/office/code','OfficeController@show');
 
-	Route::get('uacs/months', 'UACSController@getAllMonths');
-	Route::get('uacs', 'UACSController@getIndex');
-	Route::get('uacs/{month}', 'UACSController@getUACS');
+		Route::get('get/purchaseorder/all','PurchaseOrderController@show');
 
-	Route::post('get/ledgercard/checkifexisting',[
-		'as' => 'ledgercard.checkifexisting',
-		'uses' => 'LedgerCardController@checkIfLedgerCardExists'
-	]);
+		Route::get('get/receipt/all','ReceiptController@show');
 
-	Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
-	Route::get('purchaseorder/{id}/print','PurchaseOrderController@printPurchaseOrder');
+		Route::get('maintenance/supply/print','SupplyController@print');
 
-	Route::resource('purchaseorder','PurchaseOrderController');
+		Route::resource('maintenance/supply','SupplyController');
 
-	Route::get('request/generate','RequestController@generate');
+		Route::resource('maintenance/office','OfficeController');
 
-	Route::get('receipt/{receipt}/print','ReceiptController@printReceipt');
+		Route::resource('maintenance/unit','UnitsController');
 
-	Route::resource('receipt','ReceiptController');
+		Route::resource('maintenance/supplier','SuppliersController');
+
+		Route::get('maintenance/category/assign/{id}', 'CategoriesController@showAssign');
+		Route::put('maintenance/category/assign/{id}', 'CategoriesController@assign');
+
+		Route::resource('maintenance/category','CategoriesController');
+
+		Route::get('uacs/months', 'UACSController@getAllMonths');
+		Route::get('uacs', 'UACSController@getIndex');
+		Route::get('uacs/{month}', 'UACSController@getUACS');
+
+		Route::post('get/ledgercard/checkifexisting',[
+			'as' => 'ledgercard.checkifexisting',
+			'uses' => 'LedgerCardController@checkIfLedgerCardExists'
+		]);
+
+		Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
+		Route::get('purchaseorder/{id}/print','PurchaseOrderController@printPurchaseOrder');
+
+		Route::resource('purchaseorder','PurchaseOrderController');
+
+		Route::get('request/generate','RequestController@generate');
+
+		Route::get('receipt/{receipt}/print','ReceiptController@printReceipt');
+
+		Route::resource('receipt','ReceiptController');
+	});
 
 	Route::middleware(['amo'])->group(function(){
 
