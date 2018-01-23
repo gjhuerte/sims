@@ -12,7 +12,12 @@ class Dashboard
 	{
 
         $announcements = new App\Announcement;
-        if(Auth::user()->access != 1):
+
+        if(Auth::user()->access == 0):
+            $announcements = $announcements->findByAccess(['0', '3', '4']);
+        elseif(Auth::user()->access == 2):
+            $announcements = $announcements->findByAccess(['2', '3', '4']);
+        elseif(Auth::user()->access == 3):
             $announcements = $announcements->findByAccess(['3', '4']);
         endif;
         
