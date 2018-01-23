@@ -49,7 +49,7 @@
 	        ajax: "{{ url('maintenance/department') }}",
 	        columns: [
 	            { data: "id" },
-	            { data: "office_id" },
+	            { data: 'offices.name' },
 	            { data: "abbreviation" },
 	            { data: "name" },
 	            { data: function(callback){

@@ -37,9 +37,4 @@ class Office extends Model{
 	{
 		return $query->where('code','=',$value);
 	}
-
-	public function departments()
-    {
-        return $this->hasMany('App\Department');
-    }
 }
