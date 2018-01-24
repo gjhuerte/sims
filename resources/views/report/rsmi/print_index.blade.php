@@ -5,6 +5,8 @@
     <h3 class="text-center text-muted">
       Reports on Supplies and Materials Issued <small class="pull-right">Appendix 64</small>
     </h3> 
+
+    <p class="pull-right">R.I.S. {{ $start }} to {{ $end }}</p>
             
     <table class="table table-bordered" id="rsmiTable" cellspacing="0" width="100%">
       <thead>

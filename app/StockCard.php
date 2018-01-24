@@ -8,6 +8,7 @@ use Auth;
 use DB;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Contracts\UserResolver;
+use Event;
 
 class StockCard extends Model implements Auditable, UserResolver
 {

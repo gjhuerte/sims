@@ -18,6 +18,8 @@ return [
 
     'default_status' => env('DEFAULT_STATUS','pending'),
 
+    'socket_port' => env('SOCKET_PORT', 3000),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -206,6 +208,8 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
 
         // ...
+        // 
+        App\Providers\DashboardService::class,
     ],
 
     /*
@@ -244,7 +248,7 @@ return [
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
-        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'LRedis'    => 'Illuminate\Support\Facades\Redis',
         'Request' => Illuminate\Support\Facades\Request::class,
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,

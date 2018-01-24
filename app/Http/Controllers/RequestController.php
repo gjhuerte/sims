@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App;
 use Auth;
 use DB;
@@ -9,7 +11,8 @@ use Carbon;
 use Session;
 use PDF;
 use Validator;
-use Illuminate\Http\Request;
+use Event;
+use LRedis;
 
 class RequestController extends Controller
 {
@@ -23,7 +26,7 @@ class RequestController extends Controller
         if($request->ajax())
         {
 
-          $ret_val = App\Request::with('office')->with('requestor');
+          $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'desc');
 
           if(Auth::user()->access != 1)
           {
@@ -33,9 +36,7 @@ class RequestController extends Controller
               $ret_val->me();
           }
 
-          return json_encode([
-              'data' => $ret_val->get()
-          ]);
+          return datatables($ret_val->get())->toJson();
         }
 
         return view('request.index')
@@ -70,8 +71,10 @@ class RequestController extends Controller
       $array = [];
       $office = App\Office::findByCode(Auth::user()->office)->id;
       $status = null;
-      $purpose = $request->get("purpose");;
+      $purpose = $request->get("purpose");
       $requestor = Auth::user()->id;
+
+      if(count($stocknumbers) <= 0 ) return back()->withInput()->withErrors(['Invalid Stock List Requested']);
 
       foreach(array_flatten($stocknumbers) as $stocknumber)
       {
@@ -116,6 +119,16 @@ class RequestController extends Controller
       ]);
 
       $request->supplies()->sync($array);
+
+      $office = App\Office::find($office);
+      $requestor = App\User::find($requestor);
+      $title = 'New Supply Request';
+      $details = "A new request from $office->name by $requestor->firstname $requestor->lastname has been created.";
+      $url = url("request/$request->id");
+
+      App\Announcement::notify($title, $details, $access = 2, $url);
+
+      event(new App\Events\GenerateRequest($details));
 
       DB::commit();
 
@@ -230,6 +243,11 @@ class RequestController extends Controller
       $requests->purpose = $purpose;
       $requests->save();
       $requests->supplies()->sync($array);
+
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "Request $requests->code information has been updated by the user";
+
+      event(new App\Events\RequestApproval($data));
 
       DB::commit();
 
@@ -346,9 +364,12 @@ class RequestController extends Controller
         ]);
       }
 
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "Items from request $requests->code status has been released";
+
+      event(new App\Events\RequestApproval($data));
+
       DB::commit();
-
-
 
       \Alert::success('Items Released')->flash();
       return redirect('request');
@@ -417,6 +438,11 @@ class RequestController extends Controller
 
         $requests->supplies()->sync($array);
 
+        $data['id'] = $requests->requestor_id;
+            $data['message'] = "Request $request->code has been approved";
+
+        event(new App\Events\RequestApproval($data));
+
         DB::commit();
 
         \Alert::success('Request Approved')->flash();
@@ -436,6 +462,11 @@ class RequestController extends Controller
             $request->approved_at = Carbon\Carbon::now();
             $request->remarks = $remarks;
             $request->save();
+
+            $data['id'] = $request->requestor_id;
+            $data['message'] = "Request $request->code has been disapproved";
+
+            event(new App\Events\RequestApproval($data));
 
             return json_encode('success');
         }
@@ -480,6 +511,11 @@ class RequestController extends Controller
 
       DB::commit();
 
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "Request $requests->code has been cancelled";
+
+      event(new App\Events\RequestApproval($data));
+
       \Alert::success("$requests->code Cancelled")->flash();
       return redirect('request');
     }
@@ -516,10 +552,27 @@ class RequestController extends Controller
     {
       
       $comments = new App\RequestComments;
+      $requests = App\Request::find($id);
+      $details = $request->get('details');
+
+      $validator = Validator::make([
+          'Details' => $details
+      ], $requests->commentsRules());
+
+      if($validator->fails())
+      {
+          return back()->withInput()->withErrors($validator);
+      }
+
       $comments->request_id = $id;
-      $comments->details = $request->get('details');
+      $comments->details = $details;
       $comments->user_id = Auth::user()->id;
       $comments->save();
+
+      $data['id'] = $requests->requestor_id;
+      $data['message'] = "A comment for request $requests->code has been posted";
+
+      event(new App\Events\RequestApproval($data));
 
       return back();
     }
@@ -547,6 +600,11 @@ class RequestController extends Controller
         endforeach;
 
         $requests->save();
+
+        $data['id'] = $requests->requestor_id;
+        $data['message'] = "Request $requests->code status has been changed back to pending";
+
+        event(new App\Events\RequestApproval($data));
 
         return json_encode('success');
       }
@@ -615,5 +673,34 @@ class RequestController extends Controller
 
       return $const . '-' . $id;
 
+    }
+
+    /**
+     * [count description]
+     * returns the amount of request based on the 
+     * type given by the user
+     * @param  Request $request [description]
+     * @param  [type]  $type    [description]
+     * @return [type]           [description]
+     */
+    public function count(Request $request, $type)
+    {
+      if($request->ajax())
+      {
+        $count = 0;
+        $request = new App\Request;
+
+        if($type == 'pending'):
+          $request = $request->pending();
+        endif;
+
+        if(Auth::user()->access == 3):
+          $request = $request->filterByOfficeCode(Auth::user()->office);
+        endif;
+
+        $count = $request->count();
+
+        return json_encode($count);
+      }
     }
 }

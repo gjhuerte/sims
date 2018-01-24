@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use PDF;
 use Carbon;
+use App;
 
 class Controller extends BaseController
 {

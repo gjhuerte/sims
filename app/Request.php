@@ -41,10 +41,33 @@ class Request extends Model
       'Quantity' => 'required|integer|min:1',
       'Purpose' => 'required',
     );
+
+    public function commentsRules(){
+      return [
+        'Details' => 'required|max:100'
+      ];
+    }
     
     public $appends = [
       'code', 'date_requested'
     ];
+
+    public function scopePending($query)
+    {
+      return $query->whereNull('status');
+    }
+
+    public function scopefilterByOfficeId($query, $value)
+    {
+      $query->where('office_id', '=', $value);
+    }
+
+    public function scopefilterByOfficeCode($query, $value)
+    {
+      $query->whereHas('office', function($query) use ($value){
+        $query->where('code', '=', $value);
+      });
+    }
 
     public function getCodeAttribute($value)
     {
@@ -54,7 +77,7 @@ class Request extends Model
 
     public function getDateRequestedAttribute($value)
     {
-      return Carbon\Carbon::parse($this->created_at)->toFormattedDateString();
+      return Carbon\Carbon::parse($this->created_at)->format("F d Y h:m A");
     }
 
   	public function supplies()

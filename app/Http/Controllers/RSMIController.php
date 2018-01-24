@@ -66,16 +66,23 @@ class RSMIController extends Controller
 
 		$date = $this->convertDateToCarbon($date);
 
-		$ris = App\RSMI::filterByMonth($date)->get();
+		$ris = App\RSMI::filterByMonth($date);
 
         $recapitulation = App\RSMI::filterByMonth($date)
 								->groupBy('stocknumber','issued_quantity','details','cost')
 								->select('stocknumber',DB::raw("sum(issued_quantity) as issued_quantity"),'details',DB::raw("avg(cost) as cost"))
 								->get();
 
+		$start = $ris->orderBy('date', 'asc')->pluck('reference')->first();
+		$end = $ris->orderBy('date', 'desc')->pluck('reference')->first();
+
+		$ris = $ris->get();
+
         $data = [
             'ris' => $ris,
-            'recapitulation' => $recapitulation
+            'recapitulation' => $recapitulation,
+            'start' => $start,
+            'end' => $end
         ];
 
         $filename = "RSMI-".Carbon\Carbon::parse($date)->format('mdYHm').".pdf";

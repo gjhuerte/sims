@@ -9,6 +9,7 @@
                 return string.substring(index, index + 2);
             }
         }
+
         return string[index];
     };
 
@@ -33,7 +34,12 @@
     $.fn.initial = function (options) {
 
         // Defining Colors
-        var colors = ["#1abc9c", "#16a085", "#f1c40f", "#f39c12", "#2ecc71", "#27ae60", "#e67e22", "#d35400", "#3498db", "#2980b9", "#e74c3c", "#c0392b", "#9b59b6", "#8e44ad", "#bdc3c7", "#34495e", "#2c3e50", "#95a5a6", "#7f8c8d", "#ec87bf", "#d870ad", "#f69785", "#9ba37e", "#b49255", "#b49255", "#a94136"];
+        // var colors = ["#1abc9c", "#16a085", "#f1c40f", "#f39c12", "#2ecc71", "#27ae60", "#e67e22", "#d35400", "#3498db", "#2980b9", "#e74c3c", "#c0392b", "#9b59b6", "#8e44ad", "#bdc3c7", "#34495e", "#2c3e50", "#95a5a6", "#7f8c8d", "#ec87bf", "#d870ad", "#f69785", "#9ba37e", "#b49255", "#b49255", "#a94136"];
+        
+        var colors = [
+            '#9D2933', '#E68364', '#22A7F0', '', '#5D8CAE', '#1F4788', '#264348', '#044F67', '#16A085', '#006442', '#A17917', '#FFA631', '#F9690E', '#E08A1E', '#CA6924', '#6C7A89',
+            '#8F1D21', '#C93756', '#5B3256', '#317589'
+        ]
         var finalColor;
 
         return this.each(function () {
