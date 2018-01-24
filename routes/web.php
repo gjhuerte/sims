@@ -57,7 +57,6 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('rsmi/{date}','RSMIController@getIssued');
 
 		Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
-	Route::resource('maintenance/department','DepartmentController');
 
 		Route::get('report/fundcluster','ReportsController@getFundClusterView');
 
@@ -81,6 +80,8 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('maintenance/unit','UnitsController');
 
 		Route::resource('maintenance/supplier','SuppliersController');
+		
+		Route::resource('maintenance/department','DepartmentController');
 
 		Route::get('maintenance/category/assign/{id}', 'CategoriesController@showAssign');
 		Route::put('maintenance/category/assign/{id}', 'CategoriesController@assign');
