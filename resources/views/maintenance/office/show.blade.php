@@ -15,13 +15,25 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
-			<table class="table table-striped table-hover table-bordered" id='officeTable'>
+			<table class="table table-striped table-hover table-bordered" id='departmentTable'>
 				<thead>
-					<th>ID</th>
-					<th>Code</th>
-					<th>Name</th>
-					<th>Head</th>
-					<th class="no-sort"></th>
+					<tr>
+						<th colspan="2">Office Code: <span style="font-weight: normal;">{{ $office->code }} </span></th>
+						<th colspan="2">Office Head: <span style="font-weight: normal;">{{ $office->office_head }} </span></th>
+					</tr>
+					<tr>
+						<th colspan="2">Office Name: <span style="font-weight: normal;">{{ $office->name }} </span></th>
+						<th colspan="2"></th>
+					</tr>
+					<tr>
+						<th colspan="4" class="text-center">Departments</th>
+					</tr>
+					<tr>
+						<th>ID</th>
+						<th>Code</th>
+						<th>Name</th>
+						<th class="no-sort"></th>
+					</tr>
 				</thead>
 			</table>
 		</div>
@@ -35,7 +47,7 @@
 
 <script>
 	$(document).ready(function(){
-	    var table = $('#officeTable').DataTable( {
+	    var table = $('#departmentTable').DataTable( {
 	    	serverSide: true,
 			"processing": true,
 	    	columnDefs:[
@@ -47,37 +59,35 @@
 	    	"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 						    "<'row'<'col-sm-12'tr>>" +
 						    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-	        ajax: "{{ url('maintenance/office') }}",
+	        ajax: "{{ url("maintenance/office/$office->id") }}",
 	        columns: [
 	            { data: "id" },
-	            { data: "code" },
+	            { data: "abbreviation" },
 	            { data: "name" },
-	            { data: "office_head" },
 	            { data: function(callback){
 	            	return `
-	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + `" class="btn btn-sm btn-info">Show</a>
-	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
-	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Office" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
+	            			<a href="{{ url("maintenance/department") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
+	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Department" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	        ],
 	    } );
 
 	 	$("div.toolbar").html(`
- 			<a href="{{ url('maintenance/office/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add
+ 			<a href="{{ url('maintenance/department/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add Department
  			</a>
 		`);
 
-		$('#officeTable').on('click','button.remove',function(){
+		$('#departmentTable').on('click','button.remove',function(){
 		  	var removeButton = $(this);
 			removeButton.button('loading');
 			$.ajax({
 				type: 'delete',
-				url: '{{ url("maintenance/office") }}' + '/' + $(this).data('id'),
+				url: '{{ url("maintenance/department") }}' + '/' + $(this).data('id'),
 				dataType: 'json',
 				success: function(response){
 					if(response == 'success')
-					swal("Operation Success",'An office has been removed.',"success")
+					swal("Operation Success",'A department has been removed from {{ $office->code }}.',"success")
 					else
 						swal("Error Occurred",'An error has occurred while processing your data.',"error")
 					table.ajax.reload()

@@ -57,7 +57,6 @@ class StockCardController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		return $request->all();
 		$purchaseorder = $this->sanitizeString($request->get('purchaseorder'));
 		$deliveryreceipt = $this->sanitizeString($request->get('receipt'));
 		$date = $this->sanitizeString($request->get('date'));
@@ -66,7 +65,7 @@ class StockCardController extends Controller {
 		$daystoconsume = $request->get("daystoconsume");
 		$stocknumbers = $request->get("stocknumber");
 		$quantity = $request->get("quantity");
-		$dr_date = $this->sanitizeString($request->get('dr-date'));
+		$dr_date = $this->sanitizeString($request->get('receipt-date'));
 		$invoice = $this->sanitizeString($request->get('invoice'));
 		$invoice_date = $this->sanitizeString($request->get('invoice-date'));
 		$fundcluster = $this->sanitizeString($request->get("fundcluster"));
@@ -76,6 +75,8 @@ class StockCardController extends Controller {
 		$date = Carbon\Carbon::parse($date);
 
 		DB::beginTransaction();
+
+		if(!is_array($stocknumbers) && count($stocknumbers) <= 0) return back()->withInput()->withErrors(['Invalid information supplied']);
 
 		foreach($stocknumbers as $stocknumber)
 		{

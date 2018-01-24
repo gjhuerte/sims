@@ -30,9 +30,10 @@
             <th class="col-sm-1">ID</th>
             <th class="col-sm-1">P.O. Number</th>
             <th class="col-sm-1">Receipt Number</th>
+            <th class="col-sm-1">Receipt Date </th>
             <th class="col-sm-1">Invoice</th>
+            <th class="col-sm-1">Date</th>
             <th class="col-sm-1">Supplier</th>
-            <th class="col-sm-1">Date Delivered</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
         </thead>
@@ -66,9 +67,10 @@
                 { data: "id"},
                 { data: "purchaseorder_number" },
                 { data: "number" },
-                { data: "invoice" },
+                { data: "receipt_date" },
+                { data: "invoice_code" },
+                { data: "parsed_invoice_date" },
                 { data: 'supplier_name' },
-                { data: "parsed_date_delivered" },
                 { data: function(callback){
                   ret_val = "";
 

@@ -32,7 +32,7 @@ class Request extends Model
     public function approveRules(){
       return [
         'Stock Number' => 'required|exists:supplies,stocknumber',
-        'Quantity' => 'required|integer|min:1',
+        'Quantity' => 'required|integer|min:0',
       ];
     }
     

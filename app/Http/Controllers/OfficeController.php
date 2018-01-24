@@ -19,10 +19,9 @@ class OfficeController extends Controller {
 	{
 		if($request->ajax())
 		{
-			return json_encode([
-				'data' => App\Office::all()
-			]);
+			return datatables(App\Office::all())->toJson();
 		}
+
 		return view('maintenance.office.index')
 					->with('title','Office');
 	}
@@ -85,6 +84,11 @@ class OfficeController extends Controller {
 	 */
 	public function show(Request $request, $id = null)
 	{
+		$id = $this->sanitizeString($id);
+		$office = App\Office::find($id);
+
+		if(count($office) <= 0 ) return view('error.404');
+
 		if($request->ajax())
 		{
 			if(Input::has('term'))
@@ -93,10 +97,19 @@ class OfficeController extends Controller {
 				return json_encode( App\Office::where('code','like','%'.$code.'%')->pluck('code')->toArray());
 			}
 
+			if(count($office) > 0 )
+			{
+				return datatables($office->departments)->toJson();
+			}
+
 			return json_encode([
 				'data' => App\Office::findByCode($id)
 			]);
 		}
+
+		return view('maintenance.office.show')
+				->with('title', "$office->code")
+				->with('office', $office);
 	}
 
 

@@ -18,12 +18,34 @@ class Receipt extends Model
     	'date_delivered',
     	'received_by',
     	'supplier_id',
-        'purchaseorder_id'
+        'purchaseorder_id',
+        'invoice_date'
     ];
 
     protected $appends = [
-        'parsed_date_delivered', 'purchaseorder_number', 'supplier_name'
+        'parsed_date_delivered', 'purchaseorder_number', 'supplier_name', 'invoice_code', 'parsed_invoice_date', 'receipt_date'
     ];
+
+    public function getParsedInvoiceDateAttribute()
+    {
+        if($this->invoice_date == null || $this->invoice_date == "") return "None";
+
+        return Carbon\Carbon::parse($this->invoice_date)->toFormattedDateString();
+    }
+
+    public function getReceiptDateAttribute()
+    {
+        if($this->date_delivered == null || $this->date_delivered == "") return "None";
+
+        return Carbon\Carbon::parse($this->date_delivered)->toFormattedDateString();
+    }
+
+    public function getInvoiceCodeAttribute()
+    {
+        if($this->invoice == null || $this->invoice == "") return "None";
+
+        return $this->invoice;
+    }
 
     public function getParsedDateDeliveredAttribute($value)
     {
@@ -53,6 +75,8 @@ class Receipt extends Model
     public function getInvoiceAttribute()
     {
         if(!$this->attributes['invoice']) return 'Not Set';
+
+        return $this->attributes['invoice'];
     }
 
     public function supplies()

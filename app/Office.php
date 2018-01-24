@@ -28,6 +28,17 @@ class Office extends Model{
 		);
 	}
 
+	public $appends = [
+		'office_head'
+	];
+
+	public function getOfficeHeadAttribute()
+	{
+		if($this->head == null || $this->head == '' ) return 'None';
+
+		return $this->head;
+	}
+
 	public function scopeFindByCode($query,$value)
 	{
 		return $query->where('code','=',$value)->first();
@@ -36,5 +47,10 @@ class Office extends Model{
 	public function scopeCode($query,$value)
 	{
 		return $query->where('code','=',$value);
+	}
+
+	public function departments()
+	{
+		return $this->hasMany('App\Department', 'office_id', 'id');
 	}
 }

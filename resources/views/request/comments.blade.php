@@ -83,7 +83,7 @@
         <div class="col-sm-10"> 
           
           <h4>
-            <strong>{{ (isset($comment->user)) ? $comment->user->lastname : "None" }}, {{ (isset($comment->user)) ? $comment->user->firstname : "None" }}:</strong>
+            <strong>{{ (isset($comment->user)) ? $comment->user->firstname : "Not Applicable" }} {{ (isset($comment->user)) ? $comment->user->lastname : "Not Applicable" }} :</strong>
           </h4> 
           <p>{{ $comment->details }}</p> 
         </div> 

@@ -26,7 +26,7 @@ class AddSpecificUserToAnnouncements extends Migration
     public function down()
     {
         Schema::table('announcements', function (Blueprint $table) {
-            $table->dropColumnIfExists('specified_users');
+            $table->dropColumn('specified_users');
         });
     }
 }

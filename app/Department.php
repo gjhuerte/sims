@@ -25,7 +25,7 @@ class Department extends Model
 		);
 	}
 
-	public function offices()
+	public function office()
     {
         return $this->belongsTo('App\Office', 'office_id', 'id');
     } 

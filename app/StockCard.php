@@ -317,7 +317,7 @@ class StockCard extends Model implements Auditable, UserResolver
 				'received_by' => $fullname,
 				'supplier_id' => (count($supplier) > 0 && isset($supplier->id)) ? $supplier->id : null,
 				'invoice' => (isset($this->invoice)) ? $this->invoice : null,
-				'invoice_date' => (isset($this->invoice_date)) ? Carbon\Carbon::parse($this->invoice_date) : null
+				'invoice_date' => (isset($this->invoice_date)) ? $this->invoice_date : null
 			]);
 
 			$supply_info = $receipt->supplies()->find($supply->id);

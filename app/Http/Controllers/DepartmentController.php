@@ -15,7 +15,7 @@ class DepartmentController extends Controller
 	{
 		if($request->ajax())
 		{
-			$department = App\Department::with('offices')->get();
+			$department = App\Department::with('office')->get();
 			return datatables($department)->toJson();
 		}
 		return view('maintenance.department.index');
