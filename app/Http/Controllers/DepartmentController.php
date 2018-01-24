@@ -15,25 +15,24 @@ class DepartmentController extends Controller
 	{
 		if($request->ajax())
 		{
-			return json_encode([
-				'data' => App\Department::all()
-			]);
+			$department = App\Department::with('offices')->get();
+			return datatables($department)->toJson();
 		}
-		return view('maintenance.department.index')
-					->with('title','Department');
+		return view('maintenance.department.index');
 	}
 
 	public function create()
 	{
 		return view('maintenance.department.create')
-					->with('title','Department');
+					->with('title','Department')
+					->with('office',App\Office::pluck('name','id'));
 	}
 
 	public function store()
 	{
-
 		$name = $this->sanitizeString(Input::get('name'));
 		$abbreviation = $this->sanitizeString(Input::get('abbreviation'));
+		$office = $this->sanitizeString(Input::get('office'));
 
 		$department = new App\Department;
 
@@ -50,9 +49,10 @@ class DepartmentController extends Controller
 		}
 		$department->abbreviation = $abbreviation;
 		$department->name = $name;
+		$department->office_id = $office;
 		$department->save();
 
-		\Alert::success('department added')->flash();
+		\Alert::success('Department Added')->flash();
 		return redirect('maintenance/department');
 	}
 	public function edit($id)
@@ -65,7 +65,36 @@ class DepartmentController extends Controller
 		}
 		return view("maintenance.department.edit")
 				->with('department',$department)
-				->with('title','Department');
+				->with('title','Department')
+				->with('office',App\Office::pluck('name','id'));
+	}
+
+		public function update($id)
+	{
+		$name = $this->sanitizeString(Input::get('name'));
+		$abbreviation = $this->sanitizeString(Input::get('abbreviation'));
+		$office = $this->sanitizeString(Input::get('office'));
+
+		$department = App\Department::find($id);
+
+		$validator = Validator::make([
+			'Name' => $name,
+			'Abbreviation' => $abbreviation
+		],$department->updateRules());
+
+		if($validator->fails())
+		{
+			return redirect("maintenance/department/$id/edit")
+				->withInput()
+				->withErrors($validator);
+		}
+		$department->abbreviation = $abbreviation;
+		$department->name = $name;
+		$department->office_id = $office;
+		$department->save();
+
+		\Alert::success('Department Updated')->flash();
+		return redirect('maintenance/department');
 	}
 
 	public function destroy(Request $request, $id)

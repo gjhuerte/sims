@@ -18,6 +18,7 @@
 			<table class="table table-striped table-hover table-bordered" id='departmentTable'>
 				<thead>
 					<th class="col-sm-1">ID</th>
+					<th class="col-sm-1">Office</th>
 					<th class="col-sm-1">Department </th>
 					<th class="col-sm-1">Department Name</th>
 					<th class="no-sort col-sm-1"></th>
@@ -48,6 +49,7 @@
 	        ajax: "{{ url('maintenance/department') }}",
 	        columns: [
 	            { data: "id" },
+	            { data: 'offices.name' },
 	            { data: "abbreviation" },
 	            { data: "name" },
 	            { data: function(callback){

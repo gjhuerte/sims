@@ -1,13 +1,14 @@
 <?php
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon;
+use DB;
+use Illuminate\Database\Eloquent\Model;
 class Office extends Model{
 
 	protected $table = 'offices';
 	protected $primaryKey = 'id';
-	protected $fillable = ['code','name','description', 'head', 'department_id'];
+	protected $fillable = ['code','name','description', 'head'];
 	public $timestamps = false;
 
 	public function rules(){
@@ -36,5 +37,4 @@ class Office extends Model{
 	{
 		return $query->where('code','=',$value);
 	}
-
 }
