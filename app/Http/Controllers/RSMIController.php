@@ -73,10 +73,10 @@ class RSMIController extends Controller
 								->select('stocknumber',DB::raw("sum(issued_quantity) as issued_quantity"),'details',DB::raw("avg(cost) as cost"))
 								->get();
 
-		$start = $ris->orderBy('date', 'asc')->pluck('reference')->first();
-		$end = $ris->orderBy('date', 'desc')->pluck('reference')->first();
 
-		$ris = $ris->get();
+		$ris = $ris->orderBy('date')->orderBy('id')->orderBy('created_at')->get();
+		$start = $ris->pluck('reference')->first();
+		$end = $ris->pluck('reference')->last();
 
         $data = [
             'ris' => $ris,

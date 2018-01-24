@@ -232,6 +232,22 @@
 
             @endif
 
+            socket.on("trigger-announcement:App\\Events\\TriggerAnnouncement", function(data){
+              user_id = {{ Auth::user()->access }}
+              _user = data.id
+              _message = data.message
+
+              if(_user == user_id || _user == 4) 
+              {
+                new PNotify({
+                  title: "Alert!",
+                  text: _message,
+                  type: "info"
+                });
+
+              }
+            });
+
             socket.on("approval:App\\Events\\RequestApproval", function(data){
               user_id = {{ Auth::user()->id }}
               _user = data.id

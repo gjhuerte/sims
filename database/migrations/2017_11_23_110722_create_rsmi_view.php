@@ -16,7 +16,9 @@ class CreateRsmiView extends Migration
         DB::statement("
             CREATE VIEW rsmi_v AS
             SELECT 
+                    stockcards.id,
                     stockcards.date,
+                    stockcards.created_at,
                     stockcards.reference ,
                     stockcards.organization as office,
                     supplies.stocknumber,

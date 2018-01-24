@@ -27,10 +27,10 @@
 <div class="box" style="padding:20px;"> 
   <div class="box-body"> 
 
-    @include('errors.alert')
-
     {{ Form::open(array('class' => 'form-horizontal','method'=>'post','url'=>"request/$request->id/comments",'id'=>'commentsForm')) }} 
       <legend>Message Box</legend>
+
+      @include('errors.alert')
       <p class="text-muted">This module is for creating comments, suggestions, and other messages regarding the Request. Note: Your conversation is recorded.</p>
          
       <div class="form-group"> 

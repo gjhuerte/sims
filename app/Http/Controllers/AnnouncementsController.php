@@ -10,6 +10,8 @@ use Validator;
 use DB;
 use Carbon;
 use App\Services\Dashboard;
+use LRedis;
+use Event;  
 
 class AnnouncementsController extends Controller
 {
@@ -67,6 +69,12 @@ class AnnouncementsController extends Controller
         $announcement->access = $access;
         $announcement->user_id = Auth::user()->id;
         $announcement->save();
+
+        $user = Auth::user()->firstname;
+        $data['message'] = "$user has posted an announcement";
+        $data['id']  = $announcement->access;
+
+        event(new App\Events\TriggerAnnouncement($data));
 
         \Alert::success('Announcement Added!')->flash();
         return redirect('announcement');

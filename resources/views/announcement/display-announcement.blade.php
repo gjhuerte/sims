@@ -36,7 +36,6 @@
 			    	<div class="clearfix"></div>
 			    	<!-- fix button -->
 
-		    		@if(Auth::user()->access == 1 && $announcement->user_id == Auth::user()->id)
 		    		<!-- buttons -->
 	        		<div class="pull-right">
 						@if(Auth::user()->access == 1)
@@ -48,10 +47,10 @@
 						 <span class="label label-primary">{{ Carbon\Carbon::parse($announcement->created_at)->diffForHumans() }}</span>
 	        		</div>
 		    		<!-- buttons -->
-		    		@endif
 
 					<h3>
 						{{  isset($announcement->title) ? ucfirst($announcement->title) : "None" }}
+		    			@if(Auth::user()->access == 1 && $announcement->user_id == Auth::user()->id)
 	        			<div class="btn-group">
 	        				<a href="{{ url("announcement/$announcement->id/edit") }}" class="btn btn-sm btn-default">
 	        					<span class="glyphicon glyphicon-pencil"></span> Edit
@@ -62,6 +61,7 @@
 	        					<span class="glyphicon glyphicon-trash"></span>  Delete
 	        				</button>
 	        			</div>
+	    				@endif
 
 					</h3> 
 		    	</div>

@@ -102,7 +102,7 @@ class AdjustmentsController extends Controller
 			$transaction = new App\StockCard;
 			$transaction->date = Carbon\Carbon::now();
 			$transaction->stocknumber = $supply->stocknumber;
-			$transaction->reference = "Adjustment#$adjustment->id";
+			$transaction->reference = "Adjustment#$adjustment->code";
 			$transaction->receipt = null;
 			$transaction->organization = null;
 			$transaction->received_quantity = $quantity["$stocknumber"];

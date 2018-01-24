@@ -8,6 +8,8 @@ var dotenv = require('dotenv').config()
 
 redis.subscribe('approval', function(err, count) {  });
 
+redis.subscribe('trigger-announcement', function(err, count) {  });
+
 redis.subscribe('generate-request', function(err, count){  });
 
 redis.subscribe('request', function(err, count) {  });
