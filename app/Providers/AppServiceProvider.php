@@ -17,9 +17,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $count = App\Request::pending()->count();
-        View::share('request_count', $count);
-
         Schema::defaultStringLength(191);
     }
 
