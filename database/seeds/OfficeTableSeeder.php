@@ -308,7 +308,7 @@ class OfficeTableSeeder extends Seeder {
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
-                  'code' => ' ISTR-CLSR', 
+                  'code' => 'ISTR-CLSR', 
                   'name'=>'Center for Life Sciences Research',
                   'head' => '',
                   'created_at' => date('Y-m-d H:i:s'),
@@ -1232,8 +1232,8 @@ class OfficeTableSeeder extends Seeder {
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
-                  'code' => ' ISTR', 
-                  'name'=>'Institute for Science and Technology Research',
+                  'code' => 'ISTR', 
+                  'name'=> 'Institute for Science and Technology Research',
                   'head' => '',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
