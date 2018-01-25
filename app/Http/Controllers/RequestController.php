@@ -126,7 +126,7 @@ class RequestController extends Controller
       $details = "A new request from $office->name by $requestor->firstname $requestor->lastname has been created.";
       $url = url("request/$request->id");
 
-      App\Announcement::notify($title, $details, $access = 2, $url);
+      App\Announcement::notify($title, $details, $access = 1, $url);
 
       event(new App\Events\GenerateRequest($details));
 
