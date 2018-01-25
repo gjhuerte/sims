@@ -210,7 +210,7 @@
     <script>
         $(document).ready(function(){
 
-            var socket = io('{{ Request::getHttpHost() }}:{{ env('SOCKET_PORT') }}');
+            var socket = io('{{ Request::getHttpHost() }}:{{ config('app.socket_port') }}');
 
             socket.on("request:App\\Events\\TriggerRequest", function(message){
                 refreshRequestCount()

@@ -29,6 +29,8 @@ return [
                 'exclude' => [
                     base_path('vendor'),
                     storage_path(),
+                    base_path('vendor'),
+                    base_path('node_modules'),
                 ],
             ],
 
