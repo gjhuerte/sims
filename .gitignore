@@ -14,3 +14,5 @@ yarn-error.log
 .env.*.php
 .env.php
 /bootstrap/cache/
+
+storage/backups/http---localhost/
