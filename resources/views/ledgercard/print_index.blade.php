@@ -11,28 +11,20 @@
         @foreach($ledgercards as $ledgercard)
           <tr>
             <td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M Y') }}</td>
-            <td>{{ $ledgercard->reference }}</td>
+            <td>{{ $ledgercard->reference_list }}</td>
             <td>{{ $ledgercard->received_quantity }}</td>
-            <td>{{ number_format($ledgercard->received_unitcost, 2) }}</td>
-            <td>{{ number_format($ledgercard->received_quantity * $ledgercard->received_unitcost, 2) }}</td>
+            <td>{{ $ledgercard->parsed_received_unitcost }}</td>
+            <td>{{ $ledgercard->parsed_received_total_cost }}</td>
 
             <td>{{ $ledgercard->issued_quantity }}</td>
-            <td>{{ number_format($ledgercard->issued_unitcost, 2) }}</td>
-            <td>{{ number_format($ledgercard->issued_quantity * $ledgercard->issued_unitcost, 2) }}</td>
+            <td>{{ $ledgercard->parsed_issued_unitcost }}</td>
+            <td>{{ $ledgercard->parsed_issued_total_cost }}</td>
 
-            <td>{{ $ledgercard->monthlybalancequantity }}</td>
+            <td>{{ $ledgercard->parsed_monthlybalancequantity }}</td>
 
-            @if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
-            <td>{{ number_format($ledgercard->received_unitcost, 2) }}</td>
-            @else
-            <td>{{ number_format($ledgercard->issued_unitcost, 2) }}</td>
-            @endif
+            <td>{{ $ledgercard->parsed_monthlyunitcost }}</td>
 
-            @if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity) && $ledgercard->received_quantity > 0)
-            <td>{{ number_format($ledgercard->received_unitcost * ($ledgercard->received_quantity), 2) }}</td>
-            @else
-            <td>{{ number_format( $ledgercard->issued_unitcost *  ($ledgercard->issued_quantity), 2) }}</td>
-            @endif
+            <td>{{ $ledgercard->parsed_monthlytotalcost }}</td>
           </tr>
         @endforeach
       @else
