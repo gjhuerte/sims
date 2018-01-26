@@ -437,6 +437,8 @@ class LedgerCardController extends Controller {
 
 		DB::beginTransaction();
 
+		if($receipt == 'N/A') $receipt = null;
+
 		$transaction = new App\LedgerCard;
 		$transaction->date = Carbon\Carbon::parse($date);
 		$transaction->stocknumber = $stocknumber;

@@ -185,7 +185,7 @@ class LedgerCard extends Model implements Auditable, UserResolver
 			$supplier = Supplier::firstOrCreate([ 'name' => $this->organization ]);
 		}
 
-		if(isset($this->reference) && $this->reference != null)
+		if(isset($this->reference) && $this->reference != null && strpos($this->reference,'justment') != true)
 		{
 			$purchaseorder = PurchaseOrder::firstOrCreate([
 				'number' => $this->reference
@@ -241,45 +241,49 @@ class LedgerCard extends Model implements Auditable, UserResolver
 
 		unset($supply_info);
 
-		$receipt = Receipt::firstOrCreate([
-			'number' => $this->receipt
-		],[
-			'purchaseorder_id' => (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null,
-			'date_delivered' => Carbon\Carbon::parse($this->date),
-			'received_by' => $fullname,
-			'supplier_id' => isset($supplier->id) ? $supplier->id : null 
-
-		]);
-
-		$receipt->invoice = isset($this->invoice) ? $this->invoice : null;
-
-		$receipt->save();
-
-		$supply_info = $receipt->supplies()->find($supply->id);
-
-		if(count($supply_info) > 0)
+		if(isset($this->receipt) && $this->receipt != null)
 		{
 
-			// $supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
+			$receipt = Receipt::firstOrCreate([
+				'number' => $this->receipt
+			],[
+				'purchaseorder_id' => (count($purchaseorder) > 0 && isset($purchaseorder->id)) ? $purchaseorder->id : null,
+				'date_delivered' => Carbon\Carbon::parse($this->date),
+				'received_by' => $fullname,
+				'supplier_id' => isset($supplier->id) ? $supplier->id : null 
 
-			// $supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+			]);
 
-			// $supply_info->pivot->unitcost = (isset($supply_info->pivot->unitcost) ? $supply_info->pivot->unitcost : 0 ) + $this->unitcost;
+			$receipt->invoice = isset($this->invoice) ? $this->invoice : null;
 
-			$supply_info->pivot->unitcost = $this->received_unitcost;
+			$receipt->save();
 
-			$supply_info->pivot->save();
+			$supply_info = $receipt->supplies()->find($supply->id);
 
-		} else {
+			if(isset($supply_info) && count($supply_info) > 0)
+			{
 
-			// $supply_info->supplies()->attach([
-			// 	$supply->id => [
-			// 		'quantity' =>  $this->received_quantity,
-			// 		'remaining_quantity' => $this->received_quantity,
-			// 		'unitcost' => $this->received_unitcost
-			// 	]
-			// ]);
+				// $supply_info->pivot->received_quantity = (isset($supply_info->pivot->received_quantity) ? $supply_info->pivot->received_quantity : 0 ) + $this->received_quantity;
 
+				// $supply_info->pivot->remaining_quantity = (isset($supply_info->pivot->remaining_quantity) ? $supply_info->pivot->remaining_quantity : 0 ) + $this->received_quantity;
+
+				// $supply_info->pivot->unitcost = (isset($supply_info->pivot->unitcost) ? $supply_info->pivot->unitcost : 0 ) + $this->unitcost;
+
+				$supply_info->pivot->unitcost = $this->received_unitcost;
+
+				$supply_info->pivot->save();
+
+			} else {
+
+				// $supply_info->supplies()->attach([
+				// 	$supply->id => [
+				// 		'quantity' =>  $this->received_quantity,
+				// 		'remaining_quantity' => $this->received_quantity,
+				// 		'unitcost' => $this->received_unitcost
+				// 	]
+				// ]);
+
+			}
 		}
 
 
