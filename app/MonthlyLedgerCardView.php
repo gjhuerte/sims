@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
+use DB;
 
 class MonthlyLedgerCardView extends Model
 {
@@ -43,7 +44,7 @@ class MonthlyLedgerCardView extends Model
     {
       if($this->received_quantity > 0)
       {
-        $total = $this->received_total_cost / $this->monthlybalancequantity;
+        $total = $this->monthlytotalcost / $this->monthlybalancequantity;
       }
       else 
       {  
@@ -62,7 +63,29 @@ class MonthlyLedgerCardView extends Model
 
     public function getMonthlytotalcostAttribute($value)
     {  
-      return $this->monthlybalancequantity * $this->monthlyunitcost;
+      $received = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)
+                    ->where('date','<',$this->date)
+                    ->select(DB::raw('(received_quantity * received_unitcost) as total_cost'))
+                    ->get()
+                    ->sum('total_cost');
+      $issued = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)
+                    ->where('date','<',$this->date)
+                    ->select(DB::raw('(issued_quantity * issued_unitcost) as total_cost'))
+                    ->get()
+                    ->sum('total_cost');
+      $prev = $received - $issued;
+      $received = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)
+                    ->where('date','=',$this->date)
+                    ->select(DB::raw('(received_quantity * received_unitcost) as total_cost'))
+                    ->get()
+                    ->sum('total_cost');
+      $issued = MonthlyLedgerCardView::findByStockNumber($this->stocknumber)
+                    ->where('date','=',$this->date)
+                    ->select(DB::raw('(issued_quantity * issued_unitcost) as total_cost'))
+                    ->get()
+                    ->sum('total_cost');
+      // return $this->monthlybalancequantity * $this->monthlyunitcost;
+      return $prev + ($received - $issued); 
     }
 
     public function getParsedMonthlytotalcostAttribute($value)
