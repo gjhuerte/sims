@@ -140,6 +140,9 @@
       date = $(this).data('date')
       details = $(this).data('details')
 
+      if(receipt == null) receipt = 'N/A'
+      if(organization == null) organization = 'N/A'
+
       if( received > 0 ) 
         $('#fundcluster-form').show()
       else

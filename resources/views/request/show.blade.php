@@ -106,7 +106,7 @@
 
           @if($request->status != null && $request->status != 'released')
           <button id="reset" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm">
-            <i class="fa fa-refresh" aria-hidden="true"> Reset Status</i>
+            <i class="fa fa-refresh" aria-hidden="true"> Resubmit</i>
           </button>
 
           @endif
