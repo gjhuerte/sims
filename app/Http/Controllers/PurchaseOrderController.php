@@ -181,7 +181,7 @@ class PurchaseOrderController extends Controller
                 );
             }
 
-            if(count($purchaseorder) <= 0)
+            if($request->has('number'))
             {
                 $purchaseorder = App\PurchaseOrder::findByNumber($id)->first();
                 $fundcluster = (count($purchaseorder->fundclusters) > 0) ? implode( $purchaseorder->fundclusters->pluck('code')->toArray(), ",") : "None";

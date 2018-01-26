@@ -192,7 +192,7 @@
 			<div class="form-group">
 				{{ Form::label('Fund Clusters') }}
 				<br /> Suggestions:
-				@foreach(App\FundCluster::take('5')->pluck('code') as $fundcluster)
+				@foreach(App\FundCluster::whereNotIn('code', [' '])->whereNotNull('code')->take('5')->pluck('code') as $fundcluster)
 				<button type="button" value="{{ $fundcluster }}" class="btn btn-default fundcluster-item" style="margin-bottom: 10px;"> 
 					{{ $fundcluster }} 
 				</button>
@@ -240,6 +240,8 @@
 		@if($type == 'ledger')
 
 		@if($title == 'Release')
+
+		@if(false)
 		<div class="col-md-12">
 			<div class="form-group">
 			{{ Form::label('Computation Type:') }}
@@ -247,6 +249,8 @@
 			<input type="radio" id="averaging" name="computation_type" value="averaging" checked/> Averaging
 			</div>
 		</div>
+		@endif
+
 		@endif
 
 		<div class="form-group">
@@ -356,10 +360,10 @@ $('document').ready(function(){
 		source: "{{ url('get/office/code') }}"
 	})
 
-	$('#purchaseorder').on('change focus-in mousein keyup focus-out', function(){
+	$('#purchaseorder').on('change mousein keyup focusin', function(){
 		$.ajax({
 			type: 'get',
-			url: '{{ url('purchaseorder') }}' +  '/' + $('#purchaseorder').val() ,
+			url: '{{ url('purchaseorder') }}' +  '/' + $('#purchaseorder').val() + '?number=' + $('#purchaseorder').val()  ,
 			dataType: 'json',
 			success: function(response){
 				if(response.number)
@@ -377,10 +381,10 @@ $('document').ready(function(){
 		})
 	})
 
-	$('#receipt').on('change focusin mousein keyup focusout', function(){
+	$('#receipt').on('change mousein keyup focusin', function(){
 		$.ajax({
 			type: 'get',
-			url: '{{ url('receipt') }}' +  '/' + $('#receipt').val() ,
+			url: '{{ url('receipt') }}' +  '/' + $('#receipt').val() + '?number=' + $('#receipt').val() ,
 			dataType: 'json',
 			success: function(response){
 				if(response.number)
@@ -397,11 +401,11 @@ $('document').ready(function(){
 			}
 		})
 	})
-
-	$('#office').on('change',function(){
+ 
+	$('#office').on('change mousein keyup focusin',function(){
 		$.ajax({
 			type: 'get',
-			url: '{{ url('maintenance/office') }}' +  '/' + $('#office').val() ,
+			url: '{{ url('maintenance/office') }}' +  '/' + $('#office').val() + '?code=' + $('#office').val()  ,
 			dataType: 'json',
 			success: function(response){
 				try{
@@ -483,9 +487,9 @@ $('document').ready(function(){
 
 					url = "{{ url('inventory/supply')  }}" +  '/' + $('#stocknumber').val() + '/compute/daystoconsume'
 
-					// $.getJSON( url, function( data ) {
-					//   $('#daystoconsume').val(data)
-					// });
+					$.getJSON( url, function( data ) {
+					  $('#daystoconsume').val(data)
+					});
 					    				
 				} catch (e) {
 					$('#stocknumber-details').html(`
@@ -675,6 +679,10 @@ $('document').ready(function(){
       		$('#purchaseorder-label').text('P.O. No.:')
       	}
     }
+
+    $('#stocknumber').on('change focusin focusout mousein keyup', function(){
+    	setStockNumberDetails()
+    })
 
     $('#supplyInventoryTable').on('click','.add-stock',function(){
       $('#stocknumber').val($(this).data('id'))

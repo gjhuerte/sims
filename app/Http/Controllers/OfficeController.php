@@ -87,10 +87,9 @@ class OfficeController extends Controller {
 		$id = $this->sanitizeString($id);
 		$office = App\Office::find($id);
 
-		if(count($office) <= 0 ) return view('error.404');
-
 		if($request->ajax())
 		{
+
 			if(Input::has('term'))
 			{
 				$code = $this->sanitizeString(Input::get('term'));
@@ -105,6 +104,11 @@ class OfficeController extends Controller {
 			return json_encode([
 				'data' => App\Office::findByCode($id)
 			]);
+		}
+
+		if(count($office) <= 0 )
+		{
+			 return view('errors.404');
 		}
 
 		return view('maintenance.office.show')

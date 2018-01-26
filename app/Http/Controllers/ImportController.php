@@ -205,7 +205,6 @@ class ImportController extends Controller
             $transaction->receipt = $receipt;
             $transaction->issued_unitcost = $issuedunitcost;
             $transaction->received_unitcost = $receiptunitcost;
-            $transaction->daystoconsume = $daystoconsume;
             $transaction->created_by = Auth::user()->id;
 
             /*
@@ -219,11 +218,13 @@ class ImportController extends Controller
             if($received > 0)
             {
                 $transaction->received_quantity = $received;
+                $transaction->daystoconsume = $daystoconsume;
                 $transaction->receipt();
             }
             else
             {
                 $transaction->issued_quantity = $issued;
+                $transaction->daystoconsume = App\StockCard::computeDaysToConsume($stocknumber);
                 $transaction->issue();
             }
         }
@@ -309,7 +310,6 @@ class ImportController extends Controller
             $transaction->receipt = $receipt;
             $transaction->organization = $supplier;
             $transaction->fundcluster = $fundcluster;
-            $transaction->daystoconsume = $daystoconsume;
             $transaction->user_id = Auth::user()->id;
 
             /*
@@ -323,6 +323,7 @@ class ImportController extends Controller
             if($received > 0)
             {
                 $transaction->received_quantity = $received;
+                $transaction->daystoconsume = $daystoconsume;
                 $transaction->receipt();
             }
             else

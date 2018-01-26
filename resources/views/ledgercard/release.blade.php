@@ -2,10 +2,10 @@
 
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Batch Release</h3></legend>
+		<legend><h3 class="text-muted">Release</h3></legend>
 		<ul class="breadcrumb">
 			<li><a href="{{ url('inventory/supply') }}">Supply Inventory</a></li>
-			<li class="active">Batch Release</li>
+			<li class="active">Release</li>
 		</ul>
 	</section>
 @endsection

@@ -95,7 +95,7 @@ class ReceiptController extends Controller
                 );
             }
 
-            if( (count($receipt) <= 0 ) )
+            if( $request->has('number') )
             {
                 $receipt = App\Receipt::findByNumber($id);
                 return json_encode($receipt);
