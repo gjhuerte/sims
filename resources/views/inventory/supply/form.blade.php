@@ -18,12 +18,15 @@
 </div> <!-- suppliers -->
 
 <!-- references and receipts -->
+
+<hr style="color: black; background-color :black;" />
+
 <div class="row">
 
 	<!-- purchase order form -->
 	<div class="col-sm-6">
-		<div class="panel panel-primary" style="border-radius: 0px;">
-			<div class="panel-heading" style="border-radius: 0px;"><h5>Purchase Order / Agency Purchase Request </h5></div>
+		<div class="panel panel-primary" style="border-radius: 0px;border:none;">
+			<div class="panel-heading" style="border-radius: 0px;"><h4>Purchase Order / Agency Purchase Request </h4></div>
 			<div class="panel-body">
 
 				<!-- purchase order number -->
@@ -62,8 +65,8 @@
 
 	<!-- receipt form -->
 	<div class="col-sm-6">
-		<div class="panel panel-success" style="border-radius: 0px;">
-			<div class="panel-heading" style="border-radius: 0px;"><h5> Delivery Receipt / Invoice </h5></div>
+		<div class="panel panel-success" style="border-radius: 0px;border:none;">
+			<div class="panel-heading" style="border-radius: 0px;"><h4> Delivery Receipt / Invoice </h4></div>
 			<div class="panel-body">
 				
 				<!-- top -->
@@ -120,6 +123,8 @@
 	</div> <!-- end of receipt form -->
 
 </div> <!-- references and receipts -->
+
+<hr style="color: black; background-color :black;" />
 
 @endif
 

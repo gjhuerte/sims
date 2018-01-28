@@ -27,12 +27,13 @@
     <div class="col-sm-12">
       <label for="stocknumber">Stock Number</label> <div class="text-danger is-required">Field Required</div>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-9">
       <input type="text" class="form-control" placeholder="Supply Stock Number" id="stocknumber" />
       <p class="text-muted" style="font-size: 12px">Press <strong>Add</strong> Button to search for list of supplies</p>
+      <p class="text-muted" style="font-size: 12px">You can also print a copy of <a target="_blank" href="{{ url('inventory/supply/all/print') }}">Stock Masterlist</a></p>
     </div>
     <div class="col-sm-1" style="padding-left:0px;">
-      <button type="button" id="add-stocknumber" class="btn btn-default" data-target="#addStockNumberModal" data-toggle="modal">Add</button>
+      <button type="button" id="add-stocknumber" class="btn btn-default" data-target="#addStockNumberModal" data-toggle="modal">Search</button>
     </div>
   </div>
 

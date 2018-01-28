@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('logout', 'Auth\LoginController@logout');
 
 	Route::get('dashboard','DashboardController@index');
+	Route::get('inventory/supply/{type}/print', 'SupplyInventoryController@printMasterList');
 
 	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
 

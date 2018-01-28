@@ -74,4 +74,17 @@ class SupplyInventoryController extends Controller {
 		}
 	}
 
+	public function printMasterList(Request $request, $type)
+	{
+		$supplies = App\Supply::all();
+
+		$data = [
+			'supplies' => $supplies
+		];
+
+		$filename = "SupplyMasterList-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+		$view = "inventory.supply.print_index";
+		return $this->printPreview($view,$data,$filename);
+	}
+
 }
