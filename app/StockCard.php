@@ -63,8 +63,30 @@ class StockCard extends Model implements Auditable, UserResolver
 	public $dr_date = null;
 
 	protected $appends = [
-		'parsed_date', 'reference_information'
+		'parsed_date', 'reference_information', 'month', 'parsed_month', 'supply_name', 'stocknumber'
 	];
+
+	public function getSupplyNameAttribute($value)
+	{
+		return $this->supply->details;
+	}
+
+	public function getStocknumberAttribute($value)
+	{
+		return $this->supply->stocknumber;
+	}
+
+	public function getMonthAttribute($value)
+	{
+		$date = Carbon\Carbon::parse($this->date);
+		return $date->month . ' ' . $date->year;
+	}
+
+	public function getParsedMonthAttribute($value)
+	{
+		$date = Carbon\Carbon::parse($this->date);
+		return $date->format('M Y');
+	}
 
 	public function setDaystoconsumeAttribute($value)
 	{
@@ -224,7 +246,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	*	Call this function when receiving an item
 	*
 	*/
-	public function receipt()
+	public function receive()
 	{
 		$firstname = Auth::user()->firstname;
 		$middlename =  Auth::user()->middlename;

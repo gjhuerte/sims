@@ -219,7 +219,7 @@ class ImportController extends Controller
             {
                 $transaction->received_quantity = $received;
                 $transaction->daystoconsume = $daystoconsume;
-                $transaction->receipt();
+                $transaction->receive();
             }
             else
             {
@@ -324,7 +324,7 @@ class ImportController extends Controller
             {
                 $transaction->received_quantity = $received;
                 $transaction->daystoconsume = $daystoconsume;
-                $transaction->receipt();
+                $transaction->receive();
             }
             else
             {

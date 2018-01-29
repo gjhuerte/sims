@@ -49,15 +49,7 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
 		Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
 
-		Route::get('rsmi/months','RSMIController@getAllMonths');
-
-		Route::get('rsmi/{date}/print','RSMIController@print');
-
-		Route::get('rsmi','RSMIController@index');
-
-		Route::get('rsmi/{date}','RSMIController@getIssued');
-
-		Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
+		Route::resource('rsmi','RSMIController');
 
 		Route::get('report/fundcluster','ReportsController@getFundClusterView');
 

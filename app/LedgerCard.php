@@ -167,7 +167,7 @@ class LedgerCard extends Model implements Auditable, UserResolver
 	*	Call this function when receiving an item
 	*
 	*/
-	public function receipt()
+	public function receive()
 	{
 
 		$firstname = Auth::user()->firstname;

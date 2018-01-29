@@ -111,7 +111,7 @@ class LedgerCardController extends Controller {
 			$transaction->issued_unitcost = $receiptunitcost["$stocknumber"];
 			$transaction->daystoconsume = $daystoconsume["$stocknumber"];
 			$transaction->created_by = Auth::user()->id;
-			$transaction->receipt();
+			$transaction->receive();
 		}
 
 		DB::commit();
@@ -488,7 +488,7 @@ class LedgerCardController extends Controller {
 			}
 
 			$transaction->received_quantity = $received;
-			$transaction->receipt();
+			$transaction->receive();
 		endif;
 
 		DB::commit();
