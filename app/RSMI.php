@@ -25,7 +25,8 @@ class RSMI extends Model
         'S' => 'Submitted',
         'R' => 'Received',
         'E' => 'Returned',
-        'C' => 'Cancelled'
+        'C' => 'Cancelled',
+        'AP' => 'Applied'
     ];
 
     public function getParsedUnitcostAttribute($value)
