@@ -67,7 +67,7 @@
     });
 
     $('div.toolbar').html(`     
-       <a href="{{ url("request/$rsmi->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+       <a href="{{ url("rsmi/$rsmi->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
         <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
         <span id="nav-text"> Print</span>
       </a>

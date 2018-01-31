@@ -69,9 +69,9 @@ class RSMI extends Model
 
     public function getCreatedByAttribute($value)
     {
-        $user = $this->user;
+        $user = isset($this->user) ? $this->user : null;
 
-        return $user->lastname . ' ' . $user->firstname;
+        return (count($user) > 0) ? $user->lastname  . ' ' .  $user->firstname : null;
     }
 
     public function stockcards()

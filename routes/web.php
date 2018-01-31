@@ -45,11 +45,15 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['except-offices'])->group(function(){
 
-		Route::get('inventory/supply/rsmi','RSMIController@rsmi');
-		Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
-		Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
+		Route::get('rsmi', [
+			'as' => 'rsmi.index',
+			'uses' => 'RSMIController@index'
+		]);
 
-		Route::resource('rsmi','RSMIController');
+		Route::post('rsmi', [
+			'as' => 'rsmi.store',
+			'uses' => 'RSMIController@store'
+		]);
 
 		Route::get('report/fundcluster','ReportsController@getFundClusterView');
 
@@ -157,6 +161,8 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('announcement', 'AnnouncementsController');
 
+		Route::post('rsmi/submit', 'RSMIController@submit');
+
 	});
 
 	Route::middleware(['accounting'])->group(function(){
@@ -194,6 +200,23 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('inventory/supply.ledgercard','LedgerCardController');
 
 		Route::resource('fundcluster','FundClusterController');
+
+		Route::get('rsmi/receive', 'RSMIController@showReceive');
+
+		Route::post('rsmi/receive', [
+			'as' => 'rsmi.receive',
+			'uses' => 'RSMIController@receive'
+		]);
+	});
+
+	Route::middleware(['except-offices'])->group(function(){
+
+		Route::get('rsmi/{id}', [
+			'as' => 'rsmi.show',
+			'uses' => 'RSMIController@show'
+		]);
+
+		Route::get('rsmi/{id}/print', 'RSMIController@print');
 	});
 
 	Route::middleware(['admin'])->group(function(){
