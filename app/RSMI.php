@@ -62,6 +62,11 @@ class RSMI extends Model
         return $ret_val;
     }
 
+    public function scopeFilterByStatus($query, $value)
+    {
+        $query->where('status', '=', $value);
+    }
+
     public function getParsedReportDateAttribute($value)
     {
         return Carbon\Carbon::parse($this->report_date)->toDayDateTimeString();

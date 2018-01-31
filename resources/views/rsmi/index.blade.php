@@ -42,6 +42,7 @@
 	$(document).ready(function() {
 
 	    var table = $('#rsmiTable').DataTable({
+	    	pageLength: 100,
         	serverSide: true,
 			"processing": true,
 	    	columnDefs:[
@@ -66,6 +67,7 @@
 			],
 	    });
 
+	    @if(Auth::user()->access == 1)
 	    $('div.toolbar').html(`
 
 			<form method="post" action="{{ route('rsmi.store') }}">
@@ -85,6 +87,7 @@
 				</button>
 			</form>
     	`)
+    	@endif
 	} );
 </script>
 @endsection

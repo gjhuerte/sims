@@ -206,9 +206,11 @@
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 
 
+    @if(config('app.realtime'))
     <!-- script for realtime update on request count -->
     <script>
         $(document).ready(function(){
+
 
             var socket = io('{{ Request::getHttpHost() }}:{{ config('app.socket_port') }}');
 
@@ -281,5 +283,7 @@
         })
     </script>
     <!-- script for realtime update on request count -->
+    @endif
+    
 </body>
 </html>

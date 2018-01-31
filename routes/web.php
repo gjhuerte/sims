@@ -161,7 +161,7 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('announcement', 'AnnouncementsController');
 
-		Route::post('rsmi/submit', 'RSMIController@submit');
+		Route::post('rsmi/{id}/submit', 'RSMIController@submit');
 
 	});
 
@@ -201,9 +201,9 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('fundcluster','FundClusterController');
 
-		Route::get('rsmi/receive', 'RSMIController@showReceive');
+		Route::get('rsmi/{id}/receive', 'RSMIController@showReceive');
 
-		Route::post('rsmi/receive', [
+		Route::post('rsmi/{id}/receive', [
 			'as' => 'rsmi.receive',
 			'uses' => 'RSMIController@receive'
 		]);

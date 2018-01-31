@@ -70,7 +70,39 @@ class RSMIController extends Controller
     	return view('rsmi.show')
     			->with('rsmi', $rsmi);
     }
+
+    public function submit(Request $request, $id)
+    {
+        $id = $this->sanitizeString($id);
+        $rsmi = App\RSMI::find($id);
+
+        if(count($rsmi) <= 0) return view('errors.404');
+
+        $rsmi->status = 'S';
+        $rsmi->save();
+
+        \Alert::success('Report Submitted ')->flash();
+        return back();
+    }
+
+    public function showReceive(Request $request, $id)
+    {
+        $id = $this->sanitizeString($id);
+        $rsmi = App\RSMI::with('stockcards.supply')->find($id);
+
+        if(count($rsmi) <= 0) return view('errors.404');
+
+        if( Auth::user()->access != 2 ) return redirect('/');
+
+        return view('rsmi.receive')
+                ->with('rsmi', $rsmi);
+    }
     
+    public function receive(Request $request, $id)
+    {
+        return $request->all();
+    }
+
 	public function print($id)
 	{
     	$id = $this->sanitizeString($id);

@@ -72,6 +72,9 @@
 		  	var removeButton = $(this);
 			removeButton.button('loading');
 			$.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
 				type: 'delete',
 				url: '{{ url("maintenance/office") }}' + '/' + $(this).data('id'),
 				dataType: 'json',
@@ -89,8 +92,6 @@
 
 			})
 		})
-
-		$('#page-body').show();
 
 	});
 </script>

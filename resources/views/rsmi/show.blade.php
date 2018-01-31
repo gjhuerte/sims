@@ -48,29 +48,53 @@
 	$(document).ready(function() {
 
     var table = $('#rsmiTable').DataTable({
-      serverSide: true,
-      "processing": true,
-			language: {
-					searchPlaceholder: "Search..."
-			},
-			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
-							"<'row'<'col-sm-12'tr>>" +
-							"<'row'<'col-sm-5'i><'col-sm-7'p>>",
-			ajax: "{{ url("rsmi/$rsmi->id") }}",
-			columns: [
-          {data: 'reference' },
-					{ data: "supply_name" },
-          { data: "stocknumber" },
-          { data: "issued_quantity" },
-          { data: "pivot.unitcost" },
-			],
+		pageLength: 100,
+		serverSide: true,
+		"processing": true,
+		language: {
+				searchPlaceholder: "Search..."
+		},
+		"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
+						"<'row'<'col-sm-12'tr>>" +
+						"<'row'<'col-sm-5'i><'col-sm-7'p>>",
+		ajax: "{{ url("rsmi/$rsmi->id") }}",
+		columns: [
+			{data: 'reference' },
+			{ data: "supply_name" },
+			{ data: "stocknumber" },
+			{ data: "issued_quantity" },
+			{ data: "pivot.unitcost" },
+		],
     });
 
     $('div.toolbar').html(`     
-       <a href="{{ url("rsmi/$rsmi->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
-        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-        <span id="nav-text"> Print</span>
-      </a>
+		<div class="form-group">
+			<a href="{{ url("rsmi/$rsmi->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+				<span id="nav-text"> Print</span>
+			</a>
+		</div>
+
+		@if($rsmi->status_name == 'Pending' && Auth::user()->access == 1)
+		<div class="form-group">
+			<form method="post" action="{{ url("rsmi/$rsmi->id/submit") }}">
+				{{ csrf_field() }}
+				<button type="submit" href="" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">
+					<span class="fa fa-thumbs-up" aria-hidden="true"></span>
+					<span id="nav-text"> Submit</span>
+				</button>
+			</form>
+		</div>
+		@elseif(Auth::user()->access == 2)
+		<div class="form-group">
+			<form method="get" action="{{ url("rsmi/$rsmi->id/receive") }}">
+				<button type="submit" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">
+					<span class="fa fa-thumbs-up" aria-hidden="true"></span>
+					<span id="nav-text"> Receive</span>
+				</button>
+			</form>
+		</div>
+		@endif
     `)
 
 	} );
