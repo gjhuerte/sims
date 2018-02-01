@@ -376,7 +376,7 @@ class RequestController extends Controller
 
     }
 
-    public function getApproveForm(Request $request, $id)
+    public function getAcceptForm(Request $request, $id)
     {
         $requests = App\Request::find($id);
         
@@ -387,7 +387,7 @@ class RequestController extends Controller
                 ->with('action', 'approval');
     }
 
-    public function approve(Request $request, $id)
+    public function accept(Request $request, $id)
     {
 
         $id = $this->sanitizeString($id);
@@ -397,7 +397,9 @@ class RequestController extends Controller
         $requested = $request->get('requested');
         $array = [];
         $remarks = $this->sanitizeString( $request->get('remarks') );
+        $action = $this->sanitizeString( $request->get('submit') );
         $issued_by = Auth::user()->id;
+
 
         DB::beginTransaction();
 
@@ -432,56 +434,28 @@ class RequestController extends Controller
 
         $requests->remarks = $remarks;
         $requests->issued_by = $issued_by;
-        $requests->status = 'approved';
-        $requests->approved_at = Carbon\Carbon::now();
+        $request->status = ( ($action == 'approved') ? 'approved' : 'disapproved' ); 
+        $request->approved_at = Carbon\Carbon::now();
         $requests->save();
 
         $requests->supplies()->sync($array);
 
+        /**
+         * data consists of the message to send to the broadcasting utility
+         * id - the requestor id is required to filter only to whom is the 
+         * message for
+         * message - the message to send to the server
+         */
         $data['id'] = $requests->requestor_id;
-            $data['message'] = "Request $request->code has been approved";
+        $data['message'] = "Request $request->code has been approved";
 
         event(new App\Events\RequestApproval($data));
 
         DB::commit();
 
-        \Alert::success('Request Approved')->flash();
-        return redirect('request');
+        $message = 'Request ' . ( ($action == 'approved') ? 'Approved' : 'Disapproved' ); 
+        \Alert::success($message)->flash();
 
-    }
-
-    public function disapprove(Request $request, $id)
-    {
-        if($request->ajax())
-        {
-            $id = $this->sanitizeString($id);
-            $remarks = $this->sanitizeString($request->get('reason'));
-
-            $request = App\Request::find($id);
-            $request->status = "disapproved";
-            $request->approved_at = Carbon\Carbon::now();
-            $request->remarks = $remarks;
-            $request->save();
-
-            $data['id'] = $request->requestor_id;
-            $data['message'] = "Request $request->code has been disapproved";
-
-            event(new App\Events\RequestApproval($data));
-
-            return json_encode('success');
-        }
-
-        DB::beginTransaction();
-
-        $request = App\Request::find($id);
-
-        $request->status = 'disapproved';
-        $request->approved_at = Carbon\Carbon::now();
-        $request->save();
-
-        DB::commit();
-
-        \Alert::success('Request Disapproved')->flash();
         return redirect('request');
 
     }
