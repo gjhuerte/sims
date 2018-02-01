@@ -12,11 +12,9 @@
 @include('errors.alert')
 <!-- end of include fields --> 
 
-<legend><h3 class="text-muted">Request Slip: {{ $request->code }}</h3></legend>
-
 <!-- Stock Card Table -->
 <div class="col-sm-12" style="padding: 10px;">
-  <h3 class="line-either-side text-muted">Request List</h3>
+  <legend><h3 class="text-center text-muted">Request List</h3></legend>
   <table class="table table-hover table-condensed table-striped table-bordered" id="supplyTable" style="padding:20px;margin-right: 10px;">
     <thead>
       <tr>
@@ -34,29 +32,34 @@
       </tr>
     </tbody>
   </table>
-</div> <!-- end of Stock Card Table -->  
+</div> <!-- end of Stock Card Table --> 
+
+<!-- add stock fields -->
+<div class="col-sm-12" style="margin: 20px 0px;">
+  <button type="button" id="add" class="btn btn-md btn-primary pull-left" data-target="#addStockNumberModal" data-toggle="modal">
+    <span class="glyphicon glyphicon-plus"></span> Insert Additional Stock
+  </button>
+</div>
+<!-- end of add stock fields --> 
 
 <!-- purpose -->
-<div class="form-group" style="padding: 10px;">
-  <div class="col-sm-12">
-    <label>Purpose</label>
-    <textarea class="form-control" readonly disabled style="background-color: white;">{{ $request->purpose }}</textarea>
-  </div>
+<div class="col-sm-12">
+  <label>Purpose</label>
+  <blockquote> 
+    <p style="font-size: 20px;">{{ $request->purpose }}</p> 
+  </blockquote>
 </div>
 
 <!-- remarks fields -->
 <div class="form-group" style="padding: 10px;">
   <div class="col-md-12">
-    <label>Remarks</label>
+    <label>Additional Remarks</label>
     <textarea class="form-control" name="remarks" value="{{ old('remarks') }}" placeholder="Input additional comments/remarks"></textarea>
   </div>
 </div> <!-- end of remarks fields -->
 
 <!-- buttons -->
 <div style="padding: 10px;">
-  <!-- add stock fields -->
-  <button type="button" id="add" class="btn btn-md btn-primary pull-left" data-target="#addStockNumberModal" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span> Add Stock</button>
-  <!-- end of add stock fields -->
 
   <!-- action buttons -->
   <div class="pull-right">
@@ -138,7 +141,7 @@
                 <tr>
                   <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`" /></td>
                   <td>`+response.data.details+`</td>
-                  <td>`+response.data.stock_balance+`</td>
+                  <td>`+response.data.temp_balance+`</td>
                   <td>`+quantity+`<input type="hidden" name="requested[`+response.data.stocknumber+`]" class="form-control" value="`+quantity+`"  /></td>
                   <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value="`+issued+`"  /></td>
                   <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>

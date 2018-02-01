@@ -67,6 +67,11 @@ class Request extends Model
       return ucfirst($value);
     }
 
+    public function scopeFilterByStatus($query, $value)
+    {
+        is_array($value) ? $query->whereIn('status', $value) : $query->where('status', '=', $value);
+    }
+
     public function scopePending($query)
     {
       return $query->whereNull('status')->orWhere('status', '=', 'Pending');

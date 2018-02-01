@@ -49,11 +49,14 @@
             </span>
           </td>
           <td>{{ $supply->pivot->quantity_requested }}</td>
-          <td>{{ ($supply->stock_balance > 0) ? 'Yes ' . '( ' . ($supply->stock_balance) . ' )' : 'No' }}</td>
+          <td>{{ ($supply->stock_balance > 0) ? 'Yes ' : 'No' }}</td>
           <td>{{ $supply->pivot->quantity_issued }}</td>
           <td>{{ $supply->pivot->comments }}</td>
         </tr>
         @endforeach
+        <tr>
+          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+        </tr>
         @for($ctr = 0 ; $ctr < $end; $ctr++)
         <tr>
           <td style="padding: 15px;"></td>
@@ -64,9 +67,6 @@
           <td></td>
         </tr>
         @endfor
-        <tr>
-          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
-        </tr>
       </tbody>
     </table>
   </div>

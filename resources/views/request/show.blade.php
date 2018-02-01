@@ -84,27 +84,22 @@
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
           <span id="nav-text"> Print</span>
         </a>
-        @if($request->status == 'approved' && Auth::user()->access == 1)
-        <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
-          <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
-        </a>
-        @endif
-        <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
-          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Messages  <span class="label label-danger"> {{ App\RequestComments::where('request_id', '=', $request->id)->count() }} </span> </span>
-        </a>
 
         @if(Auth::user()->access == 1)
-
-          @if($request->status == null)
-          <a type="button" href="{{ url("request/$request->id/approve") }}" data-id="{{ $request->id }}" class="approve btn btn-success btn-sm">
-              <i class="fa fa-thumbs-up" aria-hidden="true"> Approve</i>
+        
+          @if($request->status == 'approved')
+          <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
+            <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
           </a>
-          <button id="disapprove" type="button" data-id="{{ $request->id }}" class="btn btn-danger btn-sm">
-            <i class="fa fa-thumbs-down" aria-hidden="true"> Disapprove</i>
-          </button>
           @endif
 
-          @if($request->status != null && $request->status != 'released')
+          @if($request->status == null || $request->status == 'Pending')
+          <a type="button" href="{{ url("request/$request->id/accept") }}" data-id="{{ $request->id }}" class="accept btn btn-success btn-sm">
+              <i class="fa fa-thumbs-up" aria-hidden="true"> Accept</i>
+          </a>
+          @endif
+
+          @if($request->status != null && ( $request->status == 'Disapproved' || $request->status == 'Approved' ))
           <button id="reset" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm">
             <i class="fa fa-refresh" aria-hidden="true"> Resubmit</i>
           </button>
@@ -112,54 +107,11 @@
           @endif
 
         @endif
+        <a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
+          <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Messages  <span class="label label-danger"> {{ App\RequestComments::where('request_id', '=', $request->id)->count() }} </span> </span>
+        </a>
     `)
     @if(Auth::user()->access == 1 )
-
-    @if($request->status == null)
-    $('#disapprove').on('click',function(){
-        swal({
-              title: "Remarks!",
-              text: "Input reason for disapproving the request",
-              type: "input",
-              showCancelButton: true,
-              closeOnConfirm: false,
-              animation: "slide-from-top",
-              inputPlaceholder: "Write something"
-        },
-        function(inputValue){
-            if (inputValue === false) return false;
-
-            if (inputValue === "") {
-                swal.showInputError("You need to write something!");
-                return false
-            }
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'put',
-                url: '{{ url("request/$request->id/disapprove") }}',
-                data: {
-                    'reason': inputValue
-                },
-                dataType: 'json',
-                success: function(response){
-                    if(response == 'success'){
-                        swal('Operation Successful','Operation Complete','success')
-                        location.reload();
-                    }else{
-                        swal('Operation Unsuccessful','Error occurred while processing your request','error')
-                    }
-
-                },
-                error: function(){
-                    swal('Operation Unsuccessful','Error occurred while processing your request','error')
-                }
-            })
-        })
-    });
-    @endif
 
     @if($request->status != null && $request->status != 'released')
 
