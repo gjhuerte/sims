@@ -18,21 +18,21 @@
 
 			<table class="table table-hover table-striped table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%"	>
 				<thead>
-		          <tr rowspan="2">
-		              <th class="text-left" colspan="3">Month:  <span style="font-weight:normal">{{ $rsmi->parsed_month }}</span> </th>
-		              <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ ($rsmi->status_name == '') ? ucfirst(config('app.default_status')) : $rsmi->status_name }}</span> </th>
-		          </tr>
-		          <tr rowspan="2">
-		              <th class="text-left" colspan="3">Created By:  <span style="font-weight:normal">{{ $rsmi->created_by }}</span> </th>
-		              <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $rsmi->remarks }}</span> </th>
-		          </tr>
-		          <tr>
-		            <th>Reference</th>
-					<th>Stock Number</th>
-					<th>Details</th>
-					<th>Issued Quantity</th>
-					<th>Issued Unit Cost</th>
-				</tr>
+					<tr rowspan="2">
+					  <th class="text-left" colspan="3">Month:  <span style="font-weight:normal">{{ $rsmi->parsed_month }}</span> </th>
+					  <th class="text-left" colspan="3">Status:  <span style="font-weight:normal">{{ ($rsmi->status_name == '') ? ucfirst(config('app.default_status')) : $rsmi->status_name }}</span> </th>
+					</tr>
+					<tr rowspan="2">
+					  <th class="text-left" colspan="3">Created By:  <span style="font-weight:normal">{{ $rsmi->created_by }}</span> </th>
+					  <th class="text-left" colspan="3">Remarks:  <span style="font-weight:normal">{{ $rsmi->remarks }}</span> </th>
+					</tr>
+					<tr>
+			            <th>Reference</th>
+						<th>Stock Number</th>
+						<th>Details</th>
+						<th>Issued Quantity</th>
+						<th>Issued Unit Cost</th>
+					</tr>
 				</thead>
 			</table>
 		</div>
@@ -85,7 +85,7 @@
 				</button>
 			</form>
 		</div>
-		@elseif(Auth::user()->access == 2)
+		@elseif($rsmi->status_name == 'Submitted' &&Auth::user()->access == 2 )
 		<div class="form-group">
 			<form method="get" action="{{ url("rsmi/$rsmi->id/receive") }}">
 				<button type="submit" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">

@@ -49,7 +49,7 @@
             </span>
           </td>
           <td>{{ $supply->pivot->quantity_requested }}</td>
-          <td>{{ ($supply->stock_balance > 0) ? 'Yes ' . '( ' . ($supply->stock_balance) . ' )' : 'No' }}</td>
+          <td>{{ ($supply->stock_balance > 0) ? 'Yes ' : 'No' }}</td>
           <td>{{ $supply->pivot->quantity_issued }}</td>
           <td>{{ $supply->pivot->comments }}</td>
         </tr>

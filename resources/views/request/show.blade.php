@@ -104,7 +104,7 @@
           </button>
           @endif
 
-          @if($request->status != null && $request->status != 'released')
+          @if($request->status != null && ( $request->status == 'Disapproved' || $request->status == 'Approved' ))
           <button id="reset" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm">
             <i class="fa fa-refresh" aria-hidden="true"> Resubmit</i>
           </button>
