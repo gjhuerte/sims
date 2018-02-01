@@ -55,7 +55,7 @@
 	            { data: "office_head" },
 	            { data: function(callback){
 	            	return `
-	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + `" class="btn btn-sm btn-info">Show</a>
+	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + `" class="btn btn-sm btn-info">Show Departments</a>
 	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
 	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Office" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
@@ -64,7 +64,7 @@
 	    } );
 
 	 	$("div.toolbar").html(`
- 			<a href="{{ url('maintenance/office/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add
+ 			<a href="{{ url('maintenance/office/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add Office
  			</a>
 		`);
 

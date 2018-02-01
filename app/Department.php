@@ -14,6 +14,8 @@ class Department extends Model
 	public function rules(){
 		return array(
 			'Name' => 'required|max:200',
+			'Head' => '',
+			'Designation' => '',
 			'Abbreviation' => 'max:200'
 		);
 	}
@@ -21,6 +23,8 @@ class Department extends Model
 	public function updateRules(){
 		return array(
 			'Name' => 'required|max:200',
+			'Head' => '',
+			'Designation' => '',
 			'Abbreviation' => 'max:200'
 		);
 	}

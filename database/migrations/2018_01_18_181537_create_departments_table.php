@@ -22,7 +22,9 @@ class CreateDepartmentsTable extends Migration
                     ->on('offices') 
                     ->onUpdate('cascade') 
                     ->onDelete('cascade'); 
-            $table->char('abbreviation', 10)->nullable();
+            $table->char('abbreviation', 20)->nullable();
+            $table->string('head', 100)->nullable();
+            $table->string('designation', 100)->nullable();
             $table->timestamps(); 
         });
     }
