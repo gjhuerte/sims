@@ -32,7 +32,7 @@
           <td>{{ $report->supply->unit_name }}</td>
           <td>{{ $report->issued_quantity }}</td>
           <td>{{ number_format($report->pivot->unitcost,2) }}</td>
-          <td>{{ number_format($report->pivot->issued_quantity * $report->unitcost, 2) }}</td>
+          <td>{{ number_format($report->issued_quantity * $report->pivot->unitcost, 2) }}</td>
         </tr>
         @endforeach
         <tr>

@@ -29,6 +29,7 @@ class RSMI extends Model
         'AP' => 'Applied'
     ];
 
+
     public function getParsedUnitcostAttribute($value)
     {
         $ret_val = 'N/A';
@@ -64,7 +65,7 @@ class RSMI extends Model
 
     public function scopeFilterByStatus($query, $value)
     {
-        $query->where('status', '=', $value);
+        is_array($value) ? $query->whereIn('status', $value) : $query->where('status', '=', $value);
     }
 
     public function getParsedReportDateAttribute($value)

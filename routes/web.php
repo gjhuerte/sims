@@ -202,11 +202,12 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('fundcluster','FundClusterController');
 
 		Route::get('rsmi/{id}/receive', 'RSMIController@showReceive');
-
+		
 		Route::post('rsmi/{id}/receive', [
 			'as' => 'rsmi.receive',
 			'uses' => 'RSMIController@receive'
 		]);
+
 	});
 
 	Route::middleware(['except-offices'])->group(function(){

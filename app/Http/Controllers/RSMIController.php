@@ -94,13 +94,44 @@ class RSMIController extends Controller
 
         if( Auth::user()->access != 2 ) return redirect('/');
 
+        if($request->ajax())
+        {
+            return datatables($rsmi)->toJson();
+        }
+
         return view('rsmi.receive')
                 ->with('rsmi', $rsmi);
     }
     
     public function receive(Request $request, $id)
     {
-        return $request->all();
+        $id = $this->sanitizeString($id);
+
+        $rsmi = App\RSMI::find($id);
+
+        $ids = $request->get('id');
+        $unitcost = $request->get('unitcost');
+        $array = [];
+
+        DB::beginTransaction();
+
+        foreach($ids as $id)
+        {
+            $array[$id] = [
+                'unitcost' => isset($unitcost[$id]) ? (int)$unitcost[$id] : null
+            ];
+        }
+
+        $rsmi->stockcards()->sync($array);
+
+        $rsmi->status = 'R';
+        $rsmi->save();
+
+        DB::commit();
+
+        \Alert::success('Report Received')->flash();
+        return redirect('rsmi');
+
     }
 
 	public function print($id)
