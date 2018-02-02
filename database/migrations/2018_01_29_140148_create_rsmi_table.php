@@ -26,7 +26,8 @@ class CreateRsmiTable extends Migration
             //  status can be of the following:
             //  P - pending
             //  S - sent by the assets management
-            //  R - received by the accounting     
+            //  R - received by the accounting
+            //  A - appended to ledger card     
             //  E - returned by accounting due to problems
             //  C - cancelled by the assets management 
             $table->char('status', 2)->nullable();

@@ -246,6 +246,11 @@ class LedgerCardController extends Controller {
 		return redirect('inventory/supply');
 	}
 
+	/**
+	 * [checkIfLedgerCardExists description]
+	 * check if the record already existed
+	 * @return [type] [description]
+	 */
 	public function checkIfLedgerCardExists()
 	{
 		if($request->ajax())
@@ -258,6 +263,11 @@ class LedgerCardController extends Controller {
 		}
 	}
 
+	/**
+	 * [printAllLedgerCard description]
+	 * create a printable format of all ledgercard from the said stock
+	 * @return [type] [description]
+	 */
 	public function printAllLedgerCard()
 	{
 		$supplies = App\Supply::all();
@@ -272,6 +282,12 @@ class LedgerCardController extends Controller {
 
 	}
 
+	/**
+	 * [printSummaryLedgerCard description]
+	 * returns summary of ledgercard
+	 * @param  [type] $stocknumber [description]
+	 * @return [type]              [description]
+	 */
 	public function printSummaryLedgerCard($stocknumber)
 	{
 		$ledgercards = App\MonthlyLedgerCardView::findByStockNumber($stocknumber)
@@ -288,6 +304,12 @@ class LedgerCardController extends Controller {
 
 	}
 
+	/**
+	 * [printLedgerCard description]
+	 * creates a printable format of ledger card
+	 * @param  [type] $stocknumber [description]
+	 * @return [type]              [description]
+	 */
 	public function printLedgerCard($stocknumber)
 	{
 
@@ -303,6 +325,16 @@ class LedgerCardController extends Controller {
 
 	}
 
+	/**
+	 * [computeCost description]
+	 * returns the computed cost
+	 * types
+	 * fifo - first come first serve
+	 * average - average cost of item
+	 * @param  Request $request [description]
+	 * @param  [type]  $type    [description]
+	 * @return [type]           [description]
+	 */
 	public function computeCost(Request $request, $type)
 	{
 		if($request->ajax())
@@ -373,6 +405,13 @@ class LedgerCardController extends Controller {
 		}
 	}
 
+	/**
+	 * [showUncopiedRecords description]
+	 * returns list of records from stockcard 
+	 * not on ledgercard
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function showUncopiedRecords(Request $request)
 	{
 		if($request->ajax())
@@ -387,6 +426,12 @@ class LedgerCardController extends Controller {
 		return view('record.uncopied');
 	}
 
+	/**
+	 * [copy description]
+	 * sync records from stockcard to ledger card
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function copy(Request $request)
 	{
 		$unitcost = $this->sanitizeString( $request->get('unitcost') );

@@ -14,9 +14,9 @@ class Department extends Model
 	public function rules(){
 		return array(
 			'Name' => 'required|max:200',
-			'Head' => '',
-			'Designation' => '',
-			'Abbreviation' => 'max:200'
+			'Head' => 'max:100',
+			'Designation' => 'max:100',
+			'Abbreviation' => 'max:20'
 		);
 	}
 

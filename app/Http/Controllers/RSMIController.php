@@ -19,7 +19,7 @@ class RSMIController extends Controller
     	{
     		$rsmi = new App\RSMI;
 
-    		if(Auth::user()->access != 1) $rsmi = $rsmi->filterByStatus(['S', 'R', 'C', 'E']);
+    		if(Auth::user()->access != 1) $rsmi = $rsmi->filterByStatus(['S', 'R', 'C', 'E', 'AP']);
 
     		return datatables($rsmi->orderBy('id','desc')->get())->toJson();
     	}
@@ -85,6 +85,13 @@ class RSMIController extends Controller
         return back();
     }
 
+    /**
+     * [showReceive description]
+     * displays receive form
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function showReceive(Request $request, $id)
     {
         $id = $this->sanitizeString($id);
@@ -103,27 +110,49 @@ class RSMIController extends Controller
                 ->with('rsmi', $rsmi);
     }
     
+    /**
+     * [receive description]
+     * set the rsmi as received in status
+     * updates the unitcost per item on the rsmi
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function receive(Request $request, $id)
     {
         $id = $this->sanitizeString($id);
+        $ids = $request->get('id');
+        $unitcosts = $request->get('unitcost');
+        $array = [];
 
         $rsmi = App\RSMI::find($id);
 
-        $ids = $request->get('id');
-        $unitcost = $request->get('unitcost');
-        $array = [];
-
         DB::beginTransaction();
 
+        $unitcost = isset($unitcosts[$id]) ? (int)$unitcosts[$id] : null;
+        /**
+         * checks whether the unitcost of the said item
+         * is equals to zero(0)
+         * if the unitcost is zero, returns error
+         */
+        if( ! (isset($unitcost) && $unitcost > 0) )
+        {
+            return back()->withInput()->withErrors(["Unitcost must not be equals to zero"]);
+        }
+
+        /**
+         * loops through each record
+         * creates an array of unitcost based on the id
+         * of the stockcard given
+         */
         foreach($ids as $id)
         {
             $array[$id] = [
-                'unitcost' => isset($unitcost[$id]) ? (int)$unitcost[$id] : null
+                'unitcost' => $unitcost
             ];
         }
 
         $rsmi->stockcards()->sync($array);
-
         $rsmi->status = 'R';
         $rsmi->save();
 
@@ -132,6 +161,58 @@ class RSMIController extends Controller
         \Alert::success('Report Received')->flash();
         return redirect('rsmi');
 
+    }
+
+    /**
+     * [append description]
+     * appends the rsmi details to ledger card
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function apply(Request $request, $id)
+    {
+        $rsmi = App\RSMI::with('stockcards.supply')->find($id);
+
+        /**
+         * append each record to ledger card
+         */
+        DB::beginTransaction();
+
+        foreach($rsmi->stockcards as $stockcard):
+
+            $date = $stockcard->date;
+            $stocknumber = $stockcard->supply->stocknumber;
+            $reference = $stockcard->reference; 
+            $unitcost = $stockcard->pivot->unitcost; 
+            $issued_quantity = $stockcard->issued_quantity; 
+            $daystoconsume = $stockcard->daystoconsume; 
+
+            $transaction = new App\LedgerCard;
+            $transaction->date = Carbon\Carbon::parse($date);
+            $transaction->stocknumber = $stocknumber;
+            $transaction->reference = $reference;
+            $transaction->received_quantity = 0;
+            $transaction->issued_quantity = $issued_quantity;
+            $transaction->issued_unitcost = $transaction->received_unitcost = $unitcost;
+            $transaction->daystoconsume = $daystoconsume;
+            $transaction->created_by = Auth::user()->id;
+            $transaction->issue();
+
+        endforeach;
+
+        DB::commit();
+
+        /**
+         * [$rsmi->status description]
+         * set the rsmi status as appended to ledger card
+         * @var string
+         */
+        $rsmi->status = 'AP';
+        $rsmi->save();
+
+        \Alert::success("Records from RSMI $rsmi->parsed_month added to Ledger Card");
+        return redirect("rsmi/$rsmi->id");
     }
 
 	public function print($id)

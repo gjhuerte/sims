@@ -26,7 +26,7 @@ class RSMI extends Model
         'R' => 'Received',
         'E' => 'Returned',
         'C' => 'Cancelled',
-        'AP' => 'Applied'
+        'AP' => 'Applied To Ledger Card'    
     ];
 
 

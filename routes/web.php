@@ -206,6 +206,8 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'RSMIController@receive'
 		]);
 
+		Route::post('rsmi/{id}/apply', 'RSMIController@apply');
+
 	});
 
 	Route::middleware(['except-offices'])->group(function(){

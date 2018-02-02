@@ -32,20 +32,37 @@
       <tbody>
       @if(isset($rsmi->stockcards))
           @foreach($rsmi->stockcards as $stockcard)
-          <tr @if( ( $stockcard->supply->unitcost == 0.00  || $stockcard->supply->unitcost == null || $stockcard->supply->unitcost == "" ) ) class="warning" @endif>
+
+            {{-- checks whether the item should have a display error --}}
+            @php
+              $stockcard_id = $stockcard->pivot->stockcard_id;
+            @endphp
+
+            @if( old("unitcost.$stockcard_id") ) 
+
+              @if( old("unitcost.$stockcard_id") <= 0 )
+              <tr class="danger"> 
+              @endif
+
+            @elseif( $stockcard->supply->unitcost == 0.00  || $stockcard->supply->unitcost == null || $stockcard->supply->unitcost == "" ) 
+            <tr class="warning"> 
+            @endif
+            {{-- checks whether the item should have a display error --}}
+
             <td>
               {{ $stockcard->reference }}
               <input type="hidden" name="reference[{{ $stockcard->pivot->stockcard_id }}]" class="form-control" value="{{ $stockcard->reference }}"  />
             </td>
             <td> 
-              <input type="text" class="stocknumber form-control" name="stocknumber[{{ $stockcard->pivot->stockcard_id }}]" value="{{ $stockcard->supply->stocknumber }}" data-stocknumber="{{ $stockcard->supply->stocknumber }}" readonly style="background-color: white;border: none;" />
+              {{ $stockcard->supply->stocknumber }}
+              <input type="hidden" class="stocknumber form-control" name="stocknumber[{{ $stockcard->pivot->stockcard_id }}]" value="{{ $stockcard->supply->stocknumber }}" data-stocknumber="{{ $stockcard->supply->stocknumber }}" readonly style="background-color: white;border: none;" />
             </td>
             <td>{{ $stockcard->supply->details }}</td>
             <td>
               <input type="number" name="quantity[{{ $stockcard->pivot->stockcard_id }}]" class="form-control" value="{{ $stockcard->issued_quantity }}" readonly style="background-color: white; border: none;" />
             </td>
             <td>
-              <input type="text" name="unitcost[{{ $stockcard->pivot->stockcard_id }}]" data-id="{{ $stockcard->pivot->stockcard_id }}" class="unitcost form-control" value="{{ number_format($stockcard->supply->unitcost, 2) }}" />
+              <input type="text" name="unitcost[{{ $stockcard->pivot->stockcard_id }}]" data-id="{{ $stockcard->pivot->stockcard_id }}" class="unitcost form-control" value="{{ old("unitcost.$stockcard_id") ? old("unitcost.$stockcard_id") : number_format($stockcard->supply->unitcost, 2) }}" />
             </td>
             <td>
               <input type="hidden" name="id[]" class="stockcard-id" value="{{ $stockcard->pivot->stockcard_id }}"  />

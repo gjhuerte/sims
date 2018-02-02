@@ -67,12 +67,14 @@
               <i class="fa fa-angle-left pull-right"></i>
             </a>
               <ul class="treeview-menu">
+                @if(Auth::user()->access == 1)
                 <li>
                   <a href="{{ url('request') }}">
                     <li><i class="fa fa-list" aria-hidden="true"></i>
                     View
                   </a>
                 </li>
+                @endif
                 <li>
                   <a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/release') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/release') }}  @endif">
                         <li><i class="fa fa-pencil" aria-hidden="true"></i>

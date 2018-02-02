@@ -37,7 +37,7 @@ class MonthlyLedgerCardView extends Model
 
     public function getParsedMonthlybalancequantityAttribute($value)
     {
-      return number_format($this->monthlybalancequantity, 2); 
+      return $this->monthlybalancequantity; 
     }
 
     public function getMonthlyunitcostAttribute($value)

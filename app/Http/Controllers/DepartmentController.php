@@ -59,8 +59,9 @@ class DepartmentController extends Controller
 		$department->save();
 
 		\Alert::success('Department Added')->flash();
-		return redirect('maintenance/department');
+		return redirect("maintenance/office/$office");
 	}
+
 	public function edit($id)
 	{
 		$department = App\Department::find($id);

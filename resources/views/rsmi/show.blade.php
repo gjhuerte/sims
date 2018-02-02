@@ -29,7 +29,7 @@
 					<tr>
 			            <th>Reference</th>
 						<th>Stock Number</th>
-						<th>Details</th>
+						<th style="white-space: normal;">Details</th>
 						<th>Issued Quantity</th>
 						<th>Issued Unit Cost</th>
 					</tr>
@@ -60,8 +60,8 @@
 		ajax: "{{ url("rsmi/$rsmi->id") }}",
 		columns: [
 			{data: 'reference' },
-			{ data: "supply_name" },
 			{ data: "stocknumber" },
+			{ data: "supply_name" },
 			{ data: "issued_quantity" },
 			{ data: "pivot.unitcost" },
 		],
@@ -80,20 +80,33 @@
 			<form method="post" action="{{ url("rsmi/$rsmi->id/submit") }}">
 				{{ csrf_field() }}
 				<button type="submit" href="" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">
-					<span class="fa fa-thumbs-up" aria-hidden="true"></span>
 					<span id="nav-text"> Submit</span>
 				</button>
 			</form>
 		</div>
-		@elseif($rsmi->status_name == 'Submitted' &&Auth::user()->access == 2 )
-		<div class="form-group">
-			<form method="get" action="{{ url("rsmi/$rsmi->id/receive") }}">
-				<button type="submit" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">
-					<span class="fa fa-thumbs-up" aria-hidden="true"></span>
-					<span id="nav-text"> Receive</span>
-				</button>
-			</form>
-		</div>
+		@elseif(Auth::user()->access == 2 )
+
+			@if($rsmi->status_name == 'Submitted')
+			<div class="form-group">
+				<form method="get" action="{{ url("rsmi/$rsmi->id/receive") }}">
+					<button type="submit" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">
+						<span id="nav-text"> Receive</span>
+					</button>
+				</form>
+			</div>
+			@endif
+
+			@if($rsmi->status_name == 'Received')
+			<div class="form-group">
+				<form method="post" action="{{ url("rsmi/$rsmi->id/apply") }}">
+					<input type="hidden" name="_token" value="{{ csrf_token() }}" />
+					<button type="submit" id="submit" class="print btn btn-sm btn-success ladda-button" data-style="zoom-in">
+						<span id="nav-text"> Apply To Ledger Card</span>
+					</button>
+				</form>
+			</div>
+			@endif
+
 		@endif
     `)
 
