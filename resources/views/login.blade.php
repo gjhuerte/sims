@@ -44,38 +44,40 @@ Login
           </div>
           <!-- <legend><h3 class="text-center text-primary">Log In</h3></legend> -->
           <div class="col-sm-12">
+
             <div id="error-container"></div>
-            {{ Form::open(array('class' => 'form-horizontal','route'=>['login'],'id'=>'loginForm')) }}
-            <div class="form-group">
-              <div class="col-md-12">
-                {{ Form::label('username','Username') }}
-                {{ Form::text('username',Input::old('username'),[
-                  'required',
-                  'id'=>'username',
-                  'class'=>'form-control',
-                  'placeholder'=>'Username',
+
+            <form class="form-horizontal" action="{{ route('login') }}" id="loginForm" method="post">
+              <div class="form-group">
+                <div class="col-md-12">
+                  {{ Form::label('username','Username') }}
+                  {{ Form::text('username',Input::old('username'),[
+                    'required',
+                    'id'=>'username',
+                    'class'=>'form-control',
+                    'placeholder'=>'Username',
+                  ]) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-12">
+                {{ Form::label('Password') }}
+                {{ Form::password('password',[
+                    'required',
+                    'id'=>'password',
+                    'class'=>'form-control',
+                    'placeholder'=>'Password',
                 ]) }}
+                </div>
               </div>
-            </div>
-            <div class="form-group">
-              <div class="col-md-12">
-              {{ Form::label('Password') }}
-              {{ Form::password('password',[
-                  'required',
-                  'id'=>'password',
-                  'class'=>'form-control',
-                  'placeholder'=>'Password',
-              ]) }}
+              <div class="form-group">
+                <div class="col-md-12">
+                    <button type="submit" id="loginButton" data-loading-text="Logging in..." class="btn btn-lg btn-primary btn-block" autocomplete="off">
+                    Login
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="form-group">
-              <div class="col-md-12">
-                  <button type="submit" id="loginButton" data-loading-text="Logging in..." class="btn btn-lg btn-primary btn-block" autocomplete="off">
-                  Login
-                </button>
-              </div>
-            </div>
-          {{ Form::close() }}
+            </form>
           </div>
         </div>
       </div>

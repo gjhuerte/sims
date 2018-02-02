@@ -41,17 +41,11 @@
             @if(isset($action) && $action != 'request')
 
             @if(Auth::user()->access == 1 || Auth::user()->access == 2)
-
-            {{-- check from where the balance will be used --}}
             @if(isset($type) && $type == 'ledger')
             { data: "ledger_balance" },
-            @elseif($action == 'approval')
-            { data: "temp_balance" },
             @else
             { data: "stock_balance" },
             @endif
-            {{-- check from where the balance will be used --}}
-
             @endif
 
             @endif

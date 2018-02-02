@@ -15,7 +15,9 @@
   <div class="box">
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
-			@if(isset($request->requestor_id) && Auth::user()->id == $request->requestor_id && $request->status == null)
+			@if(isset($request->requestor_id) && Auth::user()->id == $request->requestor_id )
+
+        @if($request->status == 'Resubmit' || $request->status == null || ( strpos($request->status, 'pdated') != false )  || $request->status == '')
         <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
 	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 	    	</a>
@@ -23,6 +25,8 @@
         	<i class="fa fa-hand-stop-o" aria-hidden="true"></i> Cancel
         </a>
         <hr />
+
+        @endif
       @endif
 
 			<table class="table table-hover table-striped table-bordered table-condensed" id="requestTable" cellspacing="0" width="100%"	>
@@ -86,24 +90,24 @@
         </a>
 
         @if(Auth::user()->access == 1)
-        
-          @if($request->status == 'approved')
-          <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
-            <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
-          </a>
-          @endif
-
-          @if($request->status == null || $request->status == 'Pending')
-          <a type="button" href="{{ url("request/$request->id/accept") }}" data-id="{{ $request->id }}" class="accept btn btn-success btn-sm">
-              <i class="fa fa-thumbs-up" aria-hidden="true"> Accept</i>
-          </a>
-          @endif
 
           @if($request->status != null && ( $request->status == 'Disapproved' || $request->status == 'Approved' ))
           <button id="reset" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm">
             <i class="fa fa-refresh" aria-hidden="true"> Resubmit</i>
           </button>
 
+          @endif
+        
+          @if($request->status == 'Approved')
+          <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
+            <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
+          </a>
+          @endif
+
+          @if($request->status == null || $request->status == 'Pending' || ( strpos($request->status, 'pdated') != false ))
+          <a type="button" href="{{ url("request/$request->id/accept") }}" data-id="{{ $request->id }}" class="accept btn btn-success btn-sm">
+              <i class="fa fa-thumbs-up" aria-hidden="true"> Accept</i>
+          </a>
           @endif
 
         @endif

@@ -137,6 +137,7 @@ Route::middleware(['auth'])->group(function(){
 		Route::put('request/{id}/reset', 'RequestController@resetStatus');
 
 		Route::get('request/{id}/accept','RequestController@getAcceptForm');
+		
 		Route::put('request/{id}/accept',[
 			'as' => 'request.accept',
 			'uses' => 'RequestController@accept'
