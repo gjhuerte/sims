@@ -70,12 +70,6 @@
             </td>
           </tr>
         @endforeach
-      @else
-        @if(null !== old('stocknumber'))
-          @foreach(old('stocknumber') as $stocknumber)
-            insertRow("{{ $stocknumber }}", "{{ old("rsmied.$stocknumber") }}",  "{{ old("quantity.$stocknumber") }}")
-          @endforeach
-        @endif
       @endif
       </tbody>  
     </table>

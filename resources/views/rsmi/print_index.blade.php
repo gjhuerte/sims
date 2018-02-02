@@ -37,7 +37,7 @@
         </tr>
         @endforeach
         <tr>
-          <td colspan="6">Total Quantity Released: <span class="pull-right"> {{ $report->sum('issued_quantity') }} </span></td>
+          <td colspan="6">Total Quantity Released: <span class="pull-right"> {{ $rsmi->stockcards->sum('issued_quantity') }} </span></td>
           <td colspan="1">N/A</td>
           <td colspan="1">N/A</td>
         </tr>
@@ -70,7 +70,7 @@
           <td>{{ $report->issued_quantity }}</td>
           <td>{{ number_format($report->unitcost,2) }}</td>
           <td>{{ number_format($report->amount, 2) }}</td>
-          <td></td>
+          <td>{{ $report->uacs_code }}</td>
         </tr>
         @endforeach
         <tr>

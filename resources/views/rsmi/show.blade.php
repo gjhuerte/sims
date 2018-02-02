@@ -107,6 +107,16 @@
 			</div>
 			@endif
 
+			@if( $rsmi->status_name == 'Received' || $rsmi->status_name == 'Applied To Ledger Card' )
+			<div class="form-group">
+				<form method="get" action="{{ url("rsmi/$rsmi->id/summary") }}">
+					<button type="submit" id="submit" class="print btn btn-sm btn-primary ladda-button" data-style="zoom-in">
+						<span id="nav-text"> Recapitulation</span>
+					</button>
+				</form>
+			</div>
+			@endif
+
 		@endif
     `)
 

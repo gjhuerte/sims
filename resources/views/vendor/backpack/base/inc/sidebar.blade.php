@@ -158,7 +158,11 @@
 
           @if(Auth::user()->access == 2)
 
-          <li><a href="{{ url('records/uncopied') }}"><i class="fa fa-clock-o" aria-hidden="true"></i> <span> Pending AMO Records </span></a></li>
+          <li>
+            <a href="{{ url('records/uncopied') }}">
+              <i class="fa fa-clock-o" aria-hidden="true"></i> <span> Unsync Transactions</span>
+            </a>
+          </li>
           
           @if(false)
 

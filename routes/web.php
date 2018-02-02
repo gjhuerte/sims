@@ -207,6 +207,13 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'RSMIController@receive'
 		]);
 
+		Route::get('rsmi/{id}/summary', 'RSMIController@showSummary');
+		
+		Route::post('rsmi/{id}/summary', [
+			'as' => 'rsmi.summary',
+			'uses' => 'RSMIController@summary'
+		]);
+
 		Route::post('rsmi/{id}/apply', 'RSMIController@apply');
 
 	});
