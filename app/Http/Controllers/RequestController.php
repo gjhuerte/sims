@@ -476,6 +476,7 @@ class RequestController extends Controller
             'quantity_issued' => (isset($quantity[$stocknumber]) && $quantity[$stocknumber] > 0 ) ? $quantity[$stocknumber] : 0,
             'comments' => $comment[$stocknumber]
           ];
+          
         }
 
         $requests->supplies()->sync($array);
