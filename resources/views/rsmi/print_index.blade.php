@@ -5,11 +5,12 @@
     <h3 class="text-center text-muted">
       Reports on Supplies and Materials Issued <small class="pull-right">Appendix 64</small>
     </h3> 
-
-    <p class="pull-right">R.I.S. {{ isset($start) ? $start : 'N/A' }} to {{ isset($end) ? $end : 'N/A' }}</p>
             
     <table class="table table-bordered" id="rsmiTable" cellspacing="0" width="100%">
       <thead>
+        <tr>
+          <th class="text-right" colspan="8" style="white-space: nowrap;font-weight: normal;">R.I.S. {{ isset($start) ? $start : 'N/A' }} to {{ isset($end) ? $end : 'N/A' }}</th>
+        </tr>
         <tr>
           <th class="col-sm-5" style="white-space: nowrap;">RIS No.</th>
           <th class="col-sm-1" style="white-space: nowrap;">Responsibility Center Code</th>

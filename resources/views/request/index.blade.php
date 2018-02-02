@@ -55,7 +55,7 @@
           { targets: 'no-sort', orderable: false },
       ],
       "order": [
-        [0, 'desc']
+        [0, 'asc']
       ],
       "dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
                       "<'row'<'col-sm-12'tr>>" +

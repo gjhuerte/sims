@@ -215,6 +215,12 @@ class RSMIController extends Controller
         return redirect("rsmi/$rsmi->id");
     }
 
+    /**
+     * [print description]
+     * create a printable form for rsmi
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
 	public function print($id)
 	{
     	$id = $this->sanitizeString($id);
@@ -234,10 +240,18 @@ class RSMIController extends Controller
     							)
     							->orderBy('supplies.stocknumber', 'asc')
     							->get();
+        $stockcard = App\StockCard::whereHas('rsmi', function($query) use($id) {
+            $query->where('id', '=', $id);
+        })->select('date', 'id', 'reference')->get()->unique('reference');
+
+        $start = $stockcard->sortBy('date')->sortBy('id')->pluck('reference')->first();
+        $end = $stockcard->sortByDesc('date')->sortByDesc('id')->pluck('reference')->first();
 
     	$data = [
     		'rsmi' => $rsmi,
-    		'recapitulation' => $recapitulation
+    		'recapitulation' => $recapitulation,
+            'start' => $start,
+            'end' => $end
     	];
 
         $filename = "RSMI-".Carbon\Carbon::parse($rsmi->report_date)->format('mdYHm').".pdf";

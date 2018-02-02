@@ -68,12 +68,12 @@ class StockCard extends Model implements Auditable, UserResolver
 
 	public function getSupplyNameAttribute($value)
 	{
-		return $this->supply->details;
+		return count($this->supply) > 0 ? $this->supply->details : 'N/A';
 	}
 
 	public function getStocknumberAttribute($value)
 	{
-		return $this->supply->stocknumber;
+		return count($this->supply) > 0 ? $this->supply->stocknumber : 'N/A';
 	}
 
 	public function getMonthAttribute($value)
@@ -153,6 +153,17 @@ class StockCard extends Model implements Auditable, UserResolver
 	{
 		return $this->belongsTo('App\Supply','supply_id','id');
 	}
+
+	/**
+	 * [stockcards description]
+	 * @return [type] [description]
+	 */
+    public function rsmi()
+    {
+        return $this->belongsToMany('App\RSMI', 'rsmi_stockcard', 'stockcard_id', 'rsmi_id')
+                ->withPivot('ledgercard_id', 'unitcost', 'uacs_code')
+                ->withTimestamps();
+    }
 
 	/**
 	 * [scopeFilterByMonth description]

@@ -26,7 +26,7 @@ class RequestController extends Controller
         if($request->ajax())
         {
 
-          $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'desc');
+          $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'asc');
 
           if(Auth::user()->access != 1)
           {
