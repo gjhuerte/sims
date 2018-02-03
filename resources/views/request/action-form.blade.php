@@ -12,11 +12,9 @@
 @include('errors.alert')
 <!-- end of include fields --> 
 
-<legend><h3 class="text-muted">Request Slip: {{ $request->code }}</h3></legend>
-
 <!-- Stock Card Table -->
 <div class="col-sm-12" style="padding: 10px;">
-  <h3 class="line-either-side text-muted">Request List</h3>
+  <legend><h3 class="text-center text-muted">Request List</h3></legend>
   <table class="table table-hover table-condensed table-striped table-bordered" id="supplyTable" style="padding:20px;margin-right: 10px;">
     <thead>
       <tr>
@@ -29,39 +27,105 @@
       </tr>
     </thead>
     <tbody>
+
+      @if(isset($request->supplies))
+          @foreach($request->supplies as $supply)
+          <tr>
+            <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}" /></td>
+            <td>{{ $supply->details }}</td>
+            <td>{{ $supply->temp_balance }}</td>
+            <td>
+              {{ $supply->pivot->quantity_requested }}
+              <input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}"  />
+            </td>
+            <td>
+              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  />
+            </td>
+            <td>
+              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" />
+            </td>
+          </tr>
+        @endforeach
+      @else
+        @if(null !== old('stocknumber'))
+          @foreach(old('stocknumber') as $stocknumber)
+
+          {{-- fetch the details for supply --}}
+          @php 
+            $supply = App\Supply::findByStockNumber($stocknumber);
+          @endphp
+          {{-- fetch the details for supply --}}
+
+          <tr>
+            <td>"{{ $stocknumber }}<input type="hidden" name="stocknumber[]" value=""{{ $stocknumber }}" /></td>
+            <td>{{ $supply->details }}</td>
+            <td>{{ $supply->temp_balance }}</td>
+            <td>
+              {{ old("requested.$stocknumber") }}
+              <input type="hidden" name="requested["{{ $stocknumber }}]" class="form-control" value="{{ old("requested.$stocknumber") }}"  />
+            </td>
+            <td>
+              <input type="number" name="quantity["{{ $stocknumber }}]" class="form-control" value="{{ old("quantity.$stocknumber") }}"  />
+            </td>
+            <td>
+              <input type="text" name="comment["{{ $stocknumber }}]" class="form-control" />
+            </td>
+          </tr>
+          @endforeach
+        @endif
+      @endif
+
       <tr>
         <td colspan=6 class="text-muted text-center"> ** Nothing Follows **</td>
       </tr>
+
     </tbody>
   </table>
-</div> <!-- end of Stock Card Table -->  
+</div> <!-- end of Stock Card Table --> 
+
+<!-- add stock fields -->
+<div class="col-sm-12" style="margin-bottom: 20px;">
+  <button type="button" id="add" class="btn btn-md btn-primary pull-right" data-target="#addStockNumberModal" data-toggle="modal">
+    <span class="glyphicon glyphicon-plus"></span> Insert Additional Stock
+  </button>
+</div>
+<!-- end of add stock fields --> 
 
 <!-- purpose -->
-<div class="form-group" style="padding: 10px;">
-  <div class="col-sm-12">
-    <label>Purpose</label>
-    <textarea class="form-control" readonly disabled style="background-color: white;">{{ $request->purpose }}</textarea>
-  </div>
+<div class="col-sm-12">
+  <label>Purpose</label>
+  <blockquote> 
+    <p style="font-size: 20px;">{{ $request->purpose }}</p> 
+  </blockquote>
 </div>
 
 <!-- remarks fields -->
 <div class="form-group" style="padding: 10px;">
   <div class="col-md-12">
-    <label>Remarks</label>
-    <textarea class="form-control" name="remarks" value="{{ old('remarks') }}" placeholder="Input additional comments/remarks"></textarea>
+    <label>Additional Remarks</label>
+    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{ isset($request->remarks) ? $request->remarks : old('remarks') }}</textarea>
   </div>
 </div> <!-- end of remarks fields -->
 
 <!-- buttons -->
-<div style="padding: 10px;">
-  <!-- add stock fields -->
-  <button type="button" id="add" class="btn btn-md btn-primary pull-left" data-target="#addStockNumberModal" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span> Add Stock</button>
-  <!-- end of add stock fields -->
+<div class="panel-footer" style="padding: 10px;">
+
+  <input type="hidden" name="action" id="action" />
+
+  <!-- action buttons -->
+  <div class="pull-left">
+    <div class="btn-group">
+      <button type="submit" name="disapprove" id="disapprove" class="btn btn-md btn-danger btn-block" value="disapprove">Disapprove</button>
+    </div>
+    <div class="btn-group">
+      <button type="submit" name="resubmit" id="resubmission" class="btn btn-md btn-warning btn-block" value="resubmission">Resubmission</button>
+    </div>
+  </div> <!-- end of action buttons -->
 
   <!-- action buttons -->
   <div class="pull-right">
     <div class="btn-group">
-      <button type="button" id="approve" class="btn btn-md btn-success btn-block">Approve</button>
+      <button type="submit" name="approve" id="approve" class="btn btn-md btn-success btn-block" value="approve">Approve</button>
     </div>
     <div class="btn-group">
         <a type="button" id="cancel" class="btn btn-md btn-default" href="{{ url("request/$request->id") }}">Cancel</a>
@@ -74,8 +138,11 @@
 <script>
   jQuery(document).ready(function($) {
 
-    $('#approve').on('click',function(){
-      console.log($('#supplyTable > tbody > tr').length)
+    $('#approve, #disapprove, #resubmission').on('click',function(event){
+
+      action = $(this).val();
+      event.preventDefault()
+
       if($('#supplyTable > tbody > tr').length == 0)
       {
         swal('Blank Field Notice!','Supply table must have atleast 1 item','error')
@@ -92,6 +159,7 @@
             },
             function(isConfirm){
               if (isConfirm) {
+                $('#action').val(action)
                 $('#requestForm').submit();
               } else {
                 swal("Cancelled", "Operation Cancelled", "error");
@@ -127,6 +195,9 @@
       }
 
       $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         type: 'get',
         url: '{{ url('inventory/supply') }}' +  '/' + stocknumber,
         dataType: 'json',
@@ -135,7 +206,7 @@
                 <tr>
                   <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`" /></td>
                   <td>`+response.data.details+`</td>
-                  <td>`+response.data.stock_balance+`</td>
+                  <td>`+response.data.temp_balance+`</td>
                   <td>`+quantity+`<input type="hidden" name="requested[`+response.data.stocknumber+`]" class="form-control" value="`+quantity+`"  /></td>
                   <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value="`+issued+`"  /></td>
                   <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>
@@ -145,18 +216,6 @@
         }
       })
     }
-
-  @if(isset($request->supplies))
-      @foreach($request->supplies as $supply)
-      insertRow("{{ $supply->stocknumber }}", "{{ $supply->pivot->quantity_requested }}", "{{ $supply->pivot->quantity_requested }}")
-    @endforeach
-  @else
-    @if(null !== old('stocknumber'))
-      @foreach(old('stocknumber') as $stocknumber)
-        insertRow("{{ $stocknumber }}", "{{ old("requested.$stocknumber") }}",  "{{ old("quantity.$stocknumber") }}")
-      @endforeach
-    @endif
-  @endif
 
   });
 </script>

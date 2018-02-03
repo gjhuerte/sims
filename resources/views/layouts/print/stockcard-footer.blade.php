@@ -14,7 +14,7 @@
           <br />
           <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
           <br />
-          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+          <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ App\Office::findByCode(Auth::user()->office)->name }}</span>
         </td>
         <td class="text-center">
           <br />

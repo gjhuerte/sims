@@ -114,7 +114,7 @@ class StockCardController extends Controller {
 			$transaction->received_quantity = $quantity["$stocknumber"];
 			$transaction->daystoconsume = $daystoconsume["$stocknumber"];
 			$transaction->user_id = Auth::user()->id;
-			$transaction->receipt();
+			$transaction->receive();
 		}
 
 		DB::commit();

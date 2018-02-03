@@ -26,7 +26,7 @@ class RequestController extends Controller
         if($request->ajax())
         {
 
-          $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'desc');
+          $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'asc');
 
           if(Auth::user()->access != 1)
           {
@@ -241,6 +241,7 @@ class RequestController extends Controller
       DB::beginTransaction();
 
       $requests->purpose = $purpose;
+      $requests->status = 'Updated on ' . Carbon\Carbon::now()->toDayDateTimeString();
       $requests->save();
       $requests->supplies()->sync($array);
 
@@ -268,6 +269,7 @@ class RequestController extends Controller
 
         return view('request.release')
                 ->with('request',$requests)
+                ->with('action','request')
                 ->with('title',$requests->id);
     }
 
@@ -376,7 +378,14 @@ class RequestController extends Controller
 
     }
 
-    public function getApproveForm(Request $request, $id)
+    /**
+     * [getAcceptForm description]
+     * displays the info bout the requested items
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function getAcceptForm(Request $request, $id)
     {
         $requests = App\Request::find($id);
         
@@ -387,7 +396,15 @@ class RequestController extends Controller
                 ->with('action', 'approval');
     }
 
-    public function approve(Request $request, $id)
+    /**
+     * [accept description]
+     * action whether the request is approved/disapproved 
+     * or for resubmission
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function accept(Request $request, $id)
     {
 
         $id = $this->sanitizeString($id);
@@ -397,7 +414,16 @@ class RequestController extends Controller
         $requested = $request->get('requested');
         $array = [];
         $remarks = $this->sanitizeString( $request->get('remarks') );
+        $action = $this->sanitizeString( $request->get('action') );
         $issued_by = Auth::user()->id;
+        
+        if($action == 'approve'):
+          $action = 'approved';
+        elseif($action == 'resubmission'):
+          $action = 'resubmit';
+        else:
+          $action = 'disapproved';
+        endif;
 
         DB::beginTransaction();
 
@@ -408,80 +434,75 @@ class RequestController extends Controller
 
           $supply = App\Supply::findByStockNumber($stocknumber);
 
-          $validator = Validator::make([
-              'Stock Number' => $stocknumber,
-              'Quantity' => $quantity["$stocknumber"]
-          ],$requests->approveRules());
-
-          if($validator->fails())
+          if($action == 'approved')
           {
-              return redirect("request/$id/approve")
-                      ->with('total',count($stocknumbers))
-                      ->with('stocknumber',$stocknumbers)
-                      ->with('quantity',$quantity)
-                      ->withInput()
-                      ->withErrors($validator);
+
+            $validator = Validator::make([
+                'Stock Number' => $stocknumber,
+                'Quantity' => $quantity["$stocknumber"]
+            ],$requests->approveRules());
+
+            if($validator->fails())
+            {
+                return redirect("request/$id/accept")
+                        ->with('total',count($stocknumbers))
+                        ->with('stocknumber',$stocknumbers)
+                        ->with('quantity',$quantity)
+                        ->withInput()
+                        ->withErrors($validator);
+            }
+
+          }
+          else
+          {
+
+            $validator = Validator::make([
+                'Details' => $remarks
+            ],$requests->commentsRules());
+
+            if($validator->fails())
+            {
+                return redirect("request/$id/accept")
+                        ->with('total',count($stocknumbers))
+                        ->with('stocknumber',$stocknumbers)
+                        ->with('quantity',$quantity)
+                        ->withInput()
+                        ->withErrors($validator);
+            }
           }
 
           $array [ $supply->id ] = [
             'quantity_requested' => (isset($requested[$stocknumber])) ? $requested[$stocknumber] : 0,
-            'quantity_issued' => $quantity[$stocknumber],
+            'quantity_issued' => (isset($quantity[$stocknumber]) && $quantity[$stocknumber] > 0 ) ? $quantity[$stocknumber] : 0,
             'comments' => $comment[$stocknumber]
           ];
+          
         }
-
-        $requests->remarks = $remarks;
-        $requests->issued_by = $issued_by;
-        $requests->status = 'approved';
-        $requests->approved_at = Carbon\Carbon::now();
-        $requests->save();
 
         $requests->supplies()->sync($array);
 
+        $requests->remarks = $remarks;
+        $requests->issued_by = $issued_by;
+        $requests->status = $action; 
+        $requests->approved_at = Carbon\Carbon::now();
+        $requests->save();
+
+        /**
+         * data consists of the message to send to the broadcasting utility
+         * id - the requestor id is required to filter only to whom is the 
+         * message for
+         * message - the message to send to the server
+         */
         $data['id'] = $requests->requestor_id;
-            $data['message'] = "Request $request->code has been approved";
+        $data['message'] = "Request $request->code has been $action";
 
         event(new App\Events\RequestApproval($data));
 
         DB::commit();
 
-        \Alert::success('Request Approved')->flash();
-        return redirect('request');
+        $message = "Request $requests->code has been given an action"; 
+        \Alert::success($message)->flash();
 
-    }
-
-    public function disapprove(Request $request, $id)
-    {
-        if($request->ajax())
-        {
-            $id = $this->sanitizeString($id);
-            $remarks = $this->sanitizeString($request->get('reason'));
-
-            $request = App\Request::find($id);
-            $request->status = "disapproved";
-            $request->approved_at = Carbon\Carbon::now();
-            $request->remarks = $remarks;
-            $request->save();
-
-            $data['id'] = $request->requestor_id;
-            $data['message'] = "Request $request->code has been disapproved";
-
-            event(new App\Events\RequestApproval($data));
-
-            return json_encode('success');
-        }
-
-        DB::beginTransaction();
-
-        $request = App\Request::find($id);
-
-        $request->status = 'disapproved';
-        $request->approved_at = Carbon\Carbon::now();
-        $request->save();
-
-        DB::commit();
-
-        \Alert::success('Request Disapproved')->flash();
         return redirect('request');
 
     }

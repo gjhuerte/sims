@@ -45,19 +45,15 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['except-offices'])->group(function(){
 
-		Route::get('inventory/supply/rsmi','RSMIController@rsmi');
-		Route::get('inventory/supply/rsmi/{month}','RSMIController@rsmiPerMonth');
-		Route::get('inventory/supply/rsmi/total/bystocknumber/{month}','RSMIController@rsmiByStockNumber');
+		Route::get('rsmi', [
+			'as' => 'rsmi.index',
+			'uses' => 'RSMIController@index'
+		]);
 
-		Route::get('rsmi/months','RSMIController@getAllMonths');
-
-		Route::get('rsmi/{date}/print','RSMIController@print');
-
-		Route::get('rsmi','RSMIController@index');
-
-		Route::get('rsmi/{date}','RSMIController@getIssued');
-
-		Route::get('rsmi/{date}/recapitulation','RSMIController@getRecapitulation');
+		Route::post('rsmi', [
+			'as' => 'rsmi.store',
+			'uses' => 'RSMIController@store'
+		]);
 
 		Route::get('report/fundcluster','ReportsController@getFundClusterView');
 
@@ -140,13 +136,12 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::put('request/{id}/reset', 'RequestController@resetStatus');
 
-		Route::get('request/{id}/approve','RequestController@getApproveForm');
-		Route::put('request/{id}/approve',[
-			'as' => 'request.approve',
-			'uses' => 'RequestController@approve'
+		Route::get('request/{id}/accept','RequestController@getAcceptForm');
+		
+		Route::put('request/{id}/accept',[
+			'as' => 'request.accept',
+			'uses' => 'RequestController@accept'
 		]);
-
-		Route::put('request/{id}/disapprove','RequestController@disapprove');
 
 		Route::get('request/{id}/release',[
 			'as' => 'request.release',
@@ -164,6 +159,8 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('adjustment', 'AdjustmentsController');
 
 		Route::resource('announcement', 'AnnouncementsController');
+
+		Route::post('rsmi/{id}/submit', 'RSMIController@submit');
 
 	});
 
@@ -202,6 +199,33 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('inventory/supply.ledgercard','LedgerCardController');
 
 		Route::resource('fundcluster','FundClusterController');
+
+		Route::get('rsmi/{id}/receive', 'RSMIController@showReceive');
+		
+		Route::post('rsmi/{id}/receive', [
+			'as' => 'rsmi.receive',
+			'uses' => 'RSMIController@receive'
+		]);
+
+		Route::get('rsmi/{id}/summary', 'RSMIController@showSummary');
+		
+		Route::post('rsmi/{id}/summary', [
+			'as' => 'rsmi.summary',
+			'uses' => 'RSMIController@summary'
+		]);
+
+		Route::post('rsmi/{id}/apply', 'RSMIController@apply');
+
+	});
+
+	Route::middleware(['except-offices'])->group(function(){
+
+		Route::get('rsmi/{id}', [
+			'as' => 'rsmi.show',
+			'uses' => 'RSMIController@show'
+		]);
+
+		Route::get('rsmi/{id}/print', 'RSMIController@print');
 	});
 
 	Route::middleware(['admin'])->group(function(){

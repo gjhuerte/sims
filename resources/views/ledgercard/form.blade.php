@@ -137,6 +137,9 @@
 			url = "{{ url('purchaseorder/checkifexists') }}"
 
 			$.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
 				type: 'get',
 				url: url,
 				dataType: 'json',
@@ -176,6 +179,9 @@
 			url = "{{ url('receipt/checkifexists') }}"
 
 			$.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
 				type: 'get',
 				url: url,
 				dataType: 'json',
@@ -240,6 +246,9 @@
 
 		function setStockNumberDetails(){
 			$.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
 				type: 'get',
 				url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
 				dataType: 'json',

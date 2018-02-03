@@ -179,7 +179,7 @@
 
 			@if($type == 'stock')
 			<div class="col-md-3">
-				<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({ type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
+				<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({  headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }, type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
 			</div>
 			@endif
 		</div> <!-- ris form -->
@@ -222,7 +222,7 @@
 			<input type="text" value="" name="stocknumber" id="stocknumber" class="form-control" />
 			</div>
 			<div class="col-md-1">
-				<button type="button" data-toggle="modal" data-target="#addStockNumberModal" class="btn btn-sm btn-primary">Select</button>
+				<button type="button" data-toggle="modal" data-target="#addStockNumberModal" class="btn btn-sm btn-primary">Search</button>
 			</div>
 		</div>
 
@@ -367,6 +367,9 @@ $('document').ready(function(){
 
 	$('#purchaseorder').on('change mousein keyup focusin', function(){
 		$.ajax({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
 			type: 'get',
 			url: '{{ url('purchaseorder') }}' +  '/' + $('#purchaseorder').val() + '?number=' + $('#purchaseorder').val()  ,
 			dataType: 'json',
@@ -409,6 +412,9 @@ $('document').ready(function(){
  
 	$('#office').on('change mousein keyup focusin',function(){
 		$.ajax({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
 			type: 'get',
 			url: '{{ url('maintenance/office') }}' +  '/' + $('#office').val() + '?code=' + $('#office').val()  ,
 			dataType: 'json',
@@ -467,6 +473,9 @@ $('document').ready(function(){
 
 	function setStockNumberDetails(){
 		$.ajax({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
 			type: 'get',
 			url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
 			dataType: 'json',
@@ -711,6 +720,9 @@ $('document').ready(function(){
     	}
 
 		$.ajax({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
 			type: 'get',
 			url: '{{ url('inventory/supply/ledgercard') }}' +  '/' + type  + '/computecost' ,
 			dataType: 'json',

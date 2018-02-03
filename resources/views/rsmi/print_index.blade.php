@@ -5,11 +5,12 @@
     <h3 class="text-center text-muted">
       Reports on Supplies and Materials Issued <small class="pull-right">Appendix 64</small>
     </h3> 
-
-    <p class="pull-right">R.I.S. {{ $start }} to {{ $end }}</p>
             
     <table class="table table-bordered" id="rsmiTable" cellspacing="0" width="100%">
       <thead>
+        <tr>
+          <th class="text-right" colspan="8" style="white-space: nowrap;font-weight: normal;">R.I.S. {{ isset($start) ? $start : 'N/A' }} to {{ isset($end) ? $end : 'N/A' }}</th>
+        </tr>
         <tr>
           <th class="col-sm-5" style="white-space: nowrap;">RIS No.</th>
           <th class="col-sm-1" style="white-space: nowrap;">Responsibility Center Code</th>
@@ -22,20 +23,27 @@
         </tr>
       </thead>
       <tbody>
-        @foreach($ris as $report)
+
+        @foreach($rsmi->stockcards as $report)
         <tr>
           <td style="white-space: nowrap;">{{ $report->reference }}</td>
-          <td>{{ $report->office }}</td>
-          <td style="white-space: nowrap;">{{ $report->stocknumber }}</td>
-          <td>{{ $report->details }}</td>
-          <td>{{ $report->name }}</td>
+          <td>{{ $report->organization }}</td>
+          <td style="white-space: nowrap;">{{ $report->supply->stocknumber }}</td>
+          <td>{{ $report->supply->details }}</td>
+          <td>{{ $report->supply->unit_name }}</td>
           <td>{{ $report->issued_quantity }}</td>
-          <td>{{ number_format($report->cost,2) }}</td>
-          <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
+          <td>{{ number_format($report->pivot->unitcost,2) }}</td>
+          <td>{{ number_format($report->issued_quantity * $report->pivot->unitcost, 2) }}</td>
         </tr>
         @endforeach
         <tr>
-          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+          <td colspan="6">Total Quantity Released: <span class="pull-right"> {{ $rsmi->stockcards->sum('issued_quantity') }} </span></td>
+          <td colspan="1">N/A</td>
+          <td colspan="1">N/A</td>
+        </tr>
+
+        <tr>
+          <td colspan=8 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
         </tr>
       </tbody>
     </table>
@@ -60,9 +68,9 @@
           <td>{{ $report->stocknumber }}</td>
           <td>{{ $report->details }}</td>
           <td>{{ $report->issued_quantity }}</td>
-          <td>{{ number_format($report->cost,2) }}</td>
-          <td>{{ number_format($report->issued_quantity * $report->cost, 2) }}</td>
-          <td></td>
+          <td>{{ number_format($report->unitcost,2) }}</td>
+          <td>{{ number_format($report->amount, 2) }}</td>
+          <td>{{ $report->uacs_code }}</td>
         </tr>
         @endforeach
         <tr>

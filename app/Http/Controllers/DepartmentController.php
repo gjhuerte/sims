@@ -33,12 +33,16 @@ class DepartmentController extends Controller
 		$name = $this->sanitizeString(Input::get('name'));
 		$abbreviation = $this->sanitizeString(Input::get('abbreviation'));
 		$office = $this->sanitizeString(Input::get('office'));
+		$head = $this->sanitizeString(Input::get('head'));
+		$designation = $this->sanitizeString(Input::get('designation'));
 
 		$department = new App\Department;
 
 		$validator = Validator::make([
 			'Name' => $name,
-			'Abbreviation' => $abbreviation
+			'Abbreviation' => $abbreviation,
+			'Head' => $head,
+			'Designation' => $designation
 		],$department->rules());
 
 		if($validator->fails())
@@ -50,11 +54,14 @@ class DepartmentController extends Controller
 		$department->abbreviation = $abbreviation;
 		$department->name = $name;
 		$department->office_id = $office;
+		$department->head = $head;
+		$department->designation = $designation;
 		$department->save();
 
 		\Alert::success('Department Added')->flash();
-		return redirect('maintenance/department');
+		return redirect("maintenance/office/$office");
 	}
+
 	public function edit($id)
 	{
 		$department = App\Department::find($id);
@@ -74,12 +81,16 @@ class DepartmentController extends Controller
 		$name = $this->sanitizeString(Input::get('name'));
 		$abbreviation = $this->sanitizeString(Input::get('abbreviation'));
 		$office = $this->sanitizeString(Input::get('office'));
+		$head = $this->sanitizeString(Input::get('head'));
+		$designation = $this->sanitizeString(Input::get('designation'));
 
 		$department = App\Department::find($id);
 
 		$validator = Validator::make([
 			'Name' => $name,
-			'Abbreviation' => $abbreviation
+			'Abbreviation' => $abbreviation,
+			'Head' => $head,
+			'Designation' => $designation
 		],$department->updateRules());
 
 		if($validator->fails())
@@ -91,6 +102,8 @@ class DepartmentController extends Controller
 		$department->abbreviation = $abbreviation;
 		$department->name = $name;
 		$department->office_id = $office;
+		$department->head = $head;
+		$department->designation = $designation;
 		$department->save();
 
 		\Alert::success('Department Updated')->flash();

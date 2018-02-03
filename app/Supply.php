@@ -32,6 +32,7 @@ class Supply extends Model{
 	}
 
 	protected $appends = [
+		'temp_balance',
 		'stock_balance',
 		'ledger_balance',
 		'unitcost',
@@ -54,6 +55,33 @@ class Supply extends Model{
 			return $cost;
 		else
 			return 0;
+	}
+
+	public function getTempBalanceAttribute($value)
+	{
+
+		$balance = StockCard::findBySupplyId($this->id)
+						->orderBy('date','desc')
+						->orderBy('created_at','desc')
+						->orderBy('id','desc')
+						->pluck('balance_quantity')
+						->first();
+
+		if(empty($balance) || $balance == null || $balance == '')
+		{
+			$balance = 0;
+		}
+
+		$temp_issued = 0 ;
+
+		$temp_issued = DB::table('requests_supplies')
+						->where('supply_id', '=', $this->id)
+						->whereIn('request_id', Request::where('status', '=', 'approved')->pluck('id'))
+						->sum('quantity_issued');
+
+		$balance = $balance - $temp_issued;
+
+		return $balance	;
 	}
 
 	public function getStockBalanceAttribute($value)

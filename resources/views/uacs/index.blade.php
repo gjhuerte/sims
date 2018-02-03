@@ -80,6 +80,9 @@
     	`);
 
     	$.ajax({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
     		type: 'get',
     		url: "{{ url('uacs/months') }}",
     		dataType: 'json',

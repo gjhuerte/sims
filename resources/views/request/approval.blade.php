@@ -3,10 +3,10 @@
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    Request Form
+	    R. I. S. : {{ $request->code }}
 	  </h1>
 	  <ol class="breadcrumb">
-	    <li><a href="{{ url('request') }}">Request</a></li>
+	    <li><a href="{{ url('request') }}">R. I. S. : {{ $request->code }}</a></li>
 	    <li class="active">Approval</li>
 	  </ol>
 	</section>
@@ -16,7 +16,7 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-      <form method="post" action="{{ route('request.approve', $request->id) }}" class="form-horizontal" id="requestForm">
+      <form method="post" action="{{ route('request.accept', $request->id) }}" class="form-horizontal" id="requestForm">
         
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">

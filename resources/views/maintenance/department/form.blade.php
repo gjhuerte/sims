@@ -24,3 +24,21 @@
     ]) }}
   </div>
 </div>
+<div class="form-group">
+  <div class="col-md-12">
+    {{ Form::label('head','Department Head') }}
+    {{ Form::text('head', isset($department->head) ? $department->head : old('head'),[
+      'class'=>'form-control',
+      'placeholder'=>'Department Head'
+    ]) }}
+  </div>
+</div>
+<div class="form-group">
+  <div class="col-md-12">
+    {{ Form::label('designation','Designation') }}
+    {{ Form::text('designation', isset($department->designation) ? $department->designation : old('designation'),[
+      'class'=>'form-control',
+      'placeholder'=>'Designation'
+    ]) }}
+  </div>
+</div>

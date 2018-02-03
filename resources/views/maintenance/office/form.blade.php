@@ -1,7 +1,7 @@
 
 <div class="form-group">
   <div class="col-md-12">
-    {{ Form::label('code','Department Code') }}
+    {{ Form::label('code','Office Code') }}
     {{ Form::text('code', isset($office->code) ? $office->code : old('code'),[
       'class'=>'form-control',
       'placeholder'=>'Department Code'

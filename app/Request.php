@@ -52,9 +52,29 @@ class Request extends Model
       'code', 'date_requested'
     ];
 
+    public function getRemarksAttribute($value)
+    {
+
+      if($value == null) return 'No Remarks'; 
+
+      return $value;
+    }
+
+    public function getStatusAttribute($value)
+    {
+      if($value == null) return 'Pending';
+
+      return ucfirst($value);
+    }
+
+    public function scopeFilterByStatus($query, $value)
+    {
+        is_array($value) ? $query->whereIn('status', $value) : $query->where('status', '=', $value);
+    }
+
     public function scopePending($query)
     {
-      return $query->whereNull('status');
+      return $query->whereNull('status')->orWhere('status', '=', 'Pending');
     }
 
     public function scopefilterByOfficeId($query, $value)
@@ -113,4 +133,5 @@ class Request extends Model
     {
       return $this->hasMany('App\RequestComments');
     }
+     
 }

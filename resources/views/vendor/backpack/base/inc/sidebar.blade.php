@@ -67,12 +67,14 @@
               <i class="fa fa-angle-left pull-right"></i>
             </a>
               <ul class="treeview-menu">
+                @if(Auth::user()->access == 1)
                 <li>
                   <a href="{{ url('request') }}">
                     <li><i class="fa fa-list" aria-hidden="true"></i>
                     View
                   </a>
                 </li>
+                @endif
                 <li>
                   <a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/release') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/release') }}  @endif">
                         <li><i class="fa fa-pencil" aria-hidden="true"></i>
@@ -144,8 +146,6 @@
 
           <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
 
-          <li><a href="{{ url('maintenance/department') }}"><i class="fa fa-building-o" aria-hidden="true"></i> <span> Department </span></a></li>
-
           <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
 
           @endif
@@ -158,7 +158,11 @@
 
           @if(Auth::user()->access == 2)
 
-          <li><a href="{{ url('records/uncopied') }}"><i class="fa fa-clock-o" aria-hidden="true"></i> <span> Pending AMO Records </span></a></li>
+          <li>
+            <a href="{{ url('records/uncopied') }}">
+              <i class="fa fa-clock-o" aria-hidden="true"></i> <span> Unsync Transactions</span>
+            </a>
+          </li>
           
           @if(false)
 

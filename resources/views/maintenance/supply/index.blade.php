@@ -85,6 +85,9 @@
 		  	var removeButton = $(this);
 			removeButton.button('loading');
 			$.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
 				type: 'delete',
 				url: '{{ url("maintenance/supply") }}' + '/' + $(this).data('id'),
 				dataType: 'json',

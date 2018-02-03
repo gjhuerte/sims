@@ -63,8 +63,30 @@ class StockCard extends Model implements Auditable, UserResolver
 	public $dr_date = null;
 
 	protected $appends = [
-		'parsed_date', 'reference_information'
+		'parsed_date', 'reference_information', 'month', 'parsed_month', 'supply_name', 'stocknumber'
 	];
+
+	public function getSupplyNameAttribute($value)
+	{
+		return count($this->supply) > 0 ? $this->supply->details : 'N/A';
+	}
+
+	public function getStocknumberAttribute($value)
+	{
+		return count($this->supply) > 0 ? $this->supply->stocknumber : 'N/A';
+	}
+
+	public function getMonthAttribute($value)
+	{
+		$date = Carbon\Carbon::parse($this->date);
+		return $date->month . ' ' . $date->year;
+	}
+
+	public function getParsedMonthAttribute($value)
+	{
+		$date = Carbon\Carbon::parse($this->date);
+		return $date->format('M Y');
+	}
 
 	public function setDaystoconsumeAttribute($value)
 	{
@@ -131,6 +153,17 @@ class StockCard extends Model implements Auditable, UserResolver
 	{
 		return $this->belongsTo('App\Supply','supply_id','id');
 	}
+
+	/**
+	 * [stockcards description]
+	 * @return [type] [description]
+	 */
+    public function rsmi()
+    {
+        return $this->belongsToMany('App\RSMI', 'rsmi_stockcard', 'stockcard_id', 'rsmi_id')
+                ->withPivot('ledgercard_id', 'unitcost', 'uacs_code')
+                ->withTimestamps();
+    }
 
 	/**
 	 * [scopeFilterByMonth description]
@@ -224,7 +257,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	*	Call this function when receiving an item
 	*
 	*/
-	public function receipt()
+	public function receive()
 	{
 		$firstname = Auth::user()->firstname;
 		$middlename =  Auth::user()->middlename;

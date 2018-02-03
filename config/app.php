@@ -33,6 +33,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'realtime' => env('REALTIME', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

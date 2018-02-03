@@ -156,6 +156,9 @@
     function setStockNumberDetails()
     {
       $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         type: 'get',
         url: '{{ url('inventory/supply') }}' +  '/' + $('#stocknumber').val(),
         dataType: 'json',
