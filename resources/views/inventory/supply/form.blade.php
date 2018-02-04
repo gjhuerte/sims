@@ -345,6 +345,19 @@
 <script>
 $('document').ready(function(){
 
+	jQuery.fn.extend({
+	  setDate: function(obj){
+			var object = $(this);
+
+			if(obj == null)
+				var date = moment().format('MMM DD, YYYY');
+			else
+				var date = moment(obj).format('MMM DD, YYYY');
+
+			object.val(date);
+		}
+	});
+
 	$('#purchaseorder').autocomplete({
 		source: "{{ url('get/purchaseorder/all') }}"
 	})
@@ -389,18 +402,42 @@ $('document').ready(function(){
 		})
 	})
 
-	$('#receipt').on('change mousein keyup focusin', function(){
+	$('#receipt').on('focusout mouseout', function(){
+		receipt = $('#receipt').val()
 		$.ajax({
 			type: 'get',
-			url: '{{ url('receipt') }}' +  '/' + $('#receipt').val() + '?number=' + $('#receipt').val() ,
+			url: '{{ url('receipt') }}' +  '/' + receipt ,
+			data: {
+				'type': 'exists',
+				'number': receipt
+			},
 			dataType: 'json',
 			success: function(response){
-				if(response.number)
+
+				if(response.receipt.number)
 				{
+					invoice = response.receipt.invoice
+					invoice_date = response.receipt.invoice_date
+					date_delivered = response.receipt.date_delivered
+					date = response.receipt.purchaseorder.date_received
+					purchaseorder = response.receipt.purchaseorder.number
+
+
+					$('#supplyTable > tbody').html(``)
+
+					response.supplies.forEach(function(callback){
+						addForm(callback.stocknumber, callback.details, callback.pivot.quantity)
+					})
+
+					$('#invoice').val(invoice)
+					$('#invoice-date').setDate(invoice_date)
+					$('#date').setDate(date)
+					$('#dr-date').setDate(date_delivered)
+					$('#purchaseorder').val(purchaseorder)
+
 					$('#receipt-details').html(`
 						<p class="text-success"><strong>Exists! </strong> Receipt Found </p>
 					`)
-					$('#invoice').val(response.invoice)
 				}else{
 					$('#receipt-details').html(`
 						<p class="text-danger"><strong>Error! </strong> Receipt Details not found! Creating new receipt </p>
@@ -541,39 +578,31 @@ $('document').ready(function(){
 	});
 
 	@if(Input::old('date'))
-		$('#date').val('{{ Input::old('date') }}');
-		setDate("#date");
+		$('#date').setDate('{{ Input::old('date') }}');
 	@else
-		$('#date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
-		setDate("#date");
+		$('#date').setDate('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
 	@endif
 
 	@if(Input::old('invoice-date'))
-		$('#invoice-date').val('{{ Input::old('invoice-date') }}');
-		setDate("#invoice-date");
+		$('#invoice-date').setDate('{{ Input::old('invoice-date') }}');
 	@else
-		$('#invoice-date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
-		setDate("#invoice-date");
+		$('#invoice-date').setDate('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
 	@endif
 
 	@if(Input::old('receipt-date'))
-		$('#receipt-date').val('{{ Input::old('receipt-date') }}');
-		setDate("#receipt-date");
+		$('#receipt-date').setDate('{{ Input::old('receipt-date') }}');
 	@else
-		$('#receipt-date').val('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
-		setDate("#receipt-date");
+		$('#receipt-date').setDate('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
 	@endif
 
+	$("ul.products").setDate();
+
 	$('#invoice-date, #date, #receipt-date').on('change', function(){
-		setDate($(this))
+		$(this).setDate( $(this).val() )
 	})
 
 	$('#add').on('click',function(){
 		row = parseInt($('#supplyTable > tbody > tr:last').text())
-		if(isNaN(row))
-		{
-			row = 1
-		} else row++
 
 		stocknumber = $('#stocknumber').val()
 		quantity = $('#quantity').val()
@@ -583,7 +612,7 @@ $('document').ready(function(){
 		unitcost = $('#unitcost').val()
 		@endif
 		daystoconsume = $('#daystoconsume').val()
-		if(addForm(row,stocknumber,details,quantity,daystoconsume @if($type == 'ledger'), unitcost @endif))
+		if(addForm(stocknumber,details,quantity,daystoconsume @if($type == 'ledger'), unitcost @endif))
 		{
 			$('#stocknumber').val("")
 			$('#quantity').val("")
@@ -600,7 +629,7 @@ $('document').ready(function(){
 		}
 	})
 
-	function addForm(row,_stocknumber = "",_info ="" ,_quantity = "", _daystoconsume = "" @if($type == 'ledger'), _unitcost = '' @endif)
+	function addForm(_stocknumber = "",_info ="" ,_quantity = "", _daystoconsume = "" @if($type == 'ledger'), _unitcost = 0 @endif)
 	{
 		error = false
 		$('.stocknumber-list').each(function() {
@@ -650,25 +679,14 @@ $('document').ready(function(){
 		$(this).parents('tr').remove()
 	})
 
-	function setDate(object){
-			var object_val = $(object).val()
-			var date = moment(object_val).format('MMM DD, YYYY');
-			$(object).val(date);
-	}
-
 	@if(null !== old('stocknumber'))
 
 	function init()
 	{
 
 		@foreach(old('stocknumber') as $stocknumber)
-		row = parseInt($('#supplyTable > tbody > tr:last').text())
-		if(isNaN(row))
-		{
-		  row = 1
-		} else row++
 
-		addForm(row,"{{ $stocknumber }}","{{ old("info.$stocknumber") }}", "{{ old("quantity.$stocknumber") }}", "{{ old("daystoconsume.$stocknumber") }}" @if($type == 'ledger') , "{{ old("unitcost.$stocknumber") }}" @endif)
+		addForm("{{ $stocknumber }}","{{ old("info.$stocknumber") }}", "{{ old("quantity.$stocknumber") }}", "{{ old("daystoconsume.$stocknumber") }}" @if($type == 'ledger') , "{{ old("unitcost.$stocknumber") }}" @endif)
 		@endforeach
 
 	}

@@ -70,13 +70,17 @@ class ReceiptController extends Controller
              * used when checking if a certain receipt exists
              * @var [receipt number]
              */
-            if($id == 'checkifexists')
+            if($request->has('type'))
             {
 
               $number = $this->sanitizeString(Input::get("number"));
               $receipt = App\Receipt::with('supplier')->find($number)->first();
 
-              if(count($receipt) > 0) return json_encode($receipt);
+              if(count($receipt) > 0) return json_encode([
+                'receipt' => $receipt,
+                'fundcluster' => $receipt->purchaseorder->fundclusters->pluck('code'),
+                'supplies' => $receipt->supplies
+              ]);
 
               return json_encode(null);
 
