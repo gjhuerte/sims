@@ -127,22 +127,14 @@
 	    });
 
 	    $("div.search").html(`
-			<a href="{{ url('inventory/supply/advancesearch') }}" style="font-size: 10px;" class="pull-right col-md-offset-11 col-md-1">Advance Search</a>
+			<a href="{{ url('inventory/supply/advancesearch') }}" target="_blank" style="font-size: 10px;" class="pull-right col-md-offset-11 col-md-1">Advance Search</a>
     	`)
 
 		@if(Auth::user()->access == 1 || Auth::user()->access == 2)
 	 	$("div.toolbar").html(`
 			<a @if(Auth::user()->access == 1) href="{{ url("inventory/supply/stockcard/print") }}" @else href="{{ url("inventory/supply/ledgercard/print") }}" @endif target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-				<span id="nav-text"> Print</span>
-			</a>
-			<a @if(Auth::user()->access == 1) href = "{{ url('inventory/supply/stockcard/accept') }}" @else href = "{{ url('inventory/supply/ledgercard/accept') }}" @endif  id="accept" class="btn btn-sm btn-success">
-				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-				<span id="nav-text"> Accept</span>
-			</a>
-			<a @if(Auth::user()->access == 1) href = "{{ url('inventory/supply/stockcard/release') }}" @else href = "{{ url('inventory/supply/ledgercard/release') }}" @endif id="release" class="btn btn-sm btn-danger">
-				<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-				<span id="nav-text"> Release</span>
+				<span id="nav-text"> Print All Stocks</span>
 			</a>
 		`);
 		@endif

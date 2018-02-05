@@ -23,7 +23,7 @@
 
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}/dist/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}/dist/css/skins/skin-black.min.css">
 
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}/plugins/pace/pace.min.css">
     <link rel="stylesheet" href="{{ asset('vendor/backpack/pnotify/pnotify.custom.min.css') }}">
@@ -33,7 +33,7 @@
 
     <!-- Ladda Buttons (loading buttons) -->
     <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-    {{ HTML::style(asset('css/select.bootstrap.min.css')) }}
+    {{-- {{ HTML::style(asset('css/select.bootstrap.min.css')) }} --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 
     <!-- Bootstrap -->
@@ -63,7 +63,7 @@
     <script src="{{ asset('js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/dataTables.select.min.js') }}"></script> --}}
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/initial.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
@@ -284,6 +284,12 @@
     </script>
     <!-- script for realtime update on request count -->
     @endif
+
+    <script> 
+      $(document).ready(function(){ 
+         $('.profile-image').initial();  
+      }) 
+    </script> 
     
 </body>
 </html>

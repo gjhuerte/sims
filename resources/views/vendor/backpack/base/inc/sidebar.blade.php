@@ -7,7 +7,8 @@
         <div class="user-panel">
           <div class="pull-left image">
             {{-- <img src="https://placehold.it/160x160/00a65a/ffffff/&text={{ mb_substr(Auth::user()->name, 0, 1) }}" class="img-circle" alt="User Image"> --}}
-            <img src="{{ asset('images/logo.png') }}" class="img-circle" alt="User Image" />
+            {{-- <img src="{{ asset('images/logo.png') }}" class="img-circle" alt="User Image" /> --}}
+            <img data-name="{{ Auth::user()->firstname }}" class="profile-image img-circle" alt="User Image" /> 
           </div>
           <div class="pull-left info">
             <p>{{ Auth::user()->name }}</p>
@@ -58,7 +59,7 @@
 
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
 
-          <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
+          <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
 
           <li class="treeview">
             <a href="#">

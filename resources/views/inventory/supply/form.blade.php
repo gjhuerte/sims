@@ -23,50 +23,12 @@
 
 <div class="row">
 
-	<!-- purchase order form -->
-	<div class="col-sm-6">
-		<div class="panel panel-primary" style="border-radius: 0px;border:none;">
-			<div class="panel-heading" style="border-radius: 0px;"><h4>Purchase Order / Agency Purchase Request </h4></div>
-			<div class="panel-body">
-
-				<!-- purchase order number -->
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('purchaseorder','P.O. No.:',[
-								'id' => 'purchaseorder-label'
-						]) }}
-						{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
-							'id' => 'purchaseorder',
-							'class' => 'form-control',
-							'placeholder' => 'P.O. Number'
-						]) }}
-					</div>
-					<div id="purchaseorder-details"></div>
-					<div class="clearfix"></div>
-				</div> <!-- end of purchase order number -->
-
-				<!-- purchase order date -->
-				<div class="col-md-12">
-					<div class="form-group">
-						{{ Form::label('Date') }}
-						{{ Form::text('date', old('date'),[
-							'id' => 'date',
-							'class' => 'form-control',
-							'readonly',
-							'style' => 'background-color: white;',
-							'placeholder' => 'P.O. Date'
-						]) }}
-					</div>
-				</div> <!-- end of purchase order date -->
-
-			</div>
-		</div>
-	</div> <!-- end of purchase order form -->
-
 	<!-- receipt form -->
 	<div class="col-sm-6">
-		<div class="panel panel-success" style="border-radius: 0px;border:none;">
-			<div class="panel-heading" style="border-radius: 0px;"><h4> Delivery Receipt / Invoice </h4></div>
+		<div class="panel panel-default">
+			<div class="panel-heading" style="border-radius: 0px;">
+				<h4 class="text-muted"><strong> Delivery Receipt / Invoice </strong> </h4>
+			</div>
 			<div class="panel-body">
 				
 				<!-- top -->
@@ -121,6 +83,48 @@
 			</div>
 		</div>
 	</div> <!-- end of receipt form -->
+
+	<!-- purchase order form -->
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading" style="border-radius: 0px;">
+				<h4 class="text-muted"><strong>Purchase Order / Agency Purchase Request </strong> </h4>
+			</div>
+			<div class="panel-body">
+
+				<!-- purchase order number -->
+				<div class="col-md-12">
+					<div class="form-group">
+						{{ Form::label('purchaseorder','P.O. No.:',[
+								'id' => 'purchaseorder-label'
+						]) }}
+						{{ Form::text('purchaseorder',Input::old('purchaseorder'),[
+							'id' => 'purchaseorder',
+							'class' => 'form-control',
+							'placeholder' => 'P.O. Number'
+						]) }}
+					</div>
+					<div id="purchaseorder-details"></div>
+					<div class="clearfix"></div>
+				</div> <!-- end of purchase order number -->
+
+				<!-- purchase order date -->
+				<div class="col-md-12">
+					<div class="form-group">
+						{{ Form::label('Date') }}
+						{{ Form::text('date', old('date'),[
+							'id' => 'date',
+							'class' => 'form-control',
+							'readonly',
+							'style' => 'background-color: white;',
+							'placeholder' => 'P.O. Date'
+						]) }}
+					</div>
+				</div> <!-- end of purchase order date -->
+
+			</div>
+		</div>
+	</div> <!-- end of purchase order form -->
 
 </div> <!-- references and receipts -->
 
@@ -329,16 +333,16 @@
 </div> <!-- supplies list -->
 
 <!-- buttons -->
-<div class="row">
+<div class="row box-footer">
 	<div class="col-sm-12">
-	<div class="pull-right">
-		<div class="btn-group">
-			<button type="button" id="accept" class="btn btn-md btn-primary btn-block">{{ $title }}</button>
+		<div class="pull-right">
+			<div class="btn-group">
+				<button type="button" id="accept" class="btn btn-md btn-primary btn-block">{{ $title }}</button>
+			</div>
+			<div class="btn-group">
+				<button type="button" id="cancel" class="btn btn-md btn-default" onclick='window.location.href = "{{ url('inventory/supply') }}"'>Cancel</button>
+			</div>
 		</div>
-		<div class="btn-group">
-			<button type="button" id="cancel" class="btn btn-md btn-default" onclick='window.location.href = "{{ url('inventory/supply') }}"'>Cancel</button>
-		</div>
-	</div>
 	</div>
 </div> <!-- buttons -->
 
@@ -402,7 +406,7 @@ $('document').ready(function(){
 		})
 	})
 
-	$('#receipt').on('focusout mouseout', function(){
+	$('#receipt').on('focusout', function(){
 		receipt = $('#receipt').val()
 		$.ajax({
 			type: 'get',
@@ -416,17 +420,28 @@ $('document').ready(function(){
 
 				if(response.receipt.number)
 				{
+
+					swal('Wait!', 'Fetching records from the server...')
+
 					invoice = response.receipt.invoice
 					invoice_date = response.receipt.invoice_date
 					date_delivered = response.receipt.date_delivered
 					date = response.receipt.purchaseorder.date_received
 					purchaseorder = response.receipt.purchaseorder.number
+					fundcluster = response.fundcluster
 
 
 					$('#supplyTable > tbody').html(``)
 
 					response.supplies.forEach(function(callback){
 						addForm(callback.stocknumber, callback.details, callback.pivot.quantity)
+					})
+
+					$('#fundcluster').val('')
+
+					fundcluster.forEach(function(callback){
+						val = $('#fundcluster').val()
+						$('#fundcluster').val(val + callback + ', ')
 					})
 
 					$('#invoice').val(invoice)
@@ -438,6 +453,8 @@ $('document').ready(function(){
 					$('#receipt-details').html(`
 						<p class="text-success"><strong>Exists! </strong> Receipt Found </p>
 					`)
+
+					swal('Success!', 'Field information has been updated!', 'success')
 				}else{
 					$('#receipt-details').html(`
 						<p class="text-danger"><strong>Error! </strong> Receipt Details not found! Creating new receipt </p>
@@ -595,8 +612,6 @@ $('document').ready(function(){
 		$('#receipt-date').setDate('{{ Carbon\Carbon::now()->toFormattedDateString() }}');
 	@endif
 
-	$("ul.products").setDate();
-
 	$('#invoice-date, #date, #receipt-date').on('change', function(){
 		$(this).setDate( $(this).val() )
 	})
@@ -694,6 +709,7 @@ $('document').ready(function(){
 	init();
 
 	@endif
+
 	setReferenceLabel( $("#supplier option:selected").text() )
 
 	$('#supplier').on('change',function(){

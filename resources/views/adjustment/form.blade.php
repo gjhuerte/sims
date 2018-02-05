@@ -66,7 +66,7 @@
 </div>
 <div class="col-sm-12">
   <hr />
-  <label>Details</label>
+  <label>Details for Adjusting</label>
   <textarea name="details" id="details" class="form-control" placeholder="Enter Details..."></textarea>
 </div>
 <div class="col-sm-12">

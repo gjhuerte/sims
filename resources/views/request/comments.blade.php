@@ -95,11 +95,3 @@
     </div> <!-- centered  --> 
   </div> 
 @endsection 
- 
-@section('after_scripts') 
-<script> 
-  $(document).ready(function(){ 
-     $('.profile-image').initial();  
-  }) 
-</script> 
-@endsection 

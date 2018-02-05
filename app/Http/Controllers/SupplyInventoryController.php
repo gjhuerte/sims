@@ -20,7 +20,8 @@ class SupplyInventoryController extends Controller {
 		if($request->ajax())
 		{
 
-			$supplies = App\Supply::with('unit')->get();
+			// $supplies = App\Supply::with('unit')->get();
+			$supplies = App\Supply::with('unit')->take(App\Supply::count());	
 			return datatables($supplies)->toJson();
 		}
 		return view('inventory.supply.index')
