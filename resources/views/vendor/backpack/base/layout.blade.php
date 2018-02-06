@@ -33,7 +33,7 @@
 
     <!-- Ladda Buttons (loading buttons) -->
     <link href="{{ asset('vendor/backpack/ladda/ladda-themeless.min.css') }}" rel="stylesheet" type="text/css" />
-    {{-- {{ HTML::style(asset('css/select.bootstrap.min.css')) }} --}}
+    {{ HTML::style(asset('css/select.bootstrap.min.css')) }}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 
     <!-- Bootstrap -->
@@ -63,7 +63,7 @@
     <script src="{{ asset('js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
-    {{-- <script src="{{ asset('js/dataTables.select.min.js') }}"></script> --}}
+    <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/initial.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
