@@ -305,30 +305,43 @@
 		</div>
 	</div>
 	<div class="col-sm-8">
-		<legend class="text-muted"><h3>Supplies List</h3></legend>
-		<table class="table table-hover table-condensed table-bordered" id="supplyTable">
-			<thead>
-				<tr>
-					<th>Stock Number</th>
-					<th>Information</th>
-					<th>Quantity</th>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="text-muted">Supplies List</h3>
+			</div>
 
-					@if($type == 'ledger')
-					<th>Unit Cost</th>
-					@endif
+			<div class="panel-body">
+				<div class="clearfix"></div>
 
-					@if($title == 'Release')
-					<th>Days To Consume</th>
-					@endif
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="text-center text-muted" colspan="@if($type == 'ledger') 5 @if($title == 'Release') 6 @else 5 @endif  @else 4 @endif">*** Nothing Follows ***</td>
-				</tr>
-			</tbody>
-		</table>
+				<div class="col-sm-12">
+					<button type="button" id="reset" class="btn btn-md pull-right" style="color: #9D2933; background-color: #ECF0F1; border-color: #e5e5e5;">Remove All Supplies</button>
+				</div>
+
+				<table class="table table-hover table-condensed table-bordered" id="supplyTable">
+					<thead>
+						<tr>
+							<th>Stock Number</th>
+							<th>Information</th>
+							<th>Quantity</th>
+
+							@if($type == 'ledger')
+							<th>Unit Cost</th>
+							@endif
+
+							@if($title == 'Release')
+							<th>Days To Consume</th>
+							@endif
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-center text-muted" colspan="@if($type == 'ledger') 5 @if($title == 'Release') 6 @else 5 @endif  @else 4 @endif">*** Nothing Follows ***</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div> <!-- supplies list -->
 
@@ -361,6 +374,14 @@ $('document').ready(function(){
 			object.val(date);
 		}
 	});
+
+	$('#reset').on('click', function(){
+		$('#supplyTable > tbody').html(`
+				<tr>
+					<td class="text-center text-muted" colspan="@if($type == 'ledger') 5 @if($title == 'Release') 6 @else 5 @endif  @else 4 @endif">*** Nothing Follows ***</td>
+				</tr>
+		`)
+	})
 
 	$('#purchaseorder').autocomplete({
 		source: "{{ url('get/purchaseorder/all') }}"
@@ -417,8 +438,7 @@ $('document').ready(function(){
 			},
 			dataType: 'json',
 			success: function(response){
-
-				if(response.receipt.number)
+				if( response != null && response.receipt.number )
 				{
 
 					swal('Wait!', 'Fetching records from the server...')
@@ -430,8 +450,11 @@ $('document').ready(function(){
 					purchaseorder = response.receipt.purchaseorder.number
 					fundcluster = response.fundcluster
 
-
-					$('#supplyTable > tbody').html(``)
+					$('#supplyTable > tbody').html(`
+							<tr>
+								<td class="text-center text-muted" colspan="@if($type == 'ledger') 5 @if($title == 'Release') 6 @else 5 @endif  @else 4 @endif">*** Nothing Follows ***</td>
+							</tr>
+					`)
 
 					response.supplies.forEach(function(callback){
 						addForm(callback.stocknumber, callback.details, callback.pivot.quantity)
@@ -455,9 +478,10 @@ $('document').ready(function(){
 					`)
 
 					swal('Success!', 'Field information has been updated!', 'success')
-				}else{
+				}
+				else{
 					$('#receipt-details').html(`
-						<p class="text-danger"><strong>Error! </strong> Receipt Details not found! Creating new receipt </p>
+						<p class="text-danger"><strong>Error! </strong> Receipt Details not found! This will create a new receipt </p>
 					`)
 				}
 			}

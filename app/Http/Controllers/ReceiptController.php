@@ -74,13 +74,15 @@ class ReceiptController extends Controller
             {
 
               $number = $this->sanitizeString(Input::get("number"));
-              $receipt = App\Receipt::with('supplier')->find($number)->first();
+              $receipt = App\Receipt::with('supplier')->findByNumber($number)->first();
 
-              if(count($receipt) > 0) return json_encode([
-                'receipt' => $receipt,
-                'fundcluster' => $receipt->purchaseorder->fundclusters->pluck('code'),
-                'supplies' => $receipt->supplies
-              ]);
+              if(count($receipt) > 0) 
+
+                return json_encode([
+                    'receipt' => $receipt,
+                    'fundcluster' => $receipt->purchaseorder->fundclusters->pluck('code'),
+                    'supplies' => $receipt->supplies
+                ]);
 
               return json_encode(null);
 
