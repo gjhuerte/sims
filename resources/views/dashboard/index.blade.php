@@ -104,10 +104,10 @@
           <div class="row">
             <div class="col-md-12">
               <p class="text-center">
-                <strong>Issued Inventory: {{ Carbon\Carbon::now()->startOfYear()->toFormattedDateString() }} {{ Carbon\Carbon::now()->endOfMonth()->toFormattedDateString() }} </strong>
+                <strong>Issued Inventory: {{ Carbon\Carbon::now()->startOfYear()->toFormattedDateString() }} - {{ Carbon\Carbon::now()->endOfMonth()->toFormattedDateString() }} </strong>
               </p>
 
-              <div class="chart">
+              <div class="chart">`
                 <!-- Sales Chart Canvas -->
                 <canvas id="myChart" style="height: 180px;"></canvas>
               </div>
@@ -200,8 +200,8 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
-          <a href="{{ url('inventory/supply/stockcard/batch/form/accept') }}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
-          <a href="{{ url('inventory/supply') }}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+          <a href="{{ url('inventory/supply/stockcard/accept') }}" class="btn btn-sm btn-primary pull-left">Place New Order</a>
+          <a href="{{ url('inventory/supply') }}" class="btn btn-sm btn-default pull-right">View All Orders</a>
         </div>
         <!-- /.box-footer -->
       </div>
@@ -272,7 +272,7 @@
         data: {
             labels: [
               @foreach($released_count as $released)
-              moment('{{ $released->month }}','M YYYY').format('MMMM'),
+              moment('{{ $released->date }}').format('MMMM'),
               @endforeach
             ],
             datasets: [{

@@ -183,8 +183,26 @@
 
 			@if($type == 'stock')
 			<div class="col-md-3">
-				<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" $.ajax({  headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }, type: 'get', url: '{{ url('request/generate') }}', dataType: 'json', success: function(response){ $('#reference').val(response) } }) ">Generate</button>
+				<button type="button" id="generateRIS" class="btn btn-md btn-primary" onclick=" ">Generate</button>
 			</div>
+
+			<script>
+				$(document).ready(function(){
+					$('#generateRIS').on('click', function(){
+						$.ajax({  
+							headers: { 
+								'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+							}, 
+							type: 'get', 
+							url: '{{ url('request/generate') }}', 
+							dataType: 'json', 
+							success: function(response){ 
+								$('#reference').val(response) 
+							} 
+						}) 
+					})
+				})
+			</script>
 			@endif
 		</div> <!-- ris form -->
 

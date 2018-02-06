@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App;
 use DB;
 use Auth;
+use Carbon;
 use App\Services\Dashboard;
 
 class DashboardController extends Controller
@@ -18,7 +19,14 @@ class DashboardController extends Controller
             $receipt_count = App\Receipt::count();
             $supply_count = App\Supply::count();
             $recent_supplies = App\StockCard::filterByReceived()->take(5)->orderBy('created_at','desc')->get();
-            $released_count = App\RSMI::select(DB::raw('sum(issued_quantity) as issued'),'date')->groupBy('date',DB::raw('YEAR(date)'),DB::raw('MONTH(date)'))->get();
+            $released_count = DB::table('stockcards')
+                                ->select(DB::raw('sum(issued_quantity) as issued'), 'date')
+                                ->where('issued_quantity', '>', '0')
+                                ->whereBetween('date',[
+                                    Carbon\Carbon::now()->startOfMonth()->toDateString(),
+                                    Carbon\Carbon::now()->endOfMonth()->toDateString()
+                                ])
+                                ->groupBy('date', DB::raw('year(date)'), DB::raw('month(date)'))->get();
 
             /**
              * fetch from stockcard
