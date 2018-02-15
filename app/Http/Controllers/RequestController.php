@@ -507,6 +507,11 @@ class RequestController extends Controller
 
     }
 
+    /**
+     * returns form for cancelling request
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function getCancelForm($id)
     {
         $request = App\Request::find($id);
@@ -516,6 +521,12 @@ class RequestController extends Controller
                 ->with('title',$request->id);
     }
 
+    /**
+     * process involved when cancelling a request
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function cancel(Request $request, $id)
     {
 
@@ -544,8 +555,6 @@ class RequestController extends Controller
     /**
      * Display the specified comments.
      *
-     *
-     * 
      */
     public function getComments(Request $request,$id)
     {
@@ -569,6 +578,12 @@ class RequestController extends Controller
 
     }
 
+    /**
+     * store comments of the user
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function postComments(Request $request,$id)
     {
       
@@ -598,6 +613,12 @@ class RequestController extends Controller
       return back();
     }
 
+    /**
+     * reset the current status of request to null
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function resetStatus(Request $request, $id)
     {
 
@@ -632,6 +653,11 @@ class RequestController extends Controller
 
     }
 
+    /**
+     * creates a printable form of request
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function print($id)
     {
       $id = $this->sanitizeString($id);

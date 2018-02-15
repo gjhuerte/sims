@@ -258,4 +258,8 @@ Route::middleware(['auth'])->group(function(){
 
 });
 
-Auth::routes();
+Route::get('hris/login', 'SessionsController@getHrisLogin');
+Route::post('hris/login', 'SessionsController@hrisLogin');
+
+Route::get('login', 'SessionsController@getLogin');
+Route::post('login', 'SessionsController@login');

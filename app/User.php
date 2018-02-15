@@ -49,6 +49,13 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 		'Email' => 'email'
 	);
 
+	public function loginRules(){
+		return [
+			'username' => 'required',
+			'password' => 'required'
+		];
+	}
+
 	public static $passwordRules = array(
 		'Current Password'=>'required|min:8|max:50',
 		'New Password'=>'required|min:8|max:50',
@@ -155,5 +162,10 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 	public function comments()
     {
         return $this->hasMany('App\RequestComments');
+    }
+
+    public function scopeFindByUserName($query, $value)
+    {
+    	$query->where('username', '=', $value);
     }
 }

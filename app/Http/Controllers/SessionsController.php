@@ -1,26 +1,24 @@
 <?php
 namespace App\Http\Controllers;
 	
-use App\User;
+use App;
+use DB;
 use Carbon;
 use Session;
 use Validator;
 use Hash;
+use Auth;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class SessionsController extends Controller {
 
-use AuthenticatesUsers;
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		return view('pagenotfound');
 	}
@@ -31,7 +29,7 @@ use AuthenticatesUsers;
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create(Request $request)
 	{
 		return view('login');
 	}
@@ -43,7 +41,7 @@ use AuthenticatesUsers;
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show()
+	public function show(Request $request)
 	{
 		$person = Auth::user();
 		return view('user.index')
@@ -57,7 +55,7 @@ use AuthenticatesUsers;
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit()
+	public function edit(Request $request)
 	{
 		$user = Auth::user();
 		return view('user.edit')
@@ -71,23 +69,23 @@ use AuthenticatesUsers;
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update()
+	public function update(Request $request)
 	{
-		$lastname = $this->sanitizeString(Input::get('lastname'));
-		$firstname = $this->sanitizeString(Input::get('firstname'));
-		$middlename = $this->sanitizeString(Input::get('middlename'));
-		$email = $this->sanitizeString(Input::get('email'));
-		$password = $this->sanitizeString(Input::get('password'));
-		$newpassword = $this->sanitizeString(Input::get('newpassword'));
+		$lastname = $this->sanitizeString($request->get('lastname'));
+		$firstname = $this->sanitizeString($request->get('firstname'));
+		$middlename = $this->sanitizeString($request->get('middlename'));
+		$email = $this->sanitizeString($request->get('email'));
+		$password = $this->sanitizeString($request->get('password'));
+		$newpassword = $this->sanitizeString($request->get('newpassword'));
 
-		$user = User::find(Auth::user()->id);
+		$user = App\User::find(Auth::user()->id);
 
 		$validator = Validator::make([
 			'Lastname'=>$lastname,
 			'Firstname'=>$firstname,
 			'Middlename'=>$middlename,
 			'Email' => $email
-		],User::$informationRules);
+		], App\User::$informationRules);
 
 		if( $validator->fails() )
 		{
@@ -97,13 +95,13 @@ use AuthenticatesUsers;
 		}
 
 		if(!($password == "" && $newpassword == "")){
-			$confirm = $this->sanitizeString(Input::get('newpassword_confirmation'));
+			$confirm = $this->sanitizeString($request->get('newpassword_confirmation'));
 
 			$validator = Validator::make([
 				'Current Password'=>$password,
 				'New Password'=>$newpassword,
 				'Confirm Password' => $confirm
-			],User::$passwordRules);
+			], App\User::$passwordRules);
 
 			if( $validator->fails() )
 			{
@@ -152,13 +150,98 @@ use AuthenticatesUsers;
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy()
+	public function destroy(Request $request)
 	{
 		//remove everything from session
 		Session::flush();
 		//remove everything from auth
 		Auth::logout();
 		return redirect('login');
+	}
+
+	public function getHrisLogin(Request $request)
+	{
+		return view('hris');
+	}
+
+	public function hrisLogin(Request $request)
+	{
+		try{
+
+			$username = $this->sanitizeString($request->get('username'));
+			$password = $this->sanitizeString($request->get('password'));
+
+			$hris = DB::connection('sqlsrv')->select('exec ValidateLogin ?,?', [
+				$username,
+				$password
+			]);
+
+			$hris = collect($hris)->first();
+			$user = App\User::findByUserName($hris->UserName)->first();
+
+			if(count($user) <= 0) $user = new App\User;
+
+			$user->username = $hris->UserName;
+			$user->firstname = $hris->FName;
+			$user->middlename = $hris->MName;
+			$user->lastname = $hris->LName;
+			$user->password = Hash::make($password);
+			$user->department = $hris->DepartmentCode;
+			$user->office = $hris->ParentDepartmentCode;
+			$user->position = $hris->PlantillaPosition;
+			$user->status = 1;
+			$user->access = 3;
+			$user->save();
+
+			$user_information = [
+				'username' => $username,
+				'password' => $password
+			];
+
+			if(Auth::attempt($user_information)){
+				return redirect('/');
+			}
+
+
+		} catch(\Illuminate\Database\QueryException $ex){
+				return back()->withInput()->withErrors([ 'username' => 'Invalid Login Credentials']);
+		}
+
+		return redirect('/');
+	}
+
+	public function getLogin(Request $request)
+	{
+		return view('login');
+	}
+
+	public function login(Request $request, App\User $user)
+	{
+		$username = $this->sanitizeString($request->get('username'));
+		$password = $this->sanitizeString($request->get('password'));
+
+		$validator = Validator::make([
+			'username' => $username, 
+			'password' => $password
+		], $user->loginRules());
+
+		if($validator->fails())
+		{
+			return back()->withInput()->withErrors($validator);
+		}
+		
+		$user_information = [
+			'username' => $username,
+			'password' => $password
+		];
+
+		if(Auth::attempt($user_information)){
+			return redirect('/');
+		}
+		else{
+			return back()->withInput()->withErrors(["Invalid Credentials Submitted. Using H.R.I.S. Account? Click 'Use HRIS Credentials' and log in your HRIS Account  " ]);
+		}
+
 	}
 
 }
