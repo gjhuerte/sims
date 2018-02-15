@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-
+use App\Services\Dashboard;
 class HomeController extends Controller
 {
     /**
@@ -22,28 +22,8 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        if(Auth::user()->access == 0)
-        {
-            return redirect('backup');
-        }
-
-        if(Auth::user()->access == 1)
-        {
-            return redirect('inventory/supply');
-        }
-
-        if(Auth::user()->access == 2)
-        {
-            return redirect('inventory/supply');
-        }
-
-        if(Auth::user()->access == 3)
-        {
-
-            return redirect('request');
-
-        }
+    public function index(Request $request, Dashboard $dashboard)
+    {   
+        return $dashboard->showDashboard($request);
     }
 }

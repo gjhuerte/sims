@@ -239,7 +239,7 @@ class SessionsController extends Controller {
 			return redirect('/');
 		}
 		else{
-			return back()->withInput()->withErrors(["Invalid Credentials Submitted. Using H.R.I.S. Account? Click 'Use HRIS Credentials' and log in your HRIS Account  " ]);
+			return back()->withInput()->withErrors(["Invalid Credentials Submitted. Are you using H.R.I.S. Account? Click 'Use HRIS Credentials' and log in to your HRIS Account  " ]);
 		}
 
 	}

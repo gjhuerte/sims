@@ -126,3 +126,18 @@
 </div>
 {{-- container --}}
 @stop
+
+@section('scripts-include')
+<script>
+  $(document).ready(function(){
+    $("#loginButton").click(function() {
+        var $btn = $(this);
+        $btn.button('loading');
+        // simulating a timeout
+        setTimeout(function () {
+            $btn.button('reset');
+        }, 1000);
+    });
+  })
+</script>
+@endsection

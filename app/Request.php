@@ -5,9 +5,30 @@ namespace App;
 use Auth;
 use Carbon;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Contracts\UserResolver;
 
-class Request extends Model
+class Request extends Model implements Auditable, UserResolver
 {
+    use \OwenIt\Auditing\Auditable; 
+
+    protected $auditInclude = [ 
+      'requestor_id' , 
+      'office_id' ,
+      'issued_by' , 
+      'remarks'  , 
+      'purpose'  , 
+      'status' 
+    ]; 
+  
+  /**
+     * {@inheritdoc}
+     */
+    public static function resolveId()
+    {
+        return Auth::check() ? Auth::user()->getAuthIdentifier() : null;
+    }
+
     protected $table = 'requests';
     protected $primaryKey = 'id';
     public $incrementing = true;
