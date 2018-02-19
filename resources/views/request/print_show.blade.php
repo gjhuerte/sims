@@ -101,6 +101,7 @@
       </tbody>
     </table>
   </div>
+
   <div id="footer" class="col-sm-12">
     <table class="table table-bordered">
       <thead>
@@ -190,7 +191,14 @@
             <span id="office" class="text-center" style="font-size:10px;"></span>
           </td>
         </tr>
+
+
       </tbody>
     </table>
+
+    <div class="col-sm-12">
+      <p class="text-justified"><strong>Note:</strong>This request is valid for 3 days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p>
+    </div>
+
   </div>
 @endsection

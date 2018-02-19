@@ -662,7 +662,7 @@ class RequestController extends Controller
     {
       $id = $this->sanitizeString($id);
       $request = App\Request::find($id);
-      $row_count = 20;
+      $row_count = 18;
       $adjustment = 4;
 
       if(isset($request->supplies)):

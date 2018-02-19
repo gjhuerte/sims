@@ -4,6 +4,9 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App;
+use Auth;
+use Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -28,6 +31,21 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
        $schedule->command('backup:clean')->daily()->at('07:00');
        $schedule->command('backup:run')->daily()->at('7:30');
+
+        $schedule->call(function () {
+            DB::table('requests')->where('approved_at', '<=', Carbon\Carbon::now()->subDays(3)->toDateTimeString())
+                ->where('status', '=', 'approved')
+                ->update([
+                    'status' => 'cancelled',
+                    'cancelled_at' => Carbon\Carbon::now()->toDateTimeString(),
+                    'cancelled_by' => Auth::user()->id
+                ]);
+
+            $title = 'Request Cancellation';
+            $details = "Unclaimed requests before " . Carbon\Carbon::now()->toDateTimeString() . " has been cancelled" ;
+
+            App\Announcement::notify($title, $details, $access = 1, null);
+        })->daily();
     }
 
     /**
