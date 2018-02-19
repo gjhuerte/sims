@@ -17,7 +17,7 @@
 		<div class="panel panel-body table-responsive">
 			@if(isset($request->requestor_id) && Auth::user()->id == $request->requestor_id )
 
-        @if($request->status == 'Resubmit' || $request->status == null || ( strpos($request->status, 'pdated') != false )  || $request->status == '')
+        @if($request->status == 'Resubmit' || $request->status == null || ( strpos($request->status, 'pdated') != false )  || $request->status == '' || ( strpos($request->status, 'ending') != false ))
         <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
 	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 	    	</a>
@@ -27,6 +27,7 @@
         <hr />
 
         @endif
+
       @endif
 
 			<table class="table table-hover table-striped table-bordered table-condensed" id="requestTable" cellspacing="0" width="100%"	>
@@ -90,13 +91,6 @@
         </a>
 
         @if(Auth::user()->access == 1)
-
-          @if($request->status != null && ( $request->status == 'Disapproved' || $request->status == 'Approved' ))
-          <button id="reset" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm">
-            <i class="fa fa-refresh" aria-hidden="true"> Resubmit</i>
-          </button>
-
-          @endif
         
           @if($request->status == 'Approved')
           <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
@@ -115,6 +109,7 @@
           <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Messages  <span class="label label-danger"> {{ App\RequestComments::where('request_id', '=', $request->id)->count() }} </span> </span>
         </a>
     `)
+
     @if(Auth::user()->access == 1 )
 
     @if($request->status != null && $request->status != 'released')
