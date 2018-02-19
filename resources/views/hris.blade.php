@@ -44,10 +44,10 @@
         <div class="panel-heading">
           <a class="" href="{{ url('/') }}" style="margin: 10px;">
               <div style="color: #800000;margin:0;padding:0;">
-                  <div class="col-xs-2">
+                  <div class="col-md-1">
                       <img src="{{ asset('images/logo.png') }}" style="height: 64px;width:auto;" />
                   </div>
-                  <div class="col-xs-8" style="font-size: 12px;white-space:nowrap;margin:0px;padding:0px;">
+                  <div class="col-md-offset-1 col-md-7" style="font-size: 12px;white-space:nowrap;">
                         <h5 style="margin: 3px;">Polytechnic University Of the Philippines</h5>
                         <p style="margin: 3px;">Sta. Mesa, Manila</p>
                         <p style="margin: 3px; font-size: 15px;"> <strong> Human Resource Information System</strong> </p>
