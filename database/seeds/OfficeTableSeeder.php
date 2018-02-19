@@ -366,42 +366,42 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'OVPAA', 
                   'name'=>'Office of the Vice President for Academic Affairs',
-                  'head' => 'RAQUEL G. JAVIER',
+                  'head' => 'MANUEL M. MUHI',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPA', 
                   'name'=>'Office of the Vice President for Administration',
-                  'head' => 'ROSITA E. CANLAS',
+                  'head' => 'ALBERTO C. GUILLO',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPBSC', 
                   'name'=>'Office of the Vice President for Branches and Satellite Campuses',
-                  'head' => 'NORBERTO  CATURAY',
+                  'head' => 'PASCUALITO B. GATAN',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPF', 
                   'name'=>'Office of the Vice President for Finance',
-                  'head' => 'SHARON JOY F. PELAYO',
+                  'head' => 'MARISA J. LEGASPI',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPRED', 
                   'name'=>'Office of the Vice President for Research, Extension and Development',
-                  'head' => 'RACIDON P. BERNARTE',
+                  'head' => 'JOSEPH MERCADO',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPSAS', 
                   'name'=>'Office of the Vice President for Student Affairs and Services',
-                  'head' => 'EDGARDO A. LATOZA',
+                  'head' => 'HERMINIA E. MANIMTIM',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
