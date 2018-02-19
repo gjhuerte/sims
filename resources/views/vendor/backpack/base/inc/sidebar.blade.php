@@ -17,7 +17,13 @@
               <span>
               {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
               @if(isset(Auth::user()->position))
-              ( {{  ucfirst(Auth::user()->position) }} )
+              @if(strlen(Auth::user()->position) > 15)
+              <br /><span class="text-center" style="font-size: 8px">
+              @else
+              <span class="text-center">
+              @endif
+                ( {{  ucfirst(Auth::user()->position) }} )
+              </span>
               @endif
               </span>
             </a>
@@ -52,6 +58,8 @@
           @if(Auth::user()->access == 0)
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/backup') }}"><i class="fa fa-hdd-o"></i> <span>Backups</span></a></li>
+
+          <li><a href="{{ url('sync') }}"><i class="fa fa-refresh"></i> <span>Sync</span></a></li>
 
           @endif
 

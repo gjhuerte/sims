@@ -149,7 +149,7 @@
             <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ isset($request->office) ? $request->office->code : "" }}</span>
           </td>
           <td class="text-center">
-            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">Head, {{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;"></span>

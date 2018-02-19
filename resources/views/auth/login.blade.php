@@ -6,6 +6,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">Login</div>
+
                 <div class="panel-body">
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -39,13 +40,19 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
+                            <div class="col-md-offset-4 col-md-2">
                                 <button type="submit" class="btn btn-primary">
                                     Login
                                 </button>
                             </div>
                         </div>
                     </form>
+                </div>
+
+                <div class="panel-footer">
+                    <a href="{{ url('hris/login') }}" type="button" class="btn btn-info">
+                        Use H.R.I.S. Account
+                    </a>
                 </div>
             </div>
         </div>
