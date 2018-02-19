@@ -332,7 +332,7 @@
 				<div class="clearfix"></div>
 
 				<div class="col-sm-12">
-					<button type="button" id="reset" class="btn btn-md pull-right" style="color: #9D2933; background-color: #ECF0F1; border-color: #e5e5e5;">Remove All Supplies</button>
+					<button type="button" id="reset" class="btn btn-md pull-right" style="color: #9D2933; background-color: #ECF0F1; border-color: #e5e5e5;">Clear All</button>
 				</div>
 
 				<table class="table table-hover table-condensed table-bordered" id="supplyTable">
