@@ -26,9 +26,11 @@ class CreateInspectionsSuppliesTable extends Migration
                     ->on('supplies')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
+            $table->string('organization',100)->nullable();
+            $table->integer('quantity_received');
+            $table->integer('quantity_adjusted');
+            $table->integer('quantity_final');
             $table->primary(['inspection_id', 'supply_id']);
-            $table->integer('quantity');
-            $table->integer('quantity');
             $table->timestamps();
         });
     }
