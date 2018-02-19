@@ -21,7 +21,6 @@ class CreateInspectionsTable extends Migration
             $table->string('invoice')->nullable();
             $table->datetime('invoice_date')->nullable();
             $table->datetime('date_delivered')->nullable();
-            $table->string('received_by')->nullable();
             $table->string('supplier')->nullable();
             $table->string('verified_by')->nullable();
             $table->datetime('verified_on')->nullable();

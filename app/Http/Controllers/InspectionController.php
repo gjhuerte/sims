@@ -15,9 +15,17 @@ class InspectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        if($request->ajax())
+        {
+            $inspection = App\Inspection::all();
+            return datatables($inspection)->toJson();
+        }
+
+        return view('inspection.index')
+                ->with('title', 'Inspection');
     }
 
     /**
@@ -25,9 +33,10 @@ class InspectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function getInitialVerifyForm()
     {
-        //
+        return view('inspection.initial')
+                ->with('title', 'Create');
     }
 
     /**
