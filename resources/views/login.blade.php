@@ -59,7 +59,7 @@
                   <div class="col-md-offset-1 col-md-7" style="font-size: 12px;white-space:nowrap;">
                         <h5 style="margin: 3px;">Polytechnic University Of the Philippines</h5>
                         <p style="margin: 3px;">Sta. Mesa, Manila</p>
-                        <p style="margin: 3px; font-size: 15px;"> <strong> Human Resource Information System</strong> </p>
+                        <p style="margin: 3px; font-size: 15px;"> <strong> Supplies Inventory Management System</strong> </p>
                   </div>  
               </div>
           </a>

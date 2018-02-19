@@ -20,24 +20,28 @@
     <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
           <tr rowspan="2">
-              <th class="text-left" colspan="6">Fund Cluster:  <span style="font-weight:normal"></span> </th>
+              <th class="text-left" colspan="8">Fund Cluster:  <span style="font-weight:normal"></span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="3">Division:  <span style="font-weight:normal"><u>{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> </u></th>
-              <th class="text-left" colspan="3">Responsibility Center Code:  <span style="font-weight:normal"></span> </th>
+              <th class="text-left" colspan="4">Division:  <span style="font-weight:normal"><u>{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> </u></th>
+              <th class="text-left" colspan="4">Responsibility Center Code:  <span style="font-weight:normal"></span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="3">Office: </th>
-              <th class="text-left" colspan="3">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
+              <th class="text-left" colspan="4">Office: </th>
+              <th class="text-left" colspan="4">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
           </tr>
           <tr>
-          <th class="col-sm-1">Stock Number</th>
-          <th class="col-sm-1">Details</th>
-          <th class="col-sm-1">Quantity Requested</th>
-          <th class="col-sm-1">Stock Availability</th>
-          <th class="col-sm-1">Quantity Issued</th>
-          <th class="col-sm-1">Remarks</th>
-        </tr>
+            <th rowspan=2>Stock Number</th>
+            <th rowspan=2>Details</th>
+            <th rowspan=2>Quantity Requested</th>
+            <th class="col-sm-1" colspan=2>Stock Availability</th>
+            <th rowspan=2>Quantity Issued</th>
+            <th rowspan=2>Remarks</th>
+          </tr>
+           <tr>
+             <th>Yes</th>
+             <th>No</th>
+           <tr>
       </thead>
       <tbody>
         @foreach($request->supplies as $key=>$supply)
@@ -49,7 +53,16 @@
             </span>
           </td>
           <td>{{ $supply->pivot->quantity_requested }}</td>
-          <td class="text-center"> Yes | No </td>
+          @if($supply->pivot->quantity_issued > 0)
+          <td class="text-center"> ✔ </td>
+          <td class="text-center">  </td>
+          @elseif($supply->pivot->quantity_issued <= 0)
+          <td class="text-center">  </td>
+          <td class="text-center"> ✔ </td>
+          @else
+          <td class="text-center"></td>
+          <td class="text-center">  </td>
+          @endif
           <td>{{ $supply->pivot->quantity_issued }}</td>
           <td>{{ $supply->pivot->comments }}</td>
         </tr>
@@ -62,6 +75,7 @@
           <td style="padding: 15px;"></td>
           <td></td>
           <td></td>
+          <td class="text-center">  </td>
           <td></td>
           <td></td>
           <td></td>
