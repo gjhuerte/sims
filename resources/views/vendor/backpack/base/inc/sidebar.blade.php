@@ -67,6 +67,16 @@
 
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
 
+          @endif
+
+          @if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 3)
+
+          <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
+
+          @endif
+
+          @if(Auth::user()->access == 1 || Auth::user()->access == 2 )
+
           <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
 
           <li class="treeview">
@@ -191,7 +201,7 @@
           <!-- ======================================= -->
           <li class="header">Utilities</li>
 
-          <li><a href="{{ url('account') }}"><i class="fa fa-users" aria-hidden="true"></i> Accounts</span></a></li>
+          <li><a href="{{ url('account') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Accounts</span></a></li>
 
           <li><a href="{{ url('audittrail') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>Audit Trail</span></a></li>
           

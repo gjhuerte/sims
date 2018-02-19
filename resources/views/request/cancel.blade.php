@@ -17,16 +17,9 @@
   <div class="box" style="padding:10px;">
     <div class="box-body">
     {{ Form::open(['method'=>'put','route'=>array('request.cancel',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
-      @if (count($errors) > 0)
-          <div class="alert alert-danger alert-dismissible" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <ul style='margin-left: 10px;'>
-                  @foreach ($errors->all() as $error)
-                      <li>{{ $error }}</li>
-                  @endforeach
-              </ul>
-          </div>
-      @endif
+      
+      @include('alert.errors')
+
       <legend><h4 class="">Cancel Request No. {{ $request->code }} ? </h4></legend>
       <table class="table table-hover table-bordered table-condensed" id="supplyTable">
         <thead>

@@ -80,41 +80,23 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 		'accessName'
 	];
 
+	public static $access_list = [
+		0 => "Administrator",
+		1 => "AMO",
+		2 => "Accounting",
+		3 => "Offices", 
+		4 => "Chief",
+		5  => "Director"
+	];
+
 	public function setAccessNameAttribute($value)
 	{
-		switch($value){
-			case 0:
-				$this->accessName = "Administrator";
-				break;
-			case 1:
-				$this->accessName = "AMO";
-				break;
-			case 2:
-				$this->accessName = "Accounting";
-				break;
-			case 3:
-				$this->accessName = "Offices";
-				break;
-		}
+		$this->accessName = $this->access_list[$value];
 	}
 
 	public function getAccessNameAttribute($value)
 	{
-		switch($this->access){
-			case 0:
-				return "Administrator";
-				break;
-			case 1:
-				return "AMO";
-				break;
-			case 2:
-				return "Accounting";
-				break;
-			case 3:
-				return "Offices";
-				break;
-		}
-		return $value;
+		return $this->access_list[$value];
 	}
 
 

@@ -41,38 +41,17 @@
         <label for="newaccesslevel">New Access Level</label>
         <div class="form-group">
           <ul class="list-group">
+
+            @foreach(App\User::$access_list as $key=>$value)
             <li class="list-group-item">
               <div class="radio">
                 <label>
-                  <input type="radio" name="newaccesslevel" value="0">
-                  Administrator
+                  <input type="radio" name="newaccesslevel" value="{{ $key }}">
+                  {{ $value }}
                 </label>
               </div>
             </li>
-            <li class="list-group-item">
-              <div class="radio">
-                <label>
-                  <input type="radio" name="newaccesslevel" value="1">
-                  AMO
-                </label>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="radio">
-                <label>
-                  <input type="radio" name="newaccesslevel" value="2">
-                  Accounting
-                </label>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="radio">
-                <label>
-                  <input type="radio" name="newaccesslevel" value="3">
-                  Offices
-                </label>
-              </div>
-            </li>
+            @endforeach
           </ul>
         </div>
         <div class="form-group">

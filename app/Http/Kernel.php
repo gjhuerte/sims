@@ -54,6 +54,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdministratorFilter::class,
         'offices' => \App\Http\Middleware\OfficesAccessOnly::class,
         'amo' => \App\Http\Middleware\AMOFilter::class,
+        'amo-office' => \App\Http\Middleware\AMOOfficesFilter::class,
         'accounting' => \App\Http\Middleware\AccountingFilter::class,
         'except-offices' => \App\Http\Middleware\AllExceptOfficesFilter::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,

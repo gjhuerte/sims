@@ -20,13 +20,14 @@ class DashboardController extends Controller
             $supply_count = App\Supply::count();
             $recent_supplies = App\StockCard::filterByReceived()->take(5)->orderBy('created_at','desc')->get();
             $released_count = DB::table('stockcards')
-                                ->select(DB::raw('sum(issued_quantity) as issued'), 'date')
+                                ->select(DB::raw('sum(issued_quantity) as issued, MONTH(date) as month, YEAR(date) as year'))
                                 ->where('issued_quantity', '>', '0')
                                 ->whereBetween('date',[
                                     Carbon\Carbon::now()->startOfMonth()->toDateString(),
                                     Carbon\Carbon::now()->endOfMonth()->toDateString()
                                 ])
-                                ->groupBy('date', DB::raw('year(date)'), DB::raw('month(date)'))->get();
+                                ->groupBy( DB::raw('MONTH(date)'), DB::raw('YEAR(date)'))
+                                ->get();
 
             /**
              * fetch from stockcard

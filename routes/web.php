@@ -106,6 +106,10 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('receipt','ReceiptController');
 	});
 
+	Route::middleware(['amo-office'])->group(function(){
+		Route::resource('inspection', 'InspectionController');
+	});
+
 	Route::middleware(['amo'])->group(function(){
 
 		Route::get('inventory/supply/stockcard/accept',[

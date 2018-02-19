@@ -272,7 +272,7 @@
         data: {
             labels: [
               @foreach($released_count as $released)
-              moment('{{ $released->date }}').format('MMMM'),
+              moment('{{ $released->month }}').format('MMMM'),
               @endforeach
             ],
             datasets: [{

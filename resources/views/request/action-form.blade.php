@@ -30,7 +30,7 @@
 
       @if(isset($request->supplies))
           @foreach($request->supplies as $supply)
-          <tr>
+          <tr @if($supply->temp_balance <= 0) class="danger" @endif>
             <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}" /></td>
             <td>{{ $supply->details }}</td>
             <td>{{ $supply->temp_balance }}</td>
@@ -42,7 +42,7 @@
               <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  />
             </td>
             <td>
-              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" />
+              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance <= 0) No Available @endif" />
             </td>
           </tr>
         @endforeach
@@ -56,7 +56,7 @@
           @endphp
           {{-- fetch the details for supply --}}
 
-          <tr>
+          <tr @if($supply->temp_balance <= 0) class="danger" @endif>
             <td>"{{ $stocknumber }}<input type="hidden" name="stocknumber[]" value=""{{ $stocknumber }}" /></td>
             <td>{{ $supply->details }}</td>
             <td>{{ $supply->temp_balance }}</td>
