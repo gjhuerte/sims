@@ -1,8 +1,8 @@
 
-<table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0"> 
+<table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0"> 
   <thead>
     <tr>
-      <th class="text-left" colspan="4">Item:
+      <th class="text-left" colspan="4" style="font-family:verdana;">Item:
         <span style="font-weight:normal; 
         @if(strlen($supply->details) > 0)
           @if(strlen($supply->details) > 60) font-size: 9px; 
@@ -11,11 +11,11 @@
           @endif 
         @endif">{{ $supply->details }}
       </span> </th>
-      <th class="text-left" colspan="3">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
+      <th class="text-left" colspan="3" style="font-family:verdana;">Stock No.:  <span style="font-weight:normal">{{ $supply->stocknumber }}</span> </th>
     </tr> 
     <tr>
-      <th class="text-left" colspan="4">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit->name }}</span>  </th>
-      <th class="text-left" colspan="3">Reorder Point: <span style="font-weight:normal">{{ $supply->reorderpoint }}</span> </th>
+      <th class="text-left" colspan="4" style="font-family:verdana;">Unit Of Measurement:  <span style="font-weight:normal">{{ $supply->unit->name }}</span>  </th>
+      <th class="text-left" colspan="3" style="font-family:verdana;">Reorder Point: <span style="font-weight:normal">{{ $supply->reorderpoint }}</span> </th>
     </tr>
     <tr>
       <th class="col-sm-1">Date</th>
