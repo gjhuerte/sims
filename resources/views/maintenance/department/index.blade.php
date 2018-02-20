@@ -20,7 +20,6 @@
 					<th class="col-sm-1">ID</th>
 					<th class="col-sm-1">Office</th>
 					<th class="col-sm-1">Department </th>
-					<th class="col-sm-1">Department Name</th>
 					<th class="no-sort col-sm-1"></th>
 				</thead>
 			</table>

@@ -16,7 +16,7 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'AD', 
                   'name'=>'Accounting Department',
-                  'head' => 'CRISTOPHER M. CAHAYON',
+                  'head' => 'Cristopher M. Cahayon',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -30,119 +30,119 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'ARCDO', 
                   'name'=>'Alumni Relations and Career Development Office',
-                  'head' => 'FLORINDA H. OQUINDO',
+                  'head' => 'Florinda H. Oquindo',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'AMS', 
                   'name'=>'Asset Management Office',
-                  'head' => 'VIRGILIO  MAURICIO',
+                  'head' => 'Virgilio  Mauricio',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'BSO', 
                   'name'=>'Budget Services Office',
-                  'head' => 'FLORENITA E. IMPERIAL',
+                  'head' => 'Florenita E. Imperial',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CAF', 
                   'name'=>'College of Accountancy and Finance',
-                  'head' => 'SYLVIA A. SARMIENTO',
+                  'head' => 'Sylvia A. Sarmiento',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CAFA', 
                   'name'=>'College of Architecture and Fine Arts',
-                  'head' => 'TED VILLAMOR G. INOCENCIO',
+                  'head' => 'Ted Villamor G. Inocencio',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CAL', 
                   'name'=>'College of Arts and Letters',
-                  'head' => 'EVANGELINA  SERIL',
+                  'head' => 'Evangelina  Seril',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CBA', 
                   'name'=>'College of Business Administration',
-                  'head' => 'RAQUEL  RAMOS',
+                  'head' => 'Raquel  Ramos',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'COC', 
                   'name'=>'College of Communication',
-                  'head' => 'EDNA T. BERNABE',
+                  'head' => 'Edna T. Bernabe',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CCIS', 
                   'name'=>'College of Computer and Information Sciences',
-                  'head' => 'GISELA MAY A. ALBANO',
+                  'head' => 'Gisela May A. Albano',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CoEd', 
                   'name'=>'College of Education',
-                  'head' => 'TERESA  MOBILLA',
+                  'head' => 'Ma. Junithesmer  Rosales',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CE', 
                   'name'=>'College of Engineering',
-                  'head' => 'GUILLERMO O. BERNABE',
+                  'head' => 'Guillermo O. Bernabe',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CHK', 
                   'name'=>'College of Human Kinetics',
-                  'head' => 'MARIPRES P. PASCUA',
+                  'head' => 'Maripres P. Pascua',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
-                  'code' => 'CoL', 
+                  'code' => 'CL', 
                   'name'=>'College of Law',
-                  'head' => 'GEMY LITO L. FESTIN',
+                  'head' => 'Arlene R. Queri',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CPSPA', 
                   'name'=>'College of Political Science and Public Administration',
-                  'head' => 'SANJAY P. CLAUDIO',
+                  'head' => 'Sanjay P. Claudio',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CS', 
                   'name'=>'College of Science',
-                  'head' => 'LINCOLN A. BAUTISTA',
+                  'head' => 'Lincoln A. Bautista',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CSSD', 
                   'name'=>'College of Social Sciences and Development',
-                  'head' => 'NICOLAS T. MALLARI',
+                  'head' => 'Nicolas T. Mallari',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CTHTM', 
                   'name'=>'College of Tourism, Hospitality and Transportation Management',
-                  'head' => 'ROCHELLE MAY E. GARCIA',
+                  'head' => 'Marietta D. Reyes',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -156,28 +156,28 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'CMO', 
                   'name'=>'Communication Management Office',
-                  'head' => 'KRIZTINE  VIRAY',
+                  'head' => 'Kriztine  Viray',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CPS', 
                   'name'=>'Counseling and Psychological Services',
-                  'head' => 'NENITA F. BUAN',
+                  'head' => 'Nenita F. Buan',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'EMO', 
                   'name'=>'Extension Management Office',
-                  'head' => 'RACIDON P. BERNARTE',
+                  'head' => 'Racidon P. Bernarte',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'FAMO', 
                   'name'=>'Facility Management Office',
-                  'head' => 'NATAN F. GACUTE',
+                  'head' => 'Natan F. Gacute',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -191,98 +191,98 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'FMO', 
                   'name'=>'Fund Management Office',
-                  'head' => 'JOCELLE ANNE C. AVANZADO',
+                  'head' => 'Catherine C. Oposa',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'GSO', 
                   'name'=>'General Services Office',
-                  'head' => 'MAYLUCK A. MALAGA',
+                  'head' => 'Antonio 0 Velasco',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'GS', 
                   'name'=>'Graduate School',
-                  'head' => 'CARMENCITA L. CASTOLO',
+                  'head' => 'Carmencita L. Castolo',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'HRMD', 
                   'name'=>'Human Resource Management Department',
-                  'head' => 'ADAM V. RAMILO',
+                  'head' => 'Adam V. Ramilo',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ICTO', 
                   'name'=>'Information and Communications Technology Office',
-                  'head' => 'MARLON M. LIM',
+                  'head' => 'Marlon M. Lim',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ICLS', 
                   'name'=>'Institute for Cultural and Language Studies',
-                  'head' => 'JOSEPH REYLAN B. VIRAY',
+                  'head' => 'Joseph Reylan B. Viray',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'IDSA', 
                   'name'=>'Institute for Data and Statistical Analysis',
-                  'head' => 'LINCOLN A. BAUTISTA',
+                  'head' => 'Lincoln A. Bautista',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ILIR', 
                   'name'=>'Institute for Labor and Industrial Relations',
-                  'head' => 'RIMANDO E. FELICIA',
+                  'head' => 'Rimando E. Felicia',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ISTR', 
                   'name'=>'Institute for Science and Technology Research',
-                  'head' => 'ARMIN S. CORONADO',
+                  'head' => 'Armin S. Coronado',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ISSD', 
                   'name'=>'Institute for Social Sciences and Development',
-                  'head' => 'HILDA F. SAN GABRIEL',
+                  'head' => 'Hilda F. San Gabriel',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ITech', 
                   'name'=>'Institute of Technology',
-                  'head' => 'NIMFA M. DEL ROSARIO',
+                  'head' => 'Dante V. Gedaria',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'IPO', 
                   'name'=>'Institutional Planning Office',
-                  'head' => 'TOMAS O. TESTOR',
+                  'head' => 'Tomas O. Testor',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'IPMO', 
                   'name'=>'Intellectual Property Management Office',
-                  'head' => 'JACKIE D. URRUTIA',
+                  'head' => 'Jackie D. Urrutia',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'IAO', 
                   'name'=>'Internal Audit Office',
-                  'head' => 'REALIN C. ARANZA',
+                  'head' => 'Realin C. Aranza',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -296,35 +296,35 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'LHS', 
                   'name'=>'Laboratory High School',
-                  'head' => 'CRISTALINA R. PIERS',
+                  'head' => 'Cristalina R. Piers',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'LLRC', 
                   'name'=>'Library and Learning Resources Center',
-                  'head' => 'DIVINA T. PASUMBAL',
+                  'head' => 'Divina T. Pasumbal',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'DelPilar', 
                   'name'=>'M. H. Del Pilar Campus',
-                  'head' => 'CHRISTOPHER  CRISTE',
+                  'head' => 'Jean Paul  Martirez',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'MSD', 
                   'name'=>'Medical Services Department',
-                  'head' => 'MA. LIZA  YANES',
+                  'head' => 'Ma. Liza  Yanes',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'NSTP', 
                   'name'=>'National Service Training Program Office',
-                  'head' => 'ROVELINA B. JACOLBIA',
+                  'head' => 'Rovelina B. Jacolbia',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -338,105 +338,105 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'OEVP', 
                   'name'=>'Office of the Executive Vice President',
-                  'head' => 'LUALHATI A. DELA CRUZ',
+                  'head' => 'Herminia E. Manimtim',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OP', 
                   'name'=>'Office of the President',
-                  'head' => 'EMANUEL C. DE GUZMAN',
+                  'head' => 'Emanuel C. De Guzman',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OSS', 
                   'name'=>'Office of the Student Services',
-                  'head' => 'JOSE M. ABAT',
+                  'head' => 'Jose M. Abat',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OUR', 
                   'name'=>'Office of the University Registrar',
-                  'head' => 'FLORDELIZA E. ALVENDIA',
+                  'head' => 'Zenaida R. Sarmiento',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPAA', 
                   'name'=>'Office of the Vice President for Academic Affairs',
-                  'head' => 'MANUEL M. MUHI',
+                  'head' => 'Manuel M. Muhi',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPA', 
                   'name'=>'Office of the Vice President for Administration',
-                  'head' => 'ALBERTO C. GUILLO',
+                  'head' => 'Alberto C. Guillo',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPBSC', 
                   'name'=>'Office of the Vice President for Branches and Satellite Campuses',
-                  'head' => 'PASCUALITO B. GATAN',
+                  'head' => 'Pascualito  Gatan',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPF', 
                   'name'=>'Office of the Vice President for Finance',
-                  'head' => 'MARISA J. LEGASPI',
+                  'head' => 'Marisa J. Legaspi',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPRED', 
                   'name'=>'Office of the Vice President for Research, Extension and Development',
-                  'head' => 'JOSEPH MERCADO',
+                  'head' => 'Joseph 0 Mercado',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OVPSAS', 
                   'name'=>'Office of the Vice President for Student Affairs and Services',
-                  'head' => 'HERMINIA E. MANIMTIM',
+                  'head' => 'Herminia E. Manimtim',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'OUS', 
                   'name'=>'Open University System',
-                  'head' => 'ROSEMARIEBETH  DIZON',
+                  'head' => 'Anna Ruby  Gapasin',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'PASUC', 
                   'name'=>'PASUC Evaluation Committee',
-                  'head' => 'BEN B. ANDRES',
+                  'head' => 'Ben B. Andres',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'PPDO', 
                   'name'=>'Physical Planning and Development Office',
-                  'head' => 'SHERWIN N. NIEVA',
+                  'head' => 'Sherwin N. Nieva',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'PRINTING', 
                   'name'=>'Printing Office',
-                  'head' => 'RENATO C. VIBIESCA',
+                  'head' => 'Renato C. Vibiesca',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'PMO', 
                   'name'=>'Procurement Management Office',
-                  'head' => 'HENRY V. PASCUA',
+                  'head' => 'Henry V. Pascua',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -450,7 +450,7 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'PO', 
                   'name'=>'Publications Office',
-                  'head' => 'ANGELINA E. BORICAN',
+                  'head' => 'Angelina E. Borican',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -471,7 +471,7 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'AF', 
                   'name'=>'PUP ALFONSO, CAVITE CAMPUS',
-                  'head' => 'CHERRY E. ANGELES',
+                  'head' => 'Conrado L. Nati',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -485,21 +485,21 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'BS', 
                   'name'=>'PUP BANSUD, ORIENTAL MINDORO CAMPUS',
-                  'head' => 'ARTEMUS  CRUZ',
+                  'head' => 'Artemus  Cruz',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'BT', 
                   'name'=>'PUP BATAAN BRANCH',
-                  'head' => 'LEONILA J. GENERALES',
+                  'head' => 'Leonila J. Generales',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'BN', 
                   'name'=>'PUP BIÑAN, LAGUNA CAMPUS',
-                  'head' => 'JOSEFINA B. MACARUBBO',
+                  'head' => 'Josefina B. Macarubbo',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
@@ -513,203 +513,203 @@ class OfficeTableSeeder extends Seeder {
             array(
                   'code' => 'CB', 
                   'name'=>'PUP CABIAO, NUEVA ECIJA CAMPUS',
-                  'head' => 'FERNANDO F. ESTINGOR',
-                  'created_at' => date('Y-m-d H:i:s'),
-                  'updated_at' => date('Y-m-d H:i:s')
-            ),
-            array(
-                  'code' => 'CL', 
-                  'name'=>'PUP CALAUAN, LAGUNA CAMPUS',
-                  'head' => 'GEMY LITO L. FESTIN',
+                  'head' => 'Fernando F. Estingor',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'GL', 
-                  'name'=>'PUP GENERAL LUNA, QUEZON CAMPUS',
-                  'head' => 'ADELIA R. ROADILLA',
+                  'name'=>'PUP CALAUAN, LAGUNA CAMPUS',
+                  'head' => 'Adelia R. Roadilla',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'LQ', 
-                  'name'=>'PUP LOPEZ, QUEZON BRANCH',
-                  'head' => 'LOURDES  AVILA',
+                  'name'=>'PUP GENERAL LUNA, QUEZON CAMPUS',
+                  'head' => 'Rufo  Bueza',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'MG', 
-                  'name'=>'PUP MARAGONDON, CAVITE BRANCH',
-                  'head' => 'DENISE A. ABRIL',
+                  'name'=>'PUP LOPEZ, QUEZON BRANCH',
+                  'head' => 'Denise A. Abril',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ML', 
-                  'name'=>'PUP MULANAY, QUEZON BRANCH',
-                  'head' => 'ADELIA R. ROADILLA',
+                  'name'=>'PUP MARAGONDON, CAVITE BRANCH',
+                  'head' => 'Adelia R. Roadilla',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'PQ', 
-                  'name'=>'PUP PARAÑAQUE CITY CAMPUS',
-                  'head' => 'AARON VITO M. BAYGAN',
+                  'name'=>'PUP MULANAY, QUEZON BRANCH',
+                  'head' => 'Aaron Vito M. Baygan',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'PL', 
-                  'name'=>'PUP PULILAN, BULACAN CAMPUS',
-                  'head' => 'MARVIN M. ESPIRITU',
+                  'name'=>'PUP PARAÑAQUE CITY CAMPUS',
+                  'head' => 'Ma. Elena M. Maño',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'CM', 
-                  'name'=>'PUP QUEZON CITY BRANCH',
-                  'head' => 'EDGARDO S. DELMO',
+                  'name'=>'PUP PULILAN, BULACAN CAMPUS',
+                  'head' => 'Firmo A. Esguerra',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'RG', 
-                  'name'=>'PUP RAGAY, CAMARINES SUR BRANCH',
-                  'head' => 'GLENDA A. BIEN',
+                  'name'=>'PUP QUEZON CITY BRANCH',
+                  'head' => 'Anastacio 0 Gabriel',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SB', 
-                  'name'=>'PUP SABLAYAN, OCCIDENTAL MINDORO CAMPUS',
-                  'head' => 'LORENZA ELENA S. GIMUTAO',
+                  'name'=>'PUP RAGAY, CAMARINES SUR BRANCH',
+                  'head' => 'Lorenza Elena S. Gimutao',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SJ', 
-                  'name'=>'PUP SAN JUAN CITY CAMPUS',
-                  'head' => 'JAIME P. GUTIERREZ',
+                  'name'=>'PUP SABLAYAN, OCCIDENTAL MINDORO CAMPUS',
+                  'head' => 'Jaime P. Gutierrez',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SP', 
-                  'name'=>'PUP SAN PEDRO, LAGUNA CAMPUS',
-                  'head' => 'JOANNE  ANTONIO',
+                  'name'=>'PUP SAN JUAN CITY CAMPUS',
+                  'head' => 'Elmer  De Jose',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SM', 
-                  'name'=>'PUP STA. MARIA, BULACAN CAMPUS',
-                  'head' => 'RICARDO F. RAMISCAL',
+                  'name'=>'PUP SAN PEDRO, LAGUNA CAMPUS',
+                  'head' => 'Ricardo F. Ramiscal',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SR', 
-                  'name'=>'PUP STA. ROSA, LAGUNA CAMPUS',
-                  'head' => 'EMY LOU G. ALINSOD',
+                  'name'=>'PUP STA. MARIA, BULACAN CAMPUS',
+                  'head' => 'Charito A. Montemayor',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ST', 
-                  'name'=>'PUP STO. TOMAS, BATANGAS BRANCH',
-                  'head' => 'MICHAEL  CALABIG',
+                  'name'=>'PUP STA. ROSA, LAGUNA CAMPUS',
+                  'head' => 'Armando  Torres',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'TG', 
-                  'name'=>'PUP TAGUIG CITY BRANCH',
-                  'head' => 'MARIAN G. ARADA',
+                  'name'=>'PUP STO. TOMAS, BATANGAS BRANCH',
+                  'head' => 'Marissa B. Ferrer',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'UN', 
-                  'name'=>'PUP UNISAN, QUEZON BRANCH',
-                  'head' => 'EDWIN  MALABUYOC',
+                  'name'=>'PUP TAGUIG CITY BRANCH',
+                  'head' => 'Edwin  Malabuyoc',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'QAC', 
-                  'name'=>'Quality Assurance Center',
-                  'head' => 'MARY JOY A. CASTILLO',
+                  'name'=>'PUP UNISAN, QUEZON BRANCH',
+                  'head' => 'Adela Cristeta 0 Ruiz',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'RMO', 
-                  'name'=>'Research Management Office',
-                  'head' => 'RENATO  APA-AP',
+                  'name'=>'Quality Assurance Center',
+                  'head' => 'Racidon  Bernarte',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'RGO', 
-                  'name'=>'Resource Generation Office',
-                  'head' => 'ROLANDO M. COVERO',
+                  'name'=>'Research Management Office',
+                  'head' => 'Rolando M. Covero',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SSO', 
-                  'name'=>'Safety and Security Office',
-                  'head' => 'JIMMY M. FERNANDO',
+                  'name'=>'Resource Generation Office',
+                  'head' => 'Jimmy M. Fernando',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SHS', 
-                  'name'=>'Senior High School',
-                  'head' => 'ARCIBEL B. BAUTISTA',
+                  'name'=>'Safety and Security Office',
+                  'head' => 'Corazon C. Tahil',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SPPO', 
-                  'name'=>'Special Programs and Projects Office',
-                  'head' => 'MALAYA  YGOT',
+                  'name'=>'Senior High School',
+                  'head' => 'Malaya  Ygot',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SDPO', 
-                  'name'=>'Sports Development Program Office',
-                  'head' => 'LUALHATI A. DELA CRUZ',
+                  'name'=>'Special Programs and Projects Office',
+                  'head' => 'Lualhati A. Dela Cruz',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'SA', 
-                  'name'=>'Students',
+                  'name'=>'Sports Development Program Office',
                   'head' => '',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'UBS', 
-                  'name'=>'University Board Secretary',
-                  'head' => 'LIZYL R. REBUSQUILLO',
+                  'name'=>'Students',
+                  'head' => 'Gary C. Aure',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'UCCA', 
-                  'name'=>'University Center for Culture and the Arts',
-                  'head' => 'BELY R. YGOT',
+                  'name'=>'University Board Secretary',
+                  'head' => 'Bely R. Ygot',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
             array(
                   'code' => 'ULCO', 
+                  'name'=>'University Center for Culture and the Arts',
+                  'head' => 'Joanna Marie A. Liao',
+                  'created_at' => date('Y-m-d H:i:s'),
+                  'updated_at' => date('Y-m-d H:i:s')
+            ),
+            array(
+                  'code' => '', 
                   'name'=>'University Legal Counsel Office',
-                  'head' => 'JOVIT S. PONON',
+                  'head' => '',
                   'created_at' => date('Y-m-d H:i:s'),
                   'updated_at' => date('Y-m-d H:i:s')
             ),
