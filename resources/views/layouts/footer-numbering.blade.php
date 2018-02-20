@@ -29,7 +29,7 @@
   </head>
   <body>
     <div id="header">
-        <div class="col-sm-12 text-center" style="font-size: 22px;">
+        <div class="col-sm-12 text-center">
           <tr>
             <td class="section"></td>
             <td style="text-align:right">
