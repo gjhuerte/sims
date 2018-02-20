@@ -197,7 +197,7 @@
     </table>
 
     <div class="col-sm-12">
-      <p class="text-justified"><strong>Note:</strong>This request is valid for 3 days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p>
+      <p class="text-justified"><strong>Note:</strong>This request is valid for <span class="text-primary">{{ Carbon\Carbon::parse($request->approved_at)->addDays(3)->toFormattedDateString() }} </span>upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p>
     </div>
 
   </div>
