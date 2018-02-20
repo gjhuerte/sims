@@ -4,7 +4,8 @@
 	<section class="content-header">
 		<legend><h3 class="text-muted">Accounts</h3></legend>
 	  <ol class="breadcrumb">
-	    <li class="active">Account</li>
+	    <li>Account</li>
+	    <li class="active">Home</li>
 	  </ol>
 	</section>
 @endsection
@@ -52,41 +53,25 @@
 			"processing": true,
 			ajax: "{{ url('account') }}",
 			columns: [
-			  { data: "id" },
-			  { data: "username" },
-			  { data: "lastname" },
-			  { data: "firstname" },
-			  { data: "middlename" },
-			  { data: "email" },
-			  { data: function(param){
-			  	if(param.access == 0){
-			  		return 'Administator';
-			  	}
-
-			  	if(param.access == 1){
-			  		return 'AMO';
-			  	}
-
-			  	if(param.access == 2){
-			  		return 'Accounting';
-			  	}
-
-			  	if(param.access == 3){
-			  		return 'Offices';
-			  	}
-			  }},
+				{ data: "id" },
+				{ data: "username" },
+				{ data: "lastname" },
+				{ data: "firstname" },
+				{ data: "middlename" },
+				{ data: "email" },
+				{ data: "accessName"},
 				{ data: "office" }
 			],
     	});
 
 	 	$("div.toolbar").html(`
- 			<a id="new" href="{{ url('account/create') }}" class="btn btn-primary btn-flat" style="margin-right:5px;padding: 5px 10px;" data-target="reservationItemsAddModal" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span>  
+ 			<a id="new" href="{{ url('account/create') }}" class="btn btn-primary" data-target="reservationItemsAddModal" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span>  
  				New
  			</a>
- 			<button id="edit" class="btn btn-default btn-flat" style="margin-right:5px;padding: 6px 10px;" style="display:none;"><span class="glyphicon glyphicon-pencil"></span>  Update</button>
- 			<button id="access" class="btn btn-success btn-flat" style="margin-right:5px;padding: 5px 10px;" style="display:none;"><span class="glyphicon glyphicon-task"></span> Change Access Level</button>
- 			<button id="reset" class="btn btn-info btn-flat" style="margin-right:5px;padding: 5px 10px;" style="display:none;"><span class="glyphicon glyphicon"></span> Reset Password</button>
- 			<button id="delete" class="btn btn-danger btn-flat" style="margin-right:5px;padding: 5px 10px;" style="display:none;"><span class="glyphicon glyphicon-trash"></span> Remove</button>
+ 			<button id="edit" class="btn btn-default""><span class="glyphicon glyphicon-pencil"></span>  Update</button>
+ 			<button id="access" class="btn btn-success"><span class="glyphicon glyphicon-task"></span> Change Access Level</button>
+ 			<button id="reset" class="btn btn-info"><span class="glyphicon glyphicon"></span> Reset Password</button>
+ 			<button id="delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Remove</button>
 		`);
 
 	    $('#new').on('click',function(){

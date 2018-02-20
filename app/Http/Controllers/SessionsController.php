@@ -159,56 +159,56 @@ class SessionsController extends Controller {
 		return redirect('login');
 	}
 
-	public function getHrisLogin(Request $request)
-	{
-		return view('hris');
-	}
+	// public function getHrisLogin(Request $request)
+	// {
+	// 	return view('hris');
+	// }
 
-	public function hrisLogin(Request $request)
-	{
-		try{
+	// public function hrisLogin(Request $request)
+	// {
+	// 	try{
 
-			$username = $this->sanitizeString($request->get('username'));
-			$password = $this->sanitizeString($request->get('password'));
+	// 		$username = $this->sanitizeString($request->get('username'));
+	// 		$password = $this->sanitizeString($request->get('password'));
 
-			$hris = DB::connection('sqlsrv')->select('exec ValidateLogin ?,?', [
-				$username,
-				$password
-			]);
+	// 		$hris = DB::connection('sqlsrv')->select('exec ValidateLogin ?,?', [
+	// 			$username,
+	// 			$password
+	// 		]);
 
-			$hris = collect($hris)->first();
-			$user = App\User::findByUserName($hris->UserName)->first();
+	// 		$hris = collect($hris)->first();
+	// 		$user = App\User::findByUserName($hris->UserName)->first();
 
-			if(count($user) <= 0) $user = new App\User;
+	// 		if(count($user) <= 0) $user = new App\User;
 
-			$user->username = $hris->UserName;
-			$user->firstname = $hris->FName;
-			$user->middlename = $hris->MName;
-			$user->lastname = $hris->LName;
-			$user->password = Hash::make($password);
-			$user->department = $hris->DepartmentCode;
-			$user->office = $hris->ParentDepartmentCode;
-			$user->position = $hris->PlantillaPosition;
-			$user->status = 1;
-			$user->access = 3;
-			$user->save();
+	// 		$user->username = $hris->UserName;
+	// 		$user->firstname = $hris->FName;
+	// 		$user->middlename = $hris->MName;
+	// 		$user->lastname = $hris->LName;
+	// 		$user->password = Hash::make($password);
+	// 		$user->department = $hris->DepartmentCode;
+	// 		$user->office = $hris->ParentDepartmentCode;
+	// 		$user->position = $hris->PlantillaPosition;
+	// 		$user->status = 1;
+	// 		$user->access = 3;
+	// 		$user->save();
 
-			$user_information = [
-				'username' => $username,
-				'password' => $password
-			];
+	// 		$user_information = [
+	// 			'username' => $username,
+	// 			'password' => $password
+	// 		];
 
-			if(Auth::attempt($user_information)){
-				return redirect('/');
-			}
+	// 		if(Auth::attempt($user_information)){
+	// 			return redirect('/');
+	// 		}
 
 
-		} catch(\Illuminate\Database\QueryException $ex){
-				return back()->withInput()->withErrors([ 'username' => 'Invalid Login Credentials']);
-		}
+	// 	} catch(\Illuminate\Database\QueryException $ex){
+	// 			return back()->withInput()->withErrors([ 'username' => 'Invalid Login Credentials']);
+	// 	}
 
-		return redirect('/');
-	}
+	// 	return redirect('/');
+	// }
 
 	public function getLogin(Request $request)
 	{
@@ -239,7 +239,8 @@ class SessionsController extends Controller {
 			return redirect('/');
 		}
 		else{
-			return back()->withInput()->withErrors(["Invalid Credentials Submitted. Are you using H.R.I.S. Account? Click 'Use HRIS Credentials' and log in to your HRIS Account  " ]);
+			// return back()->withInput()->withErrors(["Invalid Credentials Submitted. Are you using H.R.I.S. Account? Click 'Use HRIS Credentials' and log in to your HRIS Account  " ]);
+			return back()->withInput()->withErrors(["Invalid Credentials Submitted. " ]);
 		}
 
 	}

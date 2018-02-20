@@ -21,7 +21,7 @@
           <tr>
             <th class="col-sm-1">Inspection No.</th>
             <th class="col-sm-1">Inspection Date</th>
-            <th class="col-sm-1">Inspector</th>
+            <th class="col-sm-1">Submitted By</th>
             <th class="col-sm-1">Reference</th>
             <th class="col-sm-1">Receipt</th>
             <th class="col-sm-1">Remarks</th>
@@ -63,11 +63,18 @@
       columns: [
         { data: "code" },
         { data: 'created_at' },
-        { data: "inspector" },
-        { data: "reference" },
-        { data: "receipt" },
-        { data: "remarks" },
+        { data: "inspector_name" },
+        { data: "purchaseorder_number" },
+        { data: "receipt_number" },
+        { data: function(){
+          return ""
+        } },
         { data: "status" },
+        { data: function(callback){
+          return `
+            <a href="{{ url('inspection') }}/`+callback.id+`" class="btn btn-md btn-default">View</a>
+          `
+        }}
       ],
     });
   });

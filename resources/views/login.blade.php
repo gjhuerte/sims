@@ -112,7 +112,7 @@
                   <button type="submit" id="loginButton" data-loading-text="Logging in..." class="btn btn-lg btn-primary btn-block" autocomplete="off">
                   Login
                 </button>
-                <p class="text-muted" style=" font-size: 12px;"> If you will be using your H.R.I.S. Account, Please click the button below to sign in using your Account </p>
+               {{--  <p class="text-muted" style=" font-size: 12px;"> If you will be using your H.R.I.S. Account, Please click the button below to sign in using your Account </p> --}}
               </div>
             </div>
             {{-- login button --}}
@@ -124,7 +124,7 @@
 
         {{-- footer --}}
         <div class="panel-footer">
-          <a href="{{ url('hris/login') }}" class="btn hris-login">Use HRIS Credentials </a>
+          {{-- <a href="{{ url('hris/login') }}" class="btn hris-login">Use HRIS Credentials </a> --}}
         </div>
         {{-- footer --}}
       </div>

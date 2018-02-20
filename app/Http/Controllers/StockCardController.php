@@ -57,6 +57,7 @@ class StockCardController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+		$array = [];
 		$purchaseorder = $this->sanitizeString($request->get('purchaseorder'));
 		$deliveryreceipt = $this->sanitizeString($request->get('receipt'));
 		$date = $this->sanitizeString($request->get('date'));
@@ -77,6 +78,29 @@ class StockCardController extends Controller {
 		DB::beginTransaction();
 
 		if(!is_array($stocknumbers) && count($stocknumbers) <= 0) return back()->withInput()->withErrors(['Invalid information supplied']);
+
+		/**
+		 * set the reference as physical count if the item is physically counted
+		 * check if the physical attribute is included in the sent request
+		 * if sent, set the reference and receipt as physical count
+		 * set the date as today
+		 */
+		if($request->has('physical'))
+		{
+			$deliveryreceipt = $purchaseorder = 'Physical Inventory';
+			$dr_date = $date = $invoice_date = Carbon\Carbon::now();
+		}
+
+		$inspection = new App\Inspection;
+		$inspection->purchaseorder_number = $purchaseorder ;
+		$inspection->date_received = Carbon\Carbon::parse($date) ;
+		$inspection->receipt_number = $deliveryreceipt ;
+		$inspection->invoice = $invoice ;
+		$inspection->invoice_date = Carbon\Carbon::parse($invoice_date) ;
+		$inspection->date_delivered = Carbon\Carbon::parse($dr_date) ;
+		$inspection->supplier = $supplier ;
+		$inspection->recieved_by = Auth::user()->id;
+		$inspection->status = 'Pending';
 
 		foreach($stocknumbers as $stocknumber)
 		{
@@ -102,35 +126,32 @@ class StockCardController extends Controller {
 			}
 
 			/**
-			 * set the reference as physical count if the item is physically counted
-			 * check if the physical attribute is included in the sent request
-			 * if sent, set the reference and receipt as physical count
-			 * set the date as today
-			 */
-			if($request->has('physical'))
-			{
-				$deliveryreceipt = $purchaseorder = 'Physical Inventory';
-				$dr_date = $date = $invoice_date = Carbon\Carbon::now();
-			}
-
-			/**
 			 * save the record in the database
 			 */
-			$transaction = new App\StockCard;
-			$transaction->date = Carbon\Carbon::parse($date);
-			$transaction->invoice_date = Carbon\Carbon::parse($invoice_date);
-			$transaction->dr_date = Carbon\Carbon::parse($dr_date);
-			$transaction->stocknumber = $stocknumber;
-			$transaction->reference = $purchaseorder;
-			$transaction->receipt = $deliveryreceipt;
-			$transaction->invoice = $invoice;
-			$transaction->organization = $supplier;
-			$transaction->fundcluster = $fundcluster;
-			$transaction->received_quantity = $quantity["$stocknumber"];
-			$transaction->daystoconsume = $daystoconsume["$stocknumber"];
-			$transaction->user_id = Auth::user()->id;
-			$transaction->receive();
+			// $transaction = new App\StockCard;
+			// $transaction->date = Carbon\Carbon::parse($date);
+			// $transaction->invoice_date = Carbon\Carbon::parse($invoice_date);
+			// $transaction->dr_date = Carbon\Carbon::parse($dr_date);
+			// $transaction->stocknumber = $stocknumber;
+			// $transaction->reference = $purchaseorder;
+			// $transaction->receipt = $deliveryreceipt;
+			// $transaction->invoice = $invoice;
+			// $transaction->organization = $supplier;
+			// $transaction->fundcluster = $fundcluster;
+			// $transaction->received_quantity = $quantity["$stocknumber"];
+			// $transaction->daystoconsume = $daystoconsume["$stocknumber"];
+			// $transaction->user_id = Auth::user()->id;
+			// $transaction->receive();
+			 
+			 $supply = App\Supply::findByStockNumber($stocknumber)->first();
+			$array[$supply->id] = [
+				'quantity_received' => $quantity["$stocknumber"],
+				'daystoconsume' => $daystoconsume["$stocknumber"]
+			];
 		}
+
+		$inspection->supply_list = $array;
+		$inspection->initialize();
 
 		DB::commit();
 
