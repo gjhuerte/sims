@@ -134,7 +134,7 @@
 	 	$("div.toolbar").html(`
 			<a @if(Auth::user()->access == 1) href="{{ url("inventory/supply/stockcard/print") }}" @else href="{{ url("inventory/supply/ledgercard/print") }}" @endif target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-				<span id="nav-text"> Print All Stocks</span>
+				<span id="nav-text"> Print Stock Mastelist</span>
 			</a>
 		`);
 		@endif
