@@ -589,4 +589,12 @@ class StockCard extends Model implements Auditable, UserResolver
 			$stockcard->save();
 		}
 	}
+
+	/**
+	 * save the rows for inspection
+	 */
+	public function forInspection()
+	{
+
+	}
 }
