@@ -143,12 +143,28 @@ class UnitTableSeeder extends Seeder
 
             //  15
             array(
-                'name' => 'None Assigned',
+                'name' => 'N/A',
                 'abbreviation' => 'NONE',
                 'description' => '',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
-            ), // 13
+            ),
+            //  16
+            array(
+                'name' => 'Rolls',
+                'abbreviation' => 'ROLLS',
+                'description' => '',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ),
+            //  17
+            array(
+                'name' => 'Tubes',
+                'abbreviation' => 'TUBES',
+                'description' => '',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ),
         ]);
     }
 }
