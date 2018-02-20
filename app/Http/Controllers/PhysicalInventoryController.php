@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App;
+use Carbon;
 
 class PhysicalInventoryController extends Controller
 {
@@ -88,5 +89,21 @@ class PhysicalInventoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function print()
+    {
+
+        $stockcards = App\StockCard::where('reference', 'like', '%Physical%')
+                            ->get();
+
+        $data = [
+            'stockcards' => $stockcards
+        ];
+
+        $filename = "PhysicalInventory-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+        $view = "inventory.supply.print_physical-index";
+
+        return $this->printPreview($view,$data,$filename);
     }
 }
