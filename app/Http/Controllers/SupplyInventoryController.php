@@ -75,7 +75,7 @@ class SupplyInventoryController extends Controller {
 		}
 	}
 
-	public function printMasterList(Request $request, $type)
+	public function printMasterList(Request $request)
 	{
 		$supplies = App\Supply::all();
 

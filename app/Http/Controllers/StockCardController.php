@@ -101,6 +101,21 @@ class StockCardController extends Controller {
 						->withErrors($validator);
 			}
 
+			/**
+			 * set the reference as physical count if the item is physically counted
+			 * check if the physical attribute is included in the sent request
+			 * if sent, set the reference and receipt as physical count
+			 * set the date as today
+			 */
+			if($request->has('physical'))
+			{
+				$deliveryreceipt = $purchaseorder = 'Physical Inventory';
+				$dr_date = $date = $invoice_date = Carbon\Carbon::now();
+			}
+
+			/**
+			 * save the record in the database
+			 */
 			$transaction = new App\StockCard;
 			$transaction->date = Carbon\Carbon::parse($date);
 			$transaction->invoice_date = Carbon\Carbon::parse($invoice_date);

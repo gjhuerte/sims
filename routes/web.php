@@ -19,7 +19,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('logout', 'Auth\LoginController@logout');
 
 	Route::get('dashboard','DashboardController@index');
-	Route::get('inventory/supply/{type}/print', 'SupplyInventoryController@printMasterList');
+	Route::get('inventory/supply/all/print', 'SupplyInventoryController@printMasterList');
 
 	Route::get('inventory/supply/ledgercard/{type}/computecost','LedgerCardController@computeCost');
 
@@ -235,6 +235,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::middleware(['admin'])->group(function(){
 		
 		Route::get('sync', 'SyncController@getSync');
+		Route::get('sync/getstocknumberlist', 'SyncController@getStockNumbers');
 		Route::post('sync', 'SyncController@sync');
 
 		Route::get('audittrail','AuditTrailController@index');

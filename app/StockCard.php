@@ -109,9 +109,18 @@ class StockCard extends Model implements Auditable, UserResolver
 	{
 		$details = '';
 
+		/**
+		 * check if the reference has content
+		 * adds the reference to the details
+		 */
 		if($this->reference != '' && $this->reference != null) $details = $details . $this->reference;
 
-		if($this->receipt != '' && $this->receipt != null) $details = $details . ' - ' . $this->receipt;
+		/**
+		 * check if the receipt equals the reference
+		 * check if the receipt has value
+		 * add the receipt to details
+		 */
+		if($this->receipt != '' && $this->receipt != null && $this->receipt != $this->reference) $details = $details . ' - ' . $this->receipt;
 
 		return $details;
 	}
@@ -237,19 +246,24 @@ class StockCard extends Model implements Auditable, UserResolver
 	 * cr - current received
 	 * ci - current issued
 	 */
-	public function setBalance()
+	public function setBalance($balance = null)
 	{
 		$received_quantity = isset($this->received_quantity) ? $this->received_quantity : 0;
 		$issued_quantity = isset($this->issued_quantity) ? $this->issued_quantity : 0;
 		$this->balance_quantity = 0;
 
 		$stockcard = StockCard::findByStockNumber($this->stocknumber)
-								->orderBy('date','desc')
-								->orderBy('created_at','desc')
 								->orderBy('id','desc')
+								->orderBy('created_at','desc')
+								->orderBy('date','desc')
 								->first();
 
 		$this->balance_quantity = (isset($stockcard->balance_quantity) ? $stockcard->balance_quantity : 0) + ( $received_quantity - $issued_quantity ) ;
+
+		if($balance != null)
+		{
+			$this->balance_quantity = $balance;
+		}
 	}
 
 	/*
@@ -529,5 +543,50 @@ class StockCard extends Model implements Auditable, UserResolver
 			 */
 			 return	intval(collect($range)->avg());
 		endif;
+	}
+
+	/**
+	 * use insert many command in mysql
+	 * use db transaction
+	 * @param  [type] $array [description]
+	 * @return [type]        [description]
+	 */
+	public function receiveMany($array)
+	{
+		//not yet used
+	}
+
+	/**
+	 * compute balance of each record based on the 
+	 * stocknumber given by the user. call this function
+	 * when you want to sychronize the balance of record
+	 * of certain stock
+	 * @param  [type] $stocknumber [description]
+	 * @return [type]              [description]
+	 */
+	public function syncBalance($stocknumber)
+	{
+		/**
+		 * fetch the stocks by the given stocknumber
+		 */
+		$stockcards = StockCard::findByStockNumber($stocknumber)
+						->orderBy('id','asc')
+						->orderBy('created_at','asc')
+						->orderBy('date','asc')
+						->get();
+
+		/**
+		 * loops through each record
+		 * save each in the database
+		 */
+		$balance_quantity = 0;
+		foreach($stockcards as $stockcard)
+		{
+			$received_quantity = $stockcard->received_quantity;
+			$issued_quantity = $stockcard->issued_quantity;
+			$stockcard->stocknumber = $stockcard->supply->stocknumber;
+			$balance_quantity = $stockcard->balance_quantity = $balance_quantity + ( $received_quantity - $issued_quantity ) ;
+			$stockcard->save();
+		}
 	}
 }
