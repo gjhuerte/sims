@@ -20,6 +20,12 @@ class Supply extends Model{
 		'Reorder Point' => 'required|integer'
 	);
 
+	public function legitimateStockNumber(){
+		return [
+			'Stock Number' => 'required|exists:supplies,stocknumber'
+		];
+	}
+
 	public function updateRules()
 	{
 		$stocknumber = $this->stocknumber;
@@ -41,7 +47,7 @@ class Supply extends Model{
 
 	public function getUnitNameAttribute($value)
 	{
-		return $this->unit->name;
+		return (isset($this->unit) && count($this->unit) > 0) ?  $this->unit->name : null;
 	}
 
 	public function getUnitCostAttribute($value)

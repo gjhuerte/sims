@@ -23,8 +23,14 @@
 
 <div class="row">
 
+	<div class="col-sm-12">
+		<div class="col-sm-12 form-group">
+			<input type="checkbox" id="physical" name="physical" /> Physical Inventory
+		</div>
+	</div>
+
 	<!-- receipt form -->
-	<div class="col-sm-6">
+	<div class="col-sm-6" id="receipt-form">
 		<div class="panel panel-default">
 			<div class="panel-heading" style="border-radius: 0px;">
 				<h4 class="text-muted"><strong> Delivery Receipt / Invoice </strong> </h4>
@@ -85,7 +91,7 @@
 	</div> <!-- end of receipt form -->
 
 	<!-- purchase order form -->
-	<div class="col-sm-6">
+	<div class="col-sm-6" id="reference-form">
 		<div class="panel panel-default">
 			<div class="panel-heading" style="border-radius: 0px;">
 				<h4 class="text-muted"><strong>Purchase Order / Agency Purchase Request </strong> </h4>
@@ -241,7 +247,7 @@
 			{{ Form::label('stocknumber','Stock Number') }}
 			</div>
 			<div class="col-md-9">
-			<input type="text" value="" name="stocknumber" id="stocknumber" class="form-control" />
+			<input type="text" value="" id="stocknumber" class="form-control" />
 			</div>
 			<div class="col-md-1">
 				<button type="button" data-toggle="modal" data-target="#addStockNumberModal" class="btn btn-sm btn-primary">Search</button>
@@ -332,8 +338,9 @@
 				<div class="clearfix"></div>
 
 				<div class="col-sm-12">
-					<button type="button" id="reset" class="btn btn-md pull-right" style="color: #9D2933; background-color: #ECF0F1; border-color: #e5e5e5;">Clear All</button>
+					<button type="button" id="reset" class="btn btn-md pull-right" style="color: #9D2933; background-color: #ECF0F1; border-color: #e5e5e5; margin-bottom: 10px;">Clear All</button>
 				</div>
+
 
 				<table class="table table-hover table-condensed table-bordered" id="supplyTable">
 					<thead>
@@ -368,7 +375,7 @@
 	<div class="col-sm-12">
 		<div class="pull-right">
 			<div class="btn-group">
-				<button type="button" id="accept" class="btn btn-md btn-primary btn-block">{{ $title }}</button>
+				<button type="button" id="accept" class="btn btn-md btn-primary btn-block" data-loading-text="Submitting..." autocomplete="off">{{ $title }}</button>
 			</div>
 			<div class="btn-group">
 				<button type="button" id="cancel" class="btn btn-md btn-default" onclick='window.location.href = "{{ url('inventory/supply') }}"'>Cancel</button>
@@ -379,6 +386,16 @@
 
 <script>
 $('document').ready(function(){
+
+	$('#physical').on('change', function(){
+		if($('#physical').prop('checked')){
+			$('#receipt-form').hide(400)
+			$('#reference-form').hide(400)
+		}else{
+			$('#receipt-form').show(400)
+			$('#reference-form').show(400)
+		}
+	})
 
 	jQuery.fn.extend({
 	  setDate: function(obj){
