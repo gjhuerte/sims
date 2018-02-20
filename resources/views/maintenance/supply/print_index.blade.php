@@ -24,7 +24,6 @@
           <th class="col-sm-1">Details</th>
           <th class="col-sm-1">Unit</th>
           <th class="col-sm-1">Quantity</th>
-          <th class="col-sm-1">Reorder <br> Point</th>
         </thead>
         <tbody>
         @foreach($supplies as $supply)
@@ -32,7 +31,7 @@
           <td>{{ $supply->stocknumber }}</td>
           <td>
             <span style="font-size:
-            @if(strlen($supply->details) > 80) 8px 
+            @if(strlen($supply->details) > 80) 9px 
               @elseif(strlen($supply->details) > 60) 11px 
               @else 12px 
             @endif">
@@ -41,7 +40,6 @@
           </td>
           <td>{{ $supply->unit->name }}</td>
           <td>{{ $supply->stock_balance }}</td>
-          <td>{{ $supply->reorderpoint }}</td>
         </tr>
         @endforeach
         </tbody>

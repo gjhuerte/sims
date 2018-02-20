@@ -85,7 +85,7 @@
     </table>
   </div>
   <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
           <tr rowspan="2">
               <th class="text-left" colspan="3">Purpose:
@@ -103,7 +103,7 @@
   </div>
 
   <div id="footer" class="col-sm-12">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-condensed">
       <thead>
         <tr>
           <th class="col-sm-1">   </th>
@@ -197,7 +197,7 @@
     </table>
 
     <div class="col-sm-12">
-      <p class="text-justified"><strong>Note:</strong>This request is valid for <span class="text-primary">{{ Carbon\Carbon::parse($request->approved_at)->addDays(3)->toFormattedDateString() }} </span>upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p>
+      <p class="text-justified"><strong>Note:</strong>This request is valid for only 3 working days after approval and will expire on <span class="text-primary">{{ Carbon\Carbon::parse($request->approved_at)->addWeekdays(3)->toFormattedDateString() }} </span>, if items are not claimed within the period given, this request will be voided and <span class="text-danger"> cancelled</span></p>
     </div>
 
   </div>
