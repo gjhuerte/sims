@@ -71,6 +71,8 @@
 
           @if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 3)
 
+          <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
+
           <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
 
           @endif

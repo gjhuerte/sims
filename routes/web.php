@@ -112,6 +112,8 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['amo'])->group(function(){
 
+		Route::resource('inventory/physical', 'PhysicalInventoryController');
+
 		Route::get('inventory/supply/stockcard/accept',[
 			'as' => 'supply.stockcard.accept.form',
 			'uses' => 'StockCardController@create'

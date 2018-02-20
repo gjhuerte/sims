@@ -39,6 +39,8 @@ class Controller extends BaseController
 	        ->setOption('footer-center', 'Page [page] / [toPage]')
 	        ->setOption('header-spacing', 5)
 	        ->setOption('header-html',$header)
+	        ->setOption('margin-top', '35mm')
+	        ->setOption('margin-bottom', '15mm')
 	        ->setOption('footer-spacing', 4)
 	        // ->setOption('footer-html', $footer)
     		->stream( $filename , array('Attachment'=>0) );

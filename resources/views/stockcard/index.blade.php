@@ -1,18 +1,5 @@
 @extends('backpack::layout')
 
-@section('after_styles')
-	<style>
-	
-		a > hover{
-			text-decoration: none;
-		}
-
-		th , tbody{
-			text-align: center;
-		}
-	</style>
-@endsection
-
 @section('header')
 	<section class="content-header">
 		<legend><h3 class="text-muted">Stock Card</h3></legend>
@@ -90,7 +77,7 @@
 	    });
 
 	 	$("div.toolbar").html(`
-	       <a href="{{ url("inventory/supply/$supply->stocknumber/stockcard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+	       <a href="{{ url("inventory/supply/$supply->id/stockcard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 	        <span id="nav-text"> Print</span>
 	      </a>
