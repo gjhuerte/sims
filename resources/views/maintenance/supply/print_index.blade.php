@@ -4,10 +4,12 @@
   <style>
       th , tbody{
         text-align: center;
+        font-size:14px;
       }
 
       #content{
-        font-family: "Times New Roman";
+        font-family: "Verdana";
+        font-size:12px;
       }
 
       @media print {
@@ -16,7 +18,7 @@
 
   </style>
   <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
         <thead>
           <th class="col-sm-1">Stock No.</th>
           <th class="col-sm-1">Details</th>
@@ -30,8 +32,8 @@
           <td>{{ $supply->stocknumber }}</td>
           <td>
             <span style="font-size:
-            @if(strlen($supply->details) > 80) 9px 
-              @elseif(strlen($supply->details) > 40) 11px 
+            @if(strlen($supply->details) > 80) 8px 
+              @elseif(strlen($supply->details) > 60) 11px 
               @else 12px 
             @endif">
               {{ $supply->details }}

@@ -2,7 +2,7 @@
 @section('title',"Purchase Order $purchaseorder->number")
 @section('content')
   <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
         <tr rowspan="2">
           <th class="text-center" colspan="8">

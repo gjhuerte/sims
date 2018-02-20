@@ -6,7 +6,7 @@
       Reports on Supplies and Materials Issued <small class="pull-right">Appendix 64</small>
     </h3> 
             
-    <table class="table table-bordered" id="rsmiTable" cellspacing="0" width="100%">
+    <table class="table table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%">
       <thead>
         <tr>
           <th class="text-right" colspan="8" style="white-space: nowrap;font-weight: normal;">R.I.S. {{ isset($start) ? $start : 'N/A' }} to {{ isset($end) ? $end : 'N/A' }}</th>
