@@ -14,35 +14,31 @@
 
 <!-- Stock Card Table -->
 <div class="col-sm-12" style="padding: 10px;">
-  <legend><h3 class="text-center text-muted">Request List</h3></legend>
+  <legend><h3 class="text-center text-muted">Inspection</h3></legend>
   <table class="table table-hover table-condensed table-striped table-bordered" id="supplyTable" style="padding:20px;margin-right: 10px;">
     <thead>
       <tr>
         <th class="col-sm-1">Stock Number</th>
         <th class="col-sm-1">Information</th>
-        <th class="col-sm-1">Remaining Balance</th>
-        <th class="col-sm-1">Requested Quantity</th>
-        <th class="col-sm-1">Issued Quantity</th>
-        <th class="col-sm-1">Comments</th>
+        <th class="col-sm-1">Quantity</th>
+        <th class="col-sm-1">Inspected Quantity</th>
       </tr>
     </thead>
     <tbody>
 
-      @if(isset($request->supplies))
-          @foreach($request->supplies as $supply)
-          <tr @if($supply->temp_balance <= 0) class="danger" @endif>
-            <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}" /></td>
+      @if(isset($inspection->supplies))
+          @foreach($inspection->supplies as $supply)
+          <tr>
+            <td>{{ $supply->stocknumber }}
+              <input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}" />
+            </td>
             <td>{{ $supply->details }}</td>
-            <td>{{ $supply->temp_balance }}</td>
             <td>
-              {{ $supply->pivot->quantity_requested }}
-              <input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}"  />
+              {{ $supply->pivot->quantity_received }}
+              <input type="hidden" name="received[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_received }}"  />
             </td>
             <td>
-              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  />
-            </td>
-            <td>
-              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance <= 0) No Available @endif" />
+              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_received }}" value="{{ $supply->pivot->quantity_received }}"  />
             </td>
           </tr>
         @endforeach
@@ -56,19 +52,20 @@
           @endphp
           {{-- fetch the details for supply --}}
 
-          <tr @if($supply->temp_balance <= 0) class="danger" @endif>
-            <td>"{{ $stocknumber }}<input type="hidden" name="stocknumber[]" value=""{{ $stocknumber }}" /></td>
+          <tr>
+            <td>"{{ $stocknumber }}
+              <input type="hidden" name="stocknumber[]" value=""{{ $stocknumber }}" />
+            </td>
             <td>{{ $supply->details }}</td>
-            <td>{{ $supply->temp_balance }}</td>
             <td>
-              {{ old("requested.$stocknumber") }}
-              <input type="hidden" name="requested["{{ $stocknumber }}]" class="form-control" value="{{ old("requested.$stocknumber") }}"  />
+              {{ old("received.$stocknumber") }}
+              <input type="hidden" name="received["{{ $stocknumber }}]" class="form-control" value="{{ old("received.$stocknumber") }}"  />
             </td>
             <td>
               <input type="number" name="quantity["{{ $stocknumber }}]" class="form-control" value="{{ old("quantity.$stocknumber") }}"  />
             </td>
             <td>
-              <input type="text" name="comment["{{ $stocknumber }}]" class="form-control" />
+              <input type="text" name="comment["{{ $stocknumber }}]" class="form-control" value="{{ old("quantity.$stocknumber") }}" />
             </td>
           </tr>
           @endforeach
@@ -84,26 +81,19 @@
 </div> <!-- end of Stock Card Table --> 
 
 <!-- add stock fields -->
-<div class="col-sm-12" style="margin-bottom: 20px;">
+{{-- <div class="col-sm-12" style="margin-bottom: 20px;">
   <button type="button" id="add" class="btn btn-md btn-primary pull-right" data-target="#addStockNumberModal" data-toggle="modal">
     <span class="glyphicon glyphicon-plus"></span> Insert Additional Stock
   </button>
-</div>
+</div> --}}
 <!-- end of add stock fields --> 
 
-<!-- purpose -->
-<div class="col-sm-12">
-  <label>Purpose</label>
-  <blockquote> 
-    <p style="font-size: 20px;">{{ $request->purpose }}</p> 
-  </blockquote>
-</div>
 
 <!-- remarks fields -->
 <div class="form-group" style="padding: 10px;">
   <div class="col-md-12">
     <label>Additional Remarks</label>
-    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{ isset($request->remarks) ? $request->remarks : old('remarks') }}</textarea>
+    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{ isset($inspection->remarks) ? $inspection->remarks : old('remarks') }}</textarea>
   </div>
 </div> <!-- end of remarks fields -->
 
@@ -115,20 +105,17 @@
   <!-- action buttons -->
   <div class="pull-left">
     <div class="btn-group">
-      <button type="submit" name="disapprove" id="disapprove" class="btn btn-md btn-danger btn-block" value="disapprove">Disapprove</button>
-    </div>
-    <div class="btn-group">
-      <button type="submit" name="resubmit" id="resubmission" class="btn btn-md btn-warning btn-block" value="resubmission">Resubmission</button>
+      <button type="submit" name="failed" id="failed" class="btn btn-md btn-danger btn-block" value="failed">Failed</button>
     </div>
   </div> <!-- end of action buttons -->
 
   <!-- action buttons -->
   <div class="pull-right">
     <div class="btn-group">
-      <button type="submit" name="approve" id="approve" class="btn btn-md btn-success btn-block" value="approve">Approve</button>
+      <button type="submit" name="passed" id="passed" class="btn btn-md btn-success btn-block" value="passed">Passed</button>
     </div>
     <div class="btn-group">
-        <a type="button" id="cancel" class="btn btn-md btn-default" href="{{ url("request/$request->id") }}">Cancel</a>
+        <a type="button" id="cancel" class="btn btn-md btn-default" href="{{ url("inspection/$inspection->id") }}">Cancel</a>
     </div>
   </div> <!-- end of action buttons -->
 </div> <!-- end of buttons -->
@@ -138,7 +125,7 @@
 <script>
   jQuery(document).ready(function($) {
 
-    $('#approve, #disapprove, #resubmission').on('click',function(event){
+    $('#passed, #failed, #resubmission').on('click',function(event){
 
       action = $(this).val();
       event.preventDefault()
@@ -160,7 +147,7 @@
             function(isConfirm){
               if (isConfirm) {
                 $('#action').val(action)
-                $('#requestForm').submit();
+                $('#inspectionForm').submit();
               } else {
                 swal("Cancelled", "Operation Cancelled", "error");
               }
@@ -206,10 +193,8 @@
                 <tr>
                   <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`" /></td>
                   <td>`+response.data.details+`</td>
-                  <td>`+response.data.temp_balance+`</td>
-                  <td>`+quantity+`<input type="hidden" name="requested[`+response.data.stocknumber+`]" class="form-control" value="`+quantity+`"  /></td>
+                  <td>`+quantity+`<input type="hidden" name="received[`+response.data.stocknumber+`]" class="form-control" value="`+quantity+`"  /></td>
                   <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value="`+issued+`"  /></td>
-                  <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>
                 </tr>
             `)
 

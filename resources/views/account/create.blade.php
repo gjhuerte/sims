@@ -105,12 +105,7 @@
         <div class="form-group">
           <div class="col-md-12">
           {{ Form::label('access','Access Type') }}
-          {{ Form::select('access',[
-            '0' => 'Administrator',
-            '1' => 'AMO',
-            '2' => 'Accounting',
-            '3' => 'Offices',
-          ],Input::old('access'),[
+          {{ Form::select('access',App\User::$access_list,Input::old('access'),[
             'class'=>'form-control'
           ]) }}
           </div>

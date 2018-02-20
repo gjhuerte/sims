@@ -107,6 +107,8 @@ Route::middleware(['auth'])->group(function(){
 	});
 
 	Route::middleware(['amo-office'])->group(function(){
+
+		Route::put('inspection/{id}/approve', 'InspectionController@approval');
 		Route::resource('inspection', 'InspectionController');
 	});
 
@@ -270,8 +272,8 @@ Route::middleware(['auth'])->group(function(){
 
 });
 
-Route::get('hris/login', 'SessionsController@getHrisLogin');
-Route::post('hris/login', 'SessionsController@hrisLogin');
+// Route::get('hris/login', 'SessionsController@getHrisLogin');
+// Route::post('hris/login', 'SessionsController@hrisLogin');
 
 Route::get('login', 'SessionsController@getLogin');
 Route::post('login', 'SessionsController@login');

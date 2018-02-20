@@ -3,11 +3,11 @@
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    R. I. S. : {{ $request->code }}
+	    Inspection {{ $inspection->code }}
 	  </h1>
 	  <ol class="breadcrumb">
-	    <li><a href="{{ url('request') }}">R. I. S. : {{ $request->code }}</a></li>
-	    <li class="active">Approval</li>
+	    <li><a href="{{ url('inspection') }}">Inspection : {{ $inspection->code }}</a></li>
+	    <li class="active">Stage 1</li>
 	  </ol>
 	</section>
 @endsection
@@ -16,12 +16,12 @@
 <!-- Default box -->
   <div class="box">
     <div class="box-body">
-      <form method="post" action="{{ route('request.accept', $request->id) }}" class="form-horizontal" id="requestForm">
+      <form method="post" action="{{ url("inspection/$inspection->id/approve") }}" class="form-horizontal" id="inspectionForm">
         
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-        @include('request.action-form')
+        @include('inspection.action-form')
 
       </form>
     </div><!-- /.box-body -->

@@ -77,7 +77,7 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 	public $action;
 
 	protected $appends = [
-		'accessName'
+		'accessName', 'fullname'
 	];
 
 	public static $access_list = [
@@ -89,14 +89,14 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 		5  => "Director"
 	];
 
-	public function setAccessNameAttribute($value)
+	public function getFullnameAttribute()
 	{
-		$this->accessName = $this->access_list[$value];
+		return $this->firstname . " " . $this->middlename . " " . $this->lastname;
 	}
 
 	public function getAccessNameAttribute($value)
 	{
-		return $this->access_list[$value];
+		return User::$access_list[ $this->access ];
 	}
 
 
