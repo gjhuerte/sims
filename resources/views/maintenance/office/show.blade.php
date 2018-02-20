@@ -32,6 +32,8 @@
 						<th>ID</th>
 						<th>Code</th>
 						<th>Name</th>
+						<th>Head</th>
+						<th>Designation</th>
 						<th class="no-sort"></th>
 					</tr>
 				</thead>
@@ -64,6 +66,8 @@
 	            { data: "id" },
 	            { data: "abbreviation" },
 	            { data: "name" },
+	            { data: "head" },
+	            { data: "designation" },
 	            { data: function(callback){
 	            	return `
 	            			<a href="{{ url("maintenance/department") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>

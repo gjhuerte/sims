@@ -15,8 +15,7 @@ class DepartmentController extends Controller
 	{
 		if($request->ajax())
 		{
-			$department = App\Department::with('office')->get();
-			return datatables($department)->toJson();
+			return datatables(App\Office::with('office'))->toJson();
 		}
 		return view('maintenance.department.index');
 	}
@@ -72,7 +71,6 @@ class DepartmentController extends Controller
 		}
 		return view("maintenance.department.edit")
 				->with('department',$department)
-				->with('title','Department')
 				->with('office',App\Office::pluck('name','id'));
 	}
 
