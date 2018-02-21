@@ -595,6 +595,7 @@ $('document').ready(function(){
 			success: function(response){
 				try{
 					details = response.data.details
+					unit = response.data.unit_name
 					@if($type == 'ledger')
 					balance = response.data.ledger_balance
 					@else
@@ -602,9 +603,10 @@ $('document').ready(function(){
 					@endif
 					$('#supply-item').val(details.toString())
 					$('#stocknumber-details').html(`
-						<div class="alert alert-info">
+						<div class="alert alert-success">
 							<ul class="list-unstyled">
 								<li><strong>Item:</strong> ` + details + ` </li>
+								<li><strong>Unit:</strong> <span class="label label-warning">` + unit + `</span> </li>
 								<li><strong>Remaining Balance:</strong> `
 								+ balance +
 								`</li>

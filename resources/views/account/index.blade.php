@@ -40,6 +40,8 @@
 	$(document).ready(function() {
 
 	  	var table = $('#userTable').DataTable({
+	  		serverSide: true,
+	  		processing: true,
 			"pageLength": 100,
 	  		select: {
 	  			style: 'single'

@@ -21,6 +21,7 @@
 					<th>Code</th>
 					<th>Name</th>
 					<th>Head</th>
+					<th>Designation</th>
 					<th class="no-sort"></th>
 				</thead>
 			</table>
@@ -37,6 +38,7 @@
 	$(document).ready(function(){
 	    var table = $('#officeTable').DataTable( {
 	    	serverSide: true,
+	    	processing: true,
 			"processing": true,
 	    	columnDefs:[
 				{ targets: 'no-sort', orderable: false },
@@ -53,6 +55,7 @@
 	            { data: "code" },
 	            { data: "name" },
 	            { data: "office_head" },
+	            { data: "head_title" },
 	            { data: function(callback){
 	            	return `
 	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + `" class="btn btn-sm btn-info">Show Departments</a>

@@ -50,6 +50,7 @@ class OfficeController extends Controller {
 		$name = $this->sanitizeString(Input::get('name'));
 		$code = $this->sanitizeString(Input::get('code'));
 		$head = $this->sanitizeString(Input::get('head'));
+		$head_title = $this->sanitizeString(Input::get('head_title'));
 		$description = $this->sanitizeString(Input::get('description'));
 
 		$office = new App\Office;
@@ -69,6 +70,7 @@ class OfficeController extends Controller {
 		$office->name = $name;
 		$office->description = $description;
 		$office->head = $head;
+		$office->head_title = $head_title;
 		$office->save();
 
 		\Alert::success('Office added')->flash();
@@ -148,6 +150,7 @@ class OfficeController extends Controller {
 		$name = $this->sanitizeString(Input::get('name'));
 		$code = $this->sanitizeString(Input::get('code'));
 		$head = $this->sanitizeString(Input::get('head'));
+		$head_title = $this->sanitizeString(Input::get('head_title'));
 		$description = $this->sanitizeString(Input::get('description'));
 
 		$office = App\Office::find($id);
@@ -167,6 +170,7 @@ class OfficeController extends Controller {
 		$office->name = $name;
 		$office->description = $description;
 		$office->head = $head;
+		$office->head_title = $head_title;
 		$office->save();
 
 		\Alert::success('Office Information Updated')->flash();
