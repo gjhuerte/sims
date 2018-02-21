@@ -94,11 +94,28 @@ class PhysicalInventoryController extends Controller
     public function print()
     {
 
-        $stockcards = App\StockCard::where('reference', 'like', '%Physical%')
-                            ->get();
+        $stockcards = App\StockCard::where('reference', 'like', '%Physical%')->get();
+        $remaining_rows = $row_count = 26;
+        $adjustment = 4;
+
+        if(isset($stockcards->supplies)):
+            $data_count = count($stockcards->supplies) % $row_count;
+            if($data_count == 0 || (($data_count < 5) && (count($stockcards->supplies) > $row_count))):
+
+              if((count($request->supplies) > $row_count) && ($data_count < 7)):
+                $remaining_rows = $data_count + $row_count + $adjustment;
+              else:
+                $remaining_rows = 0;
+              endif;
+            else:
+              $remaining_rows = $row_count - $data_count;
+            endif;
+        endif;
 
         $data = [
-            'stockcards' => $stockcards
+            'stockcards' => $stockcards,
+            'row_count' => $row_count,
+            'end' => $remaining_rows
         ];
 
         $filename = "PhysicalInventory-".Carbon\Carbon::now()->format('mdYHm').".pdf";

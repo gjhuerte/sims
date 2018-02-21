@@ -34,15 +34,23 @@
 
 	    @else
 	    <tr>
-	      <td colspan=7 class="col-sm-12"><p class="text-center">  No record </p></td>
+	      <td colspan=5 class="col-sm-12"><p class="text-center">  No record </p></td>
 	    </tr>
 	    @endif
+	    <tr>
+	      <td colspan=5 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+	    </tr>
+        @for($ctr = 0 ; $ctr < $end; $ctr++)
+        <tr>
+          <td style="padding: 15px;"></td>
+          <td></td>
+          <td></td>
+          <td class="text-center">  </td>
+          <td></td>
+        </tr>
+        @endfor
 	  </tbody>
 	</table>  
-
-    <tr>
-      <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
-    </tr>
 </div>
 
 <div id="footer" class="col-sm-12">
