@@ -145,17 +145,22 @@ class RequestController extends Controller
     public function show(Request $request,$id)
     {
         $id = $this->sanitizeString($id);
+        $requests = App\Request::find($id);
+
+        if(count($requests) <= 0 || (Auth::user()->access != 1 && $requests->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($requests->office_id)->code))
+        {
+          return view('errors.404');
+        }
 
         if($request->ajax())
         {
 
-          $supplies = App\Request::find($id)->supplies;
+          $supplies = $requests->supplies;
           return json_encode([
             'data' => $supplies
           ]);
         }
 
-        $requests = App\Request::find($id);
         return view('request.show')
               ->with('request',$requests)
               ->with('title','Request');
@@ -201,6 +206,11 @@ class RequestController extends Controller
        */
       $array = [];
       $requests = App\Request::find($id);
+
+      if( count($request) <= 0 || in_array($request->status, [ 'approved', 'disapproved']) || Auth::user()->id != $request->requestor_id)
+      {
+        return view('errors.404');
+      }
 
       foreach(array_flatten($stocknumbers) as $stocknumber)
       {
@@ -297,6 +307,14 @@ class RequestController extends Controller
        * @var [type]
        */
       $requests = App\Request::find($id);
+
+      if( count($request) <= 0 || in_array($request->status, [ 'approved']) || Auth::user()->id != $request->requestor_id)
+      {
+        return view('errors.404');
+      }
+
+      if($request->status )
+
       $requests->status = 'released';
       $requests->released_at = $date;
       $requests->released_by = Auth::user()->id;
@@ -429,6 +447,11 @@ class RequestController extends Controller
 
         $requests = App\Request::find($id);
 
+        if( count($request) <= 0 || in_array($request->status, ['approved', 'disapproved', 'released', 'cancelled']) || Auth::user()->access != 1)
+        {
+          return view('errors.404');
+        }
+
         foreach($stocknumbers as $stocknumber)
         {
 
@@ -535,6 +558,12 @@ class RequestController extends Controller
       DB::beginTransaction();
 
       $requests = App\Request::find($id);
+
+      if( count($request) <= 0 || in_array($request->status, ['cancelled', 'disapproved', 'released', 'approved']) || Auth::user()->id != $request->requestor_id)
+      {
+        return view('errors.404');
+      }
+
       $requests->status = "cancelled";
       $requests->cancelled_by = Auth::user()->id;
       $requests->cancelled_at = Carbon\Carbon::now();
@@ -561,7 +590,10 @@ class RequestController extends Controller
         $id = $this->sanitizeString($id);
         $requests = App\Request::find($id);
 
-        if( count($requests) <= 0 ) return view('errors.404');
+        if( count($requests) <= 0 )
+        {
+          return view('errors.404');
+        }
 
         if($request->ajax())
         {
@@ -662,7 +694,7 @@ class RequestController extends Controller
     {
       $id = $this->sanitizeString($id);
       $request = App\Request::find($id);
-      $row_count = 18;
+      $row_count = 17;
       $adjustment = 4;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;

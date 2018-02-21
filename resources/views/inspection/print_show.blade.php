@@ -87,6 +87,14 @@
           <td>{{ $supply->pivot->quantity_adjusted }}</td>
           <td>{{ $supply->pivot->quantity_final }}</td>
         </tr>
+        <tr>
+          <td style="padding: 15px;">*****</td>
+          <td>*****</td>
+          <td class="text-center"> ***Nothing Follows***  </td>
+          <td>*****</td>
+          <td>*****</td>
+          <td>*****</td>
+        </tr>
         @endforeach
         @for($ctr = 0 ; $ctr < $end; $ctr++)
         <tr>

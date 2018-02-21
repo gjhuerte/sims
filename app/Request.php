@@ -42,6 +42,15 @@ class Request extends Model implements Auditable, UserResolver
       'status' 
     ];
 
+    public static $status_list = [
+      0 => 'pending',
+      1 => 'approved',
+      2 => 'disapproved',
+      3 => 'resubmission',
+      4 => 'cancelled',
+      5 => 'released'
+    ];
+
     public function updateRules(){
       return [
         'Stock Number' => 'required|exists:supplies,stocknumber',

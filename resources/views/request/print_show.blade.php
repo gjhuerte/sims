@@ -68,7 +68,13 @@
         </tr>
         @endforeach
         <tr>
-          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+          <td style="padding: 15px;">***</td>
+          <td>***</td>
+          <td class="text-center"> **** Nothing Follows *****  </td>
+          <td>***</td>
+          <td>***</td>
+          <td>***</td>
+          <td>***</td>
         </tr>
         @for($ctr = 0 ; $ctr < $end; $ctr++)
         <tr>
@@ -111,8 +117,6 @@
           <th class="col-sm-1">  Approved By: </th>
           <th class="col-sm-1">  Issued By: </th>
           <th class="col-sm-1">  Received By: </th>
-          {{-- <th class="col-sm-1">   </th>
-          <th class="col-sm-1">   </th> --}}
         </tr>
       </thead>
       <tbody>
@@ -152,8 +156,6 @@
             <br />
             <span id="office" class="text-center" style="font-size:10px;"></span>
           </td>
-          {{-- <td></td>
-          <td></td> --}}
         </tr>
 
         <tr>

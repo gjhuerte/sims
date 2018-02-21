@@ -18,7 +18,7 @@
     <div class="box-body">
     {{ Form::open(['method'=>'put','route'=>array('request.cancel',$request->id),'class'=>'form-horizontal','id'=>'requestForm']) }}
       
-      @include('alert.errors')
+      @include('errors.alert')
 
       <legend><h4 class="">Cancel Request No. {{ $request->code }} ? </h4></legend>
       <table class="table table-hover table-bordered table-condensed" id="supplyTable">
@@ -26,7 +26,6 @@
           <tr>
             <th class="col-sm-1">Stock Number</th>
             <th class="col-sm-1">Information</th>
-            <th class="col-sm-1">Remaining Balance</th>
             <th class="col-sm-1">Requested Quantity</th>
           </tr>
         </thead>
@@ -35,7 +34,6 @@
           <tr>
             <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}"</td>
             <td>{{ $supply->details }}</td>
-            <td>{{ $supply->stock_balance }}</td>
             <td>{{ $supply->pivot->quantity_requested }}</td>
           </tr>
           @endforeach
