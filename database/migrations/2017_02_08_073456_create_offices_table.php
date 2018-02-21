@@ -20,9 +20,16 @@ class CreateOfficesTable extends Migration {
 			$table->string('description')->nullable();
 			$table->char('abbreviation', 6)->nullable();
 			$table->string('head')->nullable();
+			$table->string('head_title')->nullable();
 			$table->string('status')
 				->nullable()
 				->default('In Service');
+			$table->integer('main_id')->unsigned()->nullable();
+			$table->foreign('main_id')
+					->references('id')
+					->on('offices')
+					->onUpdate('cascade')
+					->onDelete('cascade');
 			$table->timestamps();
 			$table->softDeletes();		
 		});
