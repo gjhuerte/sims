@@ -7,7 +7,7 @@
       }
 
       #content{
-        font-family: "Times New Roman";
+        font-family: "Arial";
       }
 
       @media print {
@@ -198,8 +198,18 @@
       </tbody>
     </table>
 
-    <div class="col-sm-12">
-      <p class="text-justified"><strong>Note:</strong>This request is valid for only 3 working days after approval of the AMO and will expire on <span class="text-danger">{{ Carbon\Carbon::parse($request->approved_at)->addWeekdays(3)->toFormattedDateString() }} </span>, if items are not claimed within the period given, this request will be<span class="text-danger"> cancelled</span></p>
+    <div class="col-sm-12" style="font-size: 12px;">
+      <legend>Additional Notes</legend>
+      <ul>
+        <li>
+          <p class="text-justified"><strong>Note:</strong>This request is valid for 3 working days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p> 
+        </li>
+        <li>
+          <p class="text-justified">
+            Supplies and Materials will be released <span class="text-danger">only </span> to authorized personnel of the requesting office. Janitors, student assistants and other non-PUP employees may accompany the authorized PUP personnel of ther office and assist in the pick-up and transporting of the requested supplies and materials but are not authorized to recieve and/or laim the said supplies and materials.
+          </p>
+        </li>
+      </ul>
     </div>
 
   </div>

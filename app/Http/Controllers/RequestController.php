@@ -694,6 +694,12 @@ class RequestController extends Controller
     {
       $id = $this->sanitizeString($id);
       $request = App\Request::find($id);
+
+      if(count($request) <= 0 || (Auth::user()->access != 1 && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
+      {
+        return view('errors.404');
+      }
+
       $row_count = 17;
       $adjustment = 4;
       if(isset($request->supplies)):

@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
        $schedule->command('backup:run')->daily()->at('7:30');
 
         $schedule->call(function () {
-            DB::table('requests')->where('approved_at', '<=', Carbon\Carbon::now()->subDays(3)->toDateTimeString())
+            DB::table('requests')->where('approved_at', '<=', Carbon\Carbon::now()->subDays(5)->toDateTimeString())
                 ->where('status', '=', 'approved')
                 ->update([
                     'status' => 'cancelled',
