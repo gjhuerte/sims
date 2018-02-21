@@ -16,7 +16,7 @@
 
   </style>
   <div id="content" class="col-sm-12">
-    <h4 class="text-center">REQUISITION AND ISSUE SLIP <small class="pull-right">Appendix 63</small></h4>
+    <h4 class="text-center">REQUISITION AND ISSUE SLIP <label class="label label-info">{{ $request->status }}</label> <small class="pull-right">Appendix 63</small></h4>
     <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
           <tr rowspan="2">

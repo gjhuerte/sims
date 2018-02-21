@@ -260,6 +260,14 @@ class RequestController extends Controller
 
       event(new App\Events\RequestApproval($data));
 
+      $office = $requests->office;
+      $requestor = $requests->requestor;
+      $title = "Request $request->code Updated!";
+      $details = "A request from $office->name by $requestor->firstname $requestor->lastname has been updated.";
+      $url = url("request/$request->id");
+
+      App\Announcement::notify($title, $details, $access = 1, $url);
+
       DB::commit();
 
       \Alert::success('Request Updated')->flash();
@@ -388,6 +396,14 @@ class RequestController extends Controller
       $data['message'] = "Items from request $requests->code status has been released";
 
       event(new App\Events\RequestApproval($data));
+
+      $office = $requests->office;
+      $requestor = $requests->requestor;
+      $title = "Request $requests->code Released!";
+      $details = "The requested items from $office->name by $requestor->firstname $requestor->lastname has been released.";
+      $url = url("request/$request->id");
+
+      App\Announcement::notify($title, $details, $access = 1, $url);
 
       DB::commit();
 
@@ -520,6 +536,14 @@ class RequestController extends Controller
 
         event(new App\Events\RequestApproval($data));
 
+        $office = $requests->office;
+        $requestor = $requests->requestor;
+        $title = "Request $requests->code $action!";
+        $details = "The requested items from $office->name by $requestor->firstname $requestor->lastname has been $action.";
+        $url = url("request/$request->id");
+
+        App\Announcement::notify($title, $details, $access = 3, $url);
+
         DB::commit();
 
         $message = "Request $requests->code has been given an action"; 
@@ -575,6 +599,14 @@ class RequestController extends Controller
       $data['message'] = "Request $requests->code has been cancelled";
 
       event(new App\Events\RequestApproval($data));
+
+      $office = $requests->office;
+      $requestor = $requests->requestor_id;
+      $title = "Request $requests->code cancelled!";
+      $details = "The request from $office->name by $requestor->firstname $requestor->lastname has been cancelled.";
+      $url = url("request/$request->id");
+
+      App\Announcement::notify($title, $details, $access = 1, $url);
 
       \Alert::success("$requests->code Cancelled")->flash();
       return redirect('request');
@@ -699,8 +731,8 @@ class RequestController extends Controller
         return view('errors.404');
       }
 
-      $row_count = 14;
-      $adjustment = 15;
+      $row_count = 12;
+      $adjustment = 13;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
         if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
