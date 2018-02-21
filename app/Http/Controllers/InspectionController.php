@@ -29,7 +29,19 @@ class InspectionController extends Controller
 
         if($request->ajax())
         {
-            $inspection = App\Inspection::all();
+            $inspection = new App\Inspection;
+
+            if(Auth::user()->access == 4)
+            {
+                $inspection = $inspection->whereIn('status', [ $this->status[0], $this->status[1], $this->status[2], $this->status[5], $this->status[99] ]); 
+            }
+
+            if(Auth::user()->access == 5)
+            {
+                $inspection = $inspection->whereIn('status', [ $this->status[2], $this->status[3], $this->status[4], $this->status[5], $this->status[99] ]); 
+            }
+
+            $inspection = $inspection->get();
             return datatables($inspection)->toJson();
         }
 

@@ -101,8 +101,7 @@ class StockCardController extends Controller {
 		$inspection->date_delivered = Carbon\Carbon::parse($dr_date) ;
 		$inspection->supplier = $supplier ;
 		$inspection->received_by = Auth::user()->id;
-		$inspection->status = 'Pending';
-		$inspection->remarks = $remarks;
+		$inspection->status = 'Pending';	
 
 		foreach($stocknumbers as $stocknumber)
 		{
