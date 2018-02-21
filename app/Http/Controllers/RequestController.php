@@ -495,7 +495,6 @@ class RequestController extends Controller
           }
 
           $array [ $supply->id ] = [
-            'quantity_requested' => (isset($requested[$stocknumber])) ? $requested[$stocknumber] : 0,
             'quantity_issued' => (isset($quantity[$stocknumber]) && $quantity[$stocknumber] > 0 ) ? $quantity[$stocknumber] : 0,
             'comments' => $comment[$stocknumber]
           ];

@@ -13,40 +13,82 @@
 @section('content')
 <!-- Default box -->
   <div class="box">
+
+    <!-- box-body -->
     <div class="box-body" style="margin-top:20px;">
-    	<div class="col-sm-12" style="margin-bottom: 10px;">
-    		<div class="form-group">
-    			<legend>Inventory</legend>
-    			<input type="radio" name="card" id="stockcard" checked/> Stock Card
-    			<input type="radio" name="card" id="ledgercard" /> Ledger Card
-    		</div>
-    	</div>
 
-    	<div class="col-sm-12" style="margin-bottom: 10px;">
-    		<div class="form-group">
-    			<legend>Rows</legend>
-    			<div id='type'>
-	    			<input type="radio" name="rows" id="all-rows" /> All rows
-	    			<input type="radio" name="rows" id="specific-rows" checked /> Specific rows
-    			</div>
-    			<input type="text" value="" class="form-control" name="stocknumber" id="specific-stocknumber" placeholder="Enter Specific Stock Number Here..." style="margin-bottom: 20px;" />
-    			<div class="pull-right">
-	    			<button type="button" data-loading-text="Updating..." id="update" autocomplete="off" class="btn btn-success">Update</button>
-    			</div> 
-    		</div>
-    	</div>
+    	{{-- content --}}
+		<div>
 
-    	<div class="col-sm-12" style="margin-bottom: 10px;">
-	    	<legend>Details</legend>
-	    	<div class="progress">
-			  <div class="progress-bar progress-bar-striped active" id="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 1%">
-			    <span class="sr-only"><span id="complete-percentage">0</span>% Complete</span>
-			  </div>
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active">
+					<a href="#inventory" aria-controls="inventory" role="tab" data-toggle="tab">Inventory</a>
+				</li>
+				<li role="presentation">
+					<a href="#references" aria-controls="references" role="tab" data-toggle="tab">References</a>
+				</li>
+			</ul>
+			<!-- Nav tabs -->
+
+			<!-- Tab panes -->
+			<div class="tab-content">
+
+				{{-- inventory panel --}}
+				<div role="tabpanel" class="tab-pane active" id="inventory" style="padding: 5px;">
+					
+					<div class="col-sm-12" style="margin-bottom: 10px; margin-top: 30px;">
+						<div class="form-group">
+							<input type="radio" name="card" id="stockcard" checked/> Stock Card
+							<input type="radio" name="card" id="ledgercard" /> Ledger Card
+						</div>
+					</div>
+
+					<div class="col-sm-12" style="margin-bottom: 10px;">
+						<div class="form-group">
+							<legend>Rows</legend>
+							<div id='type' style="margin-bottom: 10px;">
+				    			<input type="radio" name="rows" id="all-rows" /> All supply
+				    			<input type="radio" name="rows" id="specific-rows" checked /> Specific supply
+							</div>
+							<input type="text" value="" class="form-control" name="stocknumber" id="specific-stocknumber" placeholder="Enter Specific Stock Number Here..." style="margin-bottom: 20px;" />
+							<div class="pull-right">
+				    			<button type="button" data-loading-text="Synchronizing..." id="update-references" autocomplete="off" class="btn btn-info">Sync References</button>
+				    			<button type="button" data-loading-text="Updating..." id="update" autocomplete="off" class="btn btn-success">Update</button>
+							</div> 
+						</div>
+					</div>
+
+				</div>
+				{{-- inventory panel --}}
+
+				{{-- references --}}
+				<div role="tabpanel" class="tab-pane" id="references">
+					
+				</div>
+				{{-- references --}}
+
 			</div>
-	    	<textarea readonly class="form-control" id="logs" name="logs" rows="16" placeholder="Logs will occur here..."></textarea>
-    	</div>
-    </div><!-- /.box-body -->
-  </div><!-- /.box -->
+			<!-- Tab panes -->
+
+			<div class="col-sm-12" style="margin-bottom: 10px;margin-top: 20px;">
+				<legend>Details</legend>
+				<div class="progress">
+				  <div class="progress-bar progress-bar-striped active" id="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+				    <span class="sr-only"><span id="complete-percentage">0</span>% Complete</span>
+				  </div>
+				</div>
+				<textarea readonly class="form-control" id="logs" name="logs" rows="16" placeholder="View logs here..."></textarea>
+			</div>
+
+		</div>
+    	{{-- content --}}
+
+    </div>
+    <!-- /.box-body -->
+
+  </div>
+  <!-- /.box -->
 
 @endsection
 
@@ -73,8 +115,16 @@
 			}
 		})
 
+		$('#update-references').on('click', function(){
+			initProgressBar()
+			$('#logs').val('Initializing....')
+			$('#logs').appendMessage('Updating References Based on the Stock Number');
+			$('#logs').appendMessage('Done.');
+		})
+
 		$('#update').on('click', function(){
 
+			initProgressBar()
 			$('#logs').val('Initializing....')
 
 			stockcard = true;
@@ -182,6 +232,11 @@
 
 			return ctr;
 
+		}
+
+		function initProgressBar(width = 0)
+		{
+			$('#progress-bar').css('width', width +'%')
 		}
 
 		function computePercentage(total, remaining)

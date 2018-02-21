@@ -39,10 +39,10 @@
               <input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}" disabled />
             </td>
             <td>
-              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}" />
+              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ ($supply->pivot->quantity_requested <= $supply->temp_balance) ? $supply->pivot->quantity_requested : 0 }}" />
             </td>
             <td>
-              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance <= 0)  @endif" />
+              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance == 0) No Available Supply to Release  @endif" />
             </td>
           </tr>
         @endforeach
@@ -103,34 +103,27 @@
 <div class="form-group" style="padding: 10px;">
   <div class="col-md-12">
     <label>Additional Remarks</label>
-    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{ isset($request->remarks) ? $request->remarks : old('remarks') }}</textarea>
+    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{  old('remarks') }}</textarea>
   </div>
 </div> <!-- end of remarks fields -->
 
 <!-- buttons -->
-<div class="panel-footer" style="padding: 10px;">
+<div class="panel-footer">
 
   <input type="hidden" name="action" id="action" />
 
   <!-- action buttons -->
   <div class="pull-left">
-    <div class="btn-group">
-      <button type="submit" name="disapprove" id="disapprove" class="btn btn-md btn-danger btn-block" value="disapprove">Disapprove</button>
-    </div>
-    <div class="btn-group">
-      <button type="submit" name="resubmit" id="resubmission" class="btn btn-md btn-warning btn-block" value="resubmission">Resubmission</button>
-    </div>
+      <button type="submit" name="disapprove" id="disapprove" class="btn btn-md btn-danger" value="disapprove">Disapprove</button>
+      <button type="submit" name="resubmit" id="resubmission" class="btn btn-md btn-warning" value="resubmission">Resubmission</button>
   </div> <!-- end of action buttons -->
-
   <!-- action buttons -->
   <div class="pull-right">
-    <div class="btn-group">
-      <button type="submit" name="approve" id="approve" class="btn btn-md btn-success btn-block" value="approve">Approve</button>
-    </div>
-    <div class="btn-group">
-        <a type="button" id="cancel" class="btn btn-md btn-default" href="{{ url("request/$request->id") }}">Cancel</a>
-    </div>
+      <button type="submit" name="approve" id="approve" class="btn btn-md btn-success" value="approve">Approve</button>
+      <a type="button" id="cancel" class="btn btn-md btn-default" href="{{ url("request/$request->id") }}">Cancel</a>
   </div> <!-- end of action buttons -->
+
+  <div class="clearfix"></div>
 </div> <!-- end of buttons -->
 
 @section('after_scripts')
