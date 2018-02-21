@@ -664,7 +664,6 @@ class RequestController extends Controller
       $request = App\Request::find($id);
       $row_count = 18;
       $adjustment = 4;
-
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
         if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
@@ -682,11 +681,12 @@ class RequestController extends Controller
       // return count($request->supplies);
       // return $data_count;
       // return $remaining_rows;
-
+      $user = App\User::where('id','=',$request->requestor_id)->first();
       $data = [
         'request' => $request, 
         'approvedby' => App\Office::where('code','=','OVPAA')->first(),
         'row_count' => $row_count,
+        'department' => App\Department::where('abbreviation','=',$user->department)->first(),
         'end' => $remaining_rows
       ];
 

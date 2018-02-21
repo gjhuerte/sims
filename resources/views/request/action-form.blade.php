@@ -36,13 +36,13 @@
             <td>{{ $supply->temp_balance }}</td>
             <td>
               {{ $supply->pivot->quantity_requested }}
-              <input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}"  />
+              <input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}" disabled />
             </td>
             <td>
-              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_issued }}"  />
+              <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}" />
             </td>
             <td>
-              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance <= 0) No Available @endif" />
+              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance <= 0)  @endif" />
             </td>
           </tr>
         @endforeach
@@ -84,11 +84,11 @@
 </div> <!-- end of Stock Card Table --> 
 
 <!-- add stock fields -->
-<div class="col-sm-12" style="margin-bottom: 20px;">
+<!-- <div class="col-sm-12" style="margin-bottom: 20px;">
   <button type="button" id="add" class="btn btn-md btn-primary pull-right" data-target="#addStockNumberModal" data-toggle="modal">
     <span class="glyphicon glyphicon-plus"></span> Insert Additional Stock
   </button>
-</div>
+</div> -->
 <!-- end of add stock fields --> 
 
 <!-- purpose -->

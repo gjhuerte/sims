@@ -23,11 +23,11 @@
               <th class="text-left" colspan="8">Fund Cluster:  <span style="font-weight:normal"></span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="4">Division:  <span style="font-weight:normal"><u>{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> </u></th>
-              <th class="text-left" colspan="4">Responsibility Center Code:  <span style="font-weight:normal"></span> </th>
+              <th class="text-left" colspan="4">Division:  <span style="font-weight:normal">{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> </th>
+              <th class="text-left" colspan="4">Responsibility Center Code:  <span style="font-weight:normal">{{ isset($request->office->code) ? $request->office->code : $request->office }}</span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="4">Office: </th>
+              <th class="text-left" colspan="4">Office: <span style="font-weight:normal">{{ isset($department->name) ? $department->name : $request->office->name}}</span> </th>
               <th class="text-left" colspan="4">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
           </tr>
           <tr>
@@ -85,7 +85,7 @@
     </table>
   </div>
   <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
           <tr rowspan="2">
               <th class="text-left" colspan="3">Purpose:
@@ -103,7 +103,7 @@
   </div>
 
   <div id="footer" class="col-sm-12">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-condensed">
       <thead>
         <tr>
           <th class="col-sm-1">   </th>
@@ -140,7 +140,7 @@
             <br />
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ isset($approvedby->head) ? $approvedby->head : "" }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> Dr. {{ isset($approvedby->head) ? $approvedby->head : "" }}</span>
             <br />
           </td>
           <td class="text-center">
@@ -164,7 +164,7 @@
             <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ isset($request->office) ? $request->office->code : "" }}</span>
           </td>
           <td class="text-center">
-            <span id="office" class="text-center" style="font-size:10px;">Head, {{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
+            <span id="office" class="text-center" style="font-size:10px;">VPAA, {{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;"></span>
@@ -197,7 +197,7 @@
     </table>
 
     <div class="col-sm-12">
-      <p class="text-justified"><strong>Note:</strong>This request is valid for <span class="text-primary">{{ Carbon\Carbon::parse($request->approved_at)->addDays(3)->toFormattedDateString() }} </span>upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p>
+      <p class="text-justified"><strong>Note:</strong>This request is valid for only 3 working days after approval of the AMO and will expire on <span class="text-danger">{{ Carbon\Carbon::parse($request->approved_at)->addWeekdays(3)->toFormattedDateString() }} </span>, if items are not claimed within the period given, this request will be<span class="text-danger"> cancelled</span></p>
     </div>
 
   </div>

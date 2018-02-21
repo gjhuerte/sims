@@ -1,5 +1,5 @@
 <div id="footer" class="col-sm-12">
-  <table class="table table-bordered">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th class="col-sm-1">  Prepared By: </th>
