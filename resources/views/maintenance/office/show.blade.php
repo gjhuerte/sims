@@ -64,10 +64,10 @@
 	        ajax: "{{ url("maintenance/office/$office->id") }}",
 	        columns: [
 	            { data: "id" },
-	            { data: "abbreviation" },
+	            { data: "code" },
 	            { data: "name" },
 	            { data: "head" },
-	            { data: "designation" },
+	            { data: "head_title" },
 	            { data: function(callback){
 	            	return `
 	            			<a href="{{ url("maintenance/department") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>

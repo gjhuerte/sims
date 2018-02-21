@@ -23,11 +23,24 @@
               <th class="text-left" colspan="8">Fund Cluster:  <span style="font-weight:normal"></span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="4">Division:  <span style="font-weight:normal">{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> </th>
+
+              <th class="text-left" colspan="4">Division:  
+                @if($request->office->head_office == null)
+                <span style="font-weight:normal">{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> 
+                @else
+                <span style="font-weight:normal">{{ isset($request->office->headoffice) ? $request->office->headoffice->name : $request->office }}</span> 
+                @endif
+              </th>
               <th class="text-left" colspan="4">Responsibility Center Code:  <span style="font-weight:normal">{{ isset($request->office->code) ? $request->office->code : $request->office }}</span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="4">Office: <span style="font-weight:normal">{{ isset($department->name) ? $department->name : $request->office->name}}</span> </th>
+              <th class="text-left" colspan="4">Office: 
+                @if($request->office->head_office == null)
+                <span style="font-weight:normal">N/A</span> 
+                @else
+                <span style="font-weight:normal">{{ isset($request->office) ? $request->office->name : $request->office }}</span> 
+                @endif
+              </th>
               <th class="text-left" colspan="4">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
           </tr>
           <tr>
@@ -53,10 +66,10 @@
             </span>
           </td>
           <td>{{ $supply->pivot->quantity_requested }}</td>
-          @if($supply->pivot->quantity_issued > 0)
+          @if($supply->pivot->quantity_issued > 0 && $request->status == 'approved')
           <td class="text-center"> ✔ </td>
           <td class="text-center">  </td>
-          @elseif($supply->pivot->quantity_issued <= 0)
+          @elseif($supply->pivot->quantity_issued <= 0 && $request->status == 'approved')
           <td class="text-center">  </td>
           <td class="text-center"> ✔ </td>
           @else

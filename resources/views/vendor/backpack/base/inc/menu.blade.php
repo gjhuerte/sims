@@ -75,7 +75,7 @@
         <li>
           <a href="#">
           @if(isset(Auth::user()->office))
-          {{  App\Office::findByCode(Auth::user()->office)->name }} 
+          {{ App\Office::findByCode(Auth::user()->office)->name }} 
           @endif
           </a>
         </li>

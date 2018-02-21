@@ -50,11 +50,13 @@ class DepartmentController extends Controller
 				->withInput()
 				->withErrors($validator);
 		}
-		$department->abbreviation = $abbreviation;
+
+		$department = new App\Office;
+		$department->code = $abbreviation;
 		$department->name = $name;
-		$department->office_id = $office;
+		$department->head_office = $office;
 		$department->head = $head;
-		$department->designation = $designation;
+		$department->head_title = $designation;
 		$department->save();
 
 		\Alert::success('Department Added')->flash();
@@ -74,7 +76,7 @@ class DepartmentController extends Controller
 				->with('office',App\Office::pluck('name','id'));
 	}
 
-		public function update($id)
+	public function update($id)
 	{
 		$name = $this->sanitizeString(Input::get('name'));
 		$abbreviation = $this->sanitizeString(Input::get('abbreviation'));
@@ -82,7 +84,7 @@ class DepartmentController extends Controller
 		$head = $this->sanitizeString(Input::get('head'));
 		$designation = $this->sanitizeString(Input::get('designation'));
 
-		$department = App\Department::find($id);
+		$department = new App\Department;
 
 		$validator = Validator::make([
 			'Name' => $name,
@@ -90,42 +92,46 @@ class DepartmentController extends Controller
 			'Head' => $head,
 			'Designation' => $designation
 		],$department->updateRules());
+		
+		$department = App\Office::find($id);
 
 		if($validator->fails())
 		{
-			return redirect("maintenance/department/$id/edit")
+			return redirect("maintenance/department/$department->head_office/edit")
 				->withInput()
 				->withErrors($validator);
 		}
-		$department->abbreviation = $abbreviation;
+
+		$department->code = $abbreviation;
 		$department->name = $name;
-		$department->office_id = $office;
+		$department->head_office = $office;
 		$department->head = $head;
-		$department->designation = $designation;
+		$department->head_title = $designation;
 		$department->save();
 
 		\Alert::success('Department Updated')->flash();
-		return redirect('maintenance/department');
+		return redirect("maintenance/office/$department->head_office");
 	}
 
 	public function destroy(Request $request, $id)
 	{
 		if($request->ajax())
 		{
-			$department = App\Department::find($id);
+			$department = App\Office::find($id);
 			$department->delete();
 			return json_encode('success');
 		}
 
 		try
 		{
-			$department = App\Department::find($id);
+			$department = App\Office::find($id);
 			$department->delete();
 			\Alert::success('department Removed')->flash();
 		} catch (Exception $e) {
 			\Alert::error('Problem Encountered While Processing Your Data')->flash();
 		}
-		return redirect('maintenance/department');
+
+		return redirect("maintenance/office/$id");
 	}
 
 }

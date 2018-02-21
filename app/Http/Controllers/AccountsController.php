@@ -42,7 +42,7 @@ class AccountsController extends Controller {
 	{
 		return view('account.create')
 				->with('title','Accounts')
-				->with('office',App\Office::pluck('name','code'));
+				->with('office',App\Office::orderBy('name')->pluck('name','code'));
 	}
 
 
@@ -131,7 +131,7 @@ class AccountsController extends Controller {
 			return view('account.update')
 				->with('user',$user)
 				->with('title','Accounts')
-				->with('office',App\Office::pluck('name','code'));
+				->with('office',App\Office::orderBy('name')->pluck('name','code'));
 		}
 	}
 

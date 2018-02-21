@@ -207,7 +207,7 @@ class RequestController extends Controller
       $array = [];
       $requests = App\Request::find($id);
 
-      if( count($request) <= 0 || in_array($request->status, [ 'approved', 'disapproved']) || Auth::user()->id != $request->requestor_id)
+      if( count($requests) <= 0 || in_array($requests->status, [ 'approved', 'disapproved']) || Auth::user()->id != $requests->requestor_id)
       {
         return view('errors.404');
       }
@@ -700,8 +700,8 @@ class RequestController extends Controller
         return view('errors.404');
       }
 
-      $row_count = 17;
-      $adjustment = 4;
+      $row_count = 14;
+      $adjustment = 15;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
         if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
@@ -724,7 +724,6 @@ class RequestController extends Controller
         'request' => $request, 
         'approvedby' => App\Office::where('code','=','OVPAA')->first(),
         'row_count' => $row_count,
-        'department' => App\Department::where('abbreviation','=',$user->department)->first(),
         'end' => $remaining_rows
       ];
 

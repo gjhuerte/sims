@@ -9,7 +9,7 @@
 <div class="form-group">
   <div class="col-md-12">
     {{ Form::label('abbreviation','Department Code') }}
-    {{ Form::text('abbreviation', isset($department->abbreviation) ? $department->abbreviation : old('abbreviation'),[
+    {{ Form::text('abbreviation', isset($department->code) ? $department->code : old('abbreviation'),[
       'class'=>'form-control',
       'placeholder'=>'Department Code'
     ]) }}
@@ -36,7 +36,7 @@
 <div class="form-group">
   <div class="col-md-12">
     {{ Form::label('designation','Designation') }}
-    {{ Form::text('designation', isset($department->designation) ? $department->designation : old('designation'),[
+    {{ Form::text('designation', isset($department->head_title) ? $department->head_title : old('designation'),[
       'class'=>'form-control',
       'placeholder'=>'Designation'
     ]) }}

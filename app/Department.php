@@ -6,7 +6,7 @@ use DB;
 use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
-    protected $table = 'departments';
+    protected $table = 'offices';
 	protected $primaryKey = 'id';
 	protected $fillable = ['name', 'abbreviation' , 'office_id'];
 	public $timestamps = false;

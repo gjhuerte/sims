@@ -8,7 +8,14 @@ class Office extends Model{
 
 	protected $table = 'offices';
 	protected $primaryKey = 'id';
-	protected $fillable = ['code','name','description', 'head'];
+	protected $fillable = [
+		'code',
+		'name',
+		'description', 
+		'head',
+		'head_title',
+		'head_office'
+	];
 	public $timestamps = false;
 
 	public function rules(){
@@ -32,6 +39,19 @@ class Office extends Model{
 		'office_head'
 	];
 
+	public function getHeadTitleAttribute($value)
+	{
+		if($value == null || $value == '' ) return 'None';
+
+		return $value;
+	}
+
+	public function getHeadAttribute($value)
+	{
+		if($value == null || $value == '' ) return 'None';
+		return $value;
+	}
+
 	public function getOfficeHeadAttribute()
 	{
 		if($this->head == null || $this->head == '' ) return 'None';
@@ -41,7 +61,7 @@ class Office extends Model{
 
 	public function scopeFindByCode($query,$value)
 	{
-		return $query->where('code','=',$value)->first();
+		return $query->where('code', '=', $value)->first();
 	}
 
 	public function scopeCode($query,$value)
@@ -51,6 +71,11 @@ class Office extends Model{
 
 	public function departments()
 	{
-		return $this->hasMany('App\Department', 'office_id', 'id');
+		return $this->hasMany('App\Office', 'head_office', 'id');
+	}
+
+	public function HeadOffice()
+	{
+		return $this->belongsTo('App\Office', 'head_office', 'id');
 	}
 }
