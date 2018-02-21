@@ -23,6 +23,12 @@ class CreateInspectionsRemarksTable extends Migration
                     ->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
+            $table->integer('inspection_id')->unsigned()->nullable();
+            $table->foreign('inspection_id')
+                    ->references('id')
+                    ->on('inspections')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');   
             $table->timestamps();
         });
     }

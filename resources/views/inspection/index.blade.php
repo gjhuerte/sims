@@ -24,7 +24,6 @@
             <th class="col-sm-1">Submitted By</th>
             <th class="col-sm-1">Reference</th>
             <th class="col-sm-1">Receipt</th>
-            <th class="col-sm-1">Remarks</th>
             <th class="col-sm-1">Status</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
@@ -66,9 +65,6 @@
         { data: "inspector_name" },
         { data: "purchaseorder_number" },
         { data: "receipt_number" },
-        { data: function(){
-          return ""
-        } },
         { data: "status" },
         { data: function(callback){
           return `

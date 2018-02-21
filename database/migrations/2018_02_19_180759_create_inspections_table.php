@@ -15,9 +15,9 @@ class CreateInspectionsTable extends Migration
     {
         Schema::create('inspections', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('purchaseorder_number',100)->unique();
+            $table->string('purchaseorder_number',100);
             $table->date('date_received');
-            $table->string('receipt_number')->unique();
+            $table->string('receipt_number');
             $table->string('invoice')->nullable();
             $table->datetime('invoice_date')->nullable();
             $table->datetime('date_delivered')->nullable();

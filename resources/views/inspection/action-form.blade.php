@@ -1,12 +1,3 @@
-<!-- custom styles -->
-<style>
-
-  th , tbody{
-    text-align: center;
-  }
-</style>
-<!-- end of custom styles -->
-
 <!-- included fields -->
 @include('modal.request.supply')
 @include('errors.alert')
@@ -14,7 +5,25 @@
 
 <!-- Stock Card Table -->
 <div class="col-sm-12" style="padding: 10px;">
-  <legend><h3 class="text-center text-muted">Inspection</h3></legend>
+
+  <h3>
+    Inspection {{ $inspection->code }}
+  </h3>
+
+  <ol class="breadcrumb">
+    <li><a href="{{ url("inspection/$inspection->id") }}">Inspection</a></li>
+    <li class="active">Approval</li>
+  </ol>
+
+  <ul class="list-group">
+    <li class="list-group-item"><strong>Purchase Order:</strong> {{ $inspection->purchaseorder_number }}</li>
+    <li class="list-group-item"><strong>Receipt:</strong> {{ $inspection->receipt_number }} | {{ Carbon\Carbon::parse($inspection->created_at)->toFormattedDateString() }} | {{ $inspection->supplier }}</li>
+    <li class="list-group-item"><strong>Submitted By:</strong> {{ App\User::find($inspection->received_by)->fullname }} | {{ Carbon\Carbon::parse($inspection->created_at)->toFormattedDateString() }}</li>
+    <li class="list-group-item"><strong>Status:</strong> {{ $inspection->status }}</li>
+  </ul>
+
+  <hr />
+
   <table class="table table-hover table-condensed table-striped table-bordered" id="supplyTable" style="padding:20px;margin-right: 10px;">
     <thead>
       <tr>
@@ -64,9 +73,6 @@
             <td>
               <input type="number" name="quantity["{{ $stocknumber }}]" class="form-control" value="{{ old("quantity.$stocknumber") }}"  />
             </td>
-            <td>
-              <input type="text" name="comment["{{ $stocknumber }}]" class="form-control" value="{{ old("quantity.$stocknumber") }}" />
-            </td>
           </tr>
           @endforeach
         @endif
@@ -93,7 +99,7 @@
 <div class="form-group" style="padding: 10px;">
   <div class="col-md-12">
     <label>Additional Remarks</label>
-    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{ isset($inspection->remarks) ? $inspection->remarks : old('remarks') }}</textarea>
+    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{ old('remarks') }}</textarea>
   </div>
 </div> <!-- end of remarks fields -->
 

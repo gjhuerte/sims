@@ -7,8 +7,8 @@ use Carbon;
 
 class Inspection extends Model
 {
-    protected $table = 'inspections';
-    protected $primaryKey = 'id';
+  protected $table = 'inspections';
+  protected $primaryKey = 'id';
 	public $timestamps = true;
 	public $supply_list = [];
 
@@ -22,6 +22,16 @@ class Inspection extends Model
 		'organization',
 		'daystoconsume'
 	]; 
+
+	public static $status_list = [
+        0 => 'Pending',
+        1 => '1st Inspection',
+        2 => 'Passed 1st Inspection',
+        3 => 'Final Inspection',
+        4 => 'Passed Final Inspection',
+        5 => 'Applied To Stock Card',
+        99 => 'Failed'
+    ];
 
 	public static $inspectionRules = array(
 		'Date' => 'required',
@@ -49,6 +59,11 @@ class Inspection extends Model
             ->withTimestamps();
   	}
 
+  	public function remarks()
+  	{
+  		return $this->hasMany('App\Remark', 'inspection_id', 'id');
+  	}
+
   	public function getCodeAttribute()
   	{
   		$date = Carbon\Carbon::now();
@@ -58,6 +73,7 @@ class Inspection extends Model
   	public function initialize()
   	{
   		$this->save();
+
   		$this->supplies()->sync($this->supply_list);
   	}
 }

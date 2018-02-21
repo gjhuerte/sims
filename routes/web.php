@@ -108,6 +108,9 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::middleware(['amo-office'])->group(function(){
 
+		Route::get('inspection/{id}/print', 'InspectionController@print');
+		Route::get('inspection/{id}/apply', 'InspectionController@applyToStockCard');
+		Route::get('inspection/{id}/approve', 'InspectionController@getApprovalForm');
 		Route::put('inspection/{id}/approve', 'InspectionController@approval');
 		Route::resource('inspection', 'InspectionController');
 	});

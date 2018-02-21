@@ -20,9 +20,9 @@
               @if(strlen(Auth::user()->position) > 15)
               <br /><span class="text-center" style="font-size: 8px">
               @else
-              <span class="text-center">
+              <span class="text-center">|
               @endif
-                ( {{  ucfirst(Auth::user()->position) }} )
+                <label> {{  substr(ucfirst(Auth::user()->position), 0, 30) . ((strlen(Auth::user()->position) > 15) ? "..." : "") }} </label>
               </span>
               @endif
               </span>
@@ -53,7 +53,7 @@
 
           @endif
 
-          @if( Auth::user()->access == 0 || Auth::user()->access == 1 || Auth::user()->access == 2 )
+          @if( Auth::user()->access == 0 || Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 4 || Auth::user()->access == 5 )
 
           @if(Auth::user()->access == 0)
 
@@ -69,7 +69,7 @@
 
           @endif
 
-          @if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 3)
+          @if(Auth::user()->access == 1 || Auth::user()->access == 4 || Auth::user()->access == 5)
 
           <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
 
