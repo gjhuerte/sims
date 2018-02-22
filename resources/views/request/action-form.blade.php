@@ -42,7 +42,7 @@
               <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ ($supply->pivot->quantity_requested <= $supply->temp_balance) ? $supply->pivot->quantity_requested : 0 }}" />
             </td>
             <td>
-              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="comment form-control" value="@if($supply->temp_balance == 0) No Available Supply to Release  @endif" />
+              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="comment form-control" value="" />
             </td>
           </tr>
         @endforeach
@@ -130,15 +130,15 @@
 
 <script>
   jQuery(document).ready(function($) {
-
-    $('.supply-balance').each(function(){
-
+    $(document).ready(function(){
       trigger = 0;
-      text = $(this).text()
-      if( text != 0 )
-      {
-        trigger = 1;
-      }
+      $('.supply-balance').each(function(){
+        text = $(this).text()
+        if( text != 0 )
+        {
+          trigger = 1;
+        }
+      })
 
       if( trigger == 0 )
       {

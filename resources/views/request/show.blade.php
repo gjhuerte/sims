@@ -18,9 +18,9 @@
 			@if(isset($request->requestor_id) && Auth::user()->id == $request->requestor_id )
 
         @if($request->status == 'Resubmit' || $request->status == null || ( strpos($request->status, 'pdated') != false )  || $request->status == '' || ( strpos($request->status, 'ending') != false ))
-        <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
+<!--         <a href="{{ url("request/$request->id/edit") }}" class="btn btn-default btn-sm">
 	    		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-	    	</a>
+	    	</a> -->
         <a href="{{ url("request/$request->id/cancel") }}" class="btn btn-danger btn-sm">
         	<i class="fa fa-hand-stop-o" aria-hidden="true"></i> Cancel
         </a>

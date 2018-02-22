@@ -316,12 +316,10 @@ class RequestController extends Controller
        */
       $requests = App\Request::find($id);
 
-      if( count($request) <= 0 || in_array($request->status, [ 'approved']) || Auth::user()->id != $request->requestor_id)
+      if( count($requests) <= 0 || !in_array($requests->status, [ 'Approved', 'approved']) || Auth::user()->access != 1)
       {
         return view('errors.404');
       }
-
-      if($request->status )
 
       $requests->status = 'released';
       $requests->released_at = $date;
@@ -421,8 +419,12 @@ class RequestController extends Controller
      */
     public function getAcceptForm(Request $request, $id)
     {
-        $requests = App\Request::find($id);
+      $requests = App\Request::find($id);
         
+      if( count($requests) <= 0 || in_array($requests->status, [ 'approved', 'Approved', 'disapproved', 'Disapproved']) || Auth::user()->access != 1)
+      {
+        return view('errors.404');
+      }
 
         return view('request.approval')
                 ->with('request',$requests)
@@ -463,7 +465,7 @@ class RequestController extends Controller
 
         $requests = App\Request::find($id);
 
-        if( count($request) <= 0 || in_array($request->status, ['approved', 'disapproved', 'released', 'cancelled']) || Auth::user()->access != 1)
+        if( count($requests) <= 0 || in_array($requests->status, ['approved', 'Approved', 'disapproved', 'Disapproved', 'released', 'Released', 'cancelled', 'Cancelled']) || Auth::user()->access != 1)
         {
           return view('errors.404');
         }
@@ -562,6 +564,11 @@ class RequestController extends Controller
     {
         $request = App\Request::find($id);
 
+      if( count($request) <= 0 || in_array($request->status, [ 'disapproved', 'Disapproved', 'released', 'Released', 'approved', 'Approved']) || Auth::user()->id != $request->requestor_id)
+      {
+        return view('errors.404');
+      }
+
         return view('request.cancel')
                 ->with('request',$request)
                 ->with('title',$request->id);
@@ -582,7 +589,7 @@ class RequestController extends Controller
 
       $requests = App\Request::find($id);
 
-      if( count($request) <= 0 || in_array($request->status, ['cancelled', 'disapproved', 'released', 'approved']) || Auth::user()->id != $request->requestor_id)
+      if( count($requests) <= 0 || in_array($requests->status, ['cancelled', 'Cancelled','disapproved', 'Disapproved','released','Released', 'approved', 'Approved']) || Auth::user()->id != $requests->requestor_id)
       {
         return view('errors.404');
       }
@@ -690,7 +697,11 @@ class RequestController extends Controller
         $id = $this->sanitizeString($id);
         $requests = App\Request::find($id);
 
-        if(count($requests) <= 0) return json_encode('error');
+        if(count($requests) <= 0 || Auth::user()->access != 1)
+        {
+
+          return json_encode('error');
+        }
 
         $requests->remarks = null;
         $requests->issued_by = null;
@@ -731,7 +742,7 @@ class RequestController extends Controller
         return view('errors.404');
       }
 
-      $row_count = 12;
+      $row_count = 17;
       $adjustment = 13;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
