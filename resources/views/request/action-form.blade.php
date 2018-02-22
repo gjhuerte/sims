@@ -33,7 +33,7 @@
           <tr @if($supply->temp_balance <= 0) class="danger" @endif>
             <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}" /></td>
             <td>{{ $supply->details }}</td>
-            <td>{{ $supply->temp_balance }}</td>
+            <td class="supply-balance">{{ $supply->temp_balance }}</td>
             <td>
               {{ $supply->pivot->quantity_requested }}
               <input type="hidden" name="requested[{{ $supply->stocknumber }}]" class="form-control" value="{{ $supply->pivot->quantity_requested }}" disabled />
@@ -42,7 +42,7 @@
               <input type="number" name="quantity[{{ $supply->stocknumber }}]" class="form-control" value="{{ ($supply->pivot->quantity_requested <= $supply->temp_balance) ? $supply->pivot->quantity_requested : 0 }}" />
             </td>
             <td>
-              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="form-control" value="@if($supply->temp_balance == 0) No Available Supply to Release  @endif" />
+              <input type="text" name="comment[{{ $supply->stocknumber }}]" class="comment form-control" value="@if($supply->temp_balance == 0) No Available Supply to Release  @endif" />
             </td>
           </tr>
         @endforeach
@@ -59,7 +59,7 @@
           <tr @if($supply->temp_balance <= 0) class="danger" @endif>
             <td>"{{ $stocknumber }}<input type="hidden" name="stocknumber[]" value=""{{ $stocknumber }}" /></td>
             <td>{{ $supply->details }}</td>
-            <td>{{ $supply->temp_balance }}</td>
+            <td class="supply-balance">{{ $supply->temp_balance }}</td>
             <td>
               {{ old("requested.$stocknumber") }}
               <input type="hidden" name="requested["{{ $stocknumber }}]" class="form-control" value="{{ old("requested.$stocknumber") }}"  />
@@ -68,7 +68,7 @@
               <input type="number" name="quantity["{{ $stocknumber }}]" class="form-control" value="{{ old("quantity.$stocknumber") }}"  />
             </td>
             <td>
-              <input type="text" name="comment["{{ $stocknumber }}]" class="form-control" />
+              <input type="text" name="comment["{{ $stocknumber }}]" class="comment form-control" />
             </td>
           </tr>
           @endforeach
@@ -103,7 +103,7 @@
 <div class="form-group" style="padding: 10px;">
   <div class="col-md-12">
     <label>Additional Remarks</label>
-    <textarea class="form-control" rows="8" name="remarks" placeholder="Input additional comments/remarks">{{  old('remarks') }}</textarea>
+    <textarea class="form-control" rows="8"  id="remarks" name="remarks" placeholder="Input additional comments/remarks">{{  old('remarks') }}</textarea>
   </div>
 </div> <!-- end of remarks fields -->
 
@@ -130,6 +130,40 @@
 
 <script>
   jQuery(document).ready(function($) {
+
+    $('.supply-balance').each(function(){
+
+      trigger = 0;
+      text = $(this).text()
+      if( text != 0 )
+      {
+        trigger = 1;
+      }
+
+      if( trigger == 0 )
+      {
+
+        swal({
+          title: "Warning!",
+          text: "You have no items to release for this request. Do you want to disapprove it?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, disapprove it!",
+          cancelButtonText: "No, cancel it!",
+          closeOnConfirm: false,
+          closeOnCancel: false
+        },
+        function(isConfirm){
+          if (isConfirm) {
+            $('.comment').val('')
+            $('#remarks').val('No items to allocate')
+            $('#disapprove').trigger('click')
+          } else {
+            swal("Cancelled", "Operation Cancelled", "error");
+          }
+        })
+      }
+    })
 
     $('#approve, #disapprove, #resubmission').on('click',function(event){
 
@@ -199,10 +233,10 @@
                 <tr>
                   <td>`+response.data.stocknumber+`<input type="hidden" name="stocknumber[]" value="`+response.data.stocknumber+`" /></td>
                   <td>`+response.data.details+`</td>
-                  <td>`+response.data.temp_balance+`</td>
+                  <td class="supply-balance">`+response.data.temp_balance+`</td>
                   <td>`+quantity+`<input type="hidden" name="requested[`+response.data.stocknumber+`]" class="form-control" value="`+quantity+`"  /></td>
                   <td><input type="number" name="quantity[`+response.data.stocknumber+`]" class="form-control" value="`+issued+`"  /></td>
-                  <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="form-control" /></td>
+                  <td><input type="text" name="comment[`+response.data.stocknumber+`]" class="comment form-control" /></td>
                 </tr>
             `)
 
