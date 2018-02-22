@@ -190,7 +190,7 @@ class InspectionController extends Controller
             $_quantity = $this->sanitizeString($quantity["$stocknumber"]);
             $stocknumber = $this->sanitizeString($stocknumber);
 
-            $supply = App\Supply::findByStockNumber($stocknumber)->first();
+            $supply = App\Supply::findByStockNumber($stocknumber);
 
             if($inspection->status == $this->status[2] && Auth::user()->access == 4)
             {
