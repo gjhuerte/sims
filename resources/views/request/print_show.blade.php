@@ -16,7 +16,7 @@
 
   </style>
   <div id="content" class="col-sm-12">
-    <h4 class="text-center">REQUISITION AND ISSUE SLIP <label class="label label-info">{{ $request->status }}</label> <small class="pull-right">Appendix 63</small></h4>
+    <h4 class="text-center">REQUISITION AND ISSUE SLIP  <small class="pull-right">Appendix 63</small></h4>
     <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
       <thead>
           <tr rowspan="2">
@@ -212,14 +212,13 @@
     </table>
 
     <div class="col-sm-12" style="font-size: 12px;">
-      <legend>Additional Notes</legend>
       <ul>
         <li>
           <p class="text-justified"><strong>Note:</strong>This request is valid for 3 working days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p> 
         </li>
         <li>
           <p class="text-justified">
-            Supplies and Materials will be released <span class="text-danger">only </span> to authorized personnel of the requesting office. Janitors, student assistants and other non-PUP employees may accompany the authorized PUP personnel of ther office and assist in the pick-up and transporting of the requested supplies and materials but are not authorized to recieve and/or laim the said supplies and materials.
+            Supplies and Materials will be released <span class="text-danger">only </span> to authorized personnel of the requesting office.  
           </p>
         </li>
       </ul>

@@ -2,14 +2,18 @@
 @section('title',"Supplies Masterlist")
 @section('content')
   <style>
-      th , tbody{
+      th{
         text-align: center;
+        font-size:14px;
+      }
+      tbody{
+        text-align: left;
         font-size:14px;
       }
 
       #content{
         font-family: "Verdana";
-        font-size:12px;
+        font-size:13px;
       }
 
       @media print {
@@ -39,7 +43,7 @@
             </span>
           </td>
           <td>{{ $supply->unit->name }}</td>
-          <td>{{ $supply->stock_balance }}</td>
+          <td align="right">{{ $supply->stock_balance }}</td>
         </tr>
         @endforeach
         </tbody>
