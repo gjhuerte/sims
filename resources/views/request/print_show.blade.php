@@ -46,7 +46,7 @@
           <tr>
             <th rowspan=2>Stock Number</th>
             <th rowspan=2>Details</th>
-            <th rowspan=2>Quantity Requested</th>
+            <th rowspan=2>Quantity <br> Requested</th>
             <th class="col-sm-1" colspan=2>Stock Availability</th>
             <th rowspan=2>Quantity Issued</th>
             <th rowspan=2>Remarks</th>
@@ -66,10 +66,10 @@
             </span>
           </td>
           <td>{{ $supply->pivot->quantity_requested }}</td>
-          @if($supply->pivot->quantity_issued > 0 && $request->status == 'approved')
+          @if($supply->pivot->quantity_issued > 0 && ($request->status == 'approved' || $request->status == 'Approved'))
           <td class="text-center"> ✔ </td>
           <td class="text-center">  </td>
-          @elseif($supply->pivot->quantity_issued <= 0 && $request->status == 'approved')
+          @elseif($supply->pivot->quantity_issued <= 0 && ($request->status == 'approved' || $request->status == 'Approved'))
           <td class="text-center">  </td>
           <td class="text-center"> ✔ </td>
           @else
@@ -83,7 +83,7 @@
         <tr>
           <td style="padding: 15px;">***</td>
           <td>***</td>
-          <td class="text-center"> **** Nothing Follows *****  </td>
+          <td class="text-center"> *** Nothing Follows ***  </td>
           <td>***</td>
           <td>***</td>
           <td>***</td>
@@ -212,9 +212,9 @@
     </table>
 
     <div class="col-sm-12" style="font-size: 12px;">
-      <ul>
+      <ul class="list-unstyled">
         <li>
-          <p class="text-justified"><strong>Note:</strong>This request is valid for 3 working days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span></p> 
+          <p class="text-justified">This request is valid for 3 working days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span>.</p> 
         </li>
         <li>
           <p class="text-justified">
