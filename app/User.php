@@ -37,14 +37,14 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 		'Username' => 'required_with:password|min:3|max:20|unique:Users,username',
 		'Password' => 'required|min:8|max:50',
 		'Firstname' => 'required|between:2,100|string',
-		'Middlename' => 'min:2|max:50|string',
+		'Middlename' => 'min:1|max:50|string',
 		'Lastname' => 'required|min:2|max:50|string',
 		'Email' => 'email',
 		'Office' => 'required|exists:offices,code'
 	);
 	public static $informationRules = array(
 		'Firstname' => 'required|between:2,100|string',
-		'Middlename' => 'min:2|max:50|string',
+		'Middlename' => 'min:1|max:50|string',
 		'Lastname' => 'required|min:2|max:50|string',
 		'Email' => 'email'
 	);
@@ -67,7 +67,7 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 		return array(
 			'Username' => 'min:3|max:20|unique:Users,username,'.$username.',username',
 			'First name' => 'min:2|max:100|string',
-			'Middle name' => 'min:2|max:50|string',
+			'Middle name' => 'min:1|max:50|string',
 			'Last name' => 'min:2|max:50|string',
 			'Email' => 'email',
 			'Office' => 'required|exists:offices,code'
