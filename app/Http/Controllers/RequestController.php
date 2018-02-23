@@ -582,7 +582,7 @@ class RequestController extends Controller
 
       $requests = App\Request::find($id);
 
-      if( count($request) <= 0 || in_array($request->status, ['cancelled', 'disapproved', 'released', 'approved']) || Auth::user()->id != $request->requestor_id)
+      if( count($requests) <= 0 || in_array($requests->status, ['cancelled', 'disapproved', 'released', 'approved']) || Auth::user()->id != $requests->requestor_id)
       {
         return view('errors.404');
       }
@@ -601,10 +601,10 @@ class RequestController extends Controller
       event(new App\Events\RequestApproval($data));
 
       $office = $requests->office;
-      $requestor = $requests->requestor_id;
+      $requestor = $requests->requestor;
       $title = "Request $requests->code cancelled!";
       $details = "The request from $office->name by $requestor->firstname $requestor->lastname has been cancelled.";
-      $url = url("request/$request->id");
+      $url = url("request/$requests->id");
 
       App\Announcement::notify($title, $details, $access = 1, $url);
 
