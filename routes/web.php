@@ -245,6 +245,8 @@ Route::middleware(['auth'])->group(function(){
 		Route::get('sync', 'SyncController@getSync');
 		Route::get('sync/getstocknumberlist', 'SyncController@getStockNumbers');
 		Route::post('sync', 'SyncController@sync');
+		Route::post('sync/reference', 'SyncController@syncByReference');
+		Route::post('sync/logs/export', 'SyncController@exportLogs');
 
 		Route::get('audittrail','AuditTrailController@index');
 		Route::resource('account','AccountsController');

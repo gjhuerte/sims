@@ -75,6 +75,16 @@ class Announcement extends Model
     			->withTimestamps();
     }
 
+    public function scopeOrFindByOffice($query, $value)
+    {
+        return $query->orWhereIn('user_id', User::where('office', '=', Auth::user()->office )->pluck('id'));
+    }
+
+    public function scopeFindByOffice($query, $value)
+    {
+        return $query->whereIn('user_id', User::where('office', '=', Auth::user()->office )->pluck('id'));
+    }
+
     public function scopeFindByAccess($query, $value)
     {
         if(is_array($value)) return $query->whereIn('access', $value);
