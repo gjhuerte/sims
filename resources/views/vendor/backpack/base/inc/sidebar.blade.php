@@ -17,7 +17,7 @@
               <span>
               {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
               @if(isset(Auth::user()->position))
-              @if(strlen(Auth::user()->position) > 15)
+              @if(strlen(Auth::user()->position) > 7)
               <br /><span class="text-center" style="font-size: 8px">
               @else
               <span class="text-center">|

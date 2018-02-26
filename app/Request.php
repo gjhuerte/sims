@@ -33,6 +33,7 @@ class Request extends Model implements Auditable, UserResolver
     protected $primaryKey = 'id';
     public $incrementing = true;
     public $timestamps = true;
+    public $expire_before = 3;
     protected $fillable = [ 
       'requestor_id' , 
       'office_id' ,
@@ -79,8 +80,25 @@ class Request extends Model implements Auditable, UserResolver
     }
     
     public $appends = [
-      'code', 'date_requested'
+      'code', 'date_requested', 'remaining_days', 'expire_on'
     ];
+
+    public function getExpireOnAttribute()
+    {
+      if( $this->approved_at == null ) return 'No Approval';
+
+      return Carbon\Carbon::parse($this->approved_at)->toFormattedDateString();
+    }
+
+    public function getRemainingDaysAttribute()
+    {
+      if($this->approved_at == null)  return 'No Approval';
+
+      $approved_date = Carbon\Carbon::parse($this->approved_at);
+      $date = Carbon\Carbon::now();
+      return $approved_date->addDays($this->expire_before)->diffInDays($date);
+
+    }
 
     public function getRemarksAttribute($value)
     {
