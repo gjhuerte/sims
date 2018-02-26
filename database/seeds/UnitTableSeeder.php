@@ -98,7 +98,7 @@ class UnitTableSeeder extends Seeder
 
             //  10
             array(
-                'name' => 'Rims',
+                'name' => 'Reams',
                 'abbreviation' => 'RMS',
                 'description' => 'a number of sheets of blank paper fastened together at one edge, used for writing or drawing on.',
                 'created_at' => date('Y-m-d H:i:s'),
