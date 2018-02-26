@@ -28,7 +28,7 @@
                 @if($request->office->head_office == null)
                 <span style="font-weight:normal">{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> 
                 @else
-                <span style="font-weight:normal">{{ isset($request->office->headoffice) ? $request->office->headoffice->name : $request->office }}</span> 
+                <span style="font-weight:normal">{{ isset($request->office->headoffice) ? $request->office->headoffice->name : $request->office->name }}</span> 
                 @endif
               </th>
               <th class="text-left" colspan="4">Responsibility Center Code:  <span style="font-weight:normal">{{ isset($request->office->code) ? $request->office->code : $request->office }}</span> </th>
@@ -153,11 +153,11 @@
             Printed Name:
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ (count($request->requestor) > 0) ? $request->requestor->firstname . " " . $request->requestor->lastname : "" }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> </span>
             <br />
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px;"> Dr. {{ isset($approvedby->head) ? $approvedby->head : "" }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;"> </span>
             <br />
           </td>
           <td class="text-center">
@@ -176,10 +176,10 @@
             Designation:
           </td>
           <td class="text-center">
-            <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ isset($request->office) ? $request->office->code : "" }}</span>
+            <span id="office" class="text-center" style="font-size:10px;"> </span>
           </td>
           <td class="text-center">
-            <span id="office" class="text-center" style="font-size:10px;">VPAA, {{ isset($approvedby->name) ? $approvedby->code : "" }}</span>
+            <span id="office" class="text-center" style="font-size:10px;"> </span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;"></span>
