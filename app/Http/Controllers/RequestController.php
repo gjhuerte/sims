@@ -401,7 +401,7 @@ class RequestController extends Controller
       $details = "The requested items from $office->name by $requestor->firstname $requestor->lastname has been released.";
       $url = url("request/$request->id");
 
-      App\Announcement::notify($title, $details, $access = 1, $url);
+      App\Announcement::notify($title, $details, $access = 1, $url, $requestor->id);
 
       DB::commit();
 
@@ -544,7 +544,7 @@ class RequestController extends Controller
         $details = "The requested items from $office->name by $requestor->firstname $requestor->lastname has been $action.";
         $url = url("request/$request->id");
 
-        App\Announcement::notify($title, $details, $access = 3, $url);
+        App\Announcement::notify($title, $details, $access = 3, $url, $requestor->id);
 
         DB::commit();
 
