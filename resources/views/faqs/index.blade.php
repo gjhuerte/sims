@@ -68,18 +68,6 @@
 
                 <h3>
                   {{  isset($faq->title) ? ucfirst($faq->title) : "None" }}
-                    @if(Auth::user()->access == 0 && $faq->user_id == Auth::user()->id)
-                      <div class="btn-group">
-                        <a href="{{ url("faqs/$faq->id/edit") }}" class="btn btn-sm btn-default">
-                          <span class="glyphicon glyphicon-pencil"></span> Edit
-                        </a>
-                      </div>
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-danger">
-                          <span class="glyphicon glyphicon-trash"></span>  Delete
-                        </button>
-                      </div>
-                    @endif
                     <small class="text-muted">By: <strong>{{  isset($faq->created_by) ? $faq->created_by : "None" }}</strong></small> 
                 </h3> 
               </div>
@@ -90,8 +78,8 @@
                 <!-- right -->
                 <div class="col-sm-12">
 
-                  <p style="font-size: @if(strlen($faq->details) > 80) 16px @elseif(strlen($faq->details) > 60) 17px @elseif(strlen($faq->details) > 40) 18px @elseif(strlen($faq->details) > 20) 19px @else 22px @endif;">
-                    {{ strlen($faq->details) > 0 ? $faq->details : "No details specified"  }}
+                  <p style="font-size: @if(strlen($faq->description) > 80) 16px @elseif(strlen($faq->description) > 60) 17px @elseif(strlen($faq->description) > 40) 18px @elseif(strlen($faq->description) > 20) 19px @else 22px @endif;">
+                    {{ strlen($faq->description) > 0 ? $faq->description : "No details specified"  }}
                   </p> 
 
                 </div>
@@ -104,7 +92,7 @@
               <div class="panel-footer">{{-- 
                 <div type="" class="btn btn-default"> ({{ $faq->upvote }}) <span class="glyphicon glyphicon-arrow-up"></span> Upvotes</div>
                 <div type="" class="btn btn-default"> ({{ $faq->downvote }}) <span class="glyphicon glyphicon-arrow-down"></span> Downvotes</div> --}}
-                <a href="{{ url("question/$faq->id/solution") }}" class="btn btn-default"> ({{ $faq->reads }}) <span class="glyphicon glyphicon-list-alt"></span> Viewed Times (Click to View)</a>
+                <a href="{{ url("question/$faq->id/solution") }}" class="btn btn-default"> ({{ $faq->reads }}) <span class="glyphicon glyphicon-list-alt"></span> Viewed Times (@if(Auth::check()) Click to View @else Login to View @endif )</a>
               </div>
               <!-- notification footer -->
 
