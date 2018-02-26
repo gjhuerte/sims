@@ -45,5 +45,4 @@
         </tbody>
     </table>
   </div>
-@include('layouts.print.footer')
 @endsection
