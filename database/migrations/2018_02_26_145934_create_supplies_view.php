@@ -14,6 +14,8 @@ class CreateSuppliesView extends Migration
     public function up()
     {
         DB::statement("
+            CREATE VIEW supplies_v
+            AS
             SELECT distinct
                 supplies.id AS id,
                 supplies.stocknumber AS stocknumber,
