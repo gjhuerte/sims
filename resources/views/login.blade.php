@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
 @section('styles-include')
-<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
+{{-- <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet"> --}}
 <style type="text/css">
   body{
     background: #22313F;
-    font-family: 'Nanum Gothic', sans-serif;
+    /*font-family: 'Nanum Gothic', sans-serif;*/
   }
 
   .hris-login {
@@ -124,6 +124,7 @@
 
         {{-- footer --}}
         <div class="panel-footer">
+          <a href="{{ url('faqs') }}">Frequently Asked Questions </a>
           {{-- <a href="{{ url('hris/login') }}" class="btn hris-login">Use HRIS Credentials </a> --}}
         </div>
         {{-- footer --}}

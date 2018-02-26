@@ -158,10 +158,6 @@
 			@endif
 	     	<!-- pagination -->
 
-	     	<div class="col-sm-12">
-	     		<p class="text-center">***End of Notifications***</p>
-	     	</div>
-
 	    </div>
     </div><!-- /.box-body -->
   </div><!-- /.box -->

@@ -17,6 +17,9 @@
       <!-- ========================================================= -->
 
       <!-- <li><a href="{{ url('/') }}"><i class="fa fa-home"></i> <span>Home</span></a></li> -->
+        <li>
+          <a href="{{ url('faqs') }}"> Frequently Asked Questions </a>
+        </li>
 
       @if (Auth::guest())
           <li>

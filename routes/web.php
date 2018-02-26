@@ -11,7 +11,17 @@
 |
 */
 
+
+Route::get('faqs','FaqsController@index');
+
 Route::middleware(['auth'])->group(function(){
+
+	Route::get('question/create', 'FaqsController@createIssue');
+	Route::get('question/{id}/solution', 'SolutionsController@index');
+	Route::get('question/{id}/solution/create', 'SolutionsController@createSolution');
+
+	Route::post('question/{id}/solution', 'SolutionsController@storeSolution');
+	Route::post('question', 'FaqsController@storeIssue');
 
 	Route::get('/', 'HomeController@index');
 	Route::get('settings',['as'=>'settings.edit','uses'=>'SessionsController@edit']);
