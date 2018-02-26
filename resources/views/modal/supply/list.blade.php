@@ -37,7 +37,7 @@
             { data: "id" },
             { data: "stocknumber" },
             { data: "details" },
-            { data: "unit.name" },
+            { data: "unit_name" },
             @if(isset($action) && $action != 'request')
 
             @if(Auth::user()->access == 1 || Auth::user()->access == 2)
