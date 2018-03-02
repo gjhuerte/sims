@@ -140,7 +140,14 @@ class Request extends Model implements Auditable, UserResolver
     public function getCodeAttribute($value)
     {
       $date = Carbon\Carbon::parse($this->created_at);
-      return $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
+      if (strlen($this->id) == 1) 
+        $requestcode =  '00'.$this->id;
+      elseif (strlen($this->id) == 2) 
+        $requestcode =  '0'.$this->id;
+      elseif (strlen($this->id) == 3) 
+        $requestcode =  $this->id;
+
+      return $date->format('y') . '-' .  $date->format('m') . '-' .  $requestcode;
     }
 
     public function getDateRequestedAttribute($value)
