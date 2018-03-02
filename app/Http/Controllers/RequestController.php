@@ -742,8 +742,8 @@ class RequestController extends Controller
         return view('errors.404');
       }
 
-      $row_count = 17;
-      $adjustment = 13;
+      $row_count = 18;
+      $adjustment = 20;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
         if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
@@ -762,9 +762,13 @@ class RequestController extends Controller
       // return $data_count;
       // return $remaining_rows;
       $user = App\User::where('id','=',$request->requestor_id)->first();
+      $office = App\Office::where('code','=',$user->office)->first();
+      $sector = App\Office::where('id','=',$office->head_office)->first();
+      $issuedby = App\User::where('id','=',$request->issued_by)->first();
       $data = [
         'request' => $request, 
-        'approvedby' => App\Office::where('code','=','OVPAA')->first(),
+        'approvedby' => $sector,
+        'issuedby' => $issuedby,
         'row_count' => $row_count,
         'end' => $remaining_rows
       ];
