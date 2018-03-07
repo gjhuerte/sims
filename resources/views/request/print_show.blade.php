@@ -112,22 +112,14 @@
           <td></td>
         </tr>
         @endfor
+        <!-- Purpose -->
         <tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
-      <thead>
-          <tr rowspan="2">
-              <th class="text-left" colspan="3">Purpose:
+              <td class="text-left" colspan="8"><span style="font-size: 15px; "><b>Purpose:</b></span></td>
           </tr>
-      </thead>
-      <tbody>
         <tr>
-          <td>
-            <p class="text-left">{{ $request->purpose }}<p>
-            <hr class="col-sm-12" />
+          <td  colspan="8">
+            <p class="text-left" word-wrap="break-word;">{{ $request->purpose }}<p>
+            <hr class="col-sm-12" color="black" />
           </td>
         </tr>
       </tbody>
@@ -136,17 +128,16 @@
 
   <div id="footer" class="col-sm-12">
     <table class="table table-bordered table-condensed" style="table-layout:fixed;">
-      <thead>
-        <tr>
-          <th class="col-xs-2">   </th>
-          <th class="col-sm-1">  Requested By: </th>
-          <th class="col-sm-1">  Approved By: </th>
-          <th class="col-xs-2">  Issued By: </th>
-          <th class="col-xs-2">  Received By: </th>
-        </tr>
-      </thead>
       <tbody>
-
+        
+        <!-- Signatories Header -->
+        <tr>
+          <td class="col-xs-2">   </td>
+          <td class="col-sm-1">  Requested By: </td>
+          <td class="col-sm-1">  Approved By: </td>
+          <td class="col-xs-2">  Issued By: </td>
+          <td class="col-xs-2">  Received By: </td>
+        </tr>
         <tr>
           <td class="text-center">
             Signature:
