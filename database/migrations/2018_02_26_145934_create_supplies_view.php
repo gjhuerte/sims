@@ -26,7 +26,7 @@ class CreateSuppliesView extends Migration
                 ), 0) as unitcost,
                 supplies.details AS details,
                 units.id AS unit_id,
-                units. NAME AS unit_name,
+                units.name AS unit_name,
                 supplies.reorderpoint AS reorderpoint,
                 (
                     SELECT

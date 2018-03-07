@@ -85,7 +85,7 @@
     });
 
     $('div.toolbar').html(`
-        @if($request->status != 'Released'|| $request->status != 'Pending' || Auth::user()->access == 1)
+        @if($request->status == 'Approved' || Auth::user()->access == 1)
         <a href="{{ url("request/$request->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
           <span id="nav-text"> Print</span>

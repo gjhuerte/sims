@@ -146,6 +146,8 @@ class Request extends Model implements Auditable, UserResolver
         $requestcode =  '0'.$this->id;
       elseif (strlen($this->id) == 3) 
         $requestcode =  $this->id;
+      else
+        $requestcode =  $this->id;
 
       return $date->format('y') . '-' .  $date->format('m') . '-' .  $requestcode;
     }

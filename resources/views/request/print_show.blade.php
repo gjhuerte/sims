@@ -45,14 +45,14 @@
               </th>
               <th class="text-left" colspan="4">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
           </tr>
-          <tr rowspan="2">
+          <tr>
               <th class="text-center" colspan="4"> <i> Requisition </i> </th>
               <th class="text-center" colspan="2"> <i> Stock Available? </i> </th>
               <th class="text-center" colspan="2"> <i> Issue </i> </th>
           </tr>
           <tr>
-            <th rowspan=1>Stock No.</th>
-            <th rowspan=1>Unit</th>
+            <th rowspan=1 class="col">Stock No.</th>
+            <th rowspan=1 class="col">Unit</th>
             <th rowspan=1>Details</th>
             <th rowspan=1>Quantity</th>
             <th rowspan=1 class="col-xs-1">Yes</th>
@@ -65,9 +65,9 @@
         @foreach($request->supplies as $key=>$supply)
         <tr style="font-size: 12px;" class="{{ ((($key+1) % $row_count) == 0) ? "page-break" : "" }}">
           <td>{{ $supply->stocknumber }}</td>
-          <td>{{ $supply->unit->name }}</td>
-          <td>
-            <span style="font-size:
+          <td><span style="font-size: 11px; font-family:'verdana' ">{{ $supply->unit->abbreviation }}</span></td>
+          <td class="text-left">
+            <span style="font-family:'verdana'; font-size:
             @if(strlen($supply->details) > 50) 9px 
               @elseif(strlen($supply->details) > 40) 11px 
               @elseif(strlen($supply->details) > 20) 12px 
@@ -75,7 +75,7 @@
               {{ $supply->details }}
             </span>
           </td>
-          <td>{{ $supply->pivot->quantity_requested }}</td>
+          <td class="text-center">{{ $supply->pivot->quantity_requested }}</td>
           @if($supply->pivot->quantity_issued > 0 && ($request->status == 'approved' || $request->status == 'Approved'))
           <td class="text-center"> ✔ </td>
           <td class="text-center">  </td>
@@ -91,7 +91,7 @@
         </tr>
         @endforeach
         <tr>
-          <td style="padding: 15px;">***</td>
+          <td>***</td>
           <td>***</td>
           <td class="text-center"> *** Nothing Follows ***  </td>
           <td>***</td>
@@ -141,8 +141,8 @@
           <th class="col-xs-2">   </th>
           <th class="col-sm-1">  Requested By: </th>
           <th class="col-sm-1">  Approved By: </th>
-          <th class="col-sm-1">  Issued By: </th>
-          <th class="col-sm-1">  Received By: </th>
+          <th class="col-xs-2">  Issued By: </th>
+          <th class="col-xs-2">  Received By: </th>
         </tr>
       </thead>
       <tbody>
@@ -166,11 +166,11 @@
             Printed Name:
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px; " word-wrap="break-word;"> {{ isset($request->office) ? $request->office->head != "None" ?$request->office->head : "" : "" }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px; " word-wrap="break-word;"> {{ isset($office->name) ? $office->head != "None" ?$office->head : "" : "" }}</span>
             <br />
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px;">{{ isset($approvedby->name) ? $approvedby->head : $request->office->head }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;">{{ isset($sector->name) ? $sector->head : $request->office->head }}</span>
             <br />
           </td>
           <td class="text-center">
@@ -190,12 +190,11 @@
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;" word-wrap="break-word;"> 
-              {{ isset($request->office) ? $request->office->head_title != "None" ? $request->office->head_title : "" : "" }}, {{ isset($request->office) ? $request->office->code : "" }}</span>
+              {{ isset($office->name) ? $office->head_title != "None" ? $office->head_title : "" : "" }}</span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;">
-              {{ isset($approvedby->head) ? $approvedby->head_title : $request->office->head_title }}
-              , {{ isset($approvedby->name) ? $approvedby->code : $request->office->code }}</span>
+              {{ isset($sector->head) ? $sector->head_title : $request->office->head_title }}</span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;"></span>
