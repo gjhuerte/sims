@@ -28,9 +28,8 @@
             <th class="col-sm-1">Purpose</th>
             @if(Auth::user()->access == 1)
             <th class="col-sm-1">Remaining Days</th>
-            @else
-            <th class="col-sm-1">Expire On</th>
             @endif
+            <th class="col-sm-1">Expire On</th>
             <th class="col-sm-1">Status</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
@@ -81,9 +80,8 @@
         { data: "purpose" },
         @if(Auth::user()->access == 1)
         { data: "remaining_days" },
-        @else
-        { data: "expire_on" },
         @endif
+        { data: "expire_on" },
         { data: "status" },
         { data: function(callback){
           ret_val = "";
