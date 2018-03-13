@@ -49,7 +49,7 @@
       </div>
       <div class="pull-right">
         <div class="btn-group">
-          <button type="button" id="cancel" class="btn btn-md btn-danger btn-block">Cancel</button>
+          <button type="button" id="cancel" class="btn btn-md btn-danger btn-block">Cancel Request</button>
         </div>
         <div class="btn-group">
           <button type="button" id="back" class="btn btn-md btn-default">Go Back</button>

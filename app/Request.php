@@ -73,6 +73,14 @@ class Request extends Model implements Auditable, UserResolver
       'Purpose' => 'required',
     );
 
+    public static $releaseRules = array(
+      'Remarks' => 'required',
+    );
+
+    public static $cancelRules = array(
+      'Details' => 'required',
+    );
+
     public function commentsRules(){
       return [
         'Details' => 'required|max:100'

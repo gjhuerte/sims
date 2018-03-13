@@ -75,6 +75,16 @@
 
         </tbody>
       </table>
+      <div class="form-group">
+          <div class="col-md-12 ">
+            {{ Form::label('remarks','Received By( Fullname)') }}<br>
+            {{ Form::text('remarks', '',[
+              'class'=>'form-control',
+              'id' => 'purpose',
+              'placeholder'=>'Fullname' ])
+            }}
+          </div>
+        </div>
       <div class="pull-right">
         <div class="btn-group">
           <button type="button" id="approve" class="btn btn-md btn-danger btn-block">Release</button>
@@ -118,7 +128,6 @@
             })
       }
     })
-
   });
 </script>
 @endsection

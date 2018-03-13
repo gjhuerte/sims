@@ -12,7 +12,6 @@ use Session;
 use PDF;
 use Validator;
 use Event;
-use LRedis;
 
 class RequestController extends Controller
 {
@@ -303,8 +302,19 @@ class RequestController extends Controller
       $daystoconsume = $request->get('daystoconsume');
       $quantity = $request->get('quantity');
       $stocknumber = $request->get('stocknumber');
+      $remarks = $this->sanitizeString($request->get('remarks'));
       $date = Carbon\Carbon::now();
 
+      $validator = Validator::make([
+            'Remarks' => $remarks,
+        ],App\Request::$releaseRules);
+
+        if($validator->fails())
+        {
+            return redirect("request/$id/release")
+                    ->withInput()
+                    ->withErrors($validator);
+        }
       DB::beginTransaction();
 
       /**
@@ -322,6 +332,7 @@ class RequestController extends Controller
       }
 
       $requests->status = 'released';
+      $requests->remarks = 'Received by: '.$remarks;
       $requests->released_at = $date;
       $requests->released_by = Auth::user()->id;
       $requests->save();
@@ -585,6 +596,17 @@ class RequestController extends Controller
 
       $details = $this->sanitizeString($request->get('details'));
 
+      $validator = Validator::make([
+            'Details' => $details,
+        ],App\Request::$cancelRules);
+
+        if($validator->fails())
+        {
+            return redirect("request/$id/cancel")
+                    ->withInput()
+                    ->withErrors($validator);
+        }
+
       DB::beginTransaction();
 
       $requests = App\Request::find($id);
@@ -765,6 +787,15 @@ class RequestController extends Controller
       $office = App\Office::where('code','=',$user->office)->first();
       $sector = App\Office::where('id','=',$office->head_office)->first();
       $issuedby = App\User::where('id','=',$request->issued_by)->first();
+      /*$office = App\Office::where('code','like','%AVP%')->first();*/ 
+ 
+      if(isset($sector->head_office)): 
+          $office = App\Office::where('id','=',$office->head_office)->first(); 
+          $sector = App\Office::where('id','=',$sector->head_office)->first(); 
+      elseif($office->head_office == NULL): 
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first(); 
+      endif; 
+
       if(isset($sector->head_office)):
           $office = App\Office::where('id','=',$office->head_office)->first();
           $sector = App\Office::where('id','=',$sector->head_office)->first();
@@ -775,12 +806,14 @@ class RequestController extends Controller
         'sector' => $sector,
         'issuedby' => $issuedby,
         'row_count' => $row_count,
+        'pages' => $data_count,
         'end' => $remaining_rows
       ];
 
       $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
       $view = "request.print_show";
-
+      //return view('request.print_show')
+      //->with('request',$request);
       return $this->printPreview($view,$data,$filename);
     }
 
