@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('maintenance/supplier','SuppliersController');
 		
 		Route::resource('maintenance/department','DepartmentController');
+		Route::get('get/department/code','DepartmentController@show');
 
 		Route::get('maintenance/category/assign/{id}', 'CategoriesController@showAssign');
 		Route::put('maintenance/category/assign/{id}', 'CategoriesController@assign');
