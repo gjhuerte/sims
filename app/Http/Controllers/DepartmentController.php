@@ -15,16 +15,20 @@ class DepartmentController extends Controller
 	{
 		if($request->ajax())
 		{
-			return datatables(App\Office::with('office'))->toJson();
+			return datatables(App\Office::All())->toJson();
 		}
 		return view('maintenance.department.index');
 	}
 
 	public function create()
 	{
+
+		$office = App\Office::where('head_office', '<>', null)
+						->orderBy('name')
+						->pluck('name','id');
 		return view('maintenance.department.create')
 					->with('title','Department')
-					->with('office',App\Office::pluck('name','id'));
+					->with('office',$office);
 	}
 
 	public function store()
@@ -61,6 +65,40 @@ class DepartmentController extends Controller
 
 		\Alert::success('Department Added')->flash();
 		return redirect("maintenance/office/$office");
+	}
+
+	public function show(Request $request, $id = null)
+	{
+		$id = $this->sanitizeString($id);
+		$office = App\Office::find($id);
+
+		if($request->ajax())
+		{
+
+			if(Input::has('term'))
+			{
+				$code = $this->sanitizeString(Input::get('term'));
+				return json_encode( App\Office::where('code','like','%'.$code.'%')->pluck('code')->toArray());
+			}
+
+			if(count($office) > 0 )
+			{
+				return datatables($office->departments)->toJson();
+			}
+
+			return json_encode([
+				'data' => App\Office::findByCode($id)
+			]);
+		}
+
+		if(count($office) <= 0 )
+		{
+			 return view('errors.404');
+		}
+
+		return view('maintenance.department.show')
+				->with('title', "$office->code")
+				->with('office', $office);
 	}
 
 	public function edit($id)
