@@ -2,7 +2,7 @@
 @section('title',"Purchase Order $purchaseorder->number")
 @section('content')
   <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
+    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0" style="font-size: 12px">
       <thead>
         <tr rowspan="2">
           <th class="text-center" colspan="8">
@@ -30,28 +30,26 @@
             <th class="text-left" colspan="4"></th>
         </tr>
         <tr>
-          <th class="col-sm-1">ID</th>
-          <th class="col-sm-1">Stock Number</th>
-          <th class="col-sm-1">Details</th>
-          <th class="col-sm-1">Ordered Quantity</th>
-          <th class="col-sm-1">Received Quantity</th>
-          <th class="col-sm-1">Remaining Quantity</th>
-          <th class="col-sm-1">Unit Cost</th>
-          <th class="col-sm-1">Amount</th>
+          <th class="col-sm-1 text-center">Stock Number</th>
+          <th class="col-sm-1 text-center">Details</th>
+          <th class="col-sm-1 text-center">Ordered Quantity</th>
+          <th class="col-sm-1 text-center">Received Quantity</th>
+          <th class="col-sm-1 text-center">Remaining Quantity</th>
+          <th class="col-sm-1 text-center">Unit Cost</th>
+          <th class="col-sm-1 text-center">Amount</th>
         </tr>
       </thead>
       <tbody>
       @if(count($purchaseorder->supplies) > 0)
         @foreach($purchaseorder->supplies as $supply)
         <tr>
-          <td>{{ $supply->id }}</td>
           <td>{{ $supply->stocknumber }}</td>
           <td>{{ $supply->details }}</td>
-          <td>{{ $supply->pivot->ordered_quantity }}</td>
-          <td>{{ $supply->pivot->received_quantity }}</td>
-          <td>{{ $supply->pivot->remaining_quantity }}</td>
-          <td>{{ number_format($supply->pivot->unitcost, 2) }}</td>
-          <td>{{ number_format($supply->pivot->received_quantity * $supply->pivot->unitcost, 2) }}</td>
+          <td align="right">{{ $supply->pivot->ordered_quantity }}</td>
+          <td align="right">{{ $supply->pivot->received_quantity }}</td>
+          <td align="right">{{ $supply->pivot->remaining_quantity }}</td>
+          <td align="right">{{ number_format($supply->pivot->unitcost, 2) }}</td>
+          <td align="right">{{ number_format($supply->pivot->received_quantity * $supply->pivot->unitcost, 2) }}</td>
         </tr>
         @endforeach
       @else

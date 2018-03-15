@@ -80,7 +80,7 @@
 
 	 	$("div.toolbar").html(`
  			<a href="{{ url('maintenance/department/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add Department </a>
- 			<a href="{{ url('maintenance/office') }}" id="new" class="btn btn-danger"><span class="glyphicon glyphicon glyphicon-menu-left"></span> Back </a>
+ 			<a href="{{ url('maintenance/office') }}" id="new" class="btn btn-danger"><span class="glyphicon glyphicon-menu-left"></span> Back </a>
 		`);
 
 		$('#departmentTable').on('click','button.remove',function(){

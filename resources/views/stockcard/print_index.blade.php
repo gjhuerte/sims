@@ -6,6 +6,6 @@
     <tr>
       <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
     </tr>
-</div>
 @include('layouts.print.stockcard-footer')
+</div>
 @endsection

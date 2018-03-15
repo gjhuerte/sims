@@ -6,7 +6,7 @@
       Reports on Supplies and Materials Issued <small class="pull-right">Appendix 64</small>
     </h3> 
             
-    <table class="table table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%">
+    <table class="table table-bordered table-condensed" id="rsmiTable" cellspacing="0" width="100%" style="font-size: 12px">
       <thead>
         <tr>
           <th class="text-right" colspan="8" style="white-space: nowrap;font-weight: normal;">R.I.S. {{ isset($start) ? $start : 'N/A' }} to {{ isset($end) ? $end : 'N/A' }}</th>
@@ -31,9 +31,9 @@
           <td style="white-space: nowrap;">{{ $report->supply->stocknumber }}</td>
           <td>{{ $report->supply->details }}</td>
           <td>{{ $report->supply->unit_name }}</td>
-          <td>{{ $report->issued_quantity }}</td>
-          <td>{{ number_format($report->pivot->unitcost,2) }}</td>
-          <td>{{ number_format($report->issued_quantity * $report->pivot->unitcost, 2) }}</td>
+          <td align="right">{{ $report->issued_quantity }}</td>
+          <td align="right">{{ number_format($report->pivot->unitcost,2) }}</td>
+          <td align="right">{{ number_format($report->issued_quantity * $report->pivot->unitcost, 2) }}</td>
         </tr>
         @endforeach
         <tr>
@@ -48,7 +48,7 @@
       </tbody>
     </table>
 
-    <table class="table table-bordered" id="rsmiTotalTable" cellspacing="0" width="100%">
+    <table class="table table-bordered" id="rsmiTotalTable" cellspacing="0" width="100%" style="font-size: 12px">
       <thead>
           <tr rowspan="2">
               <th class="text-left text-center" colspan="8">Recapitulation</th>
@@ -67,9 +67,9 @@
         <tr>
           <td>{{ $report->stocknumber }}</td>
           <td>{{ $report->details }}</td>
-          <td>{{ $report->issued_quantity }}</td>
-          <td>{{ number_format($report->unitcost,2) }}</td>
-          <td>{{ number_format($report->amount, 2) }}</td>
+          <td align="right">{{ $report->issued_quantity }}</td>
+          <td align="right">{{ number_format($report->unitcost,2) }}</td>
+          <td align="right">{{ number_format($report->amount, 2) }}</td>
           <td>{{ $report->uacs_code }}</td>
         </tr>
         @endforeach

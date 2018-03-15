@@ -17,22 +17,22 @@
             <tr>
               <td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M d Y') }}</td>
               <td>{{ $ledgercard->reference }}</td>
-              <td>{{ $ledgercard->received_quantity }}</td>
-              <td>{{ number_format($ledgercard->received_unitprice, 2) }}</td>
-              <td>{{ number_format($ledgercard->received_quantity * $ledgercard->received_unitprice, 2) }}</td>
-              <td>{{ $ledgercard->issued_quantity }}</td>
-              <td>{{ number_format($ledgercard->issued_unitprice, 2) }}</td>
-              <td>{{ number_format($ledgercard->issued_quantity * $ledgercard->issued_unitprice, 2) }}</td>
-              <td>{{ $ledgercard->balance_quantity }}</td>
+              <td class="text-right">{{ $ledgercard->received_quantity }}</td>
+              <td class="text-right">{{ number_format($ledgercard->received_unitprice, 2) }}</td>
+              <td class="text-right">{{ number_format($ledgercard->received_quantity * $ledgercard->received_unitprice, 2) }}</td>
+              <td class="text-right">{{ $ledgercard->issued_quantity }}</td>
+              <td class="text-right">{{ number_format($ledgercard->issued_unitprice, 2) }}</td>
+              <td class="text-right">{{ number_format($ledgercard->issued_quantity * $ledgercard->issued_unitprice, 2) }}</td>
+              <td class="text-right">{{ $ledgercard->balance_quantity }}</td>
               @if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
-              <td>{{ number_format($ledgercard->received_unitprice, 2) }}</td>
+              <td class="text-right">{{ number_format($ledgercard->received_unitprice, 2) }}</td>
               @else
-              <td>{{ number_format($ledgercard->issued_unitprice, 2) }}</td>
+              <td class="text-right">{{ number_format($ledgercard->issued_unitprice, 2) }}</td>
               @endif
               @if($ledgercard->received_quantity != 0 && isset($ledgercard->received_quantity))
-              <td>{{ number_format($ledgercard->received_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
+              <td class="text-right">{{ number_format($ledgercard->received_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
               @else
-              <td>{{ number_format( $ledgercard->issued_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
+              <td class="text-right">{{ number_format( $ledgercard->issued_unitprice *  $ledgercard->balance_quantity, 2) }}</td>
               @endif
             </tr>
           @endforeach
@@ -48,4 +48,4 @@
     </table>
   </div>
 @include('layouts.print.ledgercard-footer')
-@endsection
+@endsection 

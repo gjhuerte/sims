@@ -31,7 +31,7 @@
 			<td class="col-sm-1"></td>
 	    </tr>
 	    @endforeach
-
+ 
 	    @else
 	    <tr>
 	      <td colspan=5 class="col-sm-12"><p class="text-center">  No record </p></td>

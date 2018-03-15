@@ -2,24 +2,24 @@
 @section('title',"$receipt->number")
 @section('content')
   <div id="content" class="col-sm-12">
-    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
+    <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0" style="font-size: 12px">
       <thead>
         <tr rowspan="2">
-            <th class="text-left" colspan="4">Receipt:  <span style="font-weight:normal">{{ $receipt->number }}</span> </th>
-            <th class="text-left" colspan="4">Supplier:  <span style="font-weight:normal">{{ isset($receipt->supplier) ? $receipt->supplier->name : 'None' }}</span> </th>
+            <th class="text-left" colspan="2">Receipt:  <span style="font-weight:normal">{{ $receipt->number }}</span> </th>
+            <th class="text-left" colspan="5">Supplier:  <span align="right">{{ isset($receipt->supplier) ? $receipt->supplier->name : 'None' }}</span> </th>
         </tr>
         <tr rowspan="2">
-            <th class="text-left" colspan="4">Invoice:  <span style="font-weight:normal">{{ $receipt->invoice }}</span> </th>
-            <th class="text-left" colspan="4">Date Delivered:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($receipt->date_delivered)->toFormattedDateString() }}</span> </th>
+            <th class="text-left" colspan="2">Invoice:  <span style="font-weight:normal">{{ $receipt->invoice }}</span> </th>
+            <th class="text-left" colspan="5">Date Delivered:  <span style="font-weight:normal">{{ Carbon\Carbon::parse($receipt->date_delivered)->toFormattedDateString() }}</span> </th>
         </tr>
         <tr>
-        <th>Stock Number</th>
-        <th>Details</th>
-        <th>Unit</th>
-        <th>Delivered Quantity</th>
-        <th>Remaining Quantity</th>
-        <th>Unit Cost</th>
-        <th>Amount</th>
+        <th class="text-center" width= 50px>Stock No.</th>
+        <th class="text-center">Details</th>
+        <th class="text-center" width= 50px>Unit</th>
+        <th class="text-center" width= 60px >Delivered Quantity</th>
+        <th class="text-center" width= 60px >Remaining Quantity</th>
+        <th class="text-center" >Unit Cost</th>
+        <th class="text-center" >Amount</th>
       </tr>
     </thead>
     <tbody>
@@ -28,11 +28,11 @@
       <tr>
         <td>{{ $supply->stocknumber }}</td>
         <td>{{ $supply->details }}</td>
-        <td>{{ $supply->unit->name }}</td>
-        <td>{{ $supply->pivot->quantity }}</td>
-        <td>{{ $supply->pivot->remaining_quantity }}</td>
-        <td>{{ $supply->pivot->unitcost }}</td>
-        <td>{{ $supply->pivot->quantity * ( isset($supply->pivot->unitcost) && $supply->pivot->unitcost != "" && $supply->pivot->unitcost != null ) ? $supply->pivot->unitcost : 0 }}</td>
+        <td>{{ $supply->unit->abbreviation }}</td>
+        <td align="right">{{ $supply->pivot->quantity }}</td>
+        <td align="right">{{ $supply->pivot->remaining_quantity }}</td>
+        <td align="right">{{ $supply->pivot->unitcost }}</td>
+        <td align="right">{{ $supply->pivot->quantity * ( isset($supply->pivot->unitcost) && $supply->pivot->unitcost != "" && $supply->pivot->unitcost != null ) ? $supply->pivot->unitcost : 0 }}</td>
       </tr>
       @endforeach
     @else
