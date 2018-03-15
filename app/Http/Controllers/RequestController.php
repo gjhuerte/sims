@@ -799,6 +799,15 @@ class RequestController extends Controller
       if(isset($sector->head_office)):
           $office = App\Office::where('id','=',$office->head_office)->first();
           $sector = App\Office::where('id','=',$sector->head_office)->first();
+      elseif($office->head_office == NULL):
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+      endif;
+
+      
+
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
       endif;
       $data = [
         'request' => $request, 
