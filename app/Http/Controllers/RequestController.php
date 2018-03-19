@@ -400,6 +400,43 @@ class RequestController extends Controller
           'quantity_released' => $_quantity
         ]);
       }
+      /*Inserting of signatories in request_signatories OR Saving the signatories in the db*/
+      $user = App\User::where('id','=',$requests->requestor_id)->first();
+      $office = App\Office::where('code','=',$user->office)->first();
+      $sector = App\Office::where('id','=',$office->head_office)->first();
+      $issuedby = App\User::where('id','=',$requests->issued_by)->first();
+      /*$office = App\Office::where('code','like','%AVP%')->first();*/ 
+      //checks if the sector has a head_office
+      //for lvl 2 offices
+      if(isset($sector->head_office)): 
+          $office = App\Office::where('id','=',$office->head_office)->first(); 
+          $sector = App\Office::where('id','=',$sector->head_office)->first(); 
+      elseif($office->head_office == NULL): 
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first(); 
+      endif; 
+      //checks if the sector has a head_office
+      //for lvl 3 offices
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
+      elseif($office->head_office == NULL):
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+      endif;
+      //checks if the sector has a head_office
+      //for lvl 4 offices
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
+      endif;
+
+      $signatory = new App\RequestSignatory;
+      $signatory->request_id = $requests->id;
+      $signatory->requestor_name = isset($office->name) ? $office->head != "None" ?$office->head : "" : "";
+      $signatory->requestor_designation = isset($office->name) ? $office->head_title != "None" ? $office->head_title : "" : "";
+      $signatory->approver_name = isset($sector->name) ? $sector->head : $request->office->head;
+      $signatory->approver_designation = isset($sector->head) ? $sector->head_title : $request->office->head_title;
+      $signatory->save();
+
 
       $data['id'] = $requests->requestor_id;
       $data['message'] = "Items from request $requests->code status has been released";
@@ -758,6 +795,7 @@ class RequestController extends Controller
     {
       $id = $this->sanitizeString($id);
       $request = App\Request::find($id);
+      $signatory = '';
 
       if(count($request) <= 0 || (Auth::user()->access != 1 && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
       {
@@ -810,10 +848,16 @@ class RequestController extends Controller
           $office = App\Office::where('id','=',$office->head_office)->first();
           $sector = App\Office::where('id','=',$sector->head_office)->first();
       endif;
+
+      if($request->status == 'Released' || $request->status == 'released'):
+        $signatory = App\RequestSignatory::where('request_id','=',$request->id)->get();
+      endif;
+
       $data = [
         'request' => $request, 
         'office' => $office,
         'sector' => $sector,
+        'signatory' => $signatory,
         'issuedby' => $issuedby,
         'row_count' => $row_count,
         'pages' => $data_count,

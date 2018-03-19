@@ -104,14 +104,15 @@ class DepartmentController extends Controller
 	public function edit($id)
 	{
 		$department = App\Department::find($id);
-
+		$office = App\Office::orderBy('id')
+						->pluck('name','id');
 		if(count($department) <= 0)
 		{
 			return view('errors.404');
 		}
 		return view("maintenance.department.edit")
 				->with('department',$department)
-				->with('office',App\Office::pluck('name','id'));
+				->with('office',App\Office::orderBy('name')->pluck('name','id'));
 	}
 
 	public function update($id)

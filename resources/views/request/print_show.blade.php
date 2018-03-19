@@ -13,7 +13,7 @@
       }
 
       @media print {
-          tr.page-break  { display: block; page-break-inside:auto; }
+          .page-break  { display: block; page-break-after:always; }
       }   
 
   </style>
@@ -63,6 +63,7 @@
       </thead>
       <tbody>
         @foreach($request->supplies as $key=>$supply)
+        <div class="page-break"></div>
         <tr style="font-size: 12px;" class="{{ ((($key+1) % 18) == 0) ? "page-break;" : "" }}">
           <td>{{ $supply->stocknumber }}</td>
           <td><span style="font-size: 11px; font-family:'verdana' ">{{ $supply->unit->abbreviation }}</span></td>
@@ -157,11 +158,11 @@
             Printed Name:
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px; " word-wrap="break-word;"> {{ isset($office->name) ? $office->head != "None" ?$office->head : "" : "" }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px; " word-wrap="break-word;"> {{ isset($signatory->id) ? $signatory->requestor_name : isset($office->name) ? $office->head != "None" ?$office->head : "" : "" }}</span>
             <br />
           </td>
           <td class="text-center">
-            <span id="name" style="margin-top: 30px; font-size: 15px;">{{ isset($sector->name) ? $sector->head : $request->office->head }}</span>
+            <span id="name" style="margin-top: 30px; font-size: 15px;">{{isset($signatory->id) ? $signatory->approver_name : isset($sector->name) ? $sector->head : $request->office->head }}</span>
             <br />
           </td>
           <td class="text-center">
@@ -181,11 +182,11 @@
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;" word-wrap="break-word;"> 
-              {{ isset($office->name) ? $office->head_title != "None" ? $office->head_title : "" : "" }}</span>
+              {{  isset($signatory->id) ? $signatory->requestor_designation: isset($office->name) ? $office->head_title != "None" ? $office->head_title : "" : "" }}</span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;">
-              {{ isset($sector->head) ? $sector->head_title : $request->office->head_title }}</span>
+              {{ isset($signatory->id) ? $signatory->approver_designation : isset($sector->head) ? $sector->head_title : $request->office->head_title }}</span>
           </td>
           <td class="text-center">
             <span id="office" class="text-center" style="font-size:10px;"></span>

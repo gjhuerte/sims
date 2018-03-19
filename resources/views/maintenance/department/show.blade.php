@@ -5,7 +5,7 @@
 		<legend><h3 class="text-muted">Departments</h3></legend>
 		<ol class="breadcrumb">
 			<li><a href="{{ url('maintenance/office') }}"=>Sector</a></li>
-			<li><a href="{{ url()->previous() }}"> Office</a></li>
+			<li><a href="{{ url("maintenance/office/{$office->head_office}") }}"> Office</a></li>
 			<li>Deparments</li>
 			<li class="active">Home</li>
 		</ol>
@@ -79,7 +79,7 @@
 	    } );
 
 	 	$("div.toolbar").html(`
-	        <a href="{{ url()->previous() }}" class="btn btn-danger"><span class="glyphicon glyphicon-menu-left"></span> Back</a>
+	        <a href="{{ url("maintenance/office/{$office->head_office}") }}" class="btn btn-danger"><span class="glyphicon glyphicon-menu-left"></span> Back</a>
 
 		`);
 
