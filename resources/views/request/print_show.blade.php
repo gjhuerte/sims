@@ -13,7 +13,7 @@
       }
 
       @media print {
-          tr.page-break  { display: block; page-break-after: always; }
+          tr.page-break  { display: block; page-break-inside:auto; }
       }   
 
   </style>
@@ -26,44 +26,44 @@
           </tr>
           <tr rowspan="2">
 
-              <th class="text-left" colspan="4">Division:  
+              <th class="text-left" colspan="3">Division:  
                 @if($request->office->head_office == null)
                 <span style="font-weight:normal">N/A</span> 
                 @else
                 <span style="font-weight:normal">{{ isset($request->office->headoffice) ? $request->office->headoffice->name : $request->office->name }}</span> 
                 @endif
               </th>
-              <th class="text-left" colspan="4">Responsibility Center Code:  <span style="font-weight:normal">{{ isset($request->office->code) ? $request->office->code : $request->office }}</span> </th>
+              <th class="text-left" colspan="5">Responsibility Center Code:  <span style="font-weight:normal">{{ isset($request->office->code) ? $request->office->code : $request->office }}</span> </th>
           </tr>
           <tr rowspan="2">
-              <th class="text-left" colspan="4">Office: 
+              <th class="text-left" colspan="3">Office: 
                 @if($request->office->head_office == null)
                 <span style="font-weight:normal">{{ isset($request->office->name) ? $request->office->name : $request->office }}</span> 
                 @else
                 <span style="font-weight:normal">{{ isset($request->office) ? $request->office->name : $request->office }}</span> 
                 @endif
               </th>
-              <th class="text-left" colspan="4">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
+              <th class="text-left" colspan="5">RIS No.:  <span style="font-weight:normal">{{ $request->code }}</span> </th>
           </tr>
           <tr>
               <th class="text-center" colspan="4"> <i> Requisition </i> </th>
-              <th class="text-center" colspan="2"> <i> Stock Available? </i> </th>
+              <th width="100px" class="text-center" colspan="2"> <i> Stock Available? </i> </th>
               <th class="text-center" colspan="2"> <i> Issue </i> </th>
           </tr>
           <tr>
-            <th rowspan=1 class="col">Stock No.</th>
-            <th rowspan=1 class="col">Unit</th>
-            <th rowspan=1>Details</th>
-            <th rowspan=1>Quantity</th>
-            <th rowspan=1 class="col-xs-1">Yes</th>
-            <th rowspan=1 class="col-xs-1">No</th>
-            <th rowspan=1>Quantity </th>
-            <th rowspan=1>Remarks</th>
+            <th width="65px">Stock No.</th>
+            <th class="col">Unit</th>
+            <th>Details</th>
+            <th>Quantity</th>
+            <th width="55px">Yes</th>
+            <th width="55px">No</th>
+            <th>Quantity </th>
+            <th>Remarks</th>
           </tr>
       </thead>
       <tbody>
         @foreach($request->supplies as $key=>$supply)
-        <tr style="font-size: 12px;" class="{{ ((($key+1) % $row_count) == 0) ? "page-break" : "" }}">
+        <tr style="font-size: 12px;" class="{{ ((($key+1) % 18) == 0) ? "page-break;" : "" }}">
           <td>{{ $supply->stocknumber }}</td>
           <td><span style="font-size: 11px; font-family:'verdana' ">{{ $supply->unit->abbreviation }}</span></td>
           <td class="text-left">
@@ -132,14 +132,14 @@
         
         <!-- Signatories Header -->
         <tr>
-          <td class="col-xs-2">   </td>
+          <td width="90px">   </td>
           <td class="col-sm-1">  Requested By: </td>
           <td class="col-sm-1">  Approved By: </td>
           <td class="col-xs-2">  Issued By: </td>
           <td class="col-xs-2">  Received By: </td>
         </tr>
         <tr>
-          <td class="text-center">
+          <td class="text-left">
             Signature:
           </td>
           <td class="text-center">
@@ -153,7 +153,7 @@
         </tr>
 
         <tr>
-          <td class="text-center">
+          <td class="text-left">
             Printed Name:
           </td>
           <td class="text-center">
@@ -176,7 +176,7 @@
         </tr>
 
         <tr>
-          <td class="text-center">
+          <td class="text-left">
             Designation:
           </td>
           <td class="text-center">
@@ -196,7 +196,7 @@
         </tr>
 
         <tr>
-          <td class="text-center">
+          <td class="text-left">
             Date:
           </td>
           <td class="text-center"> </td>
