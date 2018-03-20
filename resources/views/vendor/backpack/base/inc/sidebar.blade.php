@@ -168,7 +168,7 @@
           
           <!-- Offices         || 3  -->
           @if(Auth::user()->access == 3)
-          <li><a href="{{ url('request') }}">                 <i class="fa fa-share" aria-hidden="true">        </i> <span> request             </span></a></li>
+          <li><a href="{{ url('request') }}">                 <i class="fa fa-share" aria-hidden="true">        </i> <span> Request             </span></a></li>
           @endif
           <!-- /Offices        || 3  -->
           
