@@ -1,7 +1,7 @@
 <div class="form-group">
   <div class="col-md-12">
     {{ Form::label('office','Office') }}
-    {{ Form::select('office',$office,Input::old('office'),[
+    {{ Form::select('office',$office,isset($department->head_office) ? $department->head_office : old('office'),[
       'class'=>'form-control'
     ]) }}
   </div>
