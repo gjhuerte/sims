@@ -82,11 +82,14 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 
 	public static $access_list = [
 		0 => "Administrator",
-		1 => "AMO",
+		1 => "PSMO",
 		2 => "Accounting",
 		3 => "Offices", 
 		4 => "Chief",
-		5  => "Director"
+		5 => "Director",
+		6 => "PSMO-Releasing",
+		7 => "PSMO-Accepting",
+		8 => "PSMO-Disposal"
 	];
 
 	public function getFullnameAttribute()

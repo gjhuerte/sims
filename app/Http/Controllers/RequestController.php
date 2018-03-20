@@ -27,7 +27,7 @@ class RequestController extends Controller
 
           $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'asc');
 
-          if(Auth::user()->access != 1)
+          if(Auth::user()->access != 1 && Auth::user()->access != 6 )
           {
             if(Auth::user()->position == 'head') 
               $ret_val->findByOffice( Auth::user()->office );
@@ -146,7 +146,7 @@ class RequestController extends Controller
         $id = $this->sanitizeString($id);
         $requests = App\Request::find($id);
 
-        if(count($requests) <= 0 || (Auth::user()->access != 1 && $requests->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($requests->office_id)->code))
+        if(count($requests) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6 && $requests->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($requests->office_id)->code))
         {
           return view('errors.404');
         }
@@ -797,7 +797,7 @@ class RequestController extends Controller
       $request = App\Request::find($id);
       $signatory = '';
 
-      if(count($request) <= 0 || (Auth::user()->access != 1 && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
+      if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6  && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
       {
         return view('errors.404');
       }

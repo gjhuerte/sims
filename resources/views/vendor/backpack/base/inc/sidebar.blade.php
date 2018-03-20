@@ -41,67 +41,40 @@
           @if(false)
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin') . '/elfinder') }}"><i class="fa fa-files-o"></i> <span>File manager</span></a></li>
-
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin') . '/language') }}"><i class="fa fa-flag-o"></i> <span>Languages</span></a></li>
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin') . '/language/texts') }}"><i class="fa fa-language"></i> <span>Language Files</span></a></li>
-
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/log') }}"><i class="fa fa-terminal"></i> <span>Logs</span></a></li>
-
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/setting') }}"><i class="fa fa-cog"></i> <span>Settings</span></a></li>
-
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/page') }}"><i class="fa fa-file-o"></i> <span>Pages</span></a></li>
 
           @endif
-
-          @if( Auth::user()->access == 0 || Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 4 || Auth::user()->access == 5 )
-
+          <!-- Admin           || 0  -->
           @if(Auth::user()->access == 0)
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/backup') }}"><i class="fa fa-hdd-o"></i> <span>Backups</span></a></li>
-
           <li><a href="{{ url('sync') }}"><i class="fa fa-refresh"></i> <span>Sync</span></a></li>
 
+          <li class="header">Information System</li>
+          <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
+
+          <li class="header">Utilities</li>
+          <li><a href="{{ url('account') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Accounts</span></a></li>
+          <li><a href="{{ url('audittrail') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>Audit Trail</span></a></li>
+          <li><a href="{{ url('import') }}"><i class="fa fa-upload" aria-hidden="true"></i> <span>Import</span></a></li>
           @endif
-
-          @if(Auth::user()->access == 1 || Auth::user()->access == 2 )
-
+          <!-- /Admin          || 0  -->
+          
+          <!-- PSMO            || 1  -->
+          @if(Auth::user()->access == 1)
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
-
-          @endif
-
-          @if(Auth::user()->access == 1 || Auth::user()->access == 4 || Auth::user()->access == 5)
-
           <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
-
           <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
-
-          @endif
-
-          @if(Auth::user()->access == 1 || Auth::user()->access == 2 )
-
-          <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
-
+          <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }}@endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
           <li class="treeview">
-            <a href="#">
-                  <i class="fa fa-share" aria-hidden="true"></i>
-                  <span>R. I. S.</span>
-              <i class="fa fa-angle-left pull-right"></i>
-            </a>
+            <a href="#"><i class="fa fa-share" aria-hidden="true"></i><span>R. I. S.</span><i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                @if(Auth::user()->access == 1)
-                <li>
-                  <a href="{{ url('request') }}">
-                    <li><i class="fa fa-list" aria-hidden="true"></i>
-                    View
-                  </a>
-                </li>
-                @endif
-                <li>
-                  <a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/release') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/release') }}  @endif">
-                        <li><i class="fa fa-pencil" aria-hidden="true"></i>
-                        Allocate
-                  </a>
-                </li>
+                <li><a href="{{ url('request') }}"><li><i class="fa fa-list" aria-hidden="true"></i>View</a></li>
+                <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/release') }} @endif"><li><i class="fa fa-pencil" aria-hidden="true"></i>Allocate</a></li>
               </ul>
           </li>
 
@@ -122,113 +95,134 @@
             })
           </script>
 
-
-          @if(Auth::user()->access == 1)
-
-          <li class="treeview">
-            <a href="#">
-                  <i class="fa fa-sliders" aria-hidden="true"></i>
-                  <span>Adjustment</span>
-              <i class="fa fa-angle-left pull-right"></i>
-            </a>
+          <li class="treeview"><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i><span>Adjustment</span><i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li>
-                  <a href="{{ url('adjustment') }}">
-                    <li><i class="fa fa-eye" aria-hidden="true"></i>
-                    View
-                  </a>
-                </li>
-                <li>
-                  <a href="{{ url('adjustment/dispose') }}">
-                    <li><i class="fa fa-trash-o" aria-hidden="true"></i>
-                    Disposal
-                  </a>
-                </li>
-                <li>
-                  <a href="{{ url('adjustment/return') }}">
-                    <li><i class="fa fa-pencil" aria-hidden="true"></i>
-                    Return
-                  </a>
-                </li>
+                <li><a href="{{ url('adjustment') }}"><li><i class="fa fa-eye" aria-hidden="true"></i>View</a></li>
+                <li><a href="{{ url('adjustment/dispose') }}"><li><i class="fa fa-trash-o" aria-hidden="true"></i>Disposal</a></li>
+                <li><a href="{{ url('adjustment/return') }}"><li><i class="fa fa-pencil" aria-hidden="true"></i>Return</a></li>
               </ul>
           </li>
-
-          @endif
-
+          
           <li class="header">Information System</li>
-
-          @if(Auth::user()->access == 1)
-
           <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
-
-          @endif
-
           <li><a href="{{ url('maintenance/supply') }}"><i class="fa fa-database" aria-hidden="true"></i> <span> Supply</span></a></li>
-
-          <li><a href="{{ url('maintenance/office') }}"><i class="fa fa-home" aria-hidden="true"></i> <span> Office </span></a></li>
-
           <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
 
-          @endif
-
-          @if(Auth::user()->access == 0)
-
-          <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
-
-          @endif
-
-          @if(Auth::user()->access == 2)
-
-          <li>
-            <a href="{{ url('records/uncopied') }}">
-              <i class="fa fa-clock-o" aria-hidden="true"></i> <span> Unsync Transactions</span>
-            </a>
-          </li>
-          
-          @if(false)
-
-          <li><a href="{{ url('uacs') }}"><i class="fa fa-code" aria-hidden="true"></i> <span> UACS </span></a></li>
-
-          <li><a href="{{ url('fundcluster') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Fund Cluster </span></a></li>
-
-          <li><a href="{{ url('maintenance/category') }}"><i class="fa fa-tags" aria-hidden="true"></i> <span> Categories </span></a></li>
-
-          @endif
-
-          @endif
-
-          @endif
-
-          @if(Auth::user()->access == 0)
-          <!-- ======================================= -->
-          <li class="header">Utilities</li>
-
-          <li><a href="{{ url('account') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Accounts</span></a></li>
-
-          <li><a href="{{ url('audittrail') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>Audit Trail</span></a></li>
-          
-          <li><a href="{{ url('import') }}"><i class="fa fa-upload" aria-hidden="true"></i> <span>Import</span></a></li>
-          @endif
-
-          @if(Auth::user()->access == 3)
-
-          <li>
-            <a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i> <span> Request</span></a>
-          </li>
-
-          @endif
-
-          @if(Auth::user()->access == 1 || Auth::user()->access == 2)
           <li class="header">Reports</li>
-
           <li><a href="{{ url('rsmi') }}"><i class="fa fa-ticket" aria-hidden="true"></i> <span> R. S. M. I. </span></a></li>
 
           <li class="header">Queries</li>
-
           <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span> References </span></a></li>
           <li><a href="{{ url('receipt') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Receipts </span></a></li>
           @endif
+          <!-- /PSMO           || 1  -->
+          
+          <!-- Accounting      || 2  -->
+          @if(Auth::user()->access == 2)
+          <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
+          <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
 
+          <li class="treeview">
+            <a href="#"><i class="fa fa-share" aria-hidden="true"></i><span>R. I. S.</span><i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu">
+                <li><a href="@if(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/release') }}  @endif"><li><i class="fa fa-pencil" aria-hidden="true"></i>Allocate</a></li>
+              </ul>
+          </li>
+
+          <script>
+            $(document).ready(function(){
+              /** add active class and stay opened when selected */
+              var url = window.location;
+
+              // for sidebar menu entirely but not cover treeview
+              $('ul.sidebar-menu a').filter(function() {
+                 return this.href == url;
+              }).parent().addClass('active');
+
+              // for treeview
+              $('ul.treeview-menu a').filter(function() {
+                 return this.href == url;
+              }).parentsUntil( $( "ul.level-1" ) ).addClass('active');
+            })
+          </script>
+          
+          <li class="header">Information System</li>
+          <li><a href="{{ url('maintenance/supply') }}">      <i class="fa fa-database" aria-hidden="true">     </i> <span> supply              </span></a></li>
+          <li><a href="{{ url('maintenance/office') }}">      <i class="fa fa-home" aria-hidden="true">         </i> <span> Office              </span></a></li>
+          <li><a href="{{ url('maintenance/supplier') }}">    <i class="fa fa-truck" aria-hidden="true">        </i> <span> Supplier            </span></a></li>
+          <li><a href="{{ url('records/uncopied') }}">        <i class="fa fa-clock-o" aria-hidden="true">      </i> <span> Unsync Transactions </span></a></li>
+          @if(false)
+          <li><a href="{{ url('uacs') }}">                    <i class="fa fa-code" aria-hidden="true">         </i> <span> UACS                </span></a></li>
+          <li><a href="{{ url('fundcluster') }}">             <i class="fa fa-archive" aria-hidden="true">      </i> <span> Fund Cluster        </span></a></li>
+          <li><a href="{{ url('maintenance/category') }}">    <i class="fa fa-tags" aria-hidden="true">         </i> <span> Categories          </span></a></li>
+          @endif
+
+          <li class="header">Reports</li>
+          <li><a href="{{ url('rsmi') }}">                    <i class="fa fa-ticket" aria-hidden="true">       </i> <span> R. S. M. I.         </span></a></li>
+
+          <li class="header">Queries</li>
+          <li><a href="{{ url('purchaseorder') }}">           <i class="fa fa-shopping-bag" aria-hidden="true"> </i> <span> References          </span></a></li>
+          <li><a href="{{ url('receipt') }}">                 <i class="fa fa-truck" aria-hidden="true">        </i> <span> Receipts            </span></a></li>
+          @endif
+          <!-- /Accounting     || 2  -->
+          
+          <!-- Offices         || 3  -->
+          @if(Auth::user()->access == 3)
+          <li><a href="{{ url('request') }}">                 <i class="fa fa-share" aria-hidden="true">        </i> <span> request             </span></a></li>
+          @endif
+          <!-- /Offices        || 3  -->
+          
+          <!-- Chief           || 4  -->
+          @if(Auth::user()->access == 4)
+          <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
+          <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
+          @endif
+          <!-- /Chief          || 4  -->
+          
+          <!-- Director        || 5  -->
+          @if(Auth::user()->access == 5)
+          <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
+          <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
+          @endif
+          <!-- /Director       || 5  -->
+          
+          <!-- PSMO-Releasing  || 6  -->
+          @if(Auth::user()->access == 6)
+          <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
+          <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i><span>R. I. S.</span></a></li>
+          
+          <li class="header">Information System</li>
+          <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
+          @endif
+          <!-- /PSMO-Releasing || 6  -->
+          
+          <!-- PSMO-Accepting  || 7  -->
+          @if(Auth::user()->access == 7)
+          <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
+          <li><a href="@if(Auth::user()->access == 7) {{ url('inventory/supply/stockcard/accept') }}@endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
+          
+          <li class="header">Information System</li>
+          <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
+          <li><a href="{{ url('maintenance/supply') }}"><i class="fa fa-database" aria-hidden="true"></i> <span> Supply</span></a></li>
+          <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
+          <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
+          @endif
+          <!-- /PSMO-Accepting || 7  -->
+          
+          <!-- PSMO-Disposal   || 8  -->
+          @if(Auth::user()->access == 8)
+          <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
+          <li class="treeview"><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i><span>Adjustment</span><i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu">
+                <li><a href="{{ url('adjustment') }}"><li><i class="fa fa-eye" aria-hidden="true"></i>View</a></li>
+                <li><a href="{{ url('adjustment/dispose') }}"><li><i class="fa fa-trash-o" aria-hidden="true"></i>Disposal</a></li>
+                <li><a href="{{ url('adjustment/return') }}"><li><i class="fa fa-pencil" aria-hidden="true"></i>Return</a></li>
+              </ul>
+          </li>
+          <li class="header">Information System</li>
+          <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
+          @endif
+          <!-- /PSMO-Disposal  || 8  -->
           <!-- ======================================= -->
           <li class="header">{{ trans('backpack::base.user') }}</li>
 

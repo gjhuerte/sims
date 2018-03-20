@@ -85,14 +85,14 @@
     });
 
     $('div.toolbar').html(`
-        @if($request->status == 'Approved' || Auth::user()->access == 1)
+        @if($request->status == 'Approved' || Auth::user()->access == 1 || Auth::user()->access == 6)
         <a href="{{ url("request/$request->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
           <span id="nav-text"> Print</span>
         </a>
         @endif
 
-        @if(Auth::user()->access == 1)
+        @if(Auth::user()->access == 1 || Auth::user()->access == 6)
         
           @if($request->status == 'Approved')
           <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
@@ -112,7 +112,7 @@
     /*<a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
           <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Messages  <span class="label label-danger"> {{ App\RequestComments::where('request_id', '=', $request->id)->count() }} </span> </span>
         </a>*/
-    @if(Auth::user()->access == 1 )
+    @if(Auth::user()->access == 1 || Auth::user()->access == 6)
 
     @if($request->status != null && $request->status != 'released')
 
