@@ -326,7 +326,7 @@ class RequestController extends Controller
        */
       $requests = App\Request::find($id);
 
-      if( count($requests) <= 0 || !in_array($requests->status, [ 'Approved', 'approved']) || Auth::user()->access != 1)
+      if( count($requests) <= 0 || !in_array($requests->status, [ 'Approved', 'approved']) || Auth::user()->access != 1 && Auth::user()->access != 6)
       {
         return view('errors.404');
       }
@@ -469,7 +469,7 @@ class RequestController extends Controller
     {
       $requests = App\Request::find($id);
         
-      if( count($requests) <= 0 || in_array($requests->status, [ 'approved', 'Approved', 'disapproved', 'Disapproved']) || Auth::user()->access != 1)
+      if( count($requests) <= 0 || in_array($requests->status, [ 'approved', 'Approved', 'disapproved', 'Disapproved']) || Auth::user()->access != 1 && Auth::user()->access != 6)
       {
         return view('errors.404');
       }
@@ -513,7 +513,7 @@ class RequestController extends Controller
 
         $requests = App\Request::find($id);
 
-        if( count($requests) <= 0 || in_array($requests->status, ['approved', 'Approved', 'disapproved', 'Disapproved', 'released', 'Released', 'cancelled', 'Cancelled']) || Auth::user()->access != 1)
+        if( count($requests) <= 0 || in_array($requests->status, ['approved', 'Approved', 'disapproved', 'Disapproved', 'released', 'Released', 'cancelled', 'Cancelled']) || Auth::user()->access != 1 && Auth::user()->access != 6)
         {
           return view('errors.404');
         }
@@ -756,7 +756,7 @@ class RequestController extends Controller
         $id = $this->sanitizeString($id);
         $requests = App\Request::find($id);
 
-        if(count($requests) <= 0 || Auth::user()->access != 1)
+        if(count($requests) <= 0 || Auth::user()->access != 1 && Auth::user()->access != 6)
         {
 
           return json_encode('error');
