@@ -29,7 +29,6 @@
             @if(Auth::user()->access == 1 || Auth::user()->access == 6)
             <th class="col-sm-1">Remaining Days</th>
             @endif
-            <th class="col-sm-1">Expire On</th>
             <th class="col-sm-1">Status</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
@@ -81,7 +80,6 @@
         @if(Auth::user()->access == 1 || Auth::user()->access == 6)
         { data: "remaining_days" },
         @endif
-        { data: "expire_on" },
         { data: "status" },
         { data: function(callback){
           ret_val = "";

@@ -17,7 +17,7 @@ class PhysicalInventoryController extends Controller
     {
         if($request->ajax())
         {
-            $stockcards = App\StockCard::where('reference', 'like', '%Physical%')
+            $stockcards = App\StockCard::where('reference', 'like', '%Physical%')->orWhere('reference', 'like', '%alance%')
                                 ->get();
             return datatables($stockcards)->toJson();
         }
@@ -94,7 +94,7 @@ class PhysicalInventoryController extends Controller
     public function print()
     {
 
-        $stockcards = App\StockCard::where('reference', 'like', '%Physical%')->get();
+        $stockcards = App\StockCard::where('reference', 'like', '%Physical%')->orWhere('reference', 'like', '%alance%')->get();
         $remaining_rows = $row_count = 26;
         $adjustment = 4;
 
