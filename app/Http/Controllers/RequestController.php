@@ -804,6 +804,8 @@ class RequestController extends Controller
 
       $row_count = 18;
       $adjustment = 0;
+      $row_count = 16;
+      $adjustment = 1;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
         if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
