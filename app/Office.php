@@ -20,7 +20,7 @@ class Office extends Model{
 
 	public function rules(){
 		return array(
-			'Code' => 'required|max:20|unique:Offices,code',
+			'Code' => 'required|max:20|unique:offices,code',
 			'Name' => 'required|max:200',
 			'Description' => 'max:200'
 		);
@@ -29,7 +29,7 @@ class Office extends Model{
 	public function updateRules(){
 		$code = $this->code;
 		return array(
-			'Code' => 'required|max:20|unique:Offices,code,'.$code.',code',
+			'Code' => 'required|max:20|unique:offices,code,'.$code.',code',
 			'Name' => 'required|max:200',
 			'Description' => 'max:200'
 		);

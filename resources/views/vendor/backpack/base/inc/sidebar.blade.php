@@ -48,7 +48,7 @@
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/page') }}"><i class="fa fa-file-o"></i> <span>Pages</span></a></li>
 
           @endif
-          <!-- Admin           || 0  -->
+          <!-- Admin             -->
           @if(Auth::user()->access == 0)
 
           <li><a href="{{ url(config('backpack.base.route_prefix', 'admin').'/backup') }}"><i class="fa fa-hdd-o"></i> <span>Backups</span></a></li>
@@ -62,9 +62,9 @@
           <li><a href="{{ url('audittrail') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>Audit Trail</span></a></li>
           <li><a href="{{ url('import') }}"><i class="fa fa-upload" aria-hidden="true"></i> <span>Import</span></a></li>
           @endif
-          <!-- /Admin          || 0  -->
+          <!-- /Admin            -->
           
-          <!-- PSMO            || 1  -->
+          <!-- PSMO              -->
           @if(Auth::user()->access == 1)
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
           <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
@@ -115,9 +115,9 @@
           <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span> References </span></a></li>
           <li><a href="{{ url('receipt') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Receipts </span></a></li>
           @endif
-          <!-- /PSMO           || 1  -->
+          <!-- /PSMO             -->
           
-          <!-- Accounting      || 2  -->
+          <!-- Accounting        -->
           @if(Auth::user()->access == 2)
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
           <li><a href="@if(Auth::user()->access == 1) {{ url('inventory/supply/stockcard/accept') }} @elseif(Auth::user()->access == 2) {{ url('inventory/supply/ledgercard/accept') }}  @endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
@@ -164,29 +164,29 @@
           <li><a href="{{ url('purchaseorder') }}">           <i class="fa fa-shopping-bag" aria-hidden="true"> </i> <span> References          </span></a></li>
           <li><a href="{{ url('receipt') }}">                 <i class="fa fa-truck" aria-hidden="true">        </i> <span> Receipts            </span></a></li>
           @endif
-          <!-- /Accounting     || 2  -->
+          <!-- /Accounting       -->
           
-          <!-- Offices         || 3  -->
+          <!-- Offices           -->
           @if(Auth::user()->access == 3)
           <li><a href="{{ url('request') }}">                 <i class="fa fa-share" aria-hidden="true">        </i> <span> Request             </span></a></li>
           @endif
-          <!-- /Offices        || 3  -->
+          <!-- /Offices          -->
           
-          <!-- Chief           || 4  -->
+          <!-- Chief             -->
           @if(Auth::user()->access == 4)
           <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
           <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
           @endif
-          <!-- /Chief          || 4  -->
+          <!-- /Chief            -->
           
-          <!-- Director        || 5  -->
+          <!-- Director          -->
           @if(Auth::user()->access == 5)
           <li><a href="{{ url('inventory/physical') }}"><i class="fa fa-archive" aria-hidden="true"></i> <span> Physical Inventory </span></a></li>
           <li><a href="{{ url('inspection') }}"><i class="fa fa-search" aria-hidden="true"></i> <span> Inspection </span></a></li>
           @endif
-          <!-- /Director       || 5  -->
+          <!-- /Director         -->
           
-          <!-- PSMO-Releasing  || 6  -->
+          <!-- PSMO-Releasing    -->
           @if(Auth::user()->access == 6)
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
           <li><a href="{{ url('request') }}"><i class="fa fa-share" aria-hidden="true"></i><span>R. I. S.</span></a></li>
@@ -194,12 +194,12 @@
           <li class="header">Information System</li>
           <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
           @endif
-          <!-- /PSMO-Releasing || 6  -->
+          <!-- /PSMO-Releasing   -->
           
-          <!-- PSMO-Accepting  || 7  -->
+          <!-- PSMO-Accepting    -->
           @if(Auth::user()->access == 7)
           <li><a href="{{ url('inventory/supply') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span> Inventory </span></a></li>
-          <li><a href="@if(Auth::user()->access == 7) {{ url('inventory/supply/stockcard/accept') }}@endif"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
+          <li><a href="{{ url('inventory/supply/stockcard/accept') }}"><i class="fa fa-plus" aria-hidden="true"></i> <span> Accepts Item </span></a></li>
           
           <li class="header">Information System</li>
           <li><a href="{{ url('announcement') }}"><i class="fa fa-bullhorn" aria-hidden="true"></i> <span> Announcement </span></a></li>
@@ -207,7 +207,7 @@
           <li><a href="{{ url('maintenance/unit') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span> Unit </span></a></li>
           <li><a href="{{ url('maintenance/supplier') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Supplier </span></a></li>
           @endif
-          <!-- /PSMO-Accepting || 7  -->
+          <!-- /PSMO-Accepting   -->
           
           <!-- PSMO-Disposal   || 8  -->
           @if(Auth::user()->access == 8)

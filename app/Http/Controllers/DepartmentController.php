@@ -23,9 +23,7 @@ class DepartmentController extends Controller
 	public function create()
 	{
 
-		$office = App\Office::where('head_office', '<>', null)
-						->orderBy('name')
-						->pluck('name','id');
+		$office = App\Office::where('code','NOT LIKE','%-A%')->orderBy('name')->pluck('name','id');
 		return view('maintenance.department.create')
 					->with('title','Department')
 					->with('office',$office);
@@ -104,7 +102,7 @@ class DepartmentController extends Controller
 	public function edit($id)
 	{
 		$department = App\Department::find($id);
-		$office = App\Office::orderBy('name')->pluck('name','id');
+		$office = App\Office::where('code','NOT LIKE','%-A%')->orderBy('name')->pluck('name','id');
 		if(count($department) <= 0)
 		{
 			return view('errors.404');
