@@ -13,6 +13,7 @@ class Request extends Model implements Auditable, UserResolver
     use \OwenIt\Auditing\Auditable; 
 
     protected $auditInclude = [ 
+      'local' , 
       'requestor_id' , 
       'office_id' ,
       'issued_by' , 
@@ -35,6 +36,7 @@ class Request extends Model implements Auditable, UserResolver
     public $timestamps = true;
     public $expire_before = 3;
     protected $fillable = [ 
+      'local' , 
       'requestor_id' , 
       'office_id' ,
       'issued_by' , 
@@ -101,10 +103,11 @@ class Request extends Model implements Auditable, UserResolver
     public function getRemainingDaysAttribute()
     {
       if($this->approved_at == null)  return 'No Approval';
-
+      if($this->approved_at != null && $this->released_at != null)  return 'Released';
+      if(ucfirst($this->status) == 'Cancelled')  return 'Cancelled';
       $approved_date = Carbon\Carbon::parse($this->approved_at);
       $date = Carbon\Carbon::now();
-      return $approved_date->addDays($this->expire_before)->diffInDays($date);
+      return $approved_date->addWeekDays($this->expire_before)->diffInDays($date);
 
     }
 
@@ -148,6 +151,9 @@ class Request extends Model implements Auditable, UserResolver
     public function getCodeAttribute($value)
     {
       $date = Carbon\Carbon::parse($this->created_at);
+      if(isset($this->local))
+        $requestcode = $this->local;
+      else{
       if (strlen($this->id) == 1) 
         $requestcode =  '00'.$this->id;
       elseif (strlen($this->id) == 2) 
@@ -156,8 +162,12 @@ class Request extends Model implements Auditable, UserResolver
         $requestcode =  $this->id;
       else
         $requestcode =  $this->id;
-
+      }
+      if(isset($this->local))
+      return $requestcode;
+      else
       return $date->format('y') . '-' .  $date->format('m') . '-' .  $requestcode;
+
     }
 
     public function getDateRequestedAttribute($value)

@@ -195,7 +195,7 @@ class SupplyController extends Controller {
 			'supplies' => $supplies
 		];
 
-		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+		$filename = "StockMasterlist-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "maintenance.supply.print_index";
 		return $this->printPreview($view,$data,$filename);
 	}

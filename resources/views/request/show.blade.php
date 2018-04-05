@@ -91,6 +91,7 @@
           <span id="nav-text"> Print</span>
         </a>
         @endif
+ 
 
         @if(Auth::user()->access == 1 || Auth::user()->access == 6)
         
@@ -98,12 +99,20 @@
           <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
             <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
           </a>
+
           @endif
 
           @if($request->status == null || $request->status == 'Pending' || ( strpos($request->status, 'pdated') != false ))
           <a type="button" href="{{ url("request/$request->id/accept") }}" data-id="{{ $request->id }}" class="accept btn btn-success btn-sm">
               <i class="fa fa-thumbs-up" aria-hidden="true"> Accept</i>
           </a>
+          @endif
+
+          @if($request->status != null && ($request->status == 'Approved' && $request->remaining_days >= 6)) 
+          <button id="expire" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm"> 
+            <i class="fa fa-refresh" aria-hidden="true"> Expire</i> 
+          </button> 
+ 
           @endif
 
         @endif
@@ -116,11 +125,11 @@
 
     @if($request->status != null && $request->status != 'released')
 
-    $('#reset').on('click',function(){
+    $('#expire').on('click',function(){
       id = $(this).data('id');
       swal({
-        title: 'Reset Status of Request {{ $request->code }}',
-        text: 'This will set the status of the current request to pending. Any modification to request will be reset. Do you want to continue?',
+        title: 'Expire Request {{ $request->code }}?',
+        text: 'This will cancel the request. Do you want to continue?',
         type: 'warning',
         showLoaderOnConfirm: true,
         showCancelButton: true,
@@ -133,7 +142,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type: 'put',
-            url: '{{ url("request/$request->id/reset") }}',
+            url: '{{ url("request/$request->id/expire") }}',
             data: {
                 'id': id
             },

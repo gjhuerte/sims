@@ -679,6 +679,85 @@ class RequestController extends Controller
     }
 
     /**
+     * reset the current status of request to null
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function resetStatus(Request $request, $id)
+    {
+
+      if($request->ajax())
+      {
+        $id = $this->sanitizeString($id);
+        $requests = App\Request::find($id);
+
+        if(count($requests) <= 0 || Auth::user()->access != 1 && Auth::user()->access != 6)
+        {
+
+          return json_encode('error');
+        }
+
+        $requests->remarks = null;
+        $requests->issued_by = null;
+        $requests->status = null;
+        $requests->approved_at = null;
+        
+        foreach($requests->supplies as $supply):
+          $supply->pivot->quantity_issued = null;
+          $supply->pivot->quantity_released = null;
+          $supply->pivot->comments = null;
+          $supply->pivot->save();
+        endforeach;
+
+        $requests->save();
+
+        $data['id'] = $requests->requestor_id;
+        $data['message'] = "Request $requests->code status has been changed back to pending";
+
+        event(new App\Events\RequestApproval($data));
+
+        return json_encode('success');
+      }
+
+    }
+
+    public function expireStatus(Request $request, $id)
+    {
+
+      if($request->ajax())
+      {
+        $id = $this->sanitizeString($id);
+        $requests = App\Request::find($id);
+
+        if(count($requests) <= 0 || Auth::user()->access != 1 && Auth::user()->access != 6)
+        {
+
+          return json_encode('error');
+        }
+
+        $requests->status = "cancelled";
+        $requests->cancelled_by = Auth::user()->id;
+        $requests->cancelled_at = Carbon\Carbon::now();
+        $requests->remarks = 'Request Expired';
+        
+        foreach($requests->supplies as $supply):
+          $supply->pivot->quantity_issued = null;
+          $supply->pivot->comments = null;
+          $supply->pivot->save();
+        endforeach;
+
+        $requests->save();
+
+        $data['id'] = $requests->requestor_id;
+        $data['message'] = "Request $requests->code status expired";
+
+        event(new App\Events\RequestApproval($data));
+
+        return json_encode('success');
+      }
+    }
+    /**
      * Display the specified comments.
      *
      */
@@ -741,51 +820,6 @@ class RequestController extends Controller
 
       return back();
     }
-
-    /**
-     * reset the current status of request to null
-     * @param  Request $request [description]
-     * @param  [type]  $id      [description]
-     * @return [type]           [description]
-     */
-    public function resetStatus(Request $request, $id)
-    {
-
-      if($request->ajax())
-      {
-        $id = $this->sanitizeString($id);
-        $requests = App\Request::find($id);
-
-        if(count($requests) <= 0 || Auth::user()->access != 1 && Auth::user()->access != 6)
-        {
-
-          return json_encode('error');
-        }
-
-        $requests->remarks = null;
-        $requests->issued_by = null;
-        $requests->status = null;
-        $requests->approved_at = null;
-        
-        foreach($requests->supplies as $supply):
-          $supply->pivot->quantity_issued = null;
-          $supply->pivot->quantity_released = null;
-          $supply->pivot->comments = null;
-          $supply->pivot->save();
-        endforeach;
-
-        $requests->save();
-
-        $data['id'] = $requests->requestor_id;
-        $data['message'] = "Request $requests->code status has been changed back to pending";
-
-        event(new App\Events\RequestApproval($data));
-
-        return json_encode('success');
-      }
-
-    }
-
     /**
      * creates a printable form of request
      * @param  [type] $id [description]
@@ -802,10 +836,8 @@ class RequestController extends Controller
         return view('errors.404');
       }
 
-      $row_count = 18;
-      $adjustment = 0;
       $row_count = 16;
-      $adjustment = 1;
+      $adjustment = 0;
       if(isset($request->supplies)):
         $data_count = count($request->supplies) % $row_count;
         if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
