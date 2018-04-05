@@ -105,7 +105,7 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'LedgerCardController@checkIfLedgerCardExists'
 		]);
 
-		Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
+
 		Route::get('purchaseorder/{id}/print','PurchaseOrderController@printPurchaseOrder');
 
 		Route::resource('purchaseorder','PurchaseOrderController');
@@ -158,6 +158,8 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('inventory/supply.stockcard','StockCardController');
 
 		Route::put('request/{id}/reset', 'RequestController@resetStatus');
+
+		Route::put('request/{id}/expire', 'RequestController@expireStatus');
 
 		Route::get('request/{id}/accept','RequestController@getAcceptForm');
 		
