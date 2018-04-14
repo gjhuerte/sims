@@ -325,16 +325,17 @@ class RSMIController extends Controller
 
         $stockcard = App\StockCard::whereHas('rsmi', function($query) use($id) {
             $query->where('id', '=', $id);
-        })->select('date', 'id', 'reference')->get()->unique('reference');
+        })->select('date', 'id', 'reference')->orderBy('reference')->get()->unique('reference');
 
         $start = $stockcard->sortBy('date')->sortBy('id')->pluck('reference')->first();
         $end = $stockcard->sortByDesc('date')->sortByDesc('id')->pluck('reference')->first();
-
+        $ris = App\Request::whereMonth('created_at','=',$rsmi->report_date->month)->get();
     	$data = [
     		'rsmi' => $rsmi,
     		'recapitulation' => $recapitulation,
             'start' => $start,
-            'end' => $end
+            'end' => $end,
+            'ris' => $ris
     	];
 
         $filename = "RSMI-".Carbon\Carbon::parse($rsmi->report_date)->format('mdYHm').".pdf";
