@@ -80,7 +80,57 @@ class CreateSuppliesView extends Migration
                         AND requests. STATUS IN ('approved', 'Approved')
                     ), 0),
                     0
-                ) AS temp_balance
+                ) AS temp_balance,
+                IF ((       ifnull(
+                            (
+                                (
+                                    SELECT
+                                        ifnull(
+                                            `stockcards`.`balance_quantity`,
+                                            0
+                                        )
+                                    FROM
+                                        `stockcards`
+                                    WHERE
+                                        (
+                                            `supplies`.`id` = `stockcards`.`supply_id`
+                                        )
+                                    ORDER BY
+                                        `stockcards`.`date` DESC,
+                                        `stockcards`.`created_at` DESC,
+                                        `stockcards`.`id` DESC
+                                    LIMIT 1
+                                ) - ifnull(
+                                    (
+                                        SELECT
+                                            sum(
+                                                `requests_supplies`.`quantity_issued`
+                                            )
+                                        FROM
+                                            (
+                                                `requests_supplies`
+                                                JOIN `requests` ON (
+                                                    (
+                                                        `requests`.`id` = `requests_supplies`.`request_id`
+                                                    )
+                                                )
+                                            )
+                                        WHERE
+                                            (
+                                                (
+                                                    `supplies`.`id` = `requests_supplies`.`supply_id`
+                                                )
+                                                AND (
+                                                    `requests`.`status` IN ('approved', 'Approved')
+                                                )
+                                            )
+                                    ),
+                                    0
+                                )
+                            ),
+                            0
+                        ) > 0
+                    ),'Available','Not Available') AS availability
             FROM
                 supplies
             JOIN stockcards ON supplies.id = stockcards.supply_id
