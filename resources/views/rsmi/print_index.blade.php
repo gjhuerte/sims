@@ -46,8 +46,30 @@
           <td colspan=8 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
         </tr>
       </tbody>
+    <tfoot>
+      <tr>
+        <th class="text-center" colspan="3">  Prepared By: </th>
+        <th class="text-center" colspan="5">  Approved By: </th>
+      </tr>
+      <tr>
+        <td class="text-center" colspan="3">
+          <br />
+          <br />
+          <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+        </td>
+        <td class="text-center" colspan="5">
+          <br />
+          <br />
+          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px; ">{{ (App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : '[ Signature Over Printed Name ]' }}</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+        </td>
+      </tr>
+    </tfoot>
     </table>
-
+    <p style="page-break-after: always;">&nbsp;</p>
     <table class="table table-bordered" id="rsmiTotalTable" cellspacing="0" width="100%" style="font-size: 12px">
       <thead>
           <tr rowspan="2">
@@ -74,10 +96,84 @@
         </tr>
         @endforeach
         <tr>
-          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+          <td colspan="3">Total Quantity Released: <span class="pull-right"> {{ $recapitulation->sum('issued_quantity') }} </span></td>
+          <td colspan="1">N/A</td>
+          <td colspan="1">N/A</td>
+          <td colspan="1"></td>
+        </tr>
+        <tr>
+          <td colspan=7 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows *******************  </p></td>
         </tr>
       </tbody>
+          <tfoot>
+      <tr>
+        <th class="text-center" colspan="2">  Prepared By: </th>
+        <th class="text-center" colspan="6">  Approved By: </th>
+      </tr>
+      <tr>
+        <td class="text-center" colspan="2">
+          <br />
+          <br />
+          <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+        </td>
+        <td class="text-center" colspan="6">
+          <br />
+          <br />
+          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px; ">{{ (App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : '[ Signature Over Printed Name ]' }}</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+        </td>
+      </tr>
+    </tfoot>
+    </table>
+    <p style="page-break-after: always;">&nbsp;</p>
+    <table class="table table-bordered" id="rsmiTotalTable" cellspacing="0" width="100%" style=" font-size: 12px">
+      <thead>
+          <tr><th class="text-left text-center" colspan="4">RIS</th></tr>
+        <tr>
+          <th class="col-sm-1" >RIS No.</th>
+          <th class="col-md-1" >Office</th>
+          <th class="col-sm-1" >Status</th>
+          <th class="col-md-1" >Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($ris as $request)
+        <tr>
+          <td >{{ $request->code }}</td>
+          <td >{{ App\Office::find($request->office_id)->name }}</td>
+          <td >{{ $request->status }}</td>
+          <td >{{ $request->remarks }}</td>
+        </tr>
+        @endforeach
+        <tr>
+          <td colspan='4' class=""><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
+        </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <th class="text-center" colspan="2">  Prepared By: </th>
+        <th class="text-center" colspan="2">  Approved By: </th>
+      </tr>
+      <tr>
+        <td class="text-center" colspan="2">
+          <br />
+          <br />
+          <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+        </td>
+        <td class="text-center" colspan="2">
+          <br />
+          <br />
+          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px; ">{{ (App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : '[ Signature Over Printed Name ]' }}</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
+        </td>
+      </tr>
+    </tfoot>
     </table>
   </div>
-@include('layouts.print.footer')
 @endsection
