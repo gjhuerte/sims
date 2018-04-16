@@ -4,7 +4,7 @@
     {{ Form::label('code','Office Code') }}
     {{ Form::text('code', isset($office->code) ? $office->code : old('code'),[
       'class'=>'form-control',
-      'placeholder'=>'Department Code'
+      'placeholder'=>'Office Code'
     ]) }}
   </div>
 </div>
@@ -13,7 +13,7 @@
     {{ Form::label('name','Office Name') }}
     {{ Form::text('name', isset($office->name) ? $office->name : old('name'),[
       'class'=>'form-control',
-      'placeholder'=>'Department Name'
+      'placeholder'=>'Office Name'
     ]) }}
   </div>
 </div>

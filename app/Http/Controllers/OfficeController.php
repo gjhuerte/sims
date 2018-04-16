@@ -17,7 +17,7 @@ class OfficeController extends Controller {
 	 */
 	public function index(Request $request)
 	{
-	  $office = App\Office::where('head_office', '=', null);
+	  $office = App\Office::All();
       /*
       $issuedby = App\User::where('id','=',$request->issued_by)->first();*/
 		if($request->ajax())
