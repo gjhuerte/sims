@@ -100,18 +100,6 @@
           <td colspan="2">***</td>
           <td colspan="2">***</td>
         </tr>
-        @for($ctr = 0 ; $ctr < $end; $ctr++)
-        <tr>
-          <td colspan="2"  style="padding: 15px;"></td>
-          <td colspan="2" ></td>
-          <td colspan="2" ></td>
-          <td colspan="2"  class="text-center">  </td>
-          <td colspan="2" ></td>
-          <td colspan="2" ></td>
-          <td colspan="2" ></td>
-          <td colspan="2" ></td>
-        </tr>
-        @endfor
       </tbody>
       <!-- Purpose -->
       <tfoot>
