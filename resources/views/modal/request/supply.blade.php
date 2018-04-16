@@ -16,7 +16,10 @@
               @if(isset($action) && $action != 'request')
               <th class="col-sm-1">Balance</th>
               @endif
-      				<th class="col-sm-1 no-sort"></th>
+              @if(Auth::user()->access == 3)
+              <th class="col-sm-1">Availability</th>
+      				@endif
+              <th class="col-sm-1 no-sort"></th>
       			</thead>
       		</table>
       </div> <!-- end of modal-body -->
@@ -33,6 +36,7 @@
         },
         "processing": true,
         ajax: "{{ url('inventory/supply') }}",
+
         columns: [
             { data: "id" },
             { data: "stocknumber" },
@@ -53,14 +57,18 @@
             {{-- check from where the balance will be used --}}
 
             @endif
-
             @endif
-            { data: function(callback){
-              return `
-                <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block">Select</button>
-              `;
-            } }
+
+            @if(Auth::user()->access == 3)
+            { data: "availability" },
+            @endif
+            {data: function(callback){
+                return `
+                <button type="button" id="select-stocknumber" data-id="`+callback.stocknumber+`" class="add-stock btn btn-sm btn-primary btn-block"> Select</button>
+              `;}}
+
         ],
+        
       });
 
   })
