@@ -105,9 +105,12 @@ class Request extends Model implements Auditable, UserResolver
       if($this->approved_at == null)  return 'No Approval';
       if($this->approved_at != null && $this->released_at != null)  return 'Released';
       if(ucfirst($this->status) == 'Cancelled')  return 'Cancelled';
+      if(ucfirst($this->status) == 'Disapproved')  return 'Disapproved';
+      
       $approved_date = Carbon\Carbon::parse($this->approved_at);
       $date = Carbon\Carbon::now();
-      return $approved_date->addWeekDays($this->expire_before)->diffInDays($date);
+      
+      return $approved_date->diffInDays($date);
 
     }
 

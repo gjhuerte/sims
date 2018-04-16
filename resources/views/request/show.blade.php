@@ -108,7 +108,7 @@
           </a>
           @endif
 
-          @if($request->status != null && ($request->status == 'Approved' && $request->remaining_days >= 6)) 
+          @if($request->status != null && ($request->status == 'Approved' && $request->remaining_days >= 5)) 
           <button id="expire" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm"> 
             <i class="fa fa-refresh" aria-hidden="true"> Expire</i> 
           </button> 
