@@ -416,8 +416,6 @@ class RequestController extends Controller
       elseif($office->head_office == NULL): 
         if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
           $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
-        else:
-          $office = '';
         endif; 
       endif; 
       //checks if the sector has a head_office
@@ -437,9 +435,10 @@ class RequestController extends Controller
       $signatory->request_id = $requests->id;
       $signatory->requestor_name = isset($office->name) ? $office->head != "None" ?$office->head : "" : "";
       $signatory->requestor_designation = isset($office->name) ? $office->head_title != "None" ? $office->head_title : "" : "";
-      $signatory->approver_name = isset($sector->name) ? $sector->head : $request->office->head;
-      $signatory->approver_designation = isset($sector->head) ? $sector->head_title : $request->office->head_title;
+      $signatory->approver_name = isset($sector->name) ? $sector->head : $requests->office->head;
+      $signatory->approver_designation = isset($sector->head) ? $sector->head_title : $requests->office->head_title;
       $signatory->save();
+      
 
 
       $data['id'] = $requests->requestor_id;
@@ -872,9 +871,6 @@ class RequestController extends Controller
       elseif($office->head_office == NULL): 
         if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
           $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
-        else:
-          $office = '';
-        endif; 
       endif; 
       //checks if the sector has a head_office
       //for lvl 3 offices
