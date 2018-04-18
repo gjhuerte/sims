@@ -64,6 +64,7 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
+      $code = $this->generate($request);
       $stocknumbers = $request->get("stocknumber");
       $quantity = $request->get("quantity");
       $quantity_issued = null;
@@ -109,6 +110,7 @@ class RequestController extends Controller
       DB::beginTransaction();
 
       $request = App\Request::create([
+        'local' => $code,
         'requestor_id' => $requestor,
         'issued_by' => null,
         'office_id' => $office,
@@ -412,15 +414,17 @@ class RequestController extends Controller
           $office = App\Office::where('id','=',$office->head_office)->first(); 
           $sector = App\Office::where('id','=',$sector->head_office)->first(); 
       elseif($office->head_office == NULL): 
-          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first(); 
+        if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+        else:
+          $office = '';
+        endif; 
       endif; 
       //checks if the sector has a head_office
       //for lvl 3 offices
       if(isset($sector->head_office)):
           $office = App\Office::where('id','=',$office->head_office)->first();
           $sector = App\Office::where('id','=',$sector->head_office)->first();
-      elseif($office->head_office == NULL):
-          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
       endif;
       //checks if the sector has a head_office
       //for lvl 4 offices
@@ -866,15 +870,17 @@ class RequestController extends Controller
           $office = App\Office::where('id','=',$office->head_office)->first(); 
           $sector = App\Office::where('id','=',$sector->head_office)->first(); 
       elseif($office->head_office == NULL): 
-          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first(); 
+        if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+        else:
+          $office = '';
+        endif; 
       endif; 
       //checks if the sector has a head_office
       //for lvl 3 offices
       if(isset($sector->head_office)):
           $office = App\Office::where('id','=',$office->head_office)->first();
           $sector = App\Office::where('id','=',$sector->head_office)->first();
-      elseif($office->head_office == NULL):
-          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
       endif;
       //checks if the sector has a head_office
       //for lvl 4 offices
