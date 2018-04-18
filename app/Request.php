@@ -158,10 +158,12 @@ class Request extends Model implements Auditable, UserResolver
         $requestcode = $this->local;
       else{
       if (strlen($this->id) == 1) 
-        $requestcode =  '00'.$this->id;
+        $requestcode =  '000'.$this->id;
       elseif (strlen($this->id) == 2) 
-        $requestcode =  '0'.$this->id;
+        $requestcode =  '00'.$this->id;
       elseif (strlen($this->id) == 3) 
+        $requestcode =  '0'.$this->id;
+      elseif (strlen($this->id) == 4) 
         $requestcode =  $this->id;
       else
         $requestcode =  $this->id;
