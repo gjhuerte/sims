@@ -38,7 +38,7 @@ class RSMIController extends Controller
     {
     	$month = Carbon\Carbon::parse($this->sanitizeString($request->get('month')));
 
-    	$id = App\StockCard::filterByIssued()->filterByMonth($month)->select('id')->pluck('id');
+    	$id = App\StockCard::filterByIssued()->filterByRIS($month)->select('id')->pluck('id');
 
     	DB::beginTransaction();
 
