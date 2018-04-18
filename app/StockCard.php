@@ -199,7 +199,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	 */
 	public function scopeFilterByIssued($query)
 	{
-		return $query->where('issued_quantity','>',0);
+		return $query->where('issued_quantity','>',0); 
 	}
 
 	/**
@@ -210,6 +210,16 @@ class StockCard extends Model implements Auditable, UserResolver
 	public function scopeFilterByReceived($query)
 	{
 		return $query->where('received_quantity','>',0);
+	}
+
+	/**
+	 * [scopeFilterByReceived description]
+	 * @param  [type] $query [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeFilterByRIS($query, $date)
+	{
+		return $query->where('reference','like','__-'.$date->format('m').'%');
 	}
 
 	/**
