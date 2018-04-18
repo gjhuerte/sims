@@ -16,7 +16,7 @@ class Office extends Model{
 		'head_title',
 		'head_office'
 	];
-	public $timestamps = false;
+	public $timestamps = true;
 
 	public function rules(){
 		return array(
