@@ -871,6 +871,7 @@ class RequestController extends Controller
       elseif($office->head_office == NULL): 
         if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
           $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+        endif;
       endif; 
       //checks if the sector has a head_office
       //for lvl 3 offices
