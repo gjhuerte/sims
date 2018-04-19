@@ -16,6 +16,7 @@ Route::get('faqs','FaqsController@index');
 
 Route::middleware(['auth'])->group(function(){
 
+	Route::resource('clientfeedback', 'ClientFeedbackController');
 	Route::get('question/create', 'FaqsController@createIssue');
 	Route::get('question/{id}/solution', 'SolutionsController@index');
 	Route::get('question/{id}/solution/create', 'SolutionsController@createSolution');
