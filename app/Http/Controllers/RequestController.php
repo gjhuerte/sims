@@ -929,8 +929,18 @@ class RequestController extends Controller
       {
         return json_encode( $const . '-' . $id ); 
       }
-
-      return $const . '-' . $id;
+      if (strlen($id) == 1) 
+        $requestcode =  '000'.$id;
+      elseif (strlen($id) == 2) 
+        $requestcode =  '00'.$id;
+      elseif (strlen($id) == 3) 
+        $requestcode =  '0'.$id;
+      elseif (strlen($id) == 4) 
+        $requestcode =  $id;
+      else
+        $requestcode =  $id;
+      
+      return $const . '-' . $requestcode;
 
     }
 
