@@ -108,7 +108,7 @@
 		            			</a>
 								<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-default ladda-button" data-style="zoom-in">
 									<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-									<span id="nav-text"> Print</span>
+									<span id="nav-text"> Download</span>
 								</a>
 		            			@endif
 		            			@if(Auth::user()->access == 2)
@@ -117,7 +117,7 @@
 		            			</a>
 			                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 			              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-			              	        <span id="nav-text"> Print</span>
+			              	        <span id="nav-text"> Download</span>
 			              	      </a>
 		            			@endif
 		            	`;
@@ -137,9 +137,9 @@
 			   @endif target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 				@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
-				<span id="nav-text"> Print All Stockcards </span>
+				<span id="nav-text"> Download All Stockcards </span>
 				@else 
-				<span id="nav-text"> Print All Ledgercards </span>
+				<span id="nav-text"> Download All Ledgercards </span>
 				@endif
 			</a>
 		`);

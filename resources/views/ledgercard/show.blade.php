@@ -18,7 +18,7 @@
 		<div class="panel panel-body table-responsive">
 			<a href="{{ url("inventory/supply/$supply->stocknumber/ledgercard/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-				<span id="nav-text"> Print</span>
+				<span id="nav-text"> Download</span>
 			</a>
 			<hr />
 			<table class="table table-hover table-bordered" id="supplyLedgerTable">

@@ -16,7 +16,7 @@
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
 		<a target="_blank" id="create" href="{{ url('maintenance/supply/print') }}" class="btn btn-default btn-sm ladda-button" data-style="zoom-in">
-			<span class="ladda-label"><i class="fa fa-print"></i> Print Stock Masterlist</span>
+			<span class="ladda-label"><i class="fa fa-print"></i> Download Stock Masterlist</span>
 		</a>
 		<hr />
 		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyTable">

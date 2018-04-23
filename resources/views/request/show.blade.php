@@ -88,7 +88,7 @@
         @if($request->status == 'Approved' || Auth::user()->access == 1 || Auth::user()->access == 6)
         <a href="{{ url("request/$request->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-          <span id="nav-text"> Print</span>
+          <span id="nav-text"> Download</span>
         </a>
         @endif
  
@@ -108,7 +108,7 @@
           </a>
           @endif
 
-          @if($request->status != null && ($request->status == 'Approved' && $request->remaining_days >= 5)) 
+          @if($request->status != null && ($request->status == 'Approved' )) 
           <button id="expire" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm"> 
             <i class="fa fa-refresh" aria-hidden="true"> Expire</i> 
           </button> 
@@ -149,7 +149,7 @@
             dataType: 'json',
             success: function(response){
                 if(response == 'success'){
-                    swal('Operation Successful','Operation Complete please reload the page!','success')
+                    swal('Operation Successful','Operation Complete please reload the page!','success'),
                     location.reload();
                 }else{
                     swal('Operation Unsuccessful','Error occurred while processing your request','error')
