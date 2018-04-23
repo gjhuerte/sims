@@ -20,6 +20,7 @@
       <tr>
         <th class="col-sm-1">Stock Number</th>
         <th class="col-sm-1">Information</th>
+        <th class="col-sm-1">Unit</th>
         <th class="col-sm-1">Remaining Balance</th>
         <th class="col-sm-1">Requested Quantity</th>
         <th class="col-sm-1">Issued Quantity</th>
@@ -33,6 +34,7 @@
           <tr @if($supply->temp_balance <= 0) class="danger" @endif>
             <td>{{ $supply->stocknumber }}<input type="hidden" name="stocknumber[]" value="{{ $supply->stocknumber }}" /></td>
             <td>{{ $supply->details }}</td>
+            <td>{{ $supply->unit->name }}</td>
             <td class="supply-balance">{{ $supply->temp_balance }}</td>
             <td>
               {{ $supply->pivot->quantity_requested }}
