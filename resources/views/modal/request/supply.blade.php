@@ -36,7 +36,12 @@
         },
         "processing": true,
         ajax: "{{ url('inventory/supply') }}",
-
+        "order": [
+                  @if(Auth::user()->access == 3)
+                  [ 4, "asc" ],
+                  @endif
+                  [ 1, "asc" ]
+                  ],
         columns: [
             { data: "id" },
             { data: "stocknumber" },
