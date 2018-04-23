@@ -76,10 +76,10 @@
             </span>
           </td>
           <td colspan="2" class="text-center">{{ $supply->pivot->quantity_requested }}</td>
-          @if($supply->pivot->quantity_issued > 0 && ($request->status == 'approved' || $request->status == 'Approved'))
+          @if($supply->pivot->quantity_issued > 0 && ($request->status == 'approved' || $request->status == 'Approved' || ucfirst($request->status) == 'Released'))
           <td colspan="2" class="text-center"> ✔ </td>
           <td colspan="2" class="text-center">  </td>
-          @elseif($supply->pivot->quantity_issued <= 0 && ($request->status == 'approved' || $request->status == 'Approved'))
+          @elseif($supply->pivot->quantity_issued <= 0 && ($request->status == 'approved' || $request->status == 'Approved' || ucfirst($request->status) == 'Released'))
           <td colspan="2" class="text-center">  </td>
           <td colspan="2" class="text-center"> ✔ </td>
           @else
@@ -164,9 +164,15 @@
           <td colspan="5" class="text-center"> </td>
           <td colspan="5" class="text-center"> </td>
         </tr>
-          <td colspan="16" style="border: none;"> *This request is valid for 3 working days upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span>. 
-          <br>
-          *Supplies and Materials will be released <span class="text-danger">only </span> to authorized personnel of the requesting office.  
+          <td colspan="16" style="border: none; font-size: 14px;"> <b>
+            *This request is valid for 3 working days (5 days for Branches and Campuses) upon approval after which, if items are not picked up, the request is automatically <span class="text-danger"> cancelled</span>.
+            @if(isset($sector->code) == 'OVPBSC')
+             <br>*Request will expire on <span class="text-danger">{{ $request->created_at->addWeekdays(5)}} </span>
+            @else
+             <br>*Request will expire on <span class="text-danger">{{ $request->created_at->addWeekdays(3)}} </span>
+            @endif
+          <br>*Supplies and Materials will be released <span class="text-danger">only </span> to authorized personnel of the requesting office.  
+          <br>*Please pay attention to the <span class="text-danger">UNIT</span> of the item. The unit of measurement to be followed is in the unit column above  </b>
         </td>
         </tr>
       </tfoot>
