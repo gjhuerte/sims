@@ -20,8 +20,8 @@ class DashboardController extends Controller
             $supply_count = App\Supply::count();
             $recent_supplies = App\StockCard::filterByReceived()->take(5)->orderBy('created_at','desc')->get();
             $released_count = App\Request::Released()
-                                ->select('released_at')
-                                ->groupBy(DB::raw('DATE_FORMAT("released_at", "%M %d %Y")'))
+                                ->select(DB::raw('DATE_FORMAT("released_at", "%M %d %Y") AS released_at'))
+                                ->groupBy('released_at')
                                 ->get();
                                 /*DB::table('stockcards')
                                 ->select(DB::raw('sum(issued_quantity) as issued, MONTH(date) as month, YEAR(date) as year'))
