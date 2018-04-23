@@ -74,6 +74,10 @@ class Office extends Model{
 		return $this->hasMany('App\Office', 'head_office', 'id');
 	}
 
+	public function request()
+	{
+		return $this->hasMany('App\Request', 'office_id', 'id');
+	}
 	public function HeadOffice()
 	{
 		return $this->belongsTo('App\Office', 'head_office', 'id');

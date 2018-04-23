@@ -15,33 +15,50 @@ class DashboardController extends Controller
     {
         if(Auth::user()->access == 1)
         {
-            $purchaseorder_count = App\PurchaseOrder::count();
+            $purchaseorder = App\PurchaseOrder::all();
             $receipt_count = App\Receipt::count();
             $supply_count = App\Supply::count();
             $recent_supplies = App\StockCard::filterByReceived()->take(5)->orderBy('created_at','desc')->get();
-            $released_count = DB::table('stockcards')
+            $released_count = App\Request::Released()
+                                ->select('released_at')
+                                ->groupBy(DB::raw('DATE_FORMAT("released_at", "%M %d %Y")'))
+                                ->get();
+                                /*DB::table('stockcards')
                                 ->select(DB::raw('sum(issued_quantity) as issued, MONTH(date) as month, YEAR(date) as year'))
                                 ->where('issued_quantity', '>', '0')
                                 ->whereBetween('date',[
                                     Carbon\Carbon::now()->startOfMonth()->toDateString(),
-                                    Carbon\Carbon::now()->endOfMonth()->toDateString()
-                                ])
+                                    Carbon\Carbon::now()->endOfMonth()->toDateString()])
                                 ->groupBy( DB::raw('MONTH(date)'), DB::raw('YEAR(date)'))
-                                ->get();
-
+                                ->get();*/
             /**
              * fetch from stockcard
              * @var [stockcard]
              */
-            $ris_count = App\StockCard::filterByIssued()->count();
-            $total = App\StockCard::filterByIssued()->select(DB::raw('sum(issued_quantity) as total'))->pluck('total')->first();
-            $most_request = App\StockCard::filterByIssued()->select(DB::raw('sum(issued_quantity) as total'),'supply_id')->groupBy('supply_id')->first();
-            $request_office = App\StockCard::filterByIssued()->select(DB::raw('sum(issued_quantity) as total'),'organization')->groupBy('organization')
+            $ris_count = App\Request::all()
+                                ->count();
+            $total = App\StockCard::filterByIssued()
+                                ->select(DB::raw('sum(issued_quantity) as total'))
+                                ->pluck('total')
+                                ->first();
+            $most_request = App\Stockcard::filterByIssued()
+                                ->select(DB::raw('sum(issued_quantity) as total'),'supply_id')
+                                ->groupBy('supply_id')
+                                ->first();
+            $request_office = App\StockCard::filterByIssued()
+                                ->select(DB::raw('sum(issued_quantity) as total'),'organization')
+                                ->groupBy('organization')
                                 ->orderBy('total','desc')->first();
-            $received = App\StockCard::filterByReceived()->take(5)->orderBy('date','desc')->orderBy('created_at','desc')->get();
-
+            $received = App\StockCard::filterByReceived()
+                                ->take(5)
+                                ->orderBy('date','desc')
+                                ->orderBy('created_at','desc')
+                                ->get();
+            $office = App\Office::withCount('request')
+                                ->orderBy('request_count','desc')
+                                ->get();
             return view('dashboard.index')
-                    ->with('purchaseorder_count',$purchaseorder_count)
+                    ->with('purchaseorder',$purchaseorder)
                     ->with('receipt_count',$receipt_count)
                     ->with('supply_count',$supply_count)
                     ->with('ris_count',$ris_count)
@@ -50,6 +67,7 @@ class DashboardController extends Controller
                     ->with('total',$total)
                     ->with('most_request', $most_request)
                     ->with('request_office',$request_office)
+                    ->with('office',$office)
                     ->with('received',$received);
         }
         else

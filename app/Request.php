@@ -138,6 +138,14 @@ class Request extends Model implements Auditable, UserResolver
     {
       return $query->whereNull('status')->orWhere('status', '=', 'Pending');
     }
+    public function scopeApproved($query)
+    {
+      return $query->whereNull('status')->orWhere(ucfirst('status'), '=', 'Approved');
+    }
+        public function scopeReleased($query)
+    {
+    return $query->whereNull('status')->orWhere(ucfirst('status'), '=', 'Released');
+    }
 
     public function scopefilterByOfficeId($query, $value)
     {
