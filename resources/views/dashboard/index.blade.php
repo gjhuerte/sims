@@ -1,6 +1,13 @@
 @extends('backpack::layout')
-
+  
 @section('header')
+<style>
+    .pre-scrollable {
+    max-height: 340px;
+    overflow-y: scroll;
+    }
+
+  </style>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -23,7 +30,7 @@
 
         <div class="info-box-content">
           <span class="info-box-text">Purchase Order</span>
-          <span class="info-box-number">{{ isset($purchaseorder_count) ? $purchaseorder_count : 0 }}</span>
+          <span class="info-box-number"></span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -88,13 +95,6 @@
             <div class="btn-group">
               <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-wrench"></i></button>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
             </div>
             <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
           </div>
@@ -159,7 +159,7 @@
   <!-- Main row -->
   <div class="row">
     <!-- Left col -->
-    <div class="col-md-8">
+    <div class="col-md-4">
 
       <!-- TABLE: LATEST ORDERS -->
       <div class="box box-info">
@@ -178,19 +178,17 @@
             <table class="table no-margin">
               <thead>
               <tr>
-                <th>Receipt</th>
-                <th>Item</th>
-                <th>Organization</th>
-                <th>Quantity</th>
+                <th>Purchase Order Number</th>
+                <th>Date Received</th>
+                <th>Supplier</th>
               </tr>
               </thead>
               <tbody>
-              @foreach($received as $received)
+              @foreach($purchaseorder as $purchaseorder)
               <tr>
-                <td>{{ $received->receipt }}</td>
-                <td>{{ $received->stocknumber }}</td>
-                <td>{{ $received->organization }}</td>
-                <td>{{ $received->received }}</td>
+                <td>{{ $purchaseorder->number }}</td>
+                <td>{{ $purchaseorder->date_received }}</td>
+                <td>{{ $purchaseorder->supplier->name }}</td>
               </tr>
               @endforeach
               </tbody>
@@ -208,7 +206,52 @@
       <!-- /.box -->
     </div>
     <!-- /.col -->
+    <div class="col-md-4">
 
+<!-- TABLE: office Requests -->
+      <div class="box box-info pre-scrollable">
+        <div class="box-header with-border">
+          <h3 class="box-title">Office Request Ranking</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="table-responsive">
+            <table class="table no-margin">
+              <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Office</th>
+                <th>Number of Requests</th>
+              </tr>
+              </thead>
+              <tbody>
+                @foreach($office as $office)
+              <tr>
+                <td>{{ $office->code }}</td>
+                <td>{{ $office->name }}</td>
+                <td>{{ count($office->request) }}</td>
+                <td></td>
+              </tr>
+              @endforeach
+              </tbody>
+            </table>
+          </div>
+          <!-- /.table-responsive -->
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        </div>
+        <!-- /.box-footer -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
     <div class="col-md-4">
 
       <!-- PRODUCT LIST -->
@@ -272,14 +315,14 @@
         data: {
             labels: [
               @foreach($released_count as $released)
-              moment('{{ $released->month }}').format('MMMM'),
+              moment('{{ $released->released_at }}').format('MMMM'),
               @endforeach
             ],
             datasets: [{
                 label: '# of Released Items',
                 data: [
                   @foreach($released_count as $released)
-                  {{ $released->issued . "," }}
+                  {{ $released->released_at . "," }}
                   @endforeach
                 ],
                 backgroundColor: [
