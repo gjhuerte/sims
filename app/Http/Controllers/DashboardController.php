@@ -18,7 +18,16 @@ class DashboardController extends Controller
             $purchaseorder = App\PurchaseOrder::all();
             $receipt_count = App\Receipt::count();
             $supply_count = App\Supply::count();
-            $recent_supplies = App\StockCard::filterByReceived()->take(5)->orderBy('created_at','desc')->get();
+            $most_requested_stock = DB::table('requests_v')
+                                    ->select('details','unit','stocknumber','name',
+                                             DB::raw('SUM(quantity_requested) AS total_requested,
+                                                      COUNT(quantity_requested) AS total_request,
+                                                      AVG(quantity_requested) AS average_item_per_request,
+                                                      MAX(quantity_requested) AS highest_quantity_requested
+                                                      '))
+                                    ->groupBy('stocknumber','details','unit','name')
+                                    ->orderBy('total_requested','desc')
+                                    ->get();
             $released_count = App\Request::Released()
                                 ->select(DB::raw('DATE_FORMAT("released_at", "%M %d %Y") AS released_at'))
                                 ->groupBy('released_at')
@@ -62,7 +71,7 @@ class DashboardController extends Controller
                     ->with('receipt_count',$receipt_count)
                     ->with('supply_count',$supply_count)
                     ->with('ris_count',$ris_count)
-                    ->with('recent_supplies',$recent_supplies)
+                    ->with('most_requested_stock',$most_requested_stock)
                     ->with('released_count',$released_count)
                     ->with('total',$total)
                     ->with('most_request', $most_request)

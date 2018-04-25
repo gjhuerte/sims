@@ -6,6 +6,11 @@
     max-height: 340px;
     overflow-y: scroll;
     }
+   .pre-scrollable2 {
+    max-height: 340px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    }
 
   </style>
     <!-- Content Header (Page header) -->
@@ -29,7 +34,7 @@
         <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">Purchase Order</span>
+          <span class="info-box-text">Most Requested</span>
           <span class="info-box-number"></span>
         </div>
         <!-- /.info-box-content -->
@@ -252,12 +257,10 @@
       <!-- /.box -->
     </div>
     <!-- /.col -->
-    <div class="col-md-4">
-
-      <!-- PRODUCT LIST -->
-      <div class="box box-primary">
+<!-- TABLE: office Requests -->
+      <div class="box box-info pre-scrollable2">
         <div class="box-header with-border">
-          <h3 class="box-title">Recently Added Products</h3>
+          <h3 class="box-title">Supply Request Ranking</h3>
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -267,30 +270,41 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <ul class="products-list product-list-in-box">
-          @if( count($recent_supplies) > 0 )
-            @foreach( $recent_supplies as $recent )
-            <!-- /.item -->
-            <li class="item">
-              <div class="product-img">
-                <img data-name="{{ $recent->supply->details }}" class="media-object profile-image" alt="Profile Image"> 
-              </div>
-              <div class="product-info">
-                <a href="javascript:void(0)" class="product-title">{{ $recent->supply->stocknumber }}
-                  <span class="label label-success pull-right">{{ $recent->received }}</span></a>
-                <span class="product-description">
-                      {{ $recent->supply->details }}
-                    </span>
-              </div>
-            </li>
-            @endforeach
-          @endif
-            <!-- /.item -->
-          </ul>
+          <div class="table-responsive">
+            <table class="table no-margin">
+              <thead>
+              <tr>
+                <th>Stock Number</th>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Total Requests</th>
+                <th>Total Quantity Requested</th>
+                <th>Average Quantity per Request</th>
+                <th>Highest Quantity Requested</th>
+                <th>Office</th>
+              </tr>
+              </thead>
+              <tbody>
+                @foreach($most_requested_stock as $most_requested_stock)
+              <tr>
+                <td>{{ $most_requested_stock->stocknumber }}</td>
+                <td>{{ $most_requested_stock->details }}</td>
+                <td>{{ $most_requested_stock->unit }}</td>
+                <td align="right">{{ $most_requested_stock->total_request }}</td>
+                <td align="right">{{ $most_requested_stock->total_requested }}</td>
+                <td align="right">{{ $most_requested_stock->average_item_per_request }}</td>
+                <td align="right">{{ $most_requested_stock->highest_quantity_requested }}</td>
+                <td align="right">{{ $most_requested_stock->name }}</td>
+                <td></td>
+              </tr>
+              @endforeach
+              </tbody>
+            </table>
+          </div>
+          <!-- /.table-responsive -->
         </div>
         <!-- /.box-body -->
-        <div class="box-footer text-center">
-          <a href="{{ url('inventory/supply') }}" class="uppercase">View All Products</a>
+        <div class="box-footer clearfix">
         </div>
         <!-- /.box-footer -->
       </div>
