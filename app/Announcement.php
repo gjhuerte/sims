@@ -76,6 +76,11 @@ class Announcement extends Model
         return $query->orWhere('specified_users', '=', Auth::user()->access);
     }
 
+    public function scopeForAll($query)
+    {
+        return $query->where('access','=','4');
+    }
+
     public function scopeSelf($query)
     {
         return $query->where('specified_users', '=', Auth::user()->access);
