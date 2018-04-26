@@ -18,7 +18,7 @@ class Dashboard
         elseif(Auth::user()->access == 2):
             $announcements = $announcements->findByAccess(['2', '3', '4']);
         elseif(Auth::user()->access == 3):
-            $announcements = $announcements->findByAccess(['3', '4'])->self()->orOffice();
+            $announcements = $announcements->findByAccess(['3', '4'])->ForAll()->orOffice();
         endif;
         
         $announcements = $announcements->orderBy('created_at', 'desc')->paginate(20);
