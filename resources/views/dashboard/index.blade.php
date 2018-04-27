@@ -29,26 +29,68 @@
 @section('content')<!-- Content Wrapper. Contains page content -->
   <!-- Info boxes -->
   <div class="row">
-    <div class="col-md-3 col-sm-6 col-xs-12">
+
+    <div class="col-md-2 col-sm-6 col-xs-12">
       <div class="info-box">
-        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+        <span class="info-box-icon bg-purple"><i class="fa fa-envelope-o"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">Most Requested</span>
-          <span class="info-box-number"></span>
+          <span class="info-box-text" style="font-size-adjust: .45">Requests</span>
+          <span class="info-box-number">{{ isset($ris_count) ? $ris_count->count : 0 }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+      <!-- /.info-box -->
+    </div>
+
+    <div class="col-md-2 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-yellow"><i class="fa fa-hourglass-half"></i></span>
+
+        <div class="info-box-content">
+          <span class="info-box-text" style="font-size-adjust: .45">Pending Requests</span>
+          <span class="info-box-number">{{ isset($ris_pending) ? $ris_pending->count : 0 }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+      <!-- /.info-box -->
+    </div>
+
+    <div class="col-md-2 col-sm-6 col-xs-12" >
+      <div class="info-box">
+        <span class="info-box-icon bg-green"><i class="fa fa-thumbs-up"></i></span>
+
+        <div class="info-box-content">
+          <span class="info-box-text" style="font-size-adjust: .45">Approved Requests</span>
+          <span class="info-box-number">{{ isset($ris_approved) ? $ris_approved->count : 0 }}</span>
         </div>
         <!-- /.info-box-content -->
       </div>
       <!-- /.info-box -->
     </div>
     <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
+
+    <div class="col-md-2 col-sm-6 col-xs-12">
       <div class="info-box">
-        <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+        <span class="info-box-icon bg-red"><i class="fa fa-thumbs-down""></i></span>
+
+        <div class="info-box-content" >
+          <span class="info-box-text" style="font-size-adjust: .45">Disapproved Requests</span>
+          <span class="info-box-number">{{ isset($ris_disapproved) ? $ris_disapproved->count : 0 }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+      <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+
+    <div class="col-md-2 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-red"><i class="fa fa-ban"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">Receipt</span>
-          <span class="info-box-number">{{ isset($receipt_count) ? $receipt_count : 0 }}</span>
+          <span class="info-box-text" style="font-size-adjust: .45">Cancelled Requests</span>
+          <span class="info-box-number">{{ isset($ris_cancelled) ? $ris_cancelled->count : 0 }}</span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -59,31 +101,20 @@
     <!-- fix for small devices only -->
     <div class="clearfix visible-sm-block"></div>
 
-    <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="col-md-2 col-sm-6 col-xs-12">
       <div class="info-box">
-        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-redo"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">Inventory</span>
-          <span class="info-box-number">{{ isset($supply_count) ? $supply_count : 0 }}</span>
+          <span class="info-box-text" style="font-size-adjust: .45">Released Requests</span>
+          <span class="info-box-number">{{ isset($ris_released) ? $ris_released->count : 0 }}</span>
         </div>
         <!-- /.info-box-content -->
       </div>
       <!-- /.info-box -->
     </div>
     <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <div class="info-box">
-        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
-
-        <div class="info-box-content">
-          <span class="info-box-text">Requests</span>
-          <span class="info-box-number">{{ isset($ris_count) ? $ris_count : 0 }}</span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-    </div>
+    
     <!-- /.col -->
   </div>
   <!-- /.row -->
@@ -104,6 +135,7 @@
             <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
           </div>
         </div>
+
         <!-- /.box-header -->
         <div class="box-body">
           <div class="row">
@@ -127,8 +159,8 @@
             <div class="col-sm-4 col-xs-4">
               <div class="description-block border-right">
                 <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> {{ isset($most_request->total) ? $most_request->total : "None" }}</span>
-                <h5 class="description-header">{{ isset($most_request->stocknumber) ? $most_request->stocknumber : "None" }} </h5>
-                <span class="description-text">Most Requested Item  </span>
+                <h5 class="description-header">{{ isset($most_request->details) ? $most_request->details : "None" }} </h5>
+                <span class="description-text">Most released Item  </span>
               </div>
               <!-- /.description-block -->
             </div>
@@ -166,7 +198,60 @@
     <!-- Left col -->
     <div class="col-md-4">
 
-      <!-- TABLE: LATEST ORDERS -->
+    <!--  Supply Requests -->
+      <div class="box box-info pre-scrollable">
+        <div class="box-header with-border">
+          <h3 class="box-title">Supply Request Ranking</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="table-responsive">
+            <table class="table no-margin">
+              <thead>
+              <tr>
+                <th>Stock Number</th>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Total Requests</th>
+                <th>Total Quantity Requested</th>
+                <th>Average Quantity per Request</th>
+                <th>Highest Quantity Requested</th>
+                <th>Office</th>
+              </tr>
+              </thead>
+              <tbody>
+                @foreach($most_requested_stock as $most_requested_stock)
+              <tr>
+                <td>{{ $most_requested_stock->stocknumber }}</td>
+                <td>{{ $most_requested_stock->details }}</td>
+                <td>{{ $most_requested_stock->unit }}</td>
+                <td align="right">{{ $most_requested_stock->total_request }}</td>
+                <td align="right">{{ $most_requested_stock->total_requested }}</td>
+                <td align="right">{{ $most_requested_stock->average_item_per_request }}</td>
+                <td align="right">{{ $most_requested_stock->highest_quantity_requested }}</td>
+                <td align="right">{{ $most_requested_stock->name }}</td>
+                <td></td>
+              </tr>
+              @endforeach
+              </tbody>
+            </table>
+          </div>
+          <!-- /.table-responsive -->
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        </div>
+        <!-- /.box-footer -->
+      </div>
+
+
+      <!--  LATEST ORDERS -->
       <div class="box box-info">
         <div class="box-header with-border">
           <h3 class="box-title">Latest Orders</h3>
@@ -257,57 +342,7 @@
       <!-- /.box -->
     </div>
     <!-- /.col -->
-<!-- TABLE: office Requests -->
-      <div class="box box-info pre-scrollable2">
-        <div class="box-header with-border">
-          <h3 class="box-title">Supply Request Ranking</h3>
 
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-          </div>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-          <div class="table-responsive">
-            <table class="table no-margin">
-              <thead>
-              <tr>
-                <th>Stock Number</th>
-                <th>Item</th>
-                <th>Unit</th>
-                <th>Total Requests</th>
-                <th>Total Quantity Requested</th>
-                <th>Average Quantity per Request</th>
-                <th>Highest Quantity Requested</th>
-                <th>Office</th>
-              </tr>
-              </thead>
-              <tbody>
-                @foreach($most_requested_stock as $most_requested_stock)
-              <tr>
-                <td>{{ $most_requested_stock->stocknumber }}</td>
-                <td>{{ $most_requested_stock->details }}</td>
-                <td>{{ $most_requested_stock->unit }}</td>
-                <td align="right">{{ $most_requested_stock->total_request }}</td>
-                <td align="right">{{ $most_requested_stock->total_requested }}</td>
-                <td align="right">{{ $most_requested_stock->average_item_per_request }}</td>
-                <td align="right">{{ $most_requested_stock->highest_quantity_requested }}</td>
-                <td align="right">{{ $most_requested_stock->name }}</td>
-                <td></td>
-              </tr>
-              @endforeach
-              </tbody>
-            </table>
-          </div>
-          <!-- /.table-responsive -->
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer clearfix">
-        </div>
-        <!-- /.box-footer -->
-      </div>
       <!-- /.box -->
     </div>
     <!-- /.col -->
@@ -329,14 +364,14 @@
         data: {
             labels: [
               @foreach($released_count as $released)
-              moment('{{ $released->released_at }}').format('MMMM'),
+              moment('{{ $released->date_released }}','M').format('MMMM'),
               @endforeach
             ],
             datasets: [{
                 label: '# of Released Items',
                 data: [
                   @foreach($released_count as $released)
-                  {{ $released->released_at . "," }}
+                  {{ $released->count . "," }}
                   @endforeach
                 ],
                 backgroundColor: [
