@@ -8,7 +8,6 @@
     }
    .pre-scrollable2 {
     max-height: 340px;
-    overflow-y: scroll;
     overflow-x: scroll;
     }
 
@@ -196,10 +195,9 @@
   <!-- Main row -->
   <div class="row">
     <!-- Left col -->
-    <div class="col-md-4">
-
+    
     <!--  Supply Requests -->
-      <div class="box box-info pre-scrollable">
+      <div class="box box-info pre-scrollable2" >
         <div class="box-header with-border">
           <h3 class="box-title">Supply Request Ranking</h3>
 
@@ -213,7 +211,7 @@
         <div class="box-body">
           <div class="table-responsive">
             <table class="table no-margin">
-              <thead>
+              <thead >
               <tr>
                 <th>Stock Number</th>
                 <th>Item</th>
@@ -235,7 +233,7 @@
                 <td align="right">{{ $most_requested_stock->total_requested }}</td>
                 <td align="right">{{ $most_requested_stock->average_item_per_request }}</td>
                 <td align="right">{{ $most_requested_stock->highest_quantity_requested }}</td>
-                <td align="right">{{ $most_requested_stock->name }}</td>
+                <td>{{ $most_requested_stock->name }}</td>
                 <td></td>
               </tr>
               @endforeach
@@ -250,8 +248,8 @@
         <!-- /.box-footer -->
       </div>
 
-
-      <!--  LATEST ORDERS -->
+    <!--  LATEST ORDERS -->
+    <div class="col-md-4">
       <div class="box box-info">
         <div class="box-header with-border">
           <h3 class="box-title">Latest Orders</h3>
@@ -296,9 +294,9 @@
       <!-- /.box -->
     </div>
     <!-- /.col -->
-    <div class="col-md-4">
 
 <!-- TABLE: office Requests -->
+    <div class="col-md-4">
       <div class="box box-info pre-scrollable">
         <div class="box-header with-border">
           <h3 class="box-title">Office Request Ranking</h3>
@@ -358,51 +356,69 @@
   $(document).ready(function(){ 
      $('.profile-image').initial();
 
-    var ctx = document.getElementById("myChart").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [
-              @foreach($released_count as $released)
-              moment('{{ $released->date_released }}','M').format('MMMM'),
+var canvas = document.getElementById("myChart");
+var ctx = canvas.getContext('2d');
+
+// Global Options:
+Chart.defaults.global.defaultFontColor = 'black';
+Chart.defaults.global.defaultFontSize = 16;
+
+var data = {
+  labels: [
+              @foreach($request_count as $released)
+              moment('{{ $released->date_released }}').format('MMMM-DD'),
               @endforeach
             ],
-            datasets: [{
-                label: '# of Released Items',
-                data: [
-                  @foreach($released_count as $released)
+  datasets: [{
+      label: "Released Requests",
+      fill: true,
+      lineTension: 0.1,
+      backgroundColor: "rgba(225,0,0,0.4)",
+      borderColor: "red", // The main line color
+      borderCapStyle: 'square',
+      borderDash: [5,2], // try [5, 15] for instance
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "black",
+      pointBackgroundColor: "white",
+      pointBorderWidth: 1,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: "yellow",
+      pointHoverBorderColor: "brown",
+      pointHoverBorderWidth: 2,
+      pointRadius: 4,
+      pointHitRadius: 10,
+      // notice the gap in the data and the spanGaps: true
+     data: [
+                  @foreach($request_count as $released)
                   {{ $released->count . "," }}
                   @endforeach
                 ],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
-    });  
+      spanGaps: true,
+    }]};
+
+// Notice the scaleLabel at the same level as Ticks
+var options = {
+  scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                },
+                scaleLabel: {
+                     display: true,
+                     labelString: 'Request',
+                     fontSize: 15 
+                  }
+            }]            
+        }  
+};
+
+// Chart declaration:
+var myChart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: options
+});
   }) 
 </script> 
 @endsection 

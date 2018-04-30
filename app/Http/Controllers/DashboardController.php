@@ -28,11 +28,15 @@ class DashboardController extends Controller
                                     ->groupBy('stocknumber','details','unit','name')
                                     ->orderBy('total_requested','desc')
                                     ->get();
-            $released_count = App\Request::select(DB::raw('month(released_at) AS date_released,COUNT(id) AS count'))
-                                ->Where(ucfirst('status'),'=','Released')
-                                ->groupBy(DB::raw('month(released_at),DATE_FORMAT(released_at,"%Y")'))
+            $released_count = App\Request::select(DB::raw('DATE_FORMAT(released_at,"%m/%d/%y") AS date_released,COUNT(id) AS count'))
+                                ->groupBy(DB::raw('DATE_FORMAT(released_at,"%m/%d/%y")'))
                                 ->orderBy('released_at')
                                 ->get();
+            $request_count = App\Request::select(DB::raw('DATE_FORMAT(created_at,"%m/%d/%y") AS date_released,COUNT(id) AS count'))
+                                ->groupBy(DB::raw('DATE_FORMAT(created_at,"%m/%d/%y")'))
+                                ->orderBy('date_released')
+                                ->get();         
+                                          
                                 /*DB::table('stockcards')
                                 ->select(DB::raw('sum(issued_quantity) as issued, MONTH(date) as month, YEAR(date) as year'))
                                 ->where('issued_quantity', '>', '0')
@@ -42,19 +46,19 @@ class DashboardController extends Controller
                                 ->groupBy( DB::raw('MONTH(date)'), DB::raw('YEAR(date)'))
                                 ->get();*/
             $ris_pending = App\Request::select(DB::raw('count(id) AS count'))
-                                ->where('status','=','Pending')
+                                ->where(ucfirst('status'),'=',null)
                                 ->first();
             $ris_approved = App\Request::select(DB::raw('count(id) AS count'))
-                                ->where('status','=','Approved')
+                                ->where(ucfirst('status'),'=','Approved')
                                 ->first();
             $ris_disapproved = App\Request::select(DB::raw('count(id) AS count'))
-                                ->where('status','=','Disapproved')
+                                ->where(ucfirst('status'),'=','Disapproved')
                                 ->first();
             $ris_cancelled = App\Request::select(DB::raw('count(id) AS count'))
-                                ->where('status','=','Cancelled')
+                                ->where(ucfirst('status'),'=','Cancelled')
                                 ->first();
             $ris_released = App\Request::select(DB::raw('count(id) AS count'))
-                                ->where('status','=','Released')
+                                ->where(ucfirst('status'),'=','Released')
                                 ->first();
             $ris_count = App\Request::select(DB::raw('count(id) AS count'))
             ->first();
@@ -90,6 +94,7 @@ class DashboardController extends Controller
                     ->with('ris_count',$ris_count)
                     ->with('most_requested_stock',$most_requested_stock)
                     ->with('released_count',$released_count)
+                    ->with('request_count',$request_count)
                     ->with('total',$total)
                     ->with('ris_pending',$ris_pending)
                     ->with('ris_approved',$ris_approved)
