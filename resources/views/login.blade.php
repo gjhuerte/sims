@@ -40,16 +40,11 @@
 @endsection
 
 @section('content')
-{{-- container --}}
 <div class="container-fluid" id="page-body" style="margin-top: 100px;">
-  {{-- row --}}
   <div class="row">
-    {{-- grid layout --}}
     <div class="col-md-offset-4 col-md-4">
-      {{-- panel --}}
       <div class="panel panel-default" id="loginPanel">
 
-        {{-- heading --}}
         <div class="panel-heading" style="">
           <a class="" href="{{ url('/') }}" style="margin: 10px;">
               <div style="color: #800000;margin:0;padding:0;">
@@ -66,21 +61,15 @@
 
           <div class="clearfix"></div>
         </div>
-        {{-- heading --}}
 
-        {{-- body --}}
         <div class="panel-body">
 
           @include('errors.alert')
 
-          {{-- form --}}
           <form class="form-horizontal" action="{{ url('login') }}" id="loginForm" method="post">
 
-            {{-- csrf_token --}}
             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-            {{-- csrf_token --}}
 
-            {{-- username --}}
             <div class="form-group">
               <div class="col-md-12">
                 <label for="username"> Username </label>
@@ -88,9 +77,7 @@
                 <p class="text-muted" style="margin-top: 5px; font-size: 12px;">Your username may consists of letters and numbers provided by the System Adminstrator. Contact the Administrator for more information regarding your credentials</p>
               </div>
             </div>
-            {{-- username --}}
 
-            {{-- password --}}
             <div class="form-group">
               <div class="col-md-12">
                 <label for="password"> Password </label>
@@ -98,15 +85,11 @@
                 <p class="text-muted" style="margin-top: 5px; font-size: 12px;">If you have forgotten your password, you may contact the administrator to reset your password.</p>
               </div>
             </div>
-            {{-- password --}}
 
-            {{-- additional information --}}
             <div class="addons">
               <p class="text-muted"></p> 
             </div>
-            {{-- additional information --}}
 
-            {{-- login button --}}
             <div class="form-group">
               <div class="col-md-12">
                   <button type="submit" id="loginButton" data-loading-text="Logging in..." class="btn btn-lg btn-primary btn-block" autocomplete="off">
@@ -115,14 +98,10 @@
                {{--  <p class="text-muted" style=" font-size: 12px;"> If you will be using your H.R.I.S. Account, Please click the button below to sign in using your Account </p> --}}
               </div>
             </div>
-            {{-- login button --}}
 
           </form>
-          {{-- form --}}
         </div>
-        {{-- body --}}
 
-        {{-- footer --}}
         <div class="panel-footer" style=" font-size: 20px;">
           <a href="{{ url('https://onedrive.live.com/view.aspx?cid=c5fb49234dd366a6&page=view&resid=C5FB49234DD366A6!1351&parId=C5FB49234DD366A6!1330&app=Word') }}">SIMS User's Application Form </a>
         </div>
@@ -130,15 +109,10 @@
           <a href="{{ url('faqs') }}">Frequently Asked Questions </a>
           {{-- <a href="{{ url('hris/login') }}" class="btn hris-login">Use HRIS Credentials </a> --}}
         </div>
-        {{-- footer --}}
       </div>
-      {{-- panel --}}
     </div> 
-    {{-- grid layout --}}
   </div>
-  {{-- row --}}
 </div>
-{{-- container --}}
 @stop
 
 @section('scripts-include')
