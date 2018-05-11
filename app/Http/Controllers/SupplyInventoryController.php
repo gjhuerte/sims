@@ -78,6 +78,7 @@ class SupplyInventoryController extends Controller {
 
 	public function printMasterList(Request $request)
 	{
+		$orientation = 'Portrait';
 		$supplies = App\Supply::all();
 
 		$data = [
@@ -86,7 +87,7 @@ class SupplyInventoryController extends Controller {
 
 		$filename = "SupplyMasterList-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "inventory.supply.print_index";
-		return $this->printPreview($view,$data,$filename);
+		return $this->printPreview($view,$data,$filename,$orientation);
 	}
 
 }

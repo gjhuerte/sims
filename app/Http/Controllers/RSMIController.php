@@ -304,10 +304,10 @@ class RSMIController extends Controller
      */
 	public function print($id)
 	{
+        $orientation = 'Portrait';
     	$id = $this->sanitizeString($id);
     	$rsmi = App\RSMI::with('stockcards.supply.unit')->find($id);
-
-    	$recapitulation = App\RSMI::leftJoin('rsmi_stockcard', 'rsmi.id', '=', 'rsmi_id')
+        $recapitulation = App\RSMI::leftJoin('rsmi_stockcard', 'rsmi.id', '=', 'rsmi_id')
     							->leftJoin('stockcards', 'stockcard_id', '=', 'stockcards.id')
     							->leftJoin('supplies', 'supply_id', '=', 'supplies.id')
     							->where('rsmi.id', '=', $id)
@@ -327,8 +327,8 @@ class RSMIController extends Controller
             $query->where('id', '=', $id);
         })->select('date', 'id', 'reference')->orderBy('reference')->get()->unique('reference');
 
-        $start = $stockcard->sortBy('date')->sortBy('id')->pluck('reference')->first();
-        $end = $stockcard->sortByDesc('date')->sortByDesc('id')->pluck('reference')->first();
+        $start = $stockcard->sortBy('reference')->pluck('reference')->first();
+        $end = $stockcard->sortByDesc('reference')->pluck('reference')->first();
         $ris = App\Request::whereMonth('created_at','=',$rsmi->report_date->month)->get();
     	$data = [
     		'rsmi' => $rsmi,
@@ -341,6 +341,6 @@ class RSMIController extends Controller
         $filename = "RSMI-".Carbon\Carbon::parse($rsmi->report_date)->format('mdYHm').".pdf";
         $view = "rsmi.print_index";
 
-        return $this->printPreview($view,$data,$filename);
+        return $this->printPreview($view,$data,$filename,$orientation);
 	}
 }

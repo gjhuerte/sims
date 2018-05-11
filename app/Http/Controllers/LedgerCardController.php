@@ -270,6 +270,7 @@ class LedgerCardController extends Controller {
 	 */
 	public function printAllLedgerCard()
 	{
+		$orientation = 'Portrait'
 		$supplies = App\Supply::all();
 		$data = [
 			'supplies' => $supplies
@@ -278,7 +279,7 @@ class LedgerCardController extends Controller {
 		$filename = "App\LedgerCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "ledgercard.print_all_index";
 
-		return $this->printPreview($view,$data,$filename);
+		return $this->printPreview($view,$data,$filename,$orientation);
 
 	}
 
@@ -290,17 +291,16 @@ class LedgerCardController extends Controller {
 	 */
 	public function printSummaryLedgerCard($stocknumber)
 	{
+		$orientation = 'Portrait'
 		$ledgercards = App\MonthlyLedgerCardView::findByStockNumber($stocknumber)
 								->get();
-
 		$supply = App\Supply::findByStockNumber($stocknumber);
-
 		$data = ['supply' => $supply, 'ledgercards' => $ledgercards ];
 
 		$filename = "App\LedgerCardSummary-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
 		$view = "ledgercard.print_index";
 
-		return $this->printPreview($view,$data,$filename);
+		return $this->printPreview($view,$data,$filename,$orientation);
 
 	}
 
@@ -312,7 +312,7 @@ class LedgerCardController extends Controller {
 	 */
 	public function printLedgerCard($stocknumber)
 	{
-
+		$orientation = 'Portrait'
 		$supply = App\Supply::find($stocknumber);
 		$ledgercards = App\LedgerCard::findBySupplyId($supply->id)->get();
 
@@ -321,7 +321,7 @@ class LedgerCardController extends Controller {
 		$filename = "App\LedgerCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber.pdf";
 		$view = "ledgercard.print_show";
 
-		return $this->printPreview($view,$data,$filename);
+		return $this->printPreview($view,$data,$filename,$orientation);
 
 	}
 

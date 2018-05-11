@@ -830,6 +830,7 @@ class RequestController extends Controller
      */
     public function print($id)
     {
+      $orientation = 'Portrait';
       $id = $this->sanitizeString($id);
       $request = App\Request::find($id);
       $signatory = '';
@@ -905,7 +906,7 @@ class RequestController extends Controller
       $view = "request.print_show";
       //return view('request.print_show')
       //->with('request',$request);
-      return $this->printPreview($view,$data,$filename);
+      return $this->printPreview($view,$data,$filename,$orientation);
     }
 
     public function generate(Request $request)

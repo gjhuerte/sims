@@ -29,7 +29,7 @@ class Controller extends BaseController
 		return Carbon\Carbon::parse($date);
 	}
 
-	public function printPreview( $view , $data=[] , $filename="Preview.php" )
+	public function printPreview( $view , $data=[] , $filename="Preview.php" ,$orientation)
 	{
 		$pdf = PDF::loadView($view,$data);
 		
@@ -43,6 +43,7 @@ class Controller extends BaseController
 	        ->setOption('margin-bottom', '15mm')
 	        ->setOption('footer-spacing', 4)
 	        ->setOption('footer-font-size','7')
+            ->setOption('orientation',$orientation)
 	        // ->setOption('footer-html', $footer)
     		->stream( $filename , array('Attachment'=>0) );
 

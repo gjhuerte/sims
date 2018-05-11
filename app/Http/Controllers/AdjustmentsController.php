@@ -293,7 +293,7 @@ class AdjustmentsController extends Controller
 
       $id = $this->sanitizeString($id);
       $adjustment = App\Adjustment::find($id);
-
+      $orientation = 'Portrait';
       $data = [
         'adjustment' => $adjustment
       ];
@@ -301,6 +301,6 @@ class AdjustmentsController extends Controller
       $filename = "AdjustmentReport-".Carbon\Carbon::now()->format('mdYHm')."-$adjustment->code".".pdf";
       $view = "adjustment.print_show";
 
-      return $this->printPreview($view,$data,$filename);
+      return $this->printPreview($view,$data,$filename,$orientation);
 	}
 }

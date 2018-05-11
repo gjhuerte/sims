@@ -351,7 +351,7 @@ class PurchaseOrderController extends Controller
 
     public function printPurchaseOrder($id)
     {
-
+        $orientation = 'Portrait';
         $purchaseorder = App\PurchaseOrder::find($id);
 
         $data = [
@@ -361,6 +361,6 @@ class PurchaseOrderController extends Controller
         $filename = "PurchaseOrder-".Carbon\Carbon::now()->format('mdYHm')."-$purchaseorder->number".".pdf";
         $view = "purchaseorder.print_show";
 
-        return $this->printPreview($view,$data,$filename);
+        return $this->printPreview($view,$data,$filename,$orientation);
     }
 }

@@ -311,6 +311,7 @@ class InspectionController extends Controller
         $inspection = App\Inspection::with('supplies')->find($id);
         $row_count = 22;
         $adjustment = 4;
+        $orientation = 'Portrait';
         if(isset($inspection->supplies)):
             $data_count = count($inspection->supplies) % $row_count;
             if($data_count == 0 || (($data_count < 5) && (count($inspection->supplies) > $row_count))):
@@ -334,7 +335,7 @@ class InspectionController extends Controller
         $filename = "Inspection-".Carbon\Carbon::now()->format('mdYHm').".pdf";
         $view = "inspection.print_show";
 
-        return $this->printPreview($view,$data,$filename);
+        return $this->printPreview($view,$data,$filename,$orientation);
 
     }
 }
