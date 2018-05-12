@@ -2,15 +2,20 @@
 @section('title',"Physical Inventory")
 @section('content')
 <div id="content" class="col-sm-12">
-	<p style="text-align: center;font-weight: bold;font-size: 20px;font-family: Arial, Helvetica, sans-serif;">REPORT ON THE PHYSICAL INVENTORIES</p>
-	<p style="text-align: center;font-weight: 100px;font-size: 13px;font-family: Arial, Helvetica, sans-serif;">Inventory Supplies<br>
-	As of {{$date->format('M')}} {{$date->year}}</p>
-	<p>
-	Fund Cluster: __________________________<br>
-	For Which: {{ ucwords(strtolower((App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : ''))}}, 
-	{{ App\Office::findByCode(Auth::user()->office)->head_title }}, {{ App\Office::findByCode(Auth::user()->office)->name }}, is accountable, having assumed such accountability on {{$date->format('M')}} {{$date->year}}.</p> 
+	<table class="table" width="100%" cellspacing="0"> 
+	  <thead>
+	  	
+	  </thead>
+	</table> 
 	<table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0"> 
 	  <thead>
+	  	<tr><th colspan="12" style=" border-style:hidden;text-align: center;font-weight: bold;font-size: 20px;font-family: Arial, Helvetica, sans-serif;"> REPORT ON THE PHYSICAL INVENTORIES</th></tr>
+		<tr><th colspan="12" style=" border-style:hidden;text-align: center;font-weight: 100px;font-size: 13px;font-family: Arial, Helvetica, sans-serif;">Inventory Supplies<br>
+		As of {{$date->format('M')}} {{$date->year}}</th></tr>
+		<tr><th colspan="12" style=" border-bottom: black;font-weight: normal;">
+		Fund Cluster: __________________________<br>
+		For Which: {{ ucwords(strtolower((App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : ''))}}, 
+		{{ App\Office::findByCode(Auth::user()->office)->head_title }}, {{ App\Office::findByCode(Auth::user()->office)->name }}, is accountable, having assumed such accountability on {{$date->format('M')}} {{$date->year}}.</th></tr>
 	    <tr>
 			<th class="text-center" rowspan="2" >Article</th>
 			<th class="text-center" rowspan="2" colspan="3">Description</th>
@@ -78,18 +83,23 @@
         <td class="text-center" colspan="3">
           <br />
           <br />
-          <span id="name" style="margin-top: 30px; font-size: 15px;"> {{ ucwords(strtolower(Auth::user()->firstname)) }} {{ ucwords(strtolower(Auth::user()->lastname)) }}</span>
+          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px;"> SALVADOR R. NATOC</span>
           <br />
           <span id="office" class="text-center" style="font-size:10px;">{{ Auth::user()->position }}, {{ App\Office::findByCode(Auth::user()->office)->name }}</span>
         </td>
         <td class="text-center" colspan="4">
           <br />
           <br />
-          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px; ">{{ ucwords(strtolower((App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : '[ Signature Over Printed Name ]')) }}</span>
+          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px; ">{{ strtoupper((App\Office::findByCode(Auth::user()->office)->head != '') ? App\Office::findByCode(Auth::user()->office)->head : '[ Signature Over Printed Name ]') }}</span>
           <br />
           <span id="office" class="text-center" style="font-size:10px;">{{ App\Office::findByCode(Auth::user()->office)->head_title }},{{ App\Office::findByCode(Auth::user()->office)->name }}</span>
         </td>
-        <td colspan="5"></td>
+        <td class="text-center" colspan="5">
+          <br />
+          <br />
+          <span id="name" class="text-muted" style="margin-top: 30px; font-size: 15px; ">DR. EMANUEL C. DE GUZMAN</span>
+          <br />
+          <span id="office" class="text-center" style="font-size:10px;">President, P.U.P <span></td>
       </tr>
     </tfoot>
 	</table>  
