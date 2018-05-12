@@ -321,7 +321,7 @@ class RSMIController extends Controller
     								'supplies.details as details'
     							)
     							->orderBy('supplies.stocknumber', 'asc')
-    							->get();
+    							->get(); 
 
         $stockcard = App\StockCard::whereHas('rsmi', function($query) use($id) {
             $query->where('id', '=', $id);

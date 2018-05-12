@@ -27,7 +27,7 @@
         @foreach($rsmi->stockcards as $report)
         <tr>
           <td style="white-space: nowrap;">{{ $report->reference }}</td>
-          <td>{{ $report->organization }}</td>
+          <td>{{ isset($report->sector_office) ? $report->sector_office : 'n/a' }} - {{ $report->organization }}</td>
           <td style="white-space: nowrap;">{{ $report->supply->stocknumber }}</td>
           <td>{{ $report->supply->details }}</td>
           <td>{{ $report->supply->unit_name }}</td>
@@ -176,4 +176,13 @@
     </tfoot>
     </table>
   </div>
+@endsection
+@section('after_scripts')
+<script >
+  $(document).ready(function() {
+    $('#rsmitable').DataTable( {
+        "order": [[ 3, "desc" ]]
+    } );
+} );
+</script>>
 @endsection

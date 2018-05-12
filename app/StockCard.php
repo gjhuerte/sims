@@ -63,7 +63,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	public $dr_date = null;
 
 	protected $appends = [
-		'parsed_date', 'reference_information', 'month', 'parsed_month', 'supply_name', 'stocknumber'
+		'parsed_date', 'reference_information', 'month', 'parsed_month', 'supply_name', 'stocknumber','sector_office'
 	];
 
 	public function getSupplyNameAttribute($value)
@@ -139,6 +139,12 @@ class StockCard extends Model implements Auditable, UserResolver
 	public function getDateAttribute($value)
 	{
 		return Carbon\Carbon::parse($value)->toFormattedDateString();
+	}
+
+	public function getSectorOfficeAttribute($value)
+	{
+		$office = DB::table('office_v')->where('name','=', $this->organization)->first();
+		return isset($office) ? $office->level4: 'n/a';
 	}
 
 	/**
