@@ -96,16 +96,6 @@
           <td>*****</td>
         </tr>
         @endforeach
-        @for($ctr = 0 ; $ctr < $end; $ctr++)
-        <tr>
-          <td style="padding: 15px;"></td>
-          <td></td>
-          <td></td>
-          <td class="text-center">  </td>
-          <td></td>
-          <td></td>
-        </tr>
-        @endfor
       </tbody>
     </table>
   </div>

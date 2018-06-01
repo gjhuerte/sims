@@ -95,7 +95,7 @@ class PhysicalInventoryController extends Controller
     {
         $orientation = "landscape";
         $supplies = App\Supply::all();
-        $remaining_rows = $row_count = 26;
+        $remaining_rows = $row_count = 0;
         $adjustment = 4;
         $date = Carbon\Carbon::now();
 

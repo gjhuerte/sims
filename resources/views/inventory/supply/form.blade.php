@@ -516,7 +516,7 @@ $('document').ready(function(){
 				}
 				else{
 					$('#receipt-details').html(`
-						<p class="text-danger"><strong>Error! </strong> Receipt Details not found! This will create a new receipt </p>
+						<p class="text-danger"><strong>Warning! </strong> Receipt Details not found! This will create a new receipt </p>
 					`)
 				}
 			}
