@@ -129,14 +129,14 @@
     </tfoot>
     </table>
     <p style="page-break-after: always;">&nbsp;</p>
-    <table class="table table-bordered" id="rsmiTotalTable" cellspacing="0" width="100%" style=" font-size: 12px">
+    <table class="table table-bordered table-condensed" id="risTable" cellspacing="0" width="100%" style=" font-size: 12px">
       <thead>
           <tr><th class="text-left text-center" colspan="4">RIS</th></tr>
         <tr>
-          <th class="col-sm-1" >RIS No.</th>
-          <th class="col-md-1" >Office</th>
-          <th class="col-sm-1" >Status</th>
-          <th class="col-md-1" >Remarks</th>
+          <th width=50px >RIS No.</th>
+          <th width=100px >Office</th>
+          <th width=50px >Status</th>
+          <th width=100px >Remarks</th>
         </tr>
       </thead>
       <tbody>
@@ -176,13 +176,4 @@
     </tfoot>
     </table>
   </div>
-@endsection
-@section('after_scripts')
-<script >
-  $(document).ready(function() {
-    $('#rsmitable').DataTable( {
-        "order": [[ 3, "desc" ]]
-    } );
-} );
-</script>>
 @endsection
