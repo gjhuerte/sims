@@ -116,8 +116,8 @@
 
   <!-- action buttons -->
   <div class="pull-left">
-      <button type="submit" name="disapprove" id="disapprove" class="btn btn-md btn-danger" value="disapprove">Disapprove</button>
-      <button type="submit" name="resubmit" id="resubmission" class="btn btn-md btn-warning" value="resubmission">Resubmission</button>
+      <button type="submit" name="disapprove" id="disapprove" class="btn btn-md btn-danger" value="disapprove">Disapprove</button><!-- 
+      <button type="submit" name="resubmit" id="resubmission" class="btn btn-md btn-warning" value="resubmission">Resubmission</button> -->
   </div> <!-- end of action buttons -->
   <!-- action buttons -->
   <div class="pull-right">
