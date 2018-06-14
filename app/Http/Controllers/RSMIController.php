@@ -325,10 +325,9 @@ class RSMIController extends Controller
 
         $stockcard = App\StockCard::whereHas('rsmi', function($query) use($id) {
             $query->where('id', '=', $id);
-        })->select('date', 'id', 'reference')->orderBy('reference')->get()->unique('reference');
-
-        $start = $stockcard->sortBy('reference')->pluck('reference')->first();
-        $end = $stockcard->sortByDesc('reference')->pluck('reference')->first();
+        })->select('date', 'id', 'reference',DB::raw('SUBSTRING(reference,7,4) as risno'))->orderBy('risno')->get()->unique('reference');
+        $start = $stockcard->sortBy('risno')->pluck('reference')->first();
+        $end = $stockcard->sortByDesc('risno')->pluck('reference')->first();
         $ris = App\Request::whereMonth('created_at','=',$rsmi->report_date->month)->get();
     	$data = [
     		'rsmi' => $rsmi,

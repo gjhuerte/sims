@@ -58,7 +58,7 @@
 			columns: [
 					{ data: "id" },
 					{ data: "parsed_month" },
-					{ data: "parsed_report_date" },
+					{ data: "created_at" },
 					{ data: "created_by"},
 					{ data: "status_name"},
 					{ data: function(callback){

@@ -32,14 +32,10 @@ class Controller extends BaseController
 	public function printPreview( $view , $data=[] , $filename="Preview.php" ,$orientation)
 	{
 		$pdf = PDF::loadView($view,$data);
-		
-	    $header = view('layouts.header-report');
 	    $footer = view('layouts.footer-numbering');
+
 	    return $pdf
 	        ->setOption('footer-center', 'Page [page] / [toPage]')
-	        ->setOption('header-spacing', 5)
-	        ->setOption('header-html',$header)
-	        ->setOption('margin-top', '35mm')
 	        ->setOption('margin-bottom', '15mm')
 	        ->setOption('footer-spacing', 4)
 	        ->setOption('footer-font-size','7')

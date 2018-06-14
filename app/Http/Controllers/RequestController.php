@@ -1025,21 +1025,23 @@ class RequestController extends Controller
 
     public function print_ris_list(Request $request,$id)
     {
-      $orientation = 'Portrait';
+      $orientation = 'Landscape';
       $id = $this->sanitizeString($id);
       if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6))
       {
         return view('errors.404');
       }
 
-      $ris = DB::table('ris_list')->where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->get();
+      $ris = App\RISList::where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->get();
+      $month = $ris->pluck('created_at')->first()->format('M Y');
       $data = [
-        'ris' => $ris
+        'ris' => $ris,
+        'month' => $month
       ];
       $filename = "RISLIST-".Carbon\Carbon::now()->format('mdYHm').".pdf";
       $view = "reports.rislist.print_ris_list";
-      return view('reports.rislist.print_ris_list')
-      ->with('ris',$ris);
-      //return $this->printPreview($view,$data,$filename,$orientation);
+      /*return view('reports.rislist.print_ris_list')
+      ->with('ris',$ris);*/
+      return $this->printPreview($view,$data,$filename,$orientation);
     }
 }

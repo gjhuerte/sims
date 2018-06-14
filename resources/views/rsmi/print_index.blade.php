@@ -177,3 +177,12 @@
     </table>
   </div>
 @endsection
+@section('after_scripts')
+<script>
+  $(document).ready(function() {
+    $('#rsmitable').DataTable( {
+        "order": [[ 0, "desc" ]]
+    } );
+} );
+</script>
+@endsection
