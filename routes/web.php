@@ -158,6 +158,12 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('inventory/supply.stockcard','StockCardController');
 
+		Route::get('reports/rislist','RequestController@ris_list_index');
+
+		Route::get('reports/rislist/{id}','RequestController@ris_list_show');
+
+		Route::get('reports/rislist/print/{id}','RequestController@print_ris_list');
+
 		Route::put('request/{id}/reset', 'RequestController@resetStatus');
 
 		Route::put('request/{id}/expire', 'RequestController@expireStatus');

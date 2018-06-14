@@ -112,6 +112,7 @@
           <li class="header">Queries</li>
           <li><a href="{{ url('purchaseorder') }}"><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span> References </span></a></li>
           <li><a href="{{ url('receipt') }}"><i class="fa fa-truck" aria-hidden="true"></i> <span> Receipts </span></a></li>
+          <li><a href="{{ url('reports/rislist') }}"><i class="fa fa-list-ul" aria-hidden="true"></i> <span> RIS List </span></a></li>
           @endif
           
           @if(Auth::user()->access == 2)

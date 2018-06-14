@@ -38,8 +38,11 @@ class RequestController extends Controller
           return datatables($ret_val->get())->toJson();
         }
 
+
+        $months = App\Request::select(DB::raw("DATE_FORMAT(created_at,'%b %Y') as ris_months"))->groupBy(DB::raw("DATE_FORMAT(created_at,'%b %Y')"))->pluck('ris_months');
         return view('request.index')
-                ->with('title','Request');
+                ->with('title','Request')
+                ->with('months',$months);
     }
 
     /**
@@ -823,6 +826,71 @@ class RequestController extends Controller
 
       return back();
     }
+
+    public function generate(Request $request)
+    {
+
+      $requests = App\Request::orderBy('created_at','desc')->first();
+      $id = 1;
+      $now = Carbon\Carbon::now();
+      $const = $now->format('y') . '-' . $now->format('m');
+
+      if(count($requests) > 0)
+      {
+        $id = $requests->id + 1;
+      }
+      else
+      {
+        $id = count(App\StockCard::filterByIssued()->get()) + 1;
+      }
+
+      if($request->ajax())
+      {
+        return json_encode( $const . '-' . $id ); 
+      }
+      if (strlen($id) == 1) 
+        $requestcode =  '000'.$id;
+      elseif (strlen($id) == 2) 
+        $requestcode =  '00'.$id;
+      elseif (strlen($id) == 3) 
+        $requestcode =  '0'.$id;
+      elseif (strlen($id) == 4) 
+        $requestcode =  $id;
+      else
+        $requestcode =  $id;
+      
+      return $const . '-' . $requestcode;
+
+    }
+
+    /**
+     * [count description]
+     * returns the amount of request based on the 
+     * type given by the user
+     * @param  Request $request [description]
+     * @param  [type]  $type    [description]
+     * @return [type]           [description]
+     */
+    public function count(Request $request, $type)
+    {
+      if($request->ajax())
+      {
+        $count = 0;
+        $request = new App\Request;
+
+        if($type == 'pending'):
+          $request = $request->pending();
+        endif;
+
+        if(Auth::user()->access == 3):
+          $request = $request->filterByOfficeCode(Auth::user()->office);
+        endif;
+
+        $count = $request->count();
+
+        return json_encode($count);
+      }
+    }
     /**
      * creates a printable form of request
      * @param  [type] $id [description]
@@ -890,7 +958,6 @@ class RequestController extends Controller
       if($request->status == 'Released' || $request->status == 'released'):
         $signatory = App\RequestSignatory::where('request_id','=',$request->id)->get();
       endif;
-
       $data = [
         'request' => $request, 
         'office' => $office,
@@ -904,73 +971,75 @@ class RequestController extends Controller
 
       $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
       $view = "request.print_show";
-      //return view('request.print_show')
-      //->with('request',$request);
-      return $this->printPreview($view,$data,$filename,$orientation);
+      return view('request.print_show')
+      ->with('request',$request)
+      ->with('office',$office)
+      ->with('sector',$sector)
+      ->with('signatory',$signatory);
+      //return $this->printPreview($view,$data,$filename,$orientation);
     }
 
-    public function generate(Request $request)
+    public function ris_list_index(Request $request)
     {
-
-      $requests = App\Request::orderBy('created_at','desc')->first();
-      $id = 1;
-      $now = Carbon\Carbon::now();
-      $const = $now->format('y') . '-' . $now->format('m');
-
-      if(count($requests) > 0)
-      {
-        $id = $requests->id + 1;
-      }
-      else
-      {
-        $id = count(App\StockCard::filterByIssued()->get()) + 1;
-      }
-
-      if($request->ajax())
-      {
-        return json_encode( $const . '-' . $id ); 
-      }
-      if (strlen($id) == 1) 
-        $requestcode =  '000'.$id;
-      elseif (strlen($id) == 2) 
-        $requestcode =  '00'.$id;
-      elseif (strlen($id) == 3) 
-        $requestcode =  '0'.$id;
-      elseif (strlen($id) == 4) 
-        $requestcode =  $id;
-      else
-        $requestcode =  $id;
-      
-      return $const . '-' . $requestcode;
-
+     
+      $ris = DB::table('ris_list')->groupBy(DB::raw("DATE_FORMAT(created_at,'%b %Y')"))->select(DB::raw("DATE_FORMAT(created_at,'%b_%Y') as monthid,DATE_FORMAT(created_at,'%b %Y') as month,
+     'total_request',
+      sum(case status when 'Total' then 1 else 0 end) as total_count,
+      'pending_request',
+      sum(case coalesce(status, 'empty') when 'empty' then 1 else 0 end) as pending_count,
+      'approved_request',
+      sum(case status when 'Approved' then 1 else 0 end) as approved_count,
+      'disapproved_request',
+      sum(case status when 'Disapproved' then 1 else 0 end) as disapproved_count,
+      'cancelled_request',
+      sum(case status when 'Cancelled' then 1 else 0 end) as cancelled_count,
+      'released_request',
+      sum(case status when 'Released' then 1 else 0 end) as released_count"))->orderBy(DB::raw("created_at"))->get();
+      return view('reports.rislist.index')
+             ->with('ris',$ris);
     }
-
-    /**
-     * [count description]
-     * returns the amount of request based on the 
-     * type given by the user
-     * @param  Request $request [description]
-     * @param  [type]  $type    [description]
-     * @return [type]           [description]
+        /**
+     * creates a printable form of request
+     * @param  [type] $id [description]
+     * @return [type]     [description]
      */
-    public function count(Request $request, $type)
+    public function ris_list_show(Request $request,$id)
     {
+      $id = $this->sanitizeString($id);
+      if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6  && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
+      {
+        return view('errors.404');
+      }
+      $ris = DB::table('ris_list')->where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->get();
+
       if($request->ajax())
       {
-        $count = 0;
-        $request = new App\Request;
-
-        if($type == 'pending'):
-          $request = $request->pending();
-        endif;
-
-        if(Auth::user()->access == 3):
-          $request = $request->filterByOfficeCode(Auth::user()->office);
-        endif;
-
-        $count = $request->count();
-
-        return json_encode($count);
+      return datatables($ris)->toJson();
       }
+
+      return view('reports.rislist.show')
+      ->with('id',$id)
+      ->with('ris',$ris);
+      //return $this->printPreview($view,$data,$filename,$orientation);
+    }
+
+    public function print_ris_list(Request $request,$id)
+    {
+      $orientation = 'Portrait';
+      $id = $this->sanitizeString($id);
+      if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6))
+      {
+        return view('errors.404');
+      }
+
+      $ris = DB::table('ris_list')->where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->get();
+      $data = [
+        'ris' => $ris
+      ];
+      $filename = "RISLIST-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+      $view = "reports.rislist.print_ris_list";
+      return view('reports.rislist.print_ris_list')
+      ->with('ris',$ris);
+      //return $this->printPreview($view,$data,$filename,$orientation);
     }
 }
