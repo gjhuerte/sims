@@ -971,12 +971,12 @@ class RequestController extends Controller
 
       $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
       $view = "request.print_show";
-      return view('request.print_show')
+      /*return view('request.print_show')
       ->with('request',$request)
       ->with('office',$office)
       ->with('sector',$sector)
-      ->with('signatory',$signatory);
-      //return $this->printPreview($view,$data,$filename,$orientation);
+      ->with('signatory',$signatory);*/
+      return $this->printPreview($view,$data,$filename,$orientation);
     }
 
     public function ris_list_index(Request $request)
@@ -1032,7 +1032,7 @@ class RequestController extends Controller
         return view('errors.404');
       }
 
-      $ris = App\RISList::where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->get();
+      $ris = App\RISList::where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->orderBy('request_number')->get();
       $month = $ris->pluck('created_at')->first()->format('M Y');
       $data = [
         'ris' => $ris,
