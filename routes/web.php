@@ -11,7 +11,18 @@
 |
 */
 
+
+Route::get('faqs','FaqsController@index');
+
 Route::middleware(['auth'])->group(function(){
+
+	Route::resource('clientfeedback', 'ClientFeedbackController');
+	Route::get('question/create', 'FaqsController@createIssue');
+	Route::get('question/{id}/solution', 'SolutionsController@index');
+	Route::get('question/{id}/solution/create', 'SolutionsController@createSolution');
+
+	Route::post('question/{id}/solution', 'SolutionsController@storeSolution');
+	Route::post('question', 'FaqsController@storeIssue');
 
 	Route::get('/', 'HomeController@index');
 	Route::get('settings',['as'=>'settings.edit','uses'=>'SessionsController@edit']);
@@ -79,6 +90,7 @@ Route::middleware(['auth'])->group(function(){
 		Route::resource('maintenance/supplier','SuppliersController');
 		
 		Route::resource('maintenance/department','DepartmentController');
+		Route::get('get/department/code','DepartmentController@show');
 
 		Route::get('maintenance/category/assign/{id}', 'CategoriesController@showAssign');
 		Route::put('maintenance/category/assign/{id}', 'CategoriesController@assign');
@@ -94,7 +106,7 @@ Route::middleware(['auth'])->group(function(){
 			'uses' => 'LedgerCardController@checkIfLedgerCardExists'
 		]);
 
-		Route::put('purchaseorder/supply/{id}','PurchaseOrderSupplyController@update');
+
 		Route::get('purchaseorder/{id}/print','PurchaseOrderController@printPurchaseOrder');
 
 		Route::resource('purchaseorder','PurchaseOrderController');
@@ -146,7 +158,15 @@ Route::middleware(['auth'])->group(function(){
 
 		Route::resource('inventory/supply.stockcard','StockCardController');
 
+		Route::get('reports/rislist','RequestController@ris_list_index');
+
+		Route::get('reports/rislist/{id}','RequestController@ris_list_show');
+
+		Route::get('reports/rislist/print/{id}','RequestController@print_ris_list');
+
 		Route::put('request/{id}/reset', 'RequestController@resetStatus');
+
+		Route::put('request/{id}/expire', 'RequestController@expireStatus');
 
 		Route::get('request/{id}/accept','RequestController@getAcceptForm');
 		

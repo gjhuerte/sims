@@ -63,7 +63,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	public $dr_date = null;
 
 	protected $appends = [
-		'parsed_date', 'reference_information', 'month', 'parsed_month', 'supply_name', 'stocknumber'
+		'parsed_date', 'reference_information', 'month', 'parsed_month', 'supply_name', 'stocknumber','sector_office'
 	];
 
 	public function getSupplyNameAttribute($value)
@@ -141,6 +141,12 @@ class StockCard extends Model implements Auditable, UserResolver
 		return Carbon\Carbon::parse($value)->toFormattedDateString();
 	}
 
+	public function getSectorOfficeAttribute($value)
+	{
+		$office = DB::table('office_v')->where('name','=', $this->organization)->first();
+		return isset($office) ? $office->level4: 'n/a';
+	}
+
 	/**
 	 * transaction is a custom view
 	 * consists of combination of ledger card and stock card
@@ -199,7 +205,7 @@ class StockCard extends Model implements Auditable, UserResolver
 	 */
 	public function scopeFilterByIssued($query)
 	{
-		return $query->where('issued_quantity','>',0);
+		return $query->where('issued_quantity','>',0); 
 	}
 
 	/**
@@ -210,6 +216,16 @@ class StockCard extends Model implements Auditable, UserResolver
 	public function scopeFilterByReceived($query)
 	{
 		return $query->where('received_quantity','>',0);
+	}
+
+	/**
+	 * [scopeFilterByReceived description]
+	 * @param  [type] $query [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeFilterByRIS($query, $date)
+	{
+		return $query->where('reference','like','__-'.$date->format('m').'%');
 	}
 
 	/**

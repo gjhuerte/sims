@@ -4,6 +4,7 @@
 	<section class="content-header">
 		<legend><h3 class="text-muted">Offices</h3></legend>
 		<ol class="breadcrumb">
+			<li><a href="{{ url('maintenance/office') }}"=>Sector</a></li>
 			<li>Office</li>
 			<li class="active">Home</li>
 		</ol>
@@ -70,16 +71,16 @@
 	            { data: "head_title" },
 	            { data: function(callback){
 	            	return `
+	            			<a href="{{ url("maintenance/department") }}` + '/' + callback.id + `" class="btn btn-sm btn-success">Show Departments</a>
 	            			<a href="{{ url("maintenance/department") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
-	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Department" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	        ],
 	    } );
 
 	 	$("div.toolbar").html(`
- 			<a href="{{ url('maintenance/department/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add Department
- 			</a>
+ 			<a href="{{ url('maintenance/department/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add Department </a>
+ 			<a href="{{ url('maintenance/office') }}" id="new" class="btn btn-danger"><span class="glyphicon glyphicon-menu-left"></span> Back </a>
 		`);
 
 		$('#departmentTable').on('click','button.remove',function(){

@@ -13,14 +13,14 @@
         <tr>
           <td>{{ Carbon\Carbon::parse($ledgercard->date)->toFormattedDateString() }}</td>
           <td>{{ $ledgercard->reference }}</td>
-          <td>{{ $ledgercard->receipt_quantity }}</td>
-          <td>{{ $ledgercard->receipt_unitprice }}</td>
-          <td>{{ $ledgercard->receipt_unitprice * $ledgercard->receipt_unitprice }}</td>
-          <td>{{ $ledgercard->issuequantity }}</td>
-          <td>{{ $ledgercard->issue_unitprice }}</td>
-          <td>{{ $ledgercard->issue_quantity * $supplytransaction->issue_unitprice }}</td>
-          <td>{{ ($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2 }}</td>
-          <td>{{ $ledgercard->balance_quantity * (($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2)  }}</td>
+          <td align="right">{{ $ledgercard->receipt_quantity }}</td>
+          <td align="right">{{ $ledgercard->receipt_unitprice }}</td>
+          <td align="right">{{ $ledgercard->receipt_unitprice * $ledgercard->receipt_unitprice }}</td>
+          <td align="right">{{ $ledgercard->issuequantity }}</td>
+          <td align="right">{{ $ledgercard->issue_unitprice }}</td>
+          <td align="right">{{ $ledgercard->issue_quantity * $supplytransaction->issue_unitprice }}</td>
+          <td align="right">{{ ($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2 }}</td>
+          <td align="right">{{ $ledgercard->balance_quantity * (($ledgercard->issue_unitprice * $ledgercard->receipt_unitprice) / 2)  }}</td>
         </tr>
         @endforeach
       @else
@@ -37,3 +37,4 @@
   @endforeach
 @include('layouts.print.ledgercard-footer')
 @endsection
+ 

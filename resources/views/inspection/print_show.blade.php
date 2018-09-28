@@ -9,7 +9,7 @@
       #content{
         font-family: "Times New Roman";
       }
-
+ 
       @media print {
           tr.page-break  { display: block; page-break-after: always; }
       }   
@@ -96,16 +96,7 @@
           <td>*****</td>
           <td>*****</td>
         </tr>
-        @for($ctr = 0 ; $ctr < $end; $ctr++)
-        <tr>
-          <td style="padding: 15px;"></td>
-          <td></td>
-          <td></td>
-          <td class="text-center">  </td>
-          <td></td>
-          <td></td>
-        </tr>
-        @endfor
+        @endforeach
       </tbody>
     </table>
   </div>

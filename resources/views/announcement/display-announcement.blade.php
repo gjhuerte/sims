@@ -11,7 +11,7 @@
     <div class="box-body" style="padding: 20px;">
     	<div class="col-sm-12">
 
-			@if(Auth::user()->access == 1)
+			@if(Auth::user()->access == 1 || Auth::user()->access == 6  || Auth::user()->access == 7  || Auth::user()->access == 8)
 	    	<!-- add button -->
 	    	<div class="col-sm-12" style="margin-bottom: 30px;">
 	 			<a href="{{ url('announcement/create') }}" id="new" class="btn btn-success btn-md pull-right">
@@ -38,7 +38,7 @@
 
 		    		<!-- buttons -->
 	        		<div class="pull-right">
-						@if(Auth::user()->access == 1)
+						@if(Auth::user()->access == 1 || Auth::user()->access == 6  || Auth::user()->access == 7  || Auth::user()->access == 8)
 
 						<span class="label label-info label-md">Announcement for {{ $announcement->access_name }}</span>
 
@@ -50,7 +50,7 @@
 
 					<h3>
 						{{  isset($announcement->title) ? ucfirst($announcement->title) : "None" }}
-		    			@if(Auth::user()->access == 1 && $announcement->user_id == Auth::user()->id)
+		    			@if(Auth::user()->access == 1 || Auth::user()->access == 6  || Auth::user()->access == 7  || Auth::user()->access == 8 && $announcement->user_id == Auth::user()->id)
 	        			<div class="btn-group">
 	        				<a href="{{ url("announcement/$announcement->id/edit") }}" class="btn btn-sm btn-default">
 	        					<span class="glyphicon glyphicon-pencil"></span> Edit
@@ -157,10 +157,6 @@
 
 			@endif
 	     	<!-- pagination -->
-
-	     	<div class="col-sm-12">
-	     		<p class="text-center">***End of Notifications***</p>
-	     	</div>
 
 	    </div>
     </div><!-- /.box-body -->

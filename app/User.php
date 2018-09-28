@@ -34,7 +34,7 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 	protected $hidden = ['password','remember_token'];
 	//Validation rules!
 	public static $rules = array(
-		'Username' => 'required_with:password|min:3|max:20|unique:Users,username',
+		'Username' => 'required_with:password|min:3|max:20|unique:users,username',
 		'Password' => 'required|min:8|max:50',
 		'Firstname' => 'required|between:2,100|string',
 		'Middlename' => 'min:1|max:50|string',
@@ -65,7 +65,7 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 	public function updateRules(){
 		$username = $this->username;
 		return array(
-			'Username' => 'min:3|max:20|unique:Users,username,'.$username.',username',
+			'Username' => 'min:3|max:20|unique:users,username,'.$username.',username',
 			'First name' => 'min:2|max:100|string',
 			'Middle name' => 'min:1|max:50|string',
 			'Last name' => 'min:2|max:50|string',
@@ -82,11 +82,14 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
 
 	public static $access_list = [
 		0 => "Administrator",
-		1 => "AMO",
+		1 => "PSMO",
 		2 => "Accounting",
 		3 => "Offices", 
 		4 => "Chief",
-		5  => "Director"
+		5 => "Director",
+		6 => "PSMO-Releasing",
+		7 => "PSMO-Accepting",
+		8 => "PSMO-Disposal"
 	];
 
 	public function getFullnameAttribute()

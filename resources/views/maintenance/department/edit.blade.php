@@ -28,7 +28,7 @@
               </button>
             </div>
               <div class="btn-group">
-                <button id="cancel" class="btn btn-md btn-default" type="button" onClick="window.location.href='{{ url("maintenance/office/$department->office_id") }}'" >
+                <button id="cancel" class="btn btn-md btn-default" type="button" onClick="window.location.href='{{ url()->previous() }}'" >
                   <span class="hidden-xs">Cancel</span>
                 </button>
               </div>

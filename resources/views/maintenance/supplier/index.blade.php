@@ -59,7 +59,6 @@
 	            { data: function(callback){
 	            	return `
 	            			<a href="{{ url("maintenance/supplier") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
-	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	        ],

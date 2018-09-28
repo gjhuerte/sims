@@ -13,6 +13,7 @@ class Request extends Model implements Auditable, UserResolver
     use \OwenIt\Auditing\Auditable; 
 
     protected $auditInclude = [ 
+      'local' , 
       'requestor_id' , 
       'office_id' ,
       'issued_by' , 
@@ -33,7 +34,9 @@ class Request extends Model implements Auditable, UserResolver
     protected $primaryKey = 'id';
     public $incrementing = true;
     public $timestamps = true;
+    public $expire_before = 3;
     protected $fillable = [ 
+      'local' , 
       'requestor_id' , 
       'office_id' ,
       'issued_by' , 
@@ -72,6 +75,14 @@ class Request extends Model implements Auditable, UserResolver
       'Purpose' => 'required',
     );
 
+    public static $releaseRules = array(
+      'Remarks' => 'required',
+    );
+
+    public static $cancelRules = array(
+      'Details' => 'required',
+    );
+
     public function commentsRules(){
       return [
         'Details' => 'required|max:100'
@@ -79,8 +90,29 @@ class Request extends Model implements Auditable, UserResolver
     }
     
     public $appends = [
-      'code', 'date_requested'
+      'code', 'date_requested', 'remaining_days', 'expire_on'
     ];
+
+    public function getExpireOnAttribute()
+    {
+      if( $this->approved_at == null ) return 'No Approval';
+
+      return Carbon\Carbon::parse($this->approved_at)->toFormattedDateString();
+    }
+
+    public function getRemainingDaysAttribute()
+    {
+      if($this->approved_at == null)  return 'No Approval';
+      if($this->approved_at != null && $this->released_at != null)  return 'Released';
+      if(ucfirst($this->status) == 'Cancelled')  return 'Cancelled';
+      if(ucfirst($this->status) == 'Disapproved')  return 'Disapproved';
+      
+      $approved_date = Carbon\Carbon::parse($this->approved_at);
+      $date = Carbon\Carbon::now();
+      
+      return $approved_date->diffInDays($date);
+
+    }
 
     public function getRemarksAttribute($value)
     {
@@ -106,6 +138,14 @@ class Request extends Model implements Auditable, UserResolver
     {
       return $query->whereNull('status')->orWhere('status', '=', 'Pending');
     }
+    public function scopeApproved($query)
+    {
+      return $query->whereNull('status')->orWhere(ucfirst('status'), '=', 'Approved');
+    }
+        public function scopeReleased($query)
+    {
+    return $query->whereNull('status')->orWhere(ucfirst('status'), '=', 'Released');
+    }
 
     public function scopefilterByOfficeId($query, $value)
     {
@@ -122,7 +162,25 @@ class Request extends Model implements Auditable, UserResolver
     public function getCodeAttribute($value)
     {
       $date = Carbon\Carbon::parse($this->created_at);
-      return $date->format('y') . '-' .  $date->format('m') . '-' .  $this->id;
+      if(isset($this->local))
+        $requestcode = $this->local;
+      else{
+      if (strlen($this->id) == 1) 
+        $requestcode =  '000'.$this->id;
+      elseif (strlen($this->id) == 2) 
+        $requestcode =  '00'.$this->id;
+      elseif (strlen($this->id) == 3) 
+        $requestcode =  '0'.$this->id;
+      elseif (strlen($this->id) == 4) 
+        $requestcode =  $this->id;
+      else
+        $requestcode =  $this->id;
+      }
+      if(isset($this->local))
+      return $requestcode;
+      else
+      return $date->format('y') . '-' .  $date->format('m') . '-' .  $requestcode;
+
     }
 
     public function getDateRequestedAttribute($value)

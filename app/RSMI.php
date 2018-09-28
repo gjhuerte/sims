@@ -77,7 +77,7 @@ class RSMI extends Model
     {
         $user = isset($this->user) ? $this->user : null;
 
-        return (count($user) > 0) ? $user->lastname  . ' ' .  $user->firstname : null;
+        return (count($user) > 0) ? $user->firstname  . ' ' .  $user->lastname : null;
     }
 
     public function stockcards()

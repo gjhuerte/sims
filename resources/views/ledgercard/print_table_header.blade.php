@@ -34,15 +34,15 @@
     <th class="text-center" colspan="3">Balance</th>
 </tr> 
 <tr>
-  <th>Date</th>
-  <th>Reference</th>
-  <th>Qty</th>
-  <th>Unit Cost</th>
-  <th>Total Cost</th>
-  <th>Qty</th>
-  <th>Unit Cost</th>
-  <th>Total Cost</th>
-  <th>Qty</th>
-  <th>Unit Cost</th>
-  <th>Total Cost</th>
-</tr>
+  <th class="text-center">Date</th>
+  <th class="text-center">Reference</th>
+  <th class="text-center">Qty</th>
+  <th class="text-center">Unit Cost</th>
+  <th class="text-center">Total Cost</th>
+  <th class="text-center">Qty</th>
+  <th class="text-center">Unit Cost</th>
+  <th class="text-center">Total Cost</th>
+  <th class="text-center">Qty</th>
+  <th class="text-center">Unit Cost</th>
+  <th class="text-center">Total Cost</th>
+</tr> 

@@ -2,9 +2,9 @@
 
 @section('header')
 	<section class="content-header">
-		<legend><h3 class="text-muted">Offices</h3></legend>
+		<legend><h3 class="text-muted">Sectors</h3></legend>
 		<ol class="breadcrumb">
-			<li>Office</li>
+			<li>Sector</li>
 			<li class="active">Home</li>
 		</ol>
 	</section>
@@ -58,18 +58,20 @@
 	            { data: "head_title" },
 	            { data: function(callback){
 	            	return `
-	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + `" class="btn btn-sm btn-info">Show Departments</a>
+	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + `" class="btn btn-sm btn-success">Show Offices</a>
 	            			<a href="{{ url("maintenance/office") }}` + '/' + callback.id + '/edit' + `" class="btn btn-sm btn-default">Edit</a>
-	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Office" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	        ],
 	    } );
 
 	 	$("div.toolbar").html(`
- 			<a href="{{ url('maintenance/office/create') }}" id="new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add Office
+ 			<a href="{{ url('maintenance/office/create') }}" id="newoffice" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add Sector
+ 			</a>
+ 			<a href="{{ url('maintenance/department/create') }}" id="newdepartment" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span>  Add Office
  			</a>
 		`);
+
 
 		$('#officeTable').on('click','button.remove',function(){
 		  	var removeButton = $(this);

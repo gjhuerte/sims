@@ -21,11 +21,14 @@
           <tr>
             <th class="col-sm-1">Request No.</th>
             <th class="col-sm-1">Request Date</th>
-            @if(Auth::user()->access == 1)
+            @if(Auth::user()->access == 1 || Auth::user()->access == 6)
             <th class="col-sm-1">Requestor</th>
             @endif
             <th class="col-sm-1">Remarks</th>
             <th class="col-sm-1">Purpose</th>
+            @if(Auth::user()->access == 1 || Auth::user()->access == 6)
+            <th class="col-sm-1">Remaining Days</th>
+            @endif
             <th class="col-sm-1">Status</th>
             <th class="col-sm-1 no-sort"></th>
           </tr>
@@ -64,7 +67,7 @@
       columns: [
         { data: "code" },
         { data: 'date_requested' },
-        @if(Auth::user()->access == 1)
+        @if(Auth::user()->access == 1 || Auth::user()->access == 6)
         { data: function(callback){
           if(callback.office) return callback.office.code
 
@@ -74,11 +77,14 @@
         @endif
         { data: "remarks" },
         { data: "purpose" },
+        @if(Auth::user()->access == 1 || Auth::user()->access == 6)
+        { data: "remaining_days" },
+        @endif
         { data: "status" },
         { data: function(callback){
           ret_val = "";
 
-          @if(Auth::user()->access == 1)
+          @if(Auth::user()->access == 1 || Auth::user()->access == 6)
           if(!callback.status)
           {
             ret_val += `
@@ -107,7 +113,7 @@
     `)
     @endif
 
-    @if(Auth::user()->access == 1)
+    @if(Auth::user()->access == 1 || Auth::user()->access == 6)
 
     $('#requestTable').on('click','.disapprove',function(){
         id = $(this).data('id')

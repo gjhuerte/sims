@@ -17,7 +17,7 @@ class PhysicalInventoryController extends Controller
     {
         if($request->ajax())
         {
-            $stockcards = App\StockCard::where('reference', 'like', '%Physical%')
+            $stockcards = App\StockCard::where('reference', 'like', '%Physical%')->orWhere('reference', 'like', '%alance%')
                                 ->get();
             return datatables($stockcards)->toJson();
         }
@@ -93,34 +93,21 @@ class PhysicalInventoryController extends Controller
 
     public function print()
     {
-
-        $stockcards = App\StockCard::where('reference', 'like', '%Physical%')->get();
-        $remaining_rows = $row_count = 26;
+        $orientation = "landscape";
+        $supplies = App\Supply::all();
+        $remaining_rows = $row_count = 0;
         $adjustment = 4;
-
-        if(isset($stockcards->supplies)):
-            $data_count = count($stockcards->supplies) % $row_count;
-            if($data_count == 0 || (($data_count < 5) && (count($stockcards->supplies) > $row_count))):
-
-              if((count($request->supplies) > $row_count) && ($data_count < 7)):
-                $remaining_rows = $data_count + $row_count + $adjustment;
-              else:
-                $remaining_rows = 0;
-              endif;
-            else:
-              $remaining_rows = $row_count - $data_count;
-            endif;
-        endif;
+        $date = Carbon\Carbon::now();
 
         $data = [
-            'stockcards' => $stockcards,
+            'supplies' => $supplies,
             'row_count' => $row_count,
-            'end' => $remaining_rows
+            'end' => $remaining_rows,
+            'date' => $date
         ];
 
         $filename = "PhysicalInventory-".Carbon\Carbon::now()->format('mdYHm').".pdf";
         $view = "inventory.supply.print_physical-index";
-
-        return $this->printPreview($view,$data,$filename);
+        return $this->printPreview($view,$data,$filename,$orientation); 
     }
 }

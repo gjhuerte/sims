@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
 @section('styles-include')
-<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
+{{-- <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet"> --}}
 <style type="text/css">
   body{
     background: #22313F;
-    font-family: 'Nanum Gothic', sans-serif;
+    /*font-family: 'Nanum Gothic', sans-serif;*/
   }
 
   .panel {

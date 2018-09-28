@@ -5,7 +5,7 @@
       th , tbody{
         text-align: center;
       }
-
+ 
       .signature-helper {
         border: none;
         height: 1px;

@@ -38,7 +38,7 @@ class RSMIController extends Controller
     {
     	$month = Carbon\Carbon::parse($this->sanitizeString($request->get('month')));
 
-    	$id = App\StockCard::filterByIssued()->filterByMonth($month)->select('id')->pluck('id');
+    	$id = App\StockCard::filterByIssued()->filterByRIS($month)->select('id')->pluck('id');
 
     	DB::beginTransaction();
 
@@ -304,10 +304,10 @@ class RSMIController extends Controller
      */
 	public function print($id)
 	{
+        $orientation = 'Portrait';
     	$id = $this->sanitizeString($id);
     	$rsmi = App\RSMI::with('stockcards.supply.unit')->find($id);
-
-    	$recapitulation = App\RSMI::leftJoin('rsmi_stockcard', 'rsmi.id', '=', 'rsmi_id')
+        $recapitulation = App\RSMI::leftJoin('rsmi_stockcard', 'rsmi.id', '=', 'rsmi_id')
     							->leftJoin('stockcards', 'stockcard_id', '=', 'stockcards.id')
     							->leftJoin('supplies', 'supply_id', '=', 'supplies.id')
     							->where('rsmi.id', '=', $id)
@@ -321,25 +321,25 @@ class RSMIController extends Controller
     								'supplies.details as details'
     							)
     							->orderBy('supplies.stocknumber', 'asc')
-    							->get();
+    							->get(); 
 
         $stockcard = App\StockCard::whereHas('rsmi', function($query) use($id) {
             $query->where('id', '=', $id);
-        })->select('date', 'id', 'reference')->get()->unique('reference');
-
-        $start = $stockcard->sortBy('date')->sortBy('id')->pluck('reference')->first();
-        $end = $stockcard->sortByDesc('date')->sortByDesc('id')->pluck('reference')->first();
-
+        })->select('date', 'id', 'reference',DB::raw('SUBSTRING(reference,7,4) as risno'))->orderBy('risno')->get()->unique('reference');
+        $start = $stockcard->sortBy('risno')->pluck('reference')->first();
+        $end = $stockcard->sortByDesc('risno')->pluck('reference')->first();
+        $ris = App\Request::whereMonth('created_at','=',$rsmi->report_date->month)->get();
     	$data = [
     		'rsmi' => $rsmi,
     		'recapitulation' => $recapitulation,
             'start' => $start,
-            'end' => $end
+            'end' => $end,
+            'ris' => $ris
     	];
 
         $filename = "RSMI-".Carbon\Carbon::parse($rsmi->report_date)->format('mdYHm').".pdf";
         $view = "rsmi.print_index";
 
-        return $this->printPreview($view,$data,$filename);
+        return $this->printPreview($view,$data,$filename,$orientation);
 	}
 }

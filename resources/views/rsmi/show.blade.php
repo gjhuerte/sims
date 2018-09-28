@@ -71,7 +71,7 @@
 		<div class="form-group">
 			<a href="{{ url("rsmi/$rsmi->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-				<span id="nav-text"> Print</span>
+				<span id="nav-text"> Download</span>
 			</a>
 		</div>
 

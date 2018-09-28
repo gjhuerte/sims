@@ -14,7 +14,7 @@
       @media print {
           tr.page-break  { display: block; page-break-after: always; }
       }   
-
+ 
   </style>
   <div id="content" class="col-sm-12">
     <table class="table table-striped table-bordered table-condensed" id="inventoryTable" width="100%" cellspacing="0">
@@ -25,9 +25,10 @@
         </thead>
         <tbody>
         @foreach($supplies as $supply)
+        @if($supply->details <> 'N/A')
         <tr height="5">
-          <td>{{ $supply->stocknumber }}</td>
-          <td> 
+          <td align="left">{{ $supply->stocknumber }}</td>
+          <td align="left"> 
             <span style="font-size:
             @if(strlen($supply->details) > 130) 10px 
               @elseif(strlen($supply->details) > 90) 11px 
@@ -38,6 +39,7 @@
           </td>
           <td>{{ $supply->unit->name }}</td>
         </tr>
+        @endif
         @endforeach
         <tr>
           <td colspan=3 class="col-sm-12"><p class="text-center">  ******************* Nothing Follows ******************* </p></td>
@@ -45,5 +47,4 @@
         </tbody>
     </table>
   </div>
-@include('layouts.print.footer')
 @endsection

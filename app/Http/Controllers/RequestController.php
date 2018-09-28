@@ -12,7 +12,6 @@ use Session;
 use PDF;
 use Validator;
 use Event;
-use LRedis;
 
 class RequestController extends Controller
 {
@@ -28,7 +27,7 @@ class RequestController extends Controller
 
           $ret_val = App\Request::with('office')->with('requestor')->orderBy('created_at', 'asc');
 
-          if(Auth::user()->access != 1)
+          if(Auth::user()->access != 1 && Auth::user()->access != 6 )
           {
             if(Auth::user()->position == 'head') 
               $ret_val->findByOffice( Auth::user()->office );
@@ -39,8 +38,11 @@ class RequestController extends Controller
           return datatables($ret_val->get())->toJson();
         }
 
+
+        $months = App\Request::select(DB::raw("DATE_FORMAT(created_at,'%b %Y') as ris_months"))->groupBy(DB::raw("DATE_FORMAT(created_at,'%b %Y')"))->pluck('ris_months');
         return view('request.index')
-                ->with('title','Request');
+                ->with('title','Request')
+                ->with('months',$months);
     }
 
     /**
@@ -65,6 +67,7 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
+      $code = $this->generate($request);
       $stocknumbers = $request->get("stocknumber");
       $quantity = $request->get("quantity");
       $quantity_issued = null;
@@ -110,6 +113,7 @@ class RequestController extends Controller
       DB::beginTransaction();
 
       $request = App\Request::create([
+        'local' => $code,
         'requestor_id' => $requestor,
         'issued_by' => null,
         'office_id' => $office,
@@ -147,7 +151,7 @@ class RequestController extends Controller
         $id = $this->sanitizeString($id);
         $requests = App\Request::find($id);
 
-        if(count($requests) <= 0 || (Auth::user()->access != 1 && $requests->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($requests->office_id)->code))
+        if(count($requests) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6 && $requests->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($requests->office_id)->code))
         {
           return view('errors.404');
         }
@@ -303,8 +307,19 @@ class RequestController extends Controller
       $daystoconsume = $request->get('daystoconsume');
       $quantity = $request->get('quantity');
       $stocknumber = $request->get('stocknumber');
+      $remarks = $this->sanitizeString($request->get('remarks'));
       $date = Carbon\Carbon::now();
 
+      $validator = Validator::make([
+            'Remarks' => $remarks,
+        ],App\Request::$releaseRules);
+
+        if($validator->fails())
+        {
+            return redirect("request/$id/release")
+                    ->withInput()
+                    ->withErrors($validator);
+        }
       DB::beginTransaction();
 
       /**
@@ -316,12 +331,13 @@ class RequestController extends Controller
        */
       $requests = App\Request::find($id);
 
-      if( count($requests) <= 0 || !in_array($requests->status, [ 'Approved', 'approved']) || Auth::user()->access != 1)
+      if( count($requests) <= 0 || !in_array($requests->status, [ 'Approved', 'approved']) || Auth::user()->access != 1 && Auth::user()->access != 6)
       {
         return view('errors.404');
       }
 
       $requests->status = 'released';
+      $requests->remarks = 'Received by: '.$remarks;
       $requests->released_at = $date;
       $requests->released_by = Auth::user()->id;
       $requests->save();
@@ -389,6 +405,44 @@ class RequestController extends Controller
           'quantity_released' => $_quantity
         ]);
       }
+      /*Inserting of signatories in request_signatories OR Saving the signatories in the db*/
+      $user = App\User::where('id','=',$requests->requestor_id)->first();
+      $office = App\Office::where('code','=',$user->office)->first();
+      $sector = App\Office::where('id','=',$office->head_office)->first();
+      $issuedby = App\User::where('id','=',$requests->issued_by)->first();
+      /*$office = App\Office::where('code','like','%AVP%')->first();*/ 
+      //checks if the sector has a head_office
+      //for lvl 2 offices
+      if(isset($sector->head_office)): 
+          $office = App\Office::where('id','=',$office->head_office)->first(); 
+          $sector = App\Office::where('id','=',$sector->head_office)->first(); 
+      elseif($office->head_office == NULL): 
+        if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+        endif; 
+      endif; 
+      //checks if the sector has a head_office
+      //for lvl 3 offices
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
+      endif;
+      //checks if the sector has a head_office
+      //for lvl 4 offices
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
+      endif;
+
+      $signatory = new App\RequestSignatory;
+      $signatory->request_id = $requests->id;
+      $signatory->requestor_name = isset($office->name) ? $office->head != "None" ?$office->head : "" : "";
+      $signatory->requestor_designation = isset($office->name) ? $office->head_title != "None" ? $office->head_title : "" : "";
+      $signatory->approver_name = isset($sector->name) ? $sector->head : $requests->office->head;
+      $signatory->approver_designation = isset($sector->head) ? $sector->head_title : $requests->office->head_title;
+      $signatory->save();
+      
+
 
       $data['id'] = $requests->requestor_id;
       $data['message'] = "Items from request $requests->code status has been released";
@@ -401,7 +455,7 @@ class RequestController extends Controller
       $details = "The requested items from $office->name by $requestor->firstname $requestor->lastname has been released.";
       $url = url("request/$request->id");
 
-      App\Announcement::notify($title, $details, $access = 1, $url);
+      App\Announcement::notify($title, $details, $access = 1, $url, $requestor->id);
 
       DB::commit();
 
@@ -421,7 +475,7 @@ class RequestController extends Controller
     {
       $requests = App\Request::find($id);
         
-      if( count($requests) <= 0 || in_array($requests->status, [ 'approved', 'Approved', 'disapproved', 'Disapproved']) || Auth::user()->access != 1)
+      if( count($requests) <= 0 || in_array($requests->status, [ 'approved', 'Approved', 'disapproved', 'Disapproved']) || Auth::user()->access != 1 && Auth::user()->access != 6)
       {
         return view('errors.404');
       }
@@ -465,7 +519,7 @@ class RequestController extends Controller
 
         $requests = App\Request::find($id);
 
-        if( count($requests) <= 0 || in_array($requests->status, ['approved', 'Approved', 'disapproved', 'Disapproved', 'released', 'Released', 'cancelled', 'Cancelled']) || Auth::user()->access != 1)
+        if( count($requests) <= 0 || in_array($requests->status, ['approved', 'Approved', 'disapproved', 'Disapproved', 'released', 'Released', 'cancelled', 'Cancelled']) || Auth::user()->access != 1 && Auth::user()->access != 6)
         {
           return view('errors.404');
         }
@@ -544,7 +598,7 @@ class RequestController extends Controller
         $details = "The requested items from $office->name by $requestor->firstname $requestor->lastname has been $action.";
         $url = url("request/$request->id");
 
-        App\Announcement::notify($title, $details, $access = 3, $url);
+        App\Announcement::notify($title, $details, $access = 3, $url, $requestor->id);
 
         DB::commit();
 
@@ -585,6 +639,17 @@ class RequestController extends Controller
 
       $details = $this->sanitizeString($request->get('details'));
 
+      $validator = Validator::make([
+            'Details' => $details,
+        ],App\Request::$cancelRules);
+
+        if($validator->fails())
+        {
+            return redirect("request/$id/cancel")
+                    ->withInput()
+                    ->withErrors($validator);
+        }
+
       DB::beginTransaction();
 
       $requests = App\Request::find($id);
@@ -619,6 +684,85 @@ class RequestController extends Controller
       return redirect('request');
     }
 
+    /**
+     * reset the current status of request to null
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function resetStatus(Request $request, $id)
+    {
+
+      if($request->ajax())
+      {
+        $id = $this->sanitizeString($id);
+        $requests = App\Request::find($id);
+
+        if(count($requests) <= 0 || Auth::user()->access != 1 && Auth::user()->access != 6)
+        {
+
+          return json_encode('error');
+        }
+
+        $requests->remarks = null;
+        $requests->issued_by = null;
+        $requests->status = null;
+        $requests->approved_at = null;
+        
+        foreach($requests->supplies as $supply):
+          $supply->pivot->quantity_issued = null;
+          $supply->pivot->quantity_released = null;
+          $supply->pivot->comments = null;
+          $supply->pivot->save();
+        endforeach;
+
+        $requests->save();
+
+        $data['id'] = $requests->requestor_id;
+        $data['message'] = "Request $requests->code status has been changed back to pending";
+
+        event(new App\Events\RequestApproval($data));
+
+        return json_encode('success');
+      }
+
+    }
+
+    public function expireStatus(Request $request, $id)
+    {
+
+      if($request->ajax())
+      {
+        $id = $this->sanitizeString($id);
+        $requests = App\Request::find($id);
+
+        if(count($requests) <= 0 || Auth::user()->access != 1 && Auth::user()->access != 6)
+        {
+
+          return json_encode('error');
+        }
+
+        $requests->status = "cancelled";
+        $requests->cancelled_by = Auth::user()->id;
+        $requests->cancelled_at = Carbon\Carbon::now();
+        $requests->remarks = 'Request Expired';
+        
+        foreach($requests->supplies as $supply):
+          $supply->pivot->quantity_issued = null;
+          $supply->pivot->comments = null;
+          $supply->pivot->save();
+        endforeach;
+
+        $requests->save();
+
+        $data['id'] = $requests->requestor_id;
+        $data['message'] = "Request $requests->code status expired";
+
+        event(new App\Events\RequestApproval($data));
+
+        return json_encode('success');
+      }
+    }
     /**
      * Display the specified comments.
      *
@@ -683,98 +827,6 @@ class RequestController extends Controller
       return back();
     }
 
-    /**
-     * reset the current status of request to null
-     * @param  Request $request [description]
-     * @param  [type]  $id      [description]
-     * @return [type]           [description]
-     */
-    public function resetStatus(Request $request, $id)
-    {
-
-      if($request->ajax())
-      {
-        $id = $this->sanitizeString($id);
-        $requests = App\Request::find($id);
-
-        if(count($requests) <= 0 || Auth::user()->access != 1)
-        {
-
-          return json_encode('error');
-        }
-
-        $requests->remarks = null;
-        $requests->issued_by = null;
-        $requests->status = null;
-        $requests->approved_at = null;
-        
-        foreach($requests->supplies as $supply):
-          $supply->pivot->quantity_issued = null;
-          $supply->pivot->quantity_released = null;
-          $supply->pivot->comments = null;
-          $supply->pivot->save();
-        endforeach;
-
-        $requests->save();
-
-        $data['id'] = $requests->requestor_id;
-        $data['message'] = "Request $requests->code status has been changed back to pending";
-
-        event(new App\Events\RequestApproval($data));
-
-        return json_encode('success');
-      }
-
-    }
-
-    /**
-     * creates a printable form of request
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function print($id)
-    {
-      $id = $this->sanitizeString($id);
-      $request = App\Request::find($id);
-
-      if(count($request) <= 0 || (Auth::user()->access != 1 && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
-      {
-        return view('errors.404');
-      }
-
-      $row_count = 17;
-      $adjustment = 13;
-      if(isset($request->supplies)):
-        $data_count = count($request->supplies) % $row_count;
-        if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
-
-          if((count($request->supplies) > $row_count) && ($data_count < 7)):
-            $remaining_rows = $data_count + $row_count + $adjustment;
-          else:
-            $remaining_rows = 0;
-          endif;
-        else:
-          $remaining_rows = $row_count - $data_count;
-        endif;
-      endif;
-
-      // return count($request->supplies);
-      // return $data_count;
-      // return $remaining_rows;
-      $user = App\User::where('id','=',$request->requestor_id)->first();
-      $data = [
-        'request' => $request, 
-        'approvedby' => App\Office::where('code','=','OVPAA')->first(),
-        'row_count' => $row_count,
-        'end' => $remaining_rows
-      ];
-
-      $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
-      $view = "request.print_show";
-
-      return $this->printPreview($view,$data,$filename);
-    }
-
     public function generate(Request $request)
     {
 
@@ -796,8 +848,18 @@ class RequestController extends Controller
       {
         return json_encode( $const . '-' . $id ); 
       }
-
-      return $const . '-' . $id;
+      if (strlen($id) == 1) 
+        $requestcode =  '000'.$id;
+      elseif (strlen($id) == 2) 
+        $requestcode =  '00'.$id;
+      elseif (strlen($id) == 3) 
+        $requestcode =  '0'.$id;
+      elseif (strlen($id) == 4) 
+        $requestcode =  $id;
+      else
+        $requestcode =  $id;
+      
+      return $const . '-' . $requestcode;
 
     }
 
@@ -828,5 +890,158 @@ class RequestController extends Controller
 
         return json_encode($count);
       }
+    }
+    /**
+     * creates a printable form of request
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function print($id)
+    {
+      $orientation = 'Portrait';
+      $id = $this->sanitizeString($id);
+      $request = App\Request::find($id);
+      $signatory = '';
+
+      if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6  && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
+      {
+        return view('errors.404');
+      }
+
+      $row_count = 16;
+      $adjustment = 0;
+      if(isset($request->supplies)):
+        $data_count = count($request->supplies) % $row_count;
+        if($data_count == 0 || (($data_count < 5) && (count($request->supplies) > $row_count))):
+
+          if((count($request->supplies) > $row_count) && ($data_count < 7)):
+            $remaining_rows = $data_count + $row_count + $adjustment;
+          else:
+            $remaining_rows = 0;
+          endif;
+        else:
+          $remaining_rows = $row_count - $data_count;
+        endif;
+      endif;
+
+      // return count($request->supplies);
+      // return $data_count;
+      // return $remaining_rows;
+      $user = App\User::where('id','=',$request->requestor_id)->first();
+      $office = App\Office::where('code','=',$user->office)->first();
+      $sector = App\Office::where('id','=',$office->head_office)->first();
+      $issuedby = App\User::where('id','=',$request->issued_by)->first();
+      /*$office = App\Office::where('code','like','%AVP%')->first();*/ 
+      //checks if the sector has a head_office
+      //for lvl 2 offices
+      if(isset($sector->head_office)): 
+          $office = App\Office::where('id','=',$office->head_office)->first(); 
+          $sector = App\Office::where('id','=',$sector->head_office)->first(); 
+      elseif($office->head_office == NULL): 
+        if(App\Office::where('code','like',$office->code.'-A'.$office->code)->first() !== NULL):
+          $office = App\Office::where('code','like',$office->code.'-A'.$office->code)->first();
+        endif;
+      endif; 
+      //checks if the sector has a head_office
+      //for lvl 3 offices
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
+      endif;
+      //checks if the sector has a head_office
+      //for lvl 4 offices
+      if(isset($sector->head_office)):
+          $office = App\Office::where('id','=',$office->head_office)->first();
+          $sector = App\Office::where('id','=',$sector->head_office)->first();
+      endif;
+
+      if($request->status == 'Released' || $request->status == 'released'):
+        $signatory = App\RequestSignatory::where('request_id','=',$request->id)->get();
+      endif;
+      $data = [
+        'request' => $request, 
+        'office' => $office,
+        'sector' => $sector,
+        'signatory' => $signatory,
+        'issuedby' => $issuedby,
+        'row_count' => $row_count,
+        'pages' => $data_count,
+        'end' => $remaining_rows
+      ];
+
+      $filename = "Request-".Carbon\Carbon::now()->format('mdYHm')."-$request->code".".pdf";
+      $view = "request.print_show";
+      /*return view('request.print_show')
+      ->with('request',$request)
+      ->with('office',$office)
+      ->with('sector',$sector)
+      ->with('signatory',$signatory);*/
+      return $this->printPreview($view,$data,$filename,$orientation);
+    }
+
+    public function ris_list_index(Request $request)
+    {
+     
+      $ris = DB::table('ris_list')->groupBy(DB::raw("DATE_FORMAT(created_at,'%b %Y')"))->select(DB::raw("DATE_FORMAT(created_at,'%b_%Y') as monthid,DATE_FORMAT(created_at,'%b %Y') as month,
+     'total_request',
+      sum(case status when 'Total' then 1 else 0 end) as total_count,
+      'pending_request',
+      sum(case coalesce(status, 'empty') when 'empty' then 1 else 0 end) as pending_count,
+      'approved_request',
+      sum(case status when 'Approved' then 1 else 0 end) as approved_count,
+      'disapproved_request',
+      sum(case status when 'Disapproved' then 1 else 0 end) as disapproved_count,
+      'cancelled_request',
+      sum(case status when 'Cancelled' then 1 else 0 end) as cancelled_count,
+      'released_request',
+      sum(case status when 'Released' then 1 else 0 end) as released_count"))->orderBy(DB::raw("created_at"))->get();
+      return view('reports.rislist.index')
+             ->with('ris',$ris);
+    }
+        /**
+     * creates a printable form of request
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function ris_list_show(Request $request,$id)
+    {
+      $id = $this->sanitizeString($id);
+      if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6  && $request->requestor_id != Auth::user()->id && Auth::user()->office != App\Office::find($request->office_id)->code))
+      {
+        return view('errors.404');
+      }
+      $ris = DB::table('ris_list')->where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->get();
+
+      if($request->ajax())
+      {
+      return datatables($ris)->toJson();
+      }
+
+      return view('reports.rislist.show')
+      ->with('id',$id)
+      ->with('ris',$ris);
+      //return $this->printPreview($view,$data,$filename,$orientation);
+    }
+
+    public function print_ris_list(Request $request,$id)
+    {
+      $orientation = 'Landscape';
+      $id = $this->sanitizeString($id);
+      if(count($request) <= 0 || (Auth::user()->access != 1 && Auth::user()->access != 6))
+      {
+        return view('errors.404');
+      }
+
+      $ris = App\RISList::where(DB::raw("DATE_FORMAT(created_at,'%b_%Y')"),'=',$id)->orderBy('request_number')->get();
+      $month = $ris->pluck('created_at')->first()->format('M Y');
+      $data = [
+        'ris' => $ris,
+        'month' => $month
+      ];
+      $filename = "RISLIST-".Carbon\Carbon::now()->format('mdYHm').".pdf";
+      $view = "reports.rislist.print_ris_list";
+      /*return view('reports.rislist.print_ris_list')
+      ->with('ris',$ris);*/
+      return $this->printPreview($view,$data,$filename,$orientation);
     }
 }

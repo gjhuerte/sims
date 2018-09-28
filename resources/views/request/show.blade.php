@@ -85,17 +85,21 @@
     });
 
     $('div.toolbar').html(`
-         <a href="{{ url("request/$request->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+        @if($request->status == 'Approved' || Auth::user()->access == 1 || Auth::user()->access == 6)
+        <a href="{{ url("request/$request->id/print") }}" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-          <span id="nav-text"> Print</span>
+          <span id="nav-text"> Download</span>
         </a>
+        @endif
+ 
 
-        @if(Auth::user()->access == 1)
+        @if(Auth::user()->access == 1 || Auth::user()->access == 6)
         
           @if($request->status == 'Approved')
           <a id="release" href="{{ url("request/$request->id/release") }}" class="btn btn-sm btn-danger ladda-button" data-style="zoom-in">
             <span class="ladda-label"><i class="glyphicon glyphicon-share-alt"></i> Release</span>
           </a>
+
           @endif
 
           @if($request->status == null || $request->status == 'Pending' || ( strpos($request->status, 'pdated') != false ))
@@ -104,21 +108,28 @@
           </a>
           @endif
 
+          @if($request->status != null && ($request->status == 'Approved' )) 
+          <button id="expire" type="button" data-id="{{ $request->id }}" class="btn btn-warning btn-sm"> 
+            <i class="fa fa-refresh" aria-hidden="true"> Expire</i> 
+          </button> 
+ 
+          @endif
+
         @endif
         
     `)
     /*<a id="comment" href="{{ url("request/$request->id/comments") }}" class="btn btn-sm btn-primary ladda-button" data-style="zoom-in">
           <span class="ladda-label"><i class="fa fa-comment" aria-hidden="true"></i> Messages  <span class="label label-danger"> {{ App\RequestComments::where('request_id', '=', $request->id)->count() }} </span> </span>
         </a>*/
-    @if(Auth::user()->access == 1 )
+    @if(Auth::user()->access == 1 || Auth::user()->access == 6)
 
     @if($request->status != null && $request->status != 'released')
 
-    $('#reset').on('click',function(){
+    $('#expire').on('click',function(){
       id = $(this).data('id');
       swal({
-        title: 'Reset Status of Request {{ $request->code }}',
-        text: 'This will set the status of the current request to pending. Any modification to request will be reset. Do you want to continue?',
+        title: 'Expire Request {{ $request->code }}?',
+        text: 'This will cancel the request. Do you want to continue?',
         type: 'warning',
         showLoaderOnConfirm: true,
         showCancelButton: true,
@@ -131,14 +142,14 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type: 'put',
-            url: '{{ url("request/$request->id/reset") }}',
+            url: '{{ url("request/$request->id/expire") }}',
             data: {
                 'id': id
             },
             dataType: 'json',
             success: function(response){
                 if(response == 'success'){
-                    swal('Operation Successful','Operation Complete please reload the page!','success')
+                    swal('Operation Successful','Operation Complete please reload the page!','success'),
                     location.reload();
                 }else{
                     swal('Operation Unsuccessful','Error occurred while processing your request','error')

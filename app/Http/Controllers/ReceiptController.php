@@ -210,6 +210,7 @@ class ReceiptController extends Controller
      */
     public function printReceipt($receipt)
     {
+        $orientation = 'Portrait';
         $receiptsupplies = App\ReceiptSupply::with('supply')->where('receipt_id','=',$receipt)->get();
         $receipt = App\Receipt::find($receipt);
 
@@ -218,7 +219,7 @@ class ReceiptController extends Controller
         $filename = "Receipt-".Carbon\Carbon::now()->format('mdYHm')."-$receipt->number".".pdf";
         $view = "receipt.print_show";
 
-        return $this->printPreview($view,$data,$filename);
+        return $this->printPreview($view,$data,$filename,$orientation);
 
         // return view($view);
     }

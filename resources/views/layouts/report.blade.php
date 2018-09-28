@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}/bootstrap/css/bootstrap.min.css">
     <style>
      thead { display: table-header-group }
-      tfoot { display: table-row-group }
+      tfoot { display: table-footer-group }
       tr { page-break-inside: avoid }
     </style>
     @yield('style-include')

@@ -26,7 +26,7 @@
 					<th class="col-sm-1">Supply Item</th>
 					<th class="col-sm-1">Unit</th>
 
-					@if(Auth::user()->access == 1)
+					@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 					<th class="col-sm-1">Reorder Point</th>
 					@endif
 
@@ -38,11 +38,11 @@
 					<th class="col-sm-1">Ledger Card</th>
 					@endif
 
-					@if(Auth::user()->access == 1)
+					@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 					<th class="col-sm-1">Stock Card</th>
 					@endif
 
-					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
+					@if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 					<th class="col-sm-1 no-sort"></th>
 					@endif
 				</tr>
@@ -67,7 +67,7 @@
 	    	columnDefs:[
 	       	 { targets: 'no-sort', orderable: false },
 	      	],
-			@if(Auth::user()->access == 1 || Auth::user()->access == 2)
+			@if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 							"<'col-sm-12'<'search'>>" +
 							"<'row'<'col-sm-12'tr>>" +
@@ -79,9 +79,9 @@
 			columns: [
 					{ data: "stocknumber" },
 					{ data: "details" },
-					{ data: "unit.name" },
+					{ data: "unit_name" },
 
-					@if(Auth::user()->access == 1)
+					@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 					{ data: "reorderpoint" },
 					@endif
 
@@ -95,20 +95,20 @@
 					{ data: "ledger_balance" },
 					@endif
 
-					@if(Auth::user()->access == 1)
+					@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 					{ data: "stock_balance" },
 					@endif
 
-					@if(Auth::user()->access == 1 || Auth::user()->access == 2)
+					@if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 		            { data: function(callback){
 		            	return `
-		            			@if(Auth::user()->access == 1)
+		            			@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 		            			<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard' +`" class="btn btn-sm btn-primary">
 		            				<span class="glyphicon glyphicon-list"></span> Stockcard
 		            			</a>
 								<a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/stockcard/print' +`" target="_blank" id="print" class="print btn btn-default ladda-button" data-style="zoom-in">
 									<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-									<span id="nav-text"> Print</span>
+									<span id="nav-text"> Download</span>
 								</a>
 		            			@endif
 		            			@if(Auth::user()->access == 2)
@@ -117,7 +117,7 @@
 		            			</a>
 			                      <a href="{{ url("inventory/supply") }}` + '/' + callback.id  + '/ledgercard/print' +`" target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 			              	        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-			              	        <span id="nav-text"> Print</span>
+			              	        <span id="nav-text"> Download</span>
 			              	      </a>
 		            			@endif
 		            	`;
@@ -130,11 +130,17 @@
 			<a href="{{ url('inventory/supply/advancesearch') }}" target="_blank" style="font-size: 10px;" class="pull-right col-md-offset-11 col-md-1">Advance Search</a>
     	`)
 
-		@if(Auth::user()->access == 1 || Auth::user()->access == 2)
+		@if(Auth::user()->access == 1 || Auth::user()->access == 2 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
 	 	$("div.toolbar").html(`
-			<a @if(Auth::user()->access == 1) href="{{ url("inventory/supply/stockcard/print") }}" @else href="{{ url("inventory/supply/ledgercard/print") }}" @endif target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
+			<a @if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 ) href="{{ url("inventory/supply/stockcard/print") }}" 
+				@else href="{{ url("inventory/supply/ledgercard/print") }}" 
+			   @endif target="_blank" id="print" class="print btn btn-sm btn-default ladda-button" data-style="zoom-in">
 				<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-				<span id="nav-text"> Print All Stockcards</span>
+				@if(Auth::user()->access == 1 || Auth::user()->access == 6 || Auth::user()->access == 7 || Auth::user()->access == 8 )
+				<span id="nav-text"> Download All Stockcards </span>
+				@else 
+				<span id="nav-text"> Download All Ledgercards </span>
+				@endif
 			</a>
 		`);
 		@endif

@@ -16,11 +16,11 @@ class Office extends Model{
 		'head_title',
 		'head_office'
 	];
-	public $timestamps = false;
+	public $timestamps = true;
 
 	public function rules(){
 		return array(
-			'Code' => 'required|max:20|unique:Offices,code',
+			'Code' => 'required|max:20|unique:offices,code',
 			'Name' => 'required|max:200',
 			'Description' => 'max:200'
 		);
@@ -29,7 +29,7 @@ class Office extends Model{
 	public function updateRules(){
 		$code = $this->code;
 		return array(
-			'Code' => 'required|max:20|unique:Offices,code,'.$code.',code',
+			'Code' => 'required|max:20|unique:offices,code,'.$code.',code',
 			'Name' => 'required|max:200',
 			'Description' => 'max:200'
 		);
@@ -74,6 +74,10 @@ class Office extends Model{
 		return $this->hasMany('App\Office', 'head_office', 'id');
 	}
 
+	public function request()
+	{
+		return $this->hasMany('App\Request', 'office_id', 'id');
+	}
 	public function HeadOffice()
 	{
 		return $this->belongsTo('App\Office', 'head_office', 'id');

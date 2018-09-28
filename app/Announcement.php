@@ -58,6 +58,34 @@ class Announcement extends Model
         return $ret_val;
     }
 
+    public function scopeOfficeOrSelf($query)
+    {
+        $query->where(function($query){
+            $query->where('specified_users', '=', Auth::user()->access)
+                ->orWhereIn('specified_users', User::where('office', '=', Auth::user()->office )->pluck('id'));
+        });
+    }
+
+    public function scopeOrOffice($query)
+    {
+        return $query->orWhereIn('specified_users', User::where('office', '=', Auth::user()->office )->pluck('id'));
+    }
+
+    public function scopeOrSelf($query)
+    {
+        return $query->orWhere('specified_users', '=', Auth::user()->access);
+    }
+
+    public function scopeForAll($query)
+    {
+        return $query->where('access','=','4');
+    }
+
+    public function scopeSelf($query)
+    {
+        return $query->where('specified_users', '=', Auth::user()->access);
+    }
+
     public function getCreatedByAttribute()
     {
         return $this->creator->firstname . " " . $this->creator->lastname;
@@ -92,7 +120,7 @@ class Announcement extends Model
         return $query->where('access','=', $value);
     }
 
-    public static function notify($title, $details, $access = 4, $url = null)
+    public static function notify($title, $details, $access = 4, $url = null, $user = null)
     {
         $announcement = new Announcement;
         $announcement->title = $title;
@@ -100,6 +128,7 @@ class Announcement extends Model
         $announcement->access = $access;
         $announcement->url = $url;
         $announcement->user_id = Auth::user()->id;
+        $announcement->specified_users = $user;
         $announcement->save();
     }
 

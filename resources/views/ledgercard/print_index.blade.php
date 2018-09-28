@@ -12,19 +12,19 @@
           <tr>
             <td>{{ Carbon\Carbon::parse($ledgercard->date)->format('M Y') }}</td>
             <td>{{ $ledgercard->reference_list }}</td>
-            <td>{{ $ledgercard->received_quantity }}</td>
-            <td>{{ $ledgercard->parsed_received_unitcost }}</td>
-            <td>{{ $ledgercard->parsed_received_total_cost }}</td>
+            <td align="right">{{ $ledgercard->received_quantity }}</td>
+            <td align="right">{{ $ledgercard->parsed_received_unitcost }}</td>
+            <td align="right">{{ $ledgercard->parsed_received_total_cost }}</td>
 
-            <td>{{ $ledgercard->issued_quantity }}</td>
-            <td>{{ $ledgercard->parsed_issued_unitcost }}</td>
-            <td>{{ $ledgercard->parsed_issued_total_cost }}</td>
+            <td align="right">{{ $ledgercard->issued_quantity }}</td>
+            <td align="right">{{ $ledgercard->parsed_issued_unitcost }}</td>
+            <td align="right">{{ $ledgercard->parsed_issued_total_cost }}</td>
 
-            <td>{{ $ledgercard->parsed_monthlybalancequantity }}</td>
+            <td align="right">{{ $ledgercard->parsed_monthlybalancequantity }}</td>
 
-            <td>{{ $ledgercard->parsed_monthlyunitcost }}</td>
+            <td align="right">{{ $ledgercard->parsed_monthlyunitcost }}</td>
 
-            <td>{{ $ledgercard->parsed_monthlytotalcost }}</td>
+            <td align="right">{{ $ledgercard->parsed_monthlytotalcost }}</td>
           </tr>
         @endforeach
       @else
@@ -40,3 +40,4 @@
   </div>
 @include('layouts.print.ledgercard-footer')
 @endsection
+ 

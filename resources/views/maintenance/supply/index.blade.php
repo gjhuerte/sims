@@ -16,7 +16,7 @@
     <div class="box-body">
 		<div class="panel panel-body table-responsive">
 		<a target="_blank" id="create" href="{{ url('maintenance/supply/print') }}" class="btn btn-default btn-sm ladda-button" data-style="zoom-in">
-			<span class="ladda-label"><i class="fa fa-print"></i> Print Stock Masterlist</span>
+			<span class="ladda-label"><i class="fa fa-print"></i> Download Stock Masterlist</span>
 		</a>
 		<hr />
 		<table class="table table-hover table-striped table-bordered table-condensed" id="supplyTable">
@@ -25,7 +25,7 @@
 				<th class="col-sm-1">Details</th>
 				<th class="col-sm-1">Unit</th>
 				<th class="col-sm-1">Reorder Point</th>
-				@if(Auth::user()->access == 1)
+				@if(Auth::user()->access == 1 || Auth::user()->access == 7)
 				<th class="no-sort col-sm-1"></th>
 				@endif
 			</thead>
@@ -49,7 +49,7 @@
 	    	columnDefs:[
 				{ targets: 'no-sort', orderable: false },
 	    	],
-			@if(Auth::user()->access == 1)
+			@if(Auth::user()->access == 1 || Auth::user()->access == 7)
 			"dom": "<'row'<'col-sm-3'l><'col-sm-6'<'toolbar'>><'col-sm-3'f>>" +
 							"<'row'<'col-sm-12'tr>>" +
 							"<'row'<'col-sm-5'i><'col-sm-7'p>>",
@@ -61,18 +61,17 @@
 				{ data: "details" },
 				{ data: "unit.name" },
 				{ data: "reorderpoint" }
-				@if(Auth::user()->access == 1)
+				@if(Auth::user()->access == 1 || Auth::user()->access == 7)
 	           , { data: function(callback){
 	            	return `
 	            			<a href="{{ url("maintenance/supply") }}` + '/' + callback.id + '/edit' + `" class="btn btn-default btn-sm">Edit</a>
-	            			<button type="button" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Removing Supply" data-id="`+callback.id+`" class="remove btn btn-sm btn-danger">Remove</button>
 	            	`;
 	            } }
 	            @endif
 			],
 	    });
 
-		@if(Auth::user()->access == 1)
+		@if(Auth::user()->access == 1 || Auth::user()->access == 7)
 	 	$("div.toolbar").html(`
 				<a href="{{ url('maintenance/supply/create') }}" class="btn btn-sm btn-primary">
 					<span class="glyphicon glyphicon-tag" aria-hidden="true"></span>

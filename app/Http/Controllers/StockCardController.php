@@ -287,6 +287,7 @@ class StockCardController extends Controller {
 
 	public function printStockCard($stocknumber)
 	{
+		$orientation = 'Portrait';
 		$supply = App\Supply::find($stocknumber);
 
 		$data = [
@@ -296,11 +297,12 @@ class StockCardController extends Controller {
 		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm')."-$stocknumber".".pdf";
 		$view = "stockcard.print_index";
 
-		return $this->printPreview($view,$data,$filename);
+		return $this->printPreview($view,$data,$filename,$orientation);
 	}
 
 	public function printAllStockCard()
 	{
+		$orientation = 'Portrait';
 		$supplies = App\Supply::all();
 
 		$data = [
@@ -309,7 +311,7 @@ class StockCardController extends Controller {
 
 		$filename = "StockCard-".Carbon\Carbon::now()->format('mdYHm').".pdf";
 		$view = "stockcard.print_all_index";
-		return $this->printPreview($view,$data,$filename);
+		return $this->printPreview($view,$data,$filename,$orientation);
 	}
 
 	public function estimateDaysToConsume(Request $request, $stocknumber)
