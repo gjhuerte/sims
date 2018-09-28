@@ -26,7 +26,7 @@
 					<a href="#inventory" aria-controls="inventory" role="tab" data-toggle="tab">Inventory</a>
 				</li>
 				<li role="presentation">
-					<a href="#references" aria-controls="references" role="tab" data-toggle="tab">References</a>
+					<a href="#hris" aria-controls="hris" role="tab" data-toggle="tab"> H.R.I.S. Record</a>
 				</li>
 			</ul>
 			<!-- Nav tabs -->
@@ -53,8 +53,8 @@
 							</div>
 							<input type="text" value="" class="form-control" name="stocknumber" id="specific-stocknumber" placeholder="Enter Specific Stock Number Here..." style="margin-bottom: 20px;" />
 							<div class="pull-right">
-				    			<button type="button" data-loading-text="Synchronizing..." id="update-references" autocomplete="off" class="btn btn-info">Sync References</button>
-				    			<button type="button" data-loading-text="Updating..." id="update" autocomplete="off" class="btn btn-success">Update</button>
+				    			<button type="button" data-loading-text="Synchronizing..." id="update-references" autocomplete="off" class="btn btn-info" value="update-references">Sync References</button>
+				    			<button type="button" data-loading-text="Updating..." id="update" autocomplete="off" class="btn btn-success" value="update-balance">Update</button>
 							</div> 
 						</div>
 					</div>
@@ -62,11 +62,37 @@
 				</div>
 				{{-- inventory panel --}}
 
-				{{-- references --}}
-				<div role="tabpanel" class="tab-pane" id="references">
+				{{-- hris --}}
+				<div role="tabpanel" class="tab-pane" id="hris">
+					
+					<div class="col-sm-12" style="margin-bottom: 10px; margin-top: 30px;">
+						<div class="form-group">
+							<input type="radio" name="hris-record" id="users" checked/> Users
+							<input type="radio" name="hris-record" id="offices" /> Offices
+						</div>
+					</div>
+
+					<div class="col-sm-12" style="margin-bottom: 10px;">
+						<div class="form-group">
+							<legend>Rows</legend>
+							<div id='type' style="margin-bottom: 10px;">
+				    			<input type="radio" name="rows-hris" id="all-rows-hris" /> All rows
+				    			<input type="radio" name="rows-hris" id="specific-rows-hris" checked /> Specific row
+							</div>
+							<input type="text" value="" class="form-control" name="stocknumber" id="specific-stocknumber-hris" placeholder="Enter Specific Identifier here..." style="margin-bottom: 20px;" />
+
+							<ul>
+								<li>Users - Use the username to fetch data</li>
+								<li>Offices - Use the office code to fetch data</li>
+							</ul>
+							<div class="pull-right">
+				    			<button type="button" data-loading-text="Updating..." id="update-hris" autocomplete="off" class="btn btn-success">Update</button>
+							</div> 
+						</div>
+					</div>
 					
 				</div>
-				{{-- references --}}
+				{{-- hris --}}
 
 			</div>
 			<!-- Tab panes -->
@@ -115,16 +141,25 @@
 			}
 		})
 
-		$('#update-references').on('click', function(){
-			initProgressBar()
-			$('#logs').val('Initializing....')
-			$('#logs').appendMessage('Updating References Based on the Stock Number');
-			$('#logs').appendMessage('Done.');
+		$('#all-rows-hris').on('change', function(){
+			if($('#all-rows-hris').prop('checked')){
+				$('#specific-stocknumber-hris').prop('disabled', true)
+			}
 		})
 
-		$('#update').on('click', function(){
+		$('#specific-rows-hris').on('change', function(){
+			if($('#specific-rows-hris').prop('checked')){
+				$('#specific-stocknumber-hris').prop('disabled', false)
+			}
+		})
+
+		$('#update, #update-references').on('click', function(){
 
 			initProgressBar()
+
+	        var $btn = $(this);
+	        $btn.button('loading');
+
 			$('#logs').val('Initializing....')
 
 			stockcard = true;
@@ -141,6 +176,8 @@
 
 			_log = $('#logs')
 			stocknumbers = $('#specific-stocknumber').val()
+
+			button = $(this).val()
 
 			$.ajax({
 			    headers: {
@@ -168,27 +205,76 @@
 						stocks = response.message;
 						_log.appendMessage('Remaining Items: ' + (length - ctr))
 						percentage = computePercentage(length, ctr)
-						ctr = updateBalanceOfStock(stockcard, rows, stocks[ctr], ctr, length, stocks)
+
+						if(button == 'update-balance')
+						{
+							ctr = updateBalanceOfStock(stockcard, rows, stocks[ctr], ctr, length, stocks)
+						}
+
+						if(button == 'update-references')
+						{
+							ctr = updateReferenceOfStock(stockcard, rows, stocks[ctr], ctr, length, stocks)
+						}
 					}
 
 				},
 				error: function(response){
 					_log.appendMessage('An error has occurred....')
 					_log.appendMessage(JSON.stringify(response))
+					initProgressBar()
 				},
 				complete: function(response){
+					$btn.button('reset');
 					_log.appendMessage('Main Process Ended....')
 				}
 			})
 
-	        var $btn = $(this);
-	        $btn.button('loading');
-	        // simulating a timeout
-	        setTimeout(function () {
-	            $btn.button('reset');
-	        }, 1000);
-
 		})
+
+		function updateReferenceOfStock(stockcard, rows, stocknumber, ctr, length)
+		{
+
+			$.ajax({
+			    headers: {
+			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			    },
+				type: 'post',
+				url: '{{ url('sync/reference') }}',
+				dataType: 'json',
+				data:{
+					'stockcard': stockcard,
+					'rows': rows,
+					'stocknumber': stocknumber
+				},
+				beforeSend: function(response){
+					_log.appendMessage('Now Processing:' + stocknumber)
+				},
+				success: function(response){
+					_log.appendMessage('Response received....')
+					_log.appendMessage('Balance Successfully Synchronized....')
+				},
+				error: function(response){
+					_log.appendMessage('An error has occurred....')
+					_log.appendMessage(JSON.stringify(response))
+					initProgressBar()
+				},
+				complete: function(response){
+					ctr++;
+					if(length > ctr)
+					{
+						stocknumber = stocks[ctr];
+						_log.appendMessage('Remaining Items: ' + (length - ctr))
+						percentage = computePercentage(length, ctr)
+						ctr = updateReferenceOfStock(stockcard, rows, stocknumber, ctr, length)
+					}
+
+					_log.appendMessage('Process of ' + stocknumber + ' has ended....')
+				}
+			})
+
+			return ctr;
+
+		}
 
 		function updateBalanceOfStock(stockcard, rows, stocknumber, ctr, length)
 		{
@@ -215,6 +301,7 @@
 				error: function(response){
 					_log.appendMessage('An error has occurred....')
 					_log.appendMessage(JSON.stringify(response))
+					initProgressBar()
 				},
 				complete: function(response){
 					ctr++;

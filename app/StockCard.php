@@ -605,4 +605,61 @@ class StockCard extends Model implements Auditable, UserResolver
 			$stockcard->save();
 		}
 	}
+
+	/**
+	 * fetch each record of stocknumber
+	 * assign to references the record fetched
+	 * @param  [type] $stocknumber [description]
+	 * @return [type]              [description]
+	 */
+	public function syncReference($stocknumber)
+	{
+		/**
+		 * fetch the stocks by the given stocknumber
+		 */
+		$stockcards = StockCard::findByStockNumber($stocknumber)
+						->orderBy('id','asc')
+						->orderBy('created_at','asc')
+						->orderBy('date','asc')
+						->get();
+
+		$supply = Supply::findByStockNumber($stocknumber);
+
+		/**
+		 * loops through each record
+		 * save each in the database
+		 */
+		$purchaseorders = PurchaseOrder::whereIn('number', $stockcards->pluck('reference') )->get();
+
+		/**
+		 * loops through each record and initialize the values
+		 */
+		foreach($purchaseorders as $purchaseorder)
+		{
+			$purchaseorder->supplies()->updateExistingPivot( $supply->id, [
+				'received_quantity' => 0,
+				'remaining_quantity' => 0
+			]);
+
+		}
+
+		/**
+		 * itirate through each stockcards and add the values
+		 */
+		foreach($stockcards as $stockcard)
+		{
+
+			$purchaseorder = PurchaseOrder::findByNumber($stockcard->reference)->first()->first();
+			http_response_code(500);
+			// dd($purchaseorder);
+			$supplies = $purchaseorder->supplies()->where('supply_id', '=', $supply->id)->first();
+			$received = $supplies->pivot->received_quantity + $stockcard->received_quantity;	
+			$remaining = $supplies->pivot->received_quantity + ($stockcard->received_quantity - $stockcard->issued_quantity);
+
+			$purchaseorder->supplies()->updateExistingPivot( $supply->id, [
+				'received_quantity' => $received,
+				'remaining_quantity' => $remaining
+			]);		
+		}
+	}
 }

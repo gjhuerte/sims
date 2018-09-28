@@ -665,8 +665,6 @@ class RequestController extends Controller
       $requests->remarks = $details;
       $requests->save();
 
-      DB::commit();
-
       $data['id'] = $requests->requestor_id;
       $data['message'] = "Request $requests->code has been cancelled";
 
@@ -679,6 +677,8 @@ class RequestController extends Controller
       $url = url("request/$requests->id");
 
       App\Announcement::notify($title, $details, $access = 1, $url);
+
+      DB::commit();
 
       \Alert::success("$requests->code Cancelled")->flash();
       return redirect('request');

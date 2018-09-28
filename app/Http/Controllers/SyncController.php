@@ -21,6 +21,46 @@ class SyncController extends Controller
      * sync the transactions
      * based on the input of the user
      */
+    public function syncByReference(Request $request, App\Supply $supply)
+    {
+        if($request->ajax())
+        {
+            $rows = $this->sanitizeString($request->get('rows'));
+            $stockcard = $this->sanitizeString($request->get('stockcard'));
+            $stocknumber = $this->sanitizeString($request->get('stocknumber'));
+
+            $card = new App\LedgerCard;
+
+            if($stockcard == true){
+                $card = new App\StockCard;
+            }
+
+            $validator = Validator::make([
+                'Stock Number' => $stocknumber
+            ], $supply->legitimateStockNumber());
+
+            if($validator->fails()){
+                $errors = $validator->errors();
+                $errors =  json_decode($errors); 
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $errors
+                ], 422);
+            }
+
+            $stockcards = $card->syncReference($stocknumber);
+
+            return response()->json([
+                'success' => true
+            ], 200);
+        }
+    }
+
+    /**
+     * sync the transactions
+     * based on the input of the user
+     */
     public function sync(Request $request, App\Supply $supply)
     {
         if($request->ajax())

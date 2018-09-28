@@ -87,6 +87,7 @@
           <td>{{ $supply->pivot->quantity_adjusted }}</td>
           <td>{{ $supply->pivot->quantity_final }}</td>
         </tr>
+        @endforeach
         <tr>
           <td style="padding: 15px;">*****</td>
           <td>*****</td>

@@ -309,7 +309,7 @@ class InspectionController extends Controller
     {
         $id = $this->sanitizeString($id);
         $inspection = App\Inspection::with('supplies')->find($id);
-        $row_count = 22;
+        $row_count = 20;
         $adjustment = 4;
         $orientation = 'Portrait';
         if(isset($inspection->supplies)):
