@@ -1,24 +1,23 @@
 <?php
-namespace App;
+namespace App\Models\Feedback;
 
-use Carbon;
-use DB;
 use Illuminate\Database\Eloquent\Model;
-class ClientFeedback extends Model{
 
-	protected $table = 'clientfeedbacks';
+class ClientFeedback extends Model
+{
+	protected $table = 'feedbacks';
 	protected $primaryKey = 'id';
-	protected $fillable = [
-		'user',
-		'type',
-		'comment'
-	];
 	public $timestamps = true;
-
-	public function rules(){
-		return array(
-			'Comment' => 'required'
-		);
-	}
-	}
+	
+    /**
+     * List of columns in the database that
+     * can be filled using the create method
+     * of the model
+     *
+     * @var array
+     */
+	protected $fillable = [
+		'user', 'type', 'comment'
+	];	
+}
 
