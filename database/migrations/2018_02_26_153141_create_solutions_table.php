@@ -15,10 +15,10 @@ class CreateSolutionsTable extends Migration
     {
         Schema::create('solutions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('faqs_id')->unsigned();
-            $table->foreign('faqs_id')
+            $table->integer('fact_id')->unsigned();
+            $table->foreign('fact_id')
                     ->references('id')
-                    ->on('faqs')
+                    ->on('facts')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('title');
