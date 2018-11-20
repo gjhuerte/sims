@@ -2,15 +2,15 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Contracts\UserResolver;
-use Auth;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 
-class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
+class User extends Model implements Authenticatable, Auditable, UserResolver
 {
 	use AuthenticableTrait;
     use \OwenIt\Auditing\Auditable;
@@ -152,5 +152,17 @@ class User extends \Eloquent implements Authenticatable, Auditable, UserResolver
     public function scopeFindByUserName($query, $value)
     {
     	$query->where('username', '=', $value);
-    }
+	}
+	
+	public function scopeOfficeOfCurrentAuthenticatedUser($query)
+	{
+		$query = Auth::user()->office;
+		return $query->whereOffice($office);
+	}
+
+	public function scopeAccessOfCurrentAuthenticatedUser($query)
+	{
+		$query = Auth::user()->office;
+		return $query->whereOffice($office);
+	}
 }

@@ -2,134 +2,72 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
-use Carbon;
+use App\Extras\Models\Announcement\Links as Linkable;
+use App\Extras\Models\Announcement\Access as Accessible;
+use App\Extras\Models\Announcement\Filters as Filterable;
+use App\Extras\Models\Announcement\Appends as Appendable;
 
 class Announcement extends Model
 {
+
+    use Accessible, Filterable, Linkable, Appendable;
+
+    const ADMINISTRATOR = 'administrator';
+    const ASSETS_MANAGEMENT = 'assets management';
+    const ACCOUNTING = 'accounting';
+    const OFFICES = 'offices';
+    const ALL = 'all';
+
+    const DEFAULT_ACCESS_NUMBER = 4;
+
     protected $table = 'announcements';
     protected $primaryKey = 'id';
     public $timestamps = true;
+    public static $_instance;
 
-    public $access_list = [
-
-        0 => 'Administrator Only',
-        1 => 'Assets Management', 
-        2 => 'Accounting',
-        3 => 'Offices',
-        4 => 'All'
-
-    ];
-
+    /**
+     * List of columns in the database that
+     * can be filled using the create method
+     * of the model
+     *
+     * @var array
+     */
     protected $fillable = [
     	'title', 'details', 'access', 'user_id'
     ];
 
+    /**
+     * Additional columns when fetching records
+     * These columns are automatically added when
+     * the model is initialized
+     *
+     * @var array
+     */
     protected $appends = [
-        'created_by', 'access_name'
+        'created_by'
     ];
-
-    public function rules()
+    
+    /**
+     * Create an announcement based on the arguments
+     * given. The argument field accepts the following
+     * as attributes: title, details, access, and users
+     *
+     * @param array $args
+     * @return void
+     */
+    public function notify(array $args)
     {
-        return [
-            'Title' => 'required|max:50',
-            'Details' => 'max:100'
-        ];
-    }
+        Announcement::create([
+            'title' => $args['title'],
+            'details' => $args['details'],
+            'access' => isset($args['access']) ? $args['access'] : self::DEFAULT_ACCESS_NUMBER,
+            'user_id' => Auth::id(),
+            'specified_users' => $args['users'],
+        ]);
 
-    public function updateRules()
-    {
-        return [
-            'Title' => 'required|max:50',
-            'Details' => 'max:100'
-        ];
-    }
-
-    public function getAccessNameAttribute()
-    {
-        $ret_val = 'Not Set';
-
-        if(array_key_exists($this->access, $this->access_list))
-        {
-            $ret_val = $this->access_list[$this->access];
-        }
-
-        return $ret_val;
-    }
-
-    public function scopeOfficeOrSelf($query)
-    {
-        $query->where(function($query){
-            $query->where('specified_users', '=', Auth::user()->access)
-                ->orWhereIn('specified_users', User::where('office', '=', Auth::user()->office )->pluck('id'));
-        });
-    }
-
-    public function scopeOrOffice($query)
-    {
-        return $query->orWhereIn('specified_users', User::where('office', '=', Auth::user()->office )->pluck('id'));
-    }
-
-    public function scopeOrSelf($query)
-    {
-        return $query->orWhere('specified_users', '=', Auth::user()->access);
-    }
-
-    public function scopeForAll($query)
-    {
-        return $query->where('access','=','4');
-    }
-
-    public function scopeSelf($query)
-    {
-        return $query->where('specified_users', '=', Auth::user()->access);
-    }
-
-    public function getCreatedByAttribute()
-    {
-        return $this->creator->firstname . " " . $this->creator->lastname;
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo('App\User', 'user_id', 'id');
-    }
-
-    public function users()
-    {
-    	return $this->belongsToMany('App\User', 'announcement_user', 'user_id', 'announcement_id')
-    			->withPivot(['is_read'])
-    			->withTimestamps();
-    }
-
-    public function scopeOrFindByOffice($query, $value)
-    {
-        return $query->orWhereIn('user_id', User::where('office', '=', Auth::user()->office )->pluck('id'));
-    }
-
-    public function scopeFindByOffice($query, $value)
-    {
-        return $query->whereIn('user_id', User::where('office', '=', Auth::user()->office )->pluck('id'));
-    }
-
-    public function scopeFindByAccess($query, $value)
-    {
-        if(is_array($value)) return $query->whereIn('access', $value);
-
-        return $query->where('access','=', $value);
-    }
-
-    public static function notify($title, $details, $access = 4, $url = null, $user = null)
-    {
-        $announcement = new Announcement;
-        $announcement->title = $title;
-        $announcement->details = $details;
-        $announcement->access = $access;
-        $announcement->url = $url;
-        $announcement->user_id = Auth::user()->id;
-        $announcement->specified_users = $user;
-        $announcement->save();
+        return $this;
     }
 
 }

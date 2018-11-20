@@ -4,7 +4,7 @@ namespace App\Http\Requests\AnnouncementRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AnnouncementUpdateRequest extends FormRequest
+class AnnouncementStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class AnnouncementUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
