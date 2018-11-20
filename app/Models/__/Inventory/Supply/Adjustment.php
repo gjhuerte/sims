@@ -10,12 +10,22 @@ class Adjustment extends Model
     protected $primaryKey = 'id';
     public $incrementing = true;
     public $timestamps = true;
+
+    /**
+     * List of columns in the database that
+     * can be filled using the create method
+     * of the model
+     *
+     * @var array
+     */
     public $fillable = [
       'created_by', 'status', 'details'
     ];
 
     /**
-     * Additional columns to be added
+     * Additional columns when fetching records
+     * These columns are automatically added when
+     * the model is initialized
      *
      * @var array
      */
