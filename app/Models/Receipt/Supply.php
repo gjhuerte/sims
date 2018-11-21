@@ -80,4 +80,39 @@ class Supply extends Model
     {
         return $query->where('supply_id', '=', $value);
     }
+
+    /**
+     * Filter the query where the quantity is greater
+     * than zero
+     *
+     * @return object
+     */
+    public function scopeHasQuantity()
+    {
+        return $query->where('remaining_quantity', '>', 0);
+    }
+
+    /**
+     * Filter the query where the unit cost is set
+     *
+     * @return object
+     */
+    public function scopeUnitCostHasValue()
+    {
+        return $query->whereNotNull('unitcost');
+    }
+
+    /**
+     * Returns the average of unit cost with
+     * quantity and the unit cost value is set
+     *
+     * @return void
+     */
+    public function scopeAverageOfUnitCost()
+    {
+        return $query->hasQuantity()
+                ->unitCostHasValue()
+                ->select('unitcost')
+                ->avg('unitcost');
+    }
 }
