@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\OfficeRequest;
 
+use App\Models\Office\Office;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OfficeUpdateRequest extends FormRequest
