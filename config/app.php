@@ -14,11 +14,51 @@ return [
 
     'name' => 'Supplies Inventory Management System',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Agency
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the agency as to where the reports will be attributed
+    | to. The agencies value must be set according to your agency
+    |
+    */
     'main_agency' => env('MAIN_AGENCY','Not Set'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Status
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the defauolt pending status for your application. Set
+    | the value in the environment variables. This sets all the pending status
+    | according to your preference
+    |
+    */
     'default_status' => env('DEFAULT_STATUS','pending'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Socket Port
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the port as to where the socket will connect to
+    | The purpose of this is for the realtime application
+    |
+    */
     'socket_port' => env('SOCKET_PORT', 3000),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Not Set
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the not set values of the data in the model. When a data
+    | has no value, the value of this configuration will be used for that purpose
+    | Please set the value in the application environment variable
+    |
+    */
+    'data_not_set' => env('DATA_NOT_SET_VALUE', 'Not Set'),
 
     /*
     |--------------------------------------------------------------------------
