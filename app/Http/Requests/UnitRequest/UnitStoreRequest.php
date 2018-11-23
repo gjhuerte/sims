@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\UnitRequest;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UnitStoreRequest extends FormRequest
@@ -14,11 +13,7 @@ class UnitStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if(Auth::check()) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
