@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Jobs\Office;
+namespace App\Jobs\Office\Department;
 
-use App\Models\Office\OFfice;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class CreateOffice implements ShouldQueue
+class CreateDepartment implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     protected $request;
 
     /**
@@ -32,12 +31,14 @@ class CreateOffice implements ShouldQueue
      */
     public function handle()
     {
+        
         $office = $this->request;
 
         $office = Office::create([
             'name' => isset($office['name']) ? $office['name'] : null,
             'code' => isset($office['code']) ? $office['code'] : null,
             'head' => isset($office['head']) ? $office['head'] : null,
+            'head_office' => isset($office['head_office']) ? $office['head_office'] : null,
             'head_title' => isset($office['head_title']) ? $office['head_title'] : null,
             'description' => isset($office['description']) ? $office['description'] : null,
         ]);

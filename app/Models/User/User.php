@@ -5,6 +5,7 @@ namespace App;
 use App\Models\Office\Office;
 use App\Models\Request\Comment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Notifications\Notifiable;
@@ -19,6 +20,10 @@ class User extends Model implements Authenticatable, Auditable, UserResolver
 	use AuthenticableTrait;
 	use \OwenIt\Auditing\Auditable;
 	use Notifiable;
+
+	const ACTIVATED_STATUS = 1;
+	const INACTIVE_STATUS = 0;
+	const DEFAULT_PASSWORD = '123456789';
 	
 	protected $table  = 'users';
 	protected $primaryKey = 'id';
@@ -88,6 +93,38 @@ class User extends Model implements Authenticatable, Auditable, UserResolver
 	public function getAccessNameAttribute(int $value)
 	{
 		return isset(self::$access_list[ $this->access ]) ? self::$access_list[ $this->access ] : 'Not Applicable';
+	}
+
+	/**
+	 * Returns the default password for the user
+	 *
+	 * @return string
+	 */
+	public static function getDefaultPassword()
+	{
+		return Hash::make(self::DEFAULT_PASSWORD);
+	}
+
+	/**
+	 * Get the encrypted password from the 
+	 * argument provided
+	 *
+	 * @param string $password
+	 * @return string
+	 */
+	public static function encryptPassword($password = null)
+	{
+		return isset($password) ? Hash::make($password) : null;
+	}
+
+	/**
+	 * Encrypt the default password
+	 *
+	 * @return string
+	 */
+	public static function getEncryptedDefaultPassword()
+	{
+		return self::encryptPassword(self::getDefaultPassword());
 	}
 	
 	/**
@@ -171,5 +208,18 @@ class User extends Model implements Authenticatable, Auditable, UserResolver
 	{
 		$query = Auth::user()->office;
 		return $query->whereOffice($office);
+	}
+
+	/**
+	 * Updates the access level of the current user
+	 * to the argument given
+	 *
+	 * @param string|null $newAccess
+	 * @return void
+	 */
+	public function updateAccessTo($newAccess = null)
+	{
+		$this->update([ isset($newAccess) ? $newAccess : $this->access ]);
+		return $this;
 	}
 }
