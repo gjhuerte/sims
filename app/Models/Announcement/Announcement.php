@@ -70,4 +70,9 @@ class Announcement extends Model
         return $this;
     }
 
+    public function scopeFilterByCurrentUsersAccess($query)
+    {
+        return $query;
+    }
+
 }

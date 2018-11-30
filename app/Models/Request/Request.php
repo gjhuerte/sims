@@ -284,6 +284,16 @@ class Request extends Model implements Auditable, UserResolver
     }
 
     /**
+     * Returns the count of the selected model
+     *
+     * @return void
+     */
+    public function scopeSelectCount()
+    {
+        return $query->select(DB::raw('count(id) AS count'));
+    }
+
+    /**
      * Filters the query by office code
      *
      * @param Builder $query
