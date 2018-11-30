@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\Inventory\Supply;
 
 use App\Models\Inventory\Unit;
