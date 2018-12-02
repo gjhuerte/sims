@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class RSMI extends Model
 {
+    const PENDING_STATUS = 'P';
+    const SUBMITTED_STATUS = 'S';
+    const RECEIVED_STATUS = 'R';
+    const RETURNED_STATUS  = 'E';
+    const CANCELLED_STATUS = 'C';
+    const APPLIED_STATUS = 'AP';
+
     protected $table = "rsmi";
     protected $primary = 'id';
 
@@ -89,6 +96,47 @@ class RSMI extends Model
     public function getStatusNameAttribute()
     {
         return isset($this->status_list[$this->status]) ? $this->status_list[$this->status] : config('app.data_not_set');
+    }
+
+    /**
+     * Sets the status of the current report 
+     * as applied in which the report has been
+     * applied to the ledger
+     */
+    public function setAsApplied()
+    {
+        $this->status = self::APPLIED_STATUS;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Generate a new rsmi report
+     * 
+     * @param  object $parsedMonth
+     * @return object              
+     */
+    public function generateNewReport($parsedMonth)
+    {
+        return RSMI::create([
+            'status' => self::PENDING_STATUS,
+            'report_date' => $parsedMonth,
+            'user_id' => Auth::id(),
+        ]);
+    }
+
+    /**
+     * Set the status of the report to submitted
+     * 
+     * @return object
+     */
+    public function submit()
+    {
+        $this->status = self::SUBMITTED_STATUS;
+        $this->save();
+
+        return $this;
     }
 
     /**
