@@ -17,19 +17,23 @@ class CreateOfficesTable extends Migration {
 			$table->increments('id');
 			$table->string('code',20)->unique();
 			$table->string('name');	
-			$table->string('description')->nullable()->default(null);
-			$table->char('abbreviation', 6)->nullable()->default(null);
-			$table->string('head')->nullable();
-			$table->string('head_title')->nullable()->default(null);
-			$table->string('status')
-				->nullable()
-				->default('In Service');
-			$table->integer('head_office')->unsigned()->nullable()->default(null);
-			$table->foreign('head_office')
+			$table->string('description')->nullable();
+			$table->char('abbreviation', 6)->nullable();
+			$table->string('head_id')->nullable();
+
+			$table->integer('parent_id')
+					->unsigned()
+					->nullable();
+
+			$table->foreign('parent_id')
 					->references('id')
 					->on('offices')
 					->onUpdate('cascade')
 					->onDelete('cascade');
+
+			$table->string('status')
+					->nullable()
+					->default('In Service');
 			$table->timestamps();
 			$table->softDeletes();		
 		});
